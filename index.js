@@ -15,9 +15,13 @@ var handlers = {
         this.emit('SayHello')
     },
     'TrashPickUpIntent' : function () {
-
+        this.emit('trashPickUp');
     },
     'SayHello': function () {
         this.emit(':tell', 'Hello there!');
+    }, 
+    'TrashPickUp': function () {
+        //add functionality here
     }
 };
+
