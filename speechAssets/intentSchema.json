@@ -1,0 +1,6 @@
+{
+    "intents": [
+      {"intent": "HelloWorldIntent"},
+      {"intent": "TrashPickUpInten"}
+    ]
+  }
