@@ -26,7 +26,6 @@ def request():
     for entry in json_data[:]:
         parsed_data.append({
             'recycling':entry["recycling"],
-            'district':entry["publicworksdistrict"],
             'trash': entry["trash"],
         })
     return jsonify({'foo':json_data})
