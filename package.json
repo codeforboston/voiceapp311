@@ -27,4 +27,14 @@
     "url": "https://github.com/codeforboston/voiceapp311/issues"
   },
   "homepage": "https://github.com/codeforboston/voiceapp311#readme"
+  "keywords": [
+    "alexa",
+    "skill",
+    "fact"
+  ],
+  "author": "Amazon.com",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "alexa-sdk": "^1.0.14"
+  }
 }

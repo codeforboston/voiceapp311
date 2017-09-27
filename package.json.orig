@@ -1,0 +1,50 @@
+{
+<<<<<<< HEAD
+  "name": "voiceapp311",
+  "version": "1.0.0",
+  "description": "for creating a alexa skill to interact with Boston311",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "dependencies": {
+    "alexa-sdk": "^1.0.14",
+    "chai": "^4.1.2"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.3"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeforboston/voiceapp311.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codeforboston/voiceapp311/issues"
+  },
+  "homepage": "https://github.com/codeforboston/voiceapp311#readme"
+=======
+  "name": "skill-sample-nodejs-fact-i18n",
+  "version": "1.0.0",
+  "description": "I18n version of fact skill.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "alexa",
+    "skill",
+    "fact"
+  ],
+  "author": "Amazon.com",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "alexa-sdk": "^1.0.14"
+  }
+>>>>>>> 3c6f307a314b9e5c888accaa3af204c91b29c13a
+}
