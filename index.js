@@ -21,8 +21,8 @@ const https = require('https');
 const APP_ID = undefined;
 
 const SKILL_NAME = 'Boston Info';
-const GET_FACT_MESSAGE = "Here's your fact: ";
-const HELP_MESSAGE = 'You can say tell me a space fact, or, you can say exit... What can I help you with?';
+const GET_FACT_MESSAGE = "Here you go: ";
+const HELP_MESSAGE = 'You can say tell me a Boston 311 information, or, you can say exit... What can I help you with?';
 const HELP_REPROMPT = 'What can I help you with?';
 const STOP_MESSAGE = 'Goodbye!';
 
@@ -30,8 +30,7 @@ const STOP_MESSAGE = 'Goodbye!';
 //TODO: Replace this data with your own.  You can find translations of this data at http://github.com/alexa/skill-sample-node-js-fact/data
 //=========================================================================================================================================
 const data = [
-  "NEVER!",
-  "Maybe by Boston 2030?",
+  "Trash pick up days in Boston are Tuesday and Thursday"
 ];
 
 //=========================================================================================================================================
@@ -40,29 +39,29 @@ const data = [
 
 const handlers = {
     'LaunchRequest': function () {
-        this.emit('GetNewFactIntent');
+        this.emit('GetBostonInfo');
     },
     'GetNewFactIntent': function () {
 
         //Get data for Tash PickUp and Recycling
-        https.get('https://data.boston.gov/api/action/datastore_search?resource_id=fee8ee07-b8b5-4ee5-b540-5162590ba5c1&q={"Address": "1 Charles St S PH1-A"}', (res) => {
-            console.log('statusCode:', res.statusCode);
-            console.log('headers:', res.headers);
-          var TrashPickUp="Trash Pick up on ";
-          var Recycling="Recycling on ";
-          var AlexaTell="For Address "
-
-          //Get Response and parse String for Alexa
-            res.on('data', (d) => {
-              var apiResponse = JSON.parse(d);
-              AlexaTell = AlexaTell + apiResponse["result"]["records"][0]["Address"] + 
-              TrashPickUp + temapiResponsep["result"]["records"][0]["Trash"] +
-              Recycling + apiResponse["result"]["records"][0]["Recycling"];
-            });
-          
-          }).on('error', (e) => {
-            console.error(e);
-          });
+        // https.get('https://data.boston.gov/api/action/datastore_search?resource_id=fee8ee07-b8b5-4ee5-b540-5162590ba5c1&q={"Address": "1 Charles St S PH1-A"}', (res) => {
+        //     console.log('statusCode:', res.statusCode);
+        //     console.log('headers:', res.headers);
+        //   var TrashPickUp="Trash Pick up on ";
+        //   var Recycling="Recycling on ";
+        //   var AlexaTell="For Address "
+        //
+        //   //Get Response and parse String for Alexa
+        //     res.on('data', (d) => {
+        //       var apiResponse = JSON.parse(d);
+        //       AlexaTell = AlexaTell + apiResponse["result"]["records"][0]["Address"] +
+        //       TrashPickUp + temapiResponsep["result"]["records"][0]["Trash"] +
+        //       Recycling + apiResponse["result"]["records"][0]["Recycling"];
+        //     });
+        //
+        //   }).on('error', (e) => {
+        //     console.error(e);
+        //   });
 
         const factArr = data;
         const factIndex = Math.floor(Math.random() * factArr.length);
@@ -71,8 +70,8 @@ const handlers = {
 
         // this.response.cardRenderer(SKILL_NAME, randomFact);
 
-        this.response.cardRenderer(SKILL_NAME, AlexaTell);
-        
+        this.response.cardRenderer(SKILL_NAME, randomFact);
+
         this.response.speak(speechOutput);
         this.emit(':responseReady');
     },
