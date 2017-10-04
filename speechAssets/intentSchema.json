@@ -1,6 +1,0 @@
-{
-    "intents": [
-      {"intent": "HelloWorldIntent"},
-      {"intent": "TrashPickUpIntent"}
-    ]
-  }
