@@ -282,3 +282,6 @@ Structure of the event object:
       locale: "en-US"
   version: "1.0"
 ```
+
+The elements of this event object are discussed in detail at:
+[https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html](https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html)
