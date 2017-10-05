@@ -6,8 +6,8 @@ days.
 
 ## Installation
 
-### Part 1: Amazon Developers
-1. Go to the Amazon developers page (https://developers.amazon.com) and log in.
+### Part 1: Amazon Developer
+1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
 2. Select **Alexa** from the menu bar near the top of the page.
 3. Select **Alexa Skills Kit** from the next page.
 4. Select **Add a New Skill** from the upper right corner of the next page.
@@ -53,7 +53,7 @@ days.
 8. In the upper right you'll see a **ARN**. Copy this and go back to the tab
    you have open from Part 1.
 
-### Part 3: Amazon Developers
+### Part 3: Amazon Developer
 1. In the **Configuration** tab, for **Service Endpoint Type**, select
    **AWS Lambda ARN (Amazon Resource Name)**.
 2. In the **Default** text field paste the ARN from Part 2.
@@ -141,10 +141,9 @@ provides instructions on how to do so: [https://docs.aws.amazon.com/lambda/lates
 
 Once all the requisite libraries are installed, compress the contents of the
 directory. The instructions note:
-```
-**Important**:
-Zip the directory content, not the directory. The contents of the Zip file are available as the current working directory of the Lambda function.
-```
+   >**Important**:
+   >Zip the directory content, not the directory. The contents of the Zip file
+   >are available as the current working directory of the Lambda function.
 
 Recall that in Part 2 of the installation instructions we set the **Handler** to
 **lambda_function.lambda_handler**. This is specifying the function that is
