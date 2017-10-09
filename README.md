@@ -6,8 +6,8 @@ days.
 
 ## Installation
 
-### Part 1: Amazon Developers
-1. Go to the Amazon developers page (https://developers.amazon.com) and log in.
+### Part 1: Amazon Developer
+1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
 2. Select **Alexa** from the menu bar near the top of the page.
 3. Select **Alexa Skills Kit** from the next page.
 4. Select **Add a New Skill** from the upper right corner of the next page.
@@ -53,7 +53,7 @@ days.
 8. In the upper right you'll see a **ARN**. Copy this and go back to the tab
    you have open from Part 1.
 
-### Part 3: Amazon Developers
+### Part 3: Amazon Developer
 1. In the **Configuration** tab, for **Service Endpoint Type**, select
    **AWS Lambda ARN (Amazon Resource Name)**.
 2. In the **Default** text field paste the ARN from Part 2.
@@ -100,14 +100,14 @@ with some additional clarification.
    This handles the speech recognition and translates the above voice
    command to a JSON document containing the intent and any parameters.
 
+   This JSON is sent to the skill (Boston Data in this example).
+
    For BostonData:
 
    ```
    intent    : trashday
    parameter : "1 Main Street apartment 2"
    ```
-
-  This JSON is sent to the skill (Boston Data in this example).
 
 3. The skill receives the JSON.
 
@@ -128,6 +128,29 @@ with some additional clarification.
 
 5. The Alexa Service Platform receives the response and conveys to the
    user using text-to-speech or the app display.
+
+## Python-specific Notes
+
+Because the python code in Boston Data's Lambda function uses resources beyond
+Python's standard libraries, it must be uploaded as a .zip file.
+
+To generate this .zip file, we must install all of the required Python packages
+in the directory that contains [our code](BostonData/lambda_function/lambda_function.py). For this project, that
+directory is [BostonData/lambda_function](BostonData/lambda_function). Amazon
+provides instructions on how to do so: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html)
+
+Once all the requisite libraries are installed, compress the contents of the
+directory. The instructions note:
+   >**Important**:
+   >Zip the directory content, not the directory. The contents of the Zip file
+   >are available as the current working directory of the Lambda function.
+
+Recall that in Part 2 of the installation instructions we set the **Handler** to
+**lambda_function.lambda_handler**. This is specifying the function that is
+executed when a voice command is issued to the Alexa device. If we compress the
+containing directory instead of its contents, this code is not available.
+
+
 
 
 ## Notes on open data sources for Boston
@@ -259,3 +282,6 @@ Structure of the event object:
       locale: "en-US"
   version: "1.0"
 ```
+
+The elements of this event object are discussed in detail at:
+[https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html](https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html)
