@@ -28,9 +28,9 @@ two together.
    * Invocation Name: **boston data**
    Leave everything else as is, click **Save** at the bottom, then **Next**.
 6. You should now be in the **Interaction Model** section of the skill. Do the following:
-   * In the **Intent Schema** input box, paste the contents of [intent_schema.json](docs/intent_schema.json).
+   * In the **Intent Schema** input box, paste the contents of [intent_schema.json](BostonData/docs/intent_schema.json).
    * Leave the **Custom Slot Types** section blank.
-   * In the **Sample Utterances** input box, paste the contents of [sample_utterances.txt](docs/sample_utterances.txt).
+   * In the **Sample Utterances** input box, paste the contents of [sample_utterances.txt](BostonData/docs/sample_utterances.txt).
    Click **Save** at the bottom and click **Next**.
 7. You should now be in the **Configuration** section of the skill. Leave this
    tab open as you will enter information from your **Lambda** function here later.
@@ -53,7 +53,7 @@ two together.
      * Runtime: **Python 3.6** (this won't matter because you'll upload the
        code in a .zip file).
     * Under **Lambda function code**, select **Upload a .zip file** from the
-      **Code entry type** pulldown. Upload the [lambda_function.zip](./lambda_function.zip)
+      **Code entry type** pulldown. Upload the [lambda_function.zip](BostonData/lambda_function/lambda_function.zip)
       archive. This .zip file contains the Python code and the external libraries
       used in it.
     * Under **Lambda function handler and role**, set the following:
@@ -72,7 +72,8 @@ two together.
 
 ### Part 4: Test
 Once you've completed Part 3, go to the **Test** tab. Here you can run sample
-voice queries using the **Service Simulator**.
+voice queries using the **Service Simulator**. See usage below for some examples
+to test out.
 
 
 ## Usage
