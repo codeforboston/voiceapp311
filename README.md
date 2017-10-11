@@ -6,6 +6,17 @@ days.
 
 ## Installation
 
+In order to create an Alexa skill we need to configure two main components.
+The first is the Alexa skill itself. This is done through the Amazon developers page.
+Here you need to configure an Alexa skill, allowing Alexa to understand and react to
+user voice commands. The second is a Amazon Web Service (AWS) lambda function to run
+our application logic. Finally, we need to connect the Alexa skill to run our lambda function
+when it is activated.
+
+The following instructions will walk you through creating the Boston Data Alexa skill, 
+a new lambda function containing the Boston Data application, and then connecting the
+two together.
+
 ### Part 1: Amazon Developer
 1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
 2. Select **Alexa** from the menu bar near the top of the page.
