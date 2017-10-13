@@ -5,6 +5,7 @@ SetAddressIntent my home address is {Address}
 SetAddressIntent set address {Address}
 SetAddressIntent set my address to {Address}
 SetAddressIntent change address to {Address}
+SetAddressIntent change my address to {Address}
 SetAddressIntent update address to {Address}
 SetAddressIntent new address is {Address}
 GetAddressIntent what is my address set to
@@ -24,3 +25,12 @@ TrashDayIntent which day is recycling
 TrashDayIntent when should i put out my trash
 TrashDayIntent when is garbage pickup
 TrashDayIntent garbage collection day
+WorkZonesOnMyStreetIntent is there any road work going on near me
+WorkZonesOnMyStreetIntent is there any street work going on near me
+WorkZonesOnMyStreetIntent is there any road work happening near me
+WorkZonesOnMyStreetIntent is there any street work happening near me
+WorkZonesOnAnyStreetIntent is there any road work happening on {TargetAddress}
+WorkZonesOnAnyStreetIntent is there any street work happening on {TargetAddress}
+WorkZonesOnAnyStreetIntent is there any road work going on {TargetAddress}
+WorkZonesOnAnyStreetIntent is there any street work going on {TargetAddress}
+WorkZonesOnAnyStreetIntent is there any work going on {TargetAddress}

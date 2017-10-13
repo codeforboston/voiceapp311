@@ -76,6 +76,10 @@ def on_intent(intent_request, session):
         return get_address_from_session(intent, session)
     elif intent_name == "TrashDayIntent":
         return get_trash_day_info(intent, session)
+    elif intent_name == "WorkZonesOnMyStreetIntent":
+        return get_work_zones_on_my_street(intent, session)
+    elif intent_name == "WorkZonesOnAnyStreetIntent":
+        return get_work_zones_on_any_street(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.StopIntent" or intent_name == "AMAZON.CancelIntent":
@@ -229,6 +233,90 @@ def get_trash_day_info(intent, session):
     # understood, the session will end.
     return build_response(session_attributes, build_speechlet_response(
         intent['name'], speech_output, reprompt_text, should_end_session))
+
+
+def get_work_zones_on_my_street(intent, session):
+    """
+    Generates response object for work zones on my street inquiry
+    """
+    reprompt_text = None
+    print("IN GET_WORKZONES_ONMYSTREET, SESSION: " + str(session))
+
+    if "currentAddress" in session.get('attributes', {}):
+        current_address = session['attributes']['currentAddress']
+        speech_output = build_speech_work_zones(current_address)
+
+    else:
+        speech_output = "I'm not sure what your address is. " \
+                        "You can tell me your address by saying, " \
+                        "my address is 123 Main St., apartment 3."
+
+    session_attributes = session.get('attributes', {})
+    should_end_session = False
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+
+def get_work_zones_on_any_street(intent, session):
+    '''
+    Generates response object for work zones on any street inquiry
+    '''
+    reprompt_text = None
+    print("IN GET_WORKZONES_ONANYSTREET, SESSION: " + str(session))
+
+    if 'TargetAddress' in intent['slots']:
+        target_address = intent['slots']['TargetAddress']['value']
+        speech_output = build_speech_work_zones(target_address)
+
+    else:
+        speech_output = "I'm not sure what the street name is. " \
+                        "You can ask for information on active work zones by saying, " \
+                        "is there any street work going on Washington Street"
+
+    session_attributes = session.get('attributes', {})
+    should_end_session = False
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+
+def build_speech_work_zones(current_address):
+
+    # grab relevant information from user given address
+    addr_parser = StreetAddressParser().parse(current_address)
+    address = str(addr_parser['street_name'])
+
+    # rest call to data.boston.gov for active work zone information
+    url = 'https://data.boston.gov/api/3/action/datastore_search?' + \
+          'resource_id=36fcf981-e414-4891-93ea-f5905cec46fc&q=' + \
+          '{{"Street":"{}"}}'.format(address)
+    resp = requests.get(url).json()
+    print("RESPONSE FROM DATA.BOSTON.GOV: " + str(resp))
+
+    # format script of response
+    if resp['result']['records']:
+        record = resp['result']['records'][0]
+        zone_str = ''
+        start = ''
+        if int(record['_full_count']) > 1:
+            zone_str = 'zones'
+            start = 'There are'
+        else:
+            zone_str = 'zone'
+            start = 'There is'
+
+        speech_output = start + " " + "".join(record['_full_count']) + " " + "active work" + " " + \
+                        "".join(zone_str) + " " + "on that street."
+
+    else:
+        speech_output = "There are no active work zones on that street."
+    return speech_output
+
 
 def parseDays(days):
     """
