@@ -6,6 +6,17 @@ days.
 
 ## Installation
 
+In order to create an Alexa skill we need to configure two main components.
+The first is the Alexa skill itself. This is done through the Amazon developers page.
+Here you need to configure an Alexa skill, allowing Alexa to understand and react to
+user voice commands. The second is a Amazon Web Service (AWS) lambda function to run
+our application logic. Finally, we need to connect the Alexa skill to run our lambda function
+when it is activated.
+
+The following instructions will walk you through creating the Boston Data Alexa skill, 
+a new lambda function containing the Boston Data application, and then connecting the
+two together.
+
 ### Part 1: Amazon Developer
 1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
 2. Select **Alexa** from the menu bar near the top of the page.
@@ -17,9 +28,9 @@ days.
    * Invocation Name: **boston data**
    Leave everything else as is, click **Save** at the bottom, then **Next**.
 6. You should now be in the **Interaction Model** section of the skill. Do the following:
-   * In the **Intent Schema** input box, paste the contents of [intent_schema.json](docs/intent_schema.json).
+   * In the **Intent Schema** input box, paste the contents of [intent_schema.json](BostonData/docs/intent_schema.json).
    * Leave the **Custom Slot Types** section blank.
-   * In the **Sample Utterances** input box, paste the contents of [sample_utterances.txt](docs/sample_utterances.txt).
+   * In the **Sample Utterances** input box, paste the contents of [sample_utterances.txt](BostonData/docs/sample_utterances.txt).
    Click **Save** at the bottom and click **Next**.
 7. You should now be in the **Configuration** section of the skill. Leave this
    tab open as you will enter information from your **Lambda** function here later.
@@ -42,7 +53,7 @@ days.
      * Runtime: **Python 3.6** (this won't matter because you'll upload the
        code in a .zip file).
     * Under **Lambda function code**, select **Upload a .zip file** from the
-      **Code entry type** pulldown. Upload the [lambda_function.zip](./lambda_function.zip)
+      **Code entry type** pulldown. Upload the [lambda_function.zip](BostonData/lambda_function/lambda_function.zip)
       archive. This .zip file contains the Python code and the external libraries
       used in it.
     * Under **Lambda function handler and role**, set the following:
@@ -61,7 +72,8 @@ days.
 
 ### Part 4: Test
 Once you've completed Part 3, go to the **Test** tab. Here you can run sample
-voice queries using the **Service Simulator**.
+voice queries using the **Service Simulator**. See usage below for some examples
+to test out.
 
 
 ## Usage
