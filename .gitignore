@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-node_modules
-.DS_Store
-=======
 # Logs
 logs
 *.log
@@ -61,4 +57,12 @@ typings/
 # dotenv environment variables file
 .env
 
->>>>>>> b4c4fc3f49041ffdb491352891a64e0f45f03ede
+# python modules
+BostonData/lambda_function/certifi*
+BostonData/lambda_function/chardet*
+BostonData/lambda_function/idna*
+BostonData/lambda_function/requests*
+BostonData/lambda_function/street*
+BostonData/lambda_function/urllib3*
+
+lambda_function.zip

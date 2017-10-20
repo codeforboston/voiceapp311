@@ -1,4 +1,3 @@
-SetAddressIntent {Address}
 SetAddressIntent my address is {Address}
 SetAddressIntent i live at {Address}
 SetAddressIntent my home address is {Address}
