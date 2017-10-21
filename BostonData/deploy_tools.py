@@ -25,7 +25,7 @@ def install_pip_dependencies():
 
 
 def package_lambda_function():
-    print "Packaging lambda_function into a deployable zip file...\n"
+    print("Packaging lambda_function into a deployable zip file...\n")
     install_pip_dependencies()
     zip_lambda_function_directory()
 
@@ -43,7 +43,8 @@ def main():
     if args.package:
         package_lambda_function()
     else:
-        print "No known option selected"
+        print("No known option selected")
 
 if __name__ == "__main__":
     main()
+
