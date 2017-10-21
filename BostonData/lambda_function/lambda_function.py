@@ -162,8 +162,8 @@ def build_speech_work_zones(current_address):
             zone_str = 'zone'
             start = 'There is'
 
-        speech_output = start + " " + "".join(record['_full_count']) + " " + "active work" + " " + \
-                        "".join(zone_str) + " " + "on that street."
+        speech_output = " ".join([start, record['_full_count'], "active work", zone_str, "on that street."])
+
 
     else:
         speech_output = "There are no active work zones on that street."
