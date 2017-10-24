@@ -13,7 +13,7 @@ user voice commands. The second is a Amazon Web Service (AWS) lambda function to
 our application logic. Finally, we need to connect the Alexa skill to run our lambda function
 when it is activated.
 
-The following instructions will walk you through creating the Boston Data Alexa skill, 
+The following instructions will walk you through creating the Boston Data Alexa skill,
 a new lambda function containing the Boston Data application, and then connecting the
 two together.
 
