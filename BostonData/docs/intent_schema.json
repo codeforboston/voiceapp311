@@ -1,31 +1,19 @@
 {
   "intents": [
     {
+      "intent": "SetAddressIntent",
       "slots": [
         {
           "name": "Address",
           "type": "AMAZON.PostalAddress"
         }
-      ],
-      "intent": "SetAddressIntent"
+      ]
     },
     {
       "intent": "GetAddressIntent"
     },
     {
       "intent": "TrashDayIntent"
-    },
-    {
-      "intent": "WorkZonesOnMyStreetIntent"
-    },
-    {
-      "intent": "WorkZonesOnAnyStreetIntent",
-      "slots": [
-        {
-          "name": "TargetAddress",
-          "type": "AMAZON.PostalAddress"
-        }
-      ]
     },
     {
       "intent": "AMAZON.HelpIntent"

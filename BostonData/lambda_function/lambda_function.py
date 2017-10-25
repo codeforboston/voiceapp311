@@ -8,13 +8,7 @@ Boston address, which is provided in a slot.
 
 from __future__ import print_function
 from streetaddress import StreetAddressFormatter, StreetAddressParser
-from Intents.SetAddressIntent import *
-from Intents.GetAddressIntent import *
-from Intents.TrashDayIntent import *
-from Intents.WorkZonesOnMyStreetIntent import *
-from Intents.WorkZonesOnAnyStreetIntent import *
 import requests
-
 
 def lambda_handler(event, context):
     """
@@ -53,16 +47,6 @@ def on_session_started(session_started_request, session):
           + ", sessionId=" + session['sessionId'])
 
 
-def on_session_ended(session_ended_request, session):
-    """
-    Called when the user ends the session.
-    Is not called when the skill returns should_end_session=true
-    """
-    print("on_session_ended requestId=" + session_ended_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
-    # add cleanup logic here
-
-
 def on_launch(launch_request, session):
     """
     Called when the user launches the skill without specifying what they want.
@@ -92,10 +76,6 @@ def on_intent(intent_request, session):
         return get_address_from_session(intent, session)
     elif intent_name == "TrashDayIntent":
         return get_trash_day_info(intent, session)
-    elif intent_name == "WorkZonesOnMyStreetIntent":
-        return get_work_zones_on_my_street(intent, session)
-    elif intent_name == "WorkZonesOnAnyStreetIntent":
-        return get_work_zones_on_any_street(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.StopIntent" or intent_name == "AMAZON.CancelIntent":
@@ -104,8 +84,17 @@ def on_intent(intent_request, session):
         raise ValueError("Invalid intent")
 
 
+def on_session_ended(session_ended_request, session):
+    """
+    Called when the user ends the session.
+    Is not called when the skill returns should_end_session=true
+    """
+    print("on_session_ended requestId=" + session_ended_request['requestId'] +
+          ", sessionId=" + session['sessionId'])
+    # add cleanup logic here
+
 ################################################################################
-#----------------------- Helper Functions for Intents -------------------------#
+#--------------- Functions that control the skill's behavior ------------------#
 ################################################################################
 
 def get_welcome_response():
@@ -128,6 +117,35 @@ def get_welcome_response():
         card_title, speech_output, reprompt_text, should_end_session))
 
 
+def set_address_in_session(intent, session):
+    """
+    Sets the address in the session and prepares the speech to reply to the
+    user.
+    """
+    # print("SETTING ADDRESS IN SESSION")
+    card_title = intent['name']
+    session_attributes = {}
+    should_end_session = False
+
+    if 'Address' in intent['slots']:
+        current_address = intent['slots']['Address']['value']
+        session_attributes = create_current_address_attributes(current_address)
+        speech_output = "I now know your address is " + \
+                        current_address + \
+                        ". Now you can ask questions related to your address" \
+                        ". For example, when is trash day?"
+        reprompt_text = "You can find out when trash is collected for your " \
+                        "address by saying, when is trash day?"
+    else:
+        speech_output = "I'm not sure what your address is. " \
+                        "Please try again."
+        reprompt_text = "I'm not sure what your address is. " \
+                        "You can tell me your address by saying, " \
+                        "my address is 123 Main St., apartment 3."
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, reprompt_text, should_end_session))
+
+
 def create_current_address_attributes(current_address):
     """
     Generates the currentAddress/address key/value pair.
@@ -137,36 +155,80 @@ def create_current_address_attributes(current_address):
     return {"currentAddress": current_address}
 
 
-def build_speech_work_zones(current_address):
+def get_address_from_session(intent, session):
+    """
+    Looks for a current address in the session attributes and constructs a
+    response based on whether one exists or not. If one exists, it is
+    preserved in the session.
+    """
+    # print("GETTING ADDRESS FROM SESSION")
+    session_attributes = {}
+    reprompt_text = None
 
-    # grab relevant information from user given address
-    addr_parser = StreetAddressParser().parse(current_address)
-    address = str(addr_parser['street_name'])
-
-    # rest call to data.boston.gov for active work zone information
-    url = 'https://data.boston.gov/api/3/action/datastore_search?' + \
-          'resource_id=36fcf981-e414-4891-93ea-f5905cec46fc&q=' + \
-          '{{"Street":"{}"}}'.format(address)
-    resp = requests.get(url).json()
-    print("RESPONSE FROM DATA.BOSTON.GOV: " + str(resp))
-
-    # format script of response
-    if resp['result']['records']:
-        record = resp['result']['records'][0]
-        zone_str = ''
-        start = ''
-        if int(record['_full_count']) > 1:
-            zone_str = 'zones'
-            start = 'There are'
-        else:
-            zone_str = 'zone'
-            start = 'There is'
-
-        speech_output = " ".join([start, record['_full_count'], "active work", zone_str, "on that street."])
+    if "currentAddress" in session.get('attributes', {}):
+        current_address = session['attributes']['currentAddress']
+        speech_output = "Your address is " + current_address + \
+                        "."
+        session_attributes = session.get('attributes', {})
+        should_end_session = False
     else:
-        speech_output = "There are no active work zones on that street."
-    return speech_output
+        speech_output = "I'm not sure what your address is. " \
+                        "You can tell me your address by saying, " \
+                        "my address is 123 Main St., apartment 3."
+        should_end_session = False
 
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+
+def get_trash_day_info(intent, session):
+    """
+    Generates response object for a trash day inquiry.
+    """
+    reprompt_text = None
+    print("IN GET_TRASH_DAY_INFO, SESSION: " + str(session))
+
+    if "currentAddress" in session.get('attributes', {}):
+        current_address = session['attributes']['currentAddress']
+
+        # grab relevant information from session address
+        addr_parser = StreetAddressParser()
+        a = addr_parser.parse(current_address)
+        # currently assumes that trash day is the same for all units at
+        # the same street address
+        address = str(a['house']) + " " + str(a['street_name'])
+
+        # rest call to data.boston.gov for trash/recycle information
+        url = 'https://data.boston.gov/api/action/datastore_search?' + \
+              'resource_id=fee8ee07-b8b5-4ee5-b540-5162590ba5c1&q=' + \
+              '{{"Address":"{}"}}'.format(address)
+        resp = requests.get(url).json()
+        print("RESPONSE FROM DATA.BOSTON.GOV: " + str(resp))
+
+        # format script of response
+        record = resp['result']['records'][0]
+        speech_output = "Trash is picked up on the following days, " + \
+                ", ".join(parseDays(record['Trash'])) + \
+                ". Recycling is picked up on the following days, " + \
+                " ,".join(parseDays(record['Recycling']))
+
+        session_attributes = session.get('attributes', {})
+        should_end_session = False
+    else:
+        session_attributes = session.get('attributes', {})
+        speech_output = "I'm not sure what your address is. " \
+                        "You can tell me your address by saying, " \
+                        "my address is 123 Main St., apartment 3."
+        should_end_session = False
+
+    # Setting reprompt_text to None signifies that we do not want to reprompt
+    # the user. If the user does not respond or says something that is not
+    # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
 
 def parseDays(days):
     """
@@ -197,7 +259,6 @@ def handle_session_end_request():
 ################################################################################
 #--------------- Helpers that build all of the responses ----------------------#
 ################################################################################
-
 
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
     return {
