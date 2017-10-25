@@ -6,13 +6,15 @@ from __future__ import print_function
 import argparse
 import os
 import pip
+import shutil
 import zipfile
 
+LAMBDA_FUNCTION_DIR = os.path.join(os.getcwd(), 'lambda_function')
 
 def zip_lambda_function_directory():
     zip_file_name = "lambda_function.zip"
     zip_file = zipfile.ZipFile(zip_file_name, 'w')
-    os.chdir(os.path.join(os.getcwd(), 'lambda_function'))
+    os.chdir(LAMBDA_FUNCTION_DIR)
     for root, dirs, files in os.walk('.'):
         for f in files:
             zip_file.write(os.path.join(root, f))
@@ -20,15 +22,32 @@ def zip_lambda_function_directory():
 
 
 def install_pip_dependencies():
-    requirements_path = os.path.join("lambda_function", "requirements.txt")
+    requirements_path = os.path.join(LAMBDA_FUNCTION_DIR, "requirements.txt")
     install_args = ["install", "-r", requirements_path, "-t" "lambda_function"]
     pip.main(install_args)
 
+def cleanup(keep_files):
+    """
+    Removes everything not contained in keep_files from the
+    lambda_function directory.
+    """
+    print("Cleaning up temporary files/directories...")
+    for root, dirs, files in os.walk(LAMBDA_FUNCTION_DIR):
+        for name in files:
+            if name not in keep_files:
+                os.remove(os.path.join(root, name))
+        for name in dirs:
+            if name not in keep_files:
+                shutil.rmtree(os.path.join(root, name))
+    print("Cleanup complete.")
 
 def package_lambda_function():
-    print("Packaging lambda_function into a deployable zip file...\n")
+    keep_files = os.listdir(LAMBDA_FUNCTION_DIR)
+    print("Packaging lambda_function into a deployable zip file...")
     install_pip_dependencies()
     zip_lambda_function_directory()
+    cleanup(keep_files)
+    print("Packaging complete.")
 
 
 def main():
