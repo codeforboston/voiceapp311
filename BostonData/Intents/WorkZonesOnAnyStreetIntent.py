@@ -1,4 +1,4 @@
-from lambda_function.lambda_function import *
+from ..lambda_function.lambda_function import build_response, build_speechlet_response, build_speech_work_zones
 
 
 def get_work_zones_on_any_street(intent, session):

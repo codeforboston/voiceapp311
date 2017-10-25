@@ -1,4 +1,4 @@
-from lambda_function.lambda_function import *
+from ..lambda_function.lambda_function import build_speechlet_response, build_response, create_current_address_attributes
 
 
 def set_address_in_session(intent, session):

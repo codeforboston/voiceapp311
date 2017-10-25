@@ -1,4 +1,4 @@
-from lambda_function.lambda_function import *
+from ..lambda_function.lambda_function import build_response, build_speechlet_response
 
 
 def get_address_from_session(intent, session):
