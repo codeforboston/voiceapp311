@@ -2,6 +2,7 @@
 Tools to package and deploy the lambda function for Boston Data app
 '''
 
+from __future__ import print_function
 import argparse
 import os
 import pip
@@ -25,7 +26,7 @@ def install_pip_dependencies():
 
 
 def package_lambda_function():
-    print "Packaging lambda_function into a deployable zip file...\n"
+    print("Packaging lambda_function into a deployable zip file...\n")
     install_pip_dependencies()
     zip_lambda_function_directory()
 
@@ -34,7 +35,7 @@ def main():
     parser = argparse.ArgumentParser(description="Tools to " +
         "package and deploy the lambda function for Boston Data app")
 
-    parser.add_argument('-p', '--package', help="Creates a zip file " + 
+    parser.add_argument('-p', '--package', help="Creates a zip file " +
         "that can be uploaded as an Amazon lambda function",
         action='store_true')
 
@@ -43,7 +44,7 @@ def main():
     if args.package:
         package_lambda_function()
     else:
-        print "No known option selected"
+        print("No known option selected")
 
 if __name__ == "__main__":
     main()
