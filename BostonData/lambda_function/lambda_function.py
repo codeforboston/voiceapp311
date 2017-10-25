@@ -7,6 +7,7 @@ Boston address, which is provided in a slot.
 """
 
 from __future__ import print_function
+from streetaddress import StreetAddressFormatter, StreetAddressParser
 from ..Intents.SetAddressIntent import *
 from ..Intents.GetAddressIntent import *
 from ..Intents.TrashDayIntent import *
