@@ -6,16 +6,18 @@ days.
 
 ## Installation
 
-In order to create an Alexa skill we need to configure two main components.
-The first is the Alexa skill itself. This is done through the Amazon developers page.
-Here you need to configure an Alexa skill, allowing Alexa to understand and react to
-user voice commands. The second is a Amazon Web Service (AWS) lambda function to run
-our application logic. Finally, we need to connect the Alexa skill to run our lambda function
-when it is activated.
+In order to create an Alexa skill we need to configure two main components. The first is the Alexa skill itself. This is done through the Amazon developers page. Here you need to configure an Alexa skill, allowing Alexa to understand and react to user voice commands. The second is a Amazon Web Service (AWS) lambda function to run our application logic. Finally, we need to connect the Alexa skill to run our lambda function when it is activated.
 
-The following instructions will walk you through creating the Boston Data Alexa skill,
-a new lambda function containing the Boston Data application, and then connecting the
-two together.
+The following instructions will walk you through creating the Boston Data Alexa skill, a new lambda function containing the Boston Data application, and then connecting the two together.
+
+**NOTE:** The UI for some of the consoles used below has changed since this guide was written, however the general workflow is the same.
+
+### Before you start
+Clone this repo and from the BostonData directory run
+```
+python deploy_tools.py -p
+```
+This will generate the lambda_function.zip archive, which you will need later.
 
 ### Part 1: Amazon Developer
 1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
@@ -37,31 +39,32 @@ two together.
 
 ### Part 2: AWS Lambda
 1. Open a new tab and log in to AWS (https://aws.amazon.com)
-2. Open the menu in the upper left and navigate to **Products > Computer > AWS Lambda**
-3. Select **Get Started with AWS Lambda**.
-4. In the upper right, click **Create function**.
-5. You should now be at **Step 1, Select Blueprint**.
-   Select **Author from scratch** in the upper right.
-6. You should now be at **Step 2, Configure Triggers**. Click inside the
+2. From services, select **Lambda** (Under the **Compute** heading as of this writing).
+3. Select **Create function**.
+4. Select **Author from scratch**.
+5. Open a new tab and navigate to the AWS console. Under services, select **IAM** (Under the **Security, Identity & Compliance** heading as of this writing).
+   * Select **Roles**.
+   * Select **Create role**.
+   * Under **AWS service** select **Lambda**.
+   * Under **Permissions** search for *basic* and you should see **AWSLambdaBasicExecutionRole**. Select it.
+   * Name your role **lambda_basic_execution** (it can be anything, but this is the name we use).
+6. Under **Basic Information**,
+   * give your Lambda the name **BostonData**
+   * for the role, select **Choose existing role** and select **lambda_basic_execution** (the role we created above).
+7. Under **Triggers**. Click inside the
    empty dashed square and select **Alexa Skills Kit** from the menu that
-   pops up, then hit **Next**.
-7. You should be at **Step 3, Configure Function**.
-   * Fill in the **Basic information**. I used the following:
-     * Name: **BostonData**.
+   pops up.
+8. Under **Configuration**:
      * Description: *An Alexa skill allowing users to ask for information about
        municipal services in Boston.*
      * Runtime: **Python 3.6** (this won't matter because you'll upload the
        code in a .zip file).
-    * Under **Lambda function code**, select **Upload a .zip file** from the
-      **Code entry type** pulldown. Upload the [lambda_function.zip](BostonData/lambda_function/lambda_function.zip)
-      archive. This .zip file contains the Python code and the external libraries
-      used in it.
-    * Under **Lambda function handler and role**, set the following:
-      * Handler: **lambda_function.lambda_handler**.
-      * Role: **Choose an existing role**
-      * Existing role: **lambda_basic_execution**
-      * Leave advanced settings as is.
-8. In the upper right you'll see a **ARN**. Copy this and go back to the tab
+    * Select **Upload a .zip file** from the
+      **Code entry type** pulldown. Upload the lambda_function.zip archive. This can be generated using the deploy_tools.py script.
+    * **Handler**, should be set to **lambda_function.lambda_handler**.
+    * **Execution role** should be set to the **lambda_basic_execution** role we created above.
+9. **Save**.
+10. In the upper right you'll see a **ARN**. Copy this and go back to the tab
    you have open from Part 1.
 
 ### Part 3: Amazon Developer
