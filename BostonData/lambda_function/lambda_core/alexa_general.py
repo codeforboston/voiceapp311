@@ -1,3 +1,12 @@
+
+
+def on_session_started(session_started_request, session):
+    """
+    Called when the session starts.
+    """
+    print("on_session_started requestId=" + session_started_request['requestId']
+          + ", sessionId=" + session['sessionId'])
+
 def build_response(session_attributes, speechlet_response):
     return {
         'version': '1.0',

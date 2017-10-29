@@ -9,7 +9,7 @@ Boston address, which is provided in a slot.
 from __future__ import print_function
 from streetaddress import StreetAddressFormatter, StreetAddressParser
 import requests
-from .lambda_core.shared_lambda_functions import build_speechlet_response, build_response
+from .lambda_core.alexa_general import build_speechlet_response, build_response, on_session_started
 
 def lambda_handler(event, context):
     """
@@ -40,12 +40,6 @@ def lambda_handler(event, context):
         return on_session_ended(event['request'], event['session'])
 
 
-def on_session_started(session_started_request, session):
-    """
-    Called when the session starts.
-    """
-    print("on_session_started requestId=" + session_started_request['requestId']
-          + ", sessionId=" + session['sessionId'])
 
 
 def on_launch(launch_request, session):
@@ -217,13 +211,16 @@ def get_trash_day_info(intent, session):
                 " ,".join(parseDays(record['Recycling']))
 
         session_attributes = session.get('attributes', {})
-        should_end_session = False
+        should_end_session = True
     else:
         session_attributes = session.get('attributes', {})
         speech_output = "I'm not sure what your address is. " \
                         "You can tell me your address by saying, " \
                         "my address is 123 Main St., apartment 3."
         should_end_session = False
+
+
+
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
