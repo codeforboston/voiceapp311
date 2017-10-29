@@ -32,13 +32,14 @@ def cleanup(keep_files):
     lambda_function directory.
     """
     print("Cleaning up temporary files/directories...")
-    for root, dirs, files in os.walk(LAMBDA_FUNCTION_DIR):
-        for name in files:
-            if name not in keep_files:
-                os.remove(os.path.join(root, name))
-        for name in dirs:
-            if name not in keep_files:
-                shutil.rmtree(os.path.join(root, name))
+    dir_contents = os.listdir(LAMBDA_FUNCTION_DIR)
+    for item in dir_contents:
+        if os.path.isfile(os.path.join(LAMBDA_FUNCTION_DIR, item)):
+            if item not in keep_files:
+                os.remove(os.path.join(LAMBDA_FUNCTION_DIR, item))
+        if os.path.isdir(os.path.join(LAMBDA_FUNCTION_DIR, item)):
+            if item not in keep_files:
+                shutil.rmtree(os.path.join(LAMBDA_FUNCTION_DIR, item))
     print("Cleanup complete.")
 
 def package_lambda_function():
