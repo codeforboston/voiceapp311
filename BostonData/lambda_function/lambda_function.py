@@ -9,6 +9,7 @@ Boston address, which is provided in a slot.
 from __future__ import print_function
 from streetaddress import StreetAddressFormatter, StreetAddressParser
 import requests
+from .lambda_core.alexa_general import build_speechlet_response, build_response, on_session_started
 
 def lambda_handler(event, context):
     """
@@ -39,12 +40,6 @@ def lambda_handler(event, context):
         return on_session_ended(event['request'], event['session'])
 
 
-def on_session_started(session_started_request, session):
-    """
-    Called when the session starts.
-    """
-    print("on_session_started requestId=" + session_started_request['requestId']
-          + ", sessionId=" + session['sessionId'])
 
 
 def on_launch(launch_request, session):
@@ -259,34 +254,7 @@ def handle_session_end_request():
     speech_output = "Thank you for using the TrashApp skill.  See you next time!"
     should_end_session = True
     return build_response({}, build_speechlet_response(card_title, speech_output, None, should_end_session))
-################################################################################
-#--------------- Helpers that build all of the responses ----------------------#
-################################################################################
-
-def build_speechlet_response(title, output, reprompt_text, should_end_session):
-    return {
-        'outputSpeech': {
-            'type': 'PlainText',
-            'text': output
-        },
-        'card': {
-            'type': 'Simple',
-            'title': 'SessionSpeechlet - ' + title,
-            'content': 'SessionSpeechlet - ' + output
-        },
-        'reprompt': {
-            'outputSpeech': {
-                'type': 'PlainText',
-                'text': reprompt_text
-            }
-        },
-        'shouldEndSession': should_end_session
-    }
 
 
-def build_response(session_attributes, speechlet_response):
-    return {
-        'version': '1.0',
-        'sessionAttributes': session_attributes,
-        'response': speechlet_response
-    }
+
+
