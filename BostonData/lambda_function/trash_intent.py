@@ -5,6 +5,7 @@ Functions for Alexa responses related to trash day
 from alexa_utilities import build_response, build_speechlet_response
 from streetaddress import StreetAddressParser
 import requests
+import alexa_constants
 
 
 def get_trash_day_info(intent, session):
@@ -14,8 +15,9 @@ def get_trash_day_info(intent, session):
     reprompt_text = None
     print("IN GET_TRASH_DAY_INFO, SESSION: " + str(session))
 
-    if "currentAddress" in session.get('attributes', {}):
-        current_address = session['attributes']['currentAddress']
+    if alexa_constants.CURRENT_ADDRESS_KEY in session.get('attributes', {}):
+        current_address = \
+            session['attributes'][alexa_constants.CURRENT_ADDRESS_KEY]
 
         # grab relevant information from session address
         address_parser = StreetAddressParser()
