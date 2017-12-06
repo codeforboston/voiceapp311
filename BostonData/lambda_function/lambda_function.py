@@ -13,6 +13,7 @@ from user_address_intent import set_address_in_session, \
     get_address_from_session
 from trash_intent import get_trash_day_info
 from alexa_utilities import build_speechlet_response, build_response
+from snow_parking_intent import get_snow_emergency_parking_intent
 
 
 def lambda_handler(event, context):
@@ -69,11 +70,12 @@ def on_intent(intent_request, session):
     this function is called to execute the logic associated with the provided
     intent and build a response.
     """
-    print("on_intent requestId=" + intent_request['requestId'] +
-          ", sessionId=" + session['sessionId'])
 
     intent = intent_request['intent']
     intent_name = intent_request['intent']['name']
+
+    print("on_intent requestId={}, sessionId={}, intent_name={}"
+          .format(intent, session['sessionId'], intent_name))
 
     # Dispatch to your skill's intent handlers
     if intent_name == "SetAddressIntent":
@@ -82,6 +84,8 @@ def on_intent(intent_request, session):
         return get_address_from_session(intent, session)
     elif intent_name == "TrashDayIntent":
         return get_trash_day_info(intent, session)
+    elif intent_name == "SnowParkingIntent":
+        return get_snow_emergency_parking_intent(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.StopIntent" or \

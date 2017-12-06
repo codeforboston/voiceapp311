@@ -4,11 +4,12 @@
 from alexa_utilities import build_response, build_speechlet_response
 import alexa_constants
 import csv
+import os
 import requests
 from streetaddress import StreetAddressParser
 
 
-GOOGLE_MAPS_API_KEY = "ADD_YOUR_API_KEY_HERE"
+GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 
 DRIVING_DISTANCE_VALUE_KEY = "Driving distance"
 DRIVING_DISTANCE_TEXT_KEY = "Driving distance text"
@@ -22,18 +23,21 @@ BOSTON_DATA_PARKING_ADDRESS_INDEX = 9
 def get_snow_emergency_parking_intent(intent, session):
 
     if alexa_constants.CURRENT_ADDRESS_KEY in session.get('attributes', {}):
-        current_address = \
-            session['attributes'][alexa_constants.CURRENT_ADDRESS_KEY]
 
-        address_parser = StreetAddressParser()
-        origin_address = address_parser.parse(current_address)
+        origin_address = _build_origin_address(session)
+
+        print("Finding snow emergency parking for {}".format(origin_address))
+
         parking_address, driving_distance, driving_time = \
             _get_snow_emergency_parking_location(origin_address)
 
-        speech_output = "The closest snow emergency parking location is at " \
-                        "{}. It is {} away and should take you {} to drive " \
-                        "there".format(parking_address, driving_distance,
-                                       driving_time)
+        if not parking_address:
+            speech_output = "Uh oh. Something went wrong!"
+        else:
+            speech_output = \
+                "The closest snow emergency parking location is at " \
+                "{}. It is {} away and should take you {} to drive " \
+                "there".format(parking_address, driving_distance, driving_time)
 
         session_attributes = session.get('attributes', {})
         should_end_session = True
@@ -51,6 +55,27 @@ def get_snow_emergency_parking_intent(intent, session):
     return build_response(session_attributes, build_speechlet_response(
         intent['name'], speech_output, reprompt_text, should_end_session))
 
+
+def _build_origin_address(session):
+    """
+    Builds an address from an Alexa session. Assumes city is Boston if not
+    specified
+
+    :param session: Alexa session object
+    :return: String containing full address
+    """
+    address_parser = StreetAddressParser()
+    current_address = \
+        session['attributes'][alexa_constants.CURRENT_ADDRESS_KEY]
+    parsed_address = address_parser.parse(current_address)
+    origin_address = " ".join([parsed_address["house"],
+                               parsed_address["street_full"]])
+    if parsed_address["other"]:
+        origin_address += " {}".format(parsed_address["other"])
+    else:
+        origin_address += " Boston MA"
+
+    return origin_address
 
 
 def _get_snow_emergency_parking_location(origin_address):
@@ -91,9 +116,16 @@ def _get_closest_emergency_parking(origin, parking_data):
 
     parking_location_driving_info = _get_driving_info(origin,
                                                       parking_addresses)
-
-    closest_parking_info = min(parking_location_driving_info,
-                               key=lambda x: x[DRIVING_DISTANCE_VALUE_KEY])
+    if len(parking_location_driving_info) > 0:
+        closest_parking_info = min(parking_location_driving_info,
+                                   key=lambda x: x[DRIVING_DISTANCE_VALUE_KEY])
+    else:
+        print("Didn't find any parking locations")
+        return {
+            PARKING_LOCATION_KEY: False,
+            DRIVING_DISTANCE_TEXT_KEY: False,
+            DRIVING_TIME_TEXT_KEY: False
+        }
 
     return closest_parking_info
 
@@ -139,11 +171,13 @@ def _get_driving_info(origin, destinations):
                                 driving_data["duration"]["text"],
                             PARKING_LOCATION_KEY: address}
                         driving_infos.append(driving_info)
-                    except:
+                    except KeyError:
                         print("Could not parse driving info {}"
                               .format(driving_data))
-            except:
+            except KeyError:
                 return driving_infos
+        else:
+            print("Failed to get driving directions")
 
     return driving_infos
 
@@ -165,10 +199,7 @@ def _get_emergency_parking_data():
             response_data = response.content
             csv_reader = csv.reader(response_data.splitlines())
             parking_data = list(csv_reader)
+        else:
+            print("Failed to get parking data from Boston Open Data")
 
     return parking_data[1:]
-
-
-# TEMP TEST CODE
-# a, d, t = _get_snow_emergency_parking_location("1 broadway st, boston ma")
-# print("Address: {}\nDistance: {}\nTime: {}\n".format(a, d, t))
