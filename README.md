@@ -300,3 +300,16 @@ Structure of the event object:
 
 The elements of this event object are discussed in detail at:
 [https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html](https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html)
+
+### Google API Keys
+
+Some of the intents require access to Google distance matrix which requires an 
+access key to the Google API. In order to run these skills you will
+need your own access key which can be created by going to the [Google
+Distance Matrix developer site](https://developers.google.com/maps/documentation/distance-matrix/start)
+and clicking the "Get A Key" button.
+
+Once you have a key, go to your AWS lambda configuration page. Find
+the environment variable section. Create a new environment variable
+with the key ```GOOGLE_MAPS_API_KEY``` and the value should be your
+personal key.
