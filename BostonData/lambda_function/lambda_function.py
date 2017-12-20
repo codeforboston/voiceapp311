@@ -12,6 +12,7 @@ from __future__ import print_function
 from user_address_intent import set_address_in_session, \
     get_address_from_session
 from trash_intent import get_trash_day_info
+from unhandled_intent import unhandled_intent
 from alexa_utilities import build_speechlet_response, build_response
 from snow_parking_intent import get_snow_emergency_parking_intent
 
@@ -91,6 +92,8 @@ def on_intent(intent_request, session):
     elif intent_name == "AMAZON.StopIntent" or \
                     intent_name == "AMAZON.CancelIntent":
         return handle_session_end_request()
+    elif intent_name == "UnhandledIntent":
+        return unhandled_intent(intent, session) 
     else:
         raise ValueError("Invalid intent")
 

@@ -22,6 +22,9 @@
       "intent": "AMAZON.HelpIntent"
     },
     {
+      "intent": "UnhandledIntent"
+    },
+    {
       "intent": "AMAZON.StopIntent"
     },
     {
