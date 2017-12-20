@@ -196,7 +196,7 @@ def _get_emergency_parking_data():
         response = session.get(url)
 
         if response.status_code == requests.codes.ok:
-            response_data = response.content
+            response_data = response.content.decode()
             csv_reader = csv.reader(response_data.splitlines())
             parking_data = list(csv_reader)
         else:
