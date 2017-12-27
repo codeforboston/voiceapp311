@@ -5,19 +5,30 @@ Functions for setting and getting the current user address
 from alexa_utilities import build_response, build_speechlet_response
 import alexa_constants
 
-def set_address_in_session(intent):
+
+def set_address_in_session(intent, session):
     """
-    Sets the address in the session and prepares the speech to reply to the
-    user.
+    Adds an address from the set address intent to the provided session object
+
+    :param intent: SetAddress intent object
+    :param session: Current session object
     """
-    # print("SETTING ADDRESS IN SESSION")
+
+    if 'Address' in intent['slots']:
+        current_address = intent['slots']['Address']['value']
+        if "attributes" not in session:
+            session["attributes"] = {}
+        session["attributes"].update(
+            create_current_address_attributes(current_address))
+
+
+def create_set_address_intent_response(intent, session):
     card_title = intent['name']
-    session_attributes = {}
+    session_attributes = session["attributes"]
     should_end_session = False
 
     if 'Address' in intent['slots']:
         current_address = intent['slots']['Address']['value']
-        session_attributes = create_current_address_attributes(current_address)
         speech_output = "I now know your address is " + \
                         current_address + \
                         ". Now you can ask questions related to your address" \
@@ -68,5 +79,24 @@ def get_address_from_session(intent, session):
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
+    return build_response(session_attributes, build_speechlet_response(
+        intent['name'], speech_output, reprompt_text, should_end_session))
+
+
+def request_user_address_response(intent, session):
+    """
+    Creates a response to request the user's address
+    :param intent: Intent that reqested the user address
+    :param session: Current session object
+    :return: Alexa response object
+    """
+    session_attributes = session.get('attributes', {})
+    session_attributes[alexa_constants.ADDRESS_PROMPTED_FROM_INTENT] \
+        = intent["name"]
+    speech_output = "I'm not sure what your address is. " \
+                    "You can tell me your address by saying, " \
+                    "my address is 123 Main St., apartment 3."
+    should_end_session = False
+    reprompt_text = None
     return build_response(session_attributes, build_speechlet_response(
         intent['name'], speech_output, reprompt_text, should_end_session))

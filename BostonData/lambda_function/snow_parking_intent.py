@@ -42,11 +42,7 @@ def get_snow_emergency_parking_intent(intent, session):
         session_attributes = session.get('attributes', {})
         should_end_session = True
     else:
-        session_attributes = session.get('attributes', {})
-        speech_output = "I'm not sure what your address is. " \
-                        "You can tell me your address by saying, " \
-                        "my address is 123 Main St., apartment 3."
-        should_end_session = False
+        print("Error: Called snow_parking_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
