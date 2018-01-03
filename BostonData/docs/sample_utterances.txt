@@ -19,6 +19,11 @@ TrashDayIntent which day is recycling
 TrashDayIntent when should i put out my trash
 TrashDayIntent when is garbage pickup
 TrashDayIntent garbage collection day
+SnowParkingIntent where can I park during a snow emergency
+SnowParkingIntent where can I park during snow
+SnowParkingIntent where can I park
+SnowParkingIntent snow parking
+SnowParkingIntent emergency parking
 UnhandledIntent blah blah blah
 UnhandledIntent gofougildags
 UnhandledIntent heh

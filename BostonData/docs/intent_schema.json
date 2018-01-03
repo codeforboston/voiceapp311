@@ -16,6 +16,9 @@
       "intent": "TrashDayIntent"
     },
     {
+      "intent": "SnowParkingIntent"
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {

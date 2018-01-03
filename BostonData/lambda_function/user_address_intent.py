@@ -3,7 +3,7 @@ Functions for setting and getting the current user address
 """
 
 from alexa_utilities import build_response, build_speechlet_response
-
+import alexa_constants
 
 def set_address_in_session(intent):
     """
@@ -40,7 +40,7 @@ def create_current_address_attributes(current_address):
     This key/value pair is used in set_address_in_session as the the session
     attributes.
     """
-    return {"currentAddress": current_address}
+    return {alexa_constants.CURRENT_ADDRESS_KEY: current_address}
 
 
 def get_address_from_session(intent, session):
@@ -53,8 +53,8 @@ def get_address_from_session(intent, session):
     session_attributes = {}
     reprompt_text = None
 
-    if "currentAddress" in session.get('attributes', {}):
-        current_address = session['attributes']['currentAddress']
+    if alexa_constants.CURRENT_ADDRESS_KEY in session.get('attributes', {}):
+        current_address = session['attributes'][alexa_constants.CURRENT_ADDRESS_KEY]
         speech_output = "Your address is " + current_address + \
                         "."
         session_attributes = session.get('attributes', {})
