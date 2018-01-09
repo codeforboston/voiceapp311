@@ -10,6 +10,15 @@
       ]
     },
     {
+      "intent": "GarbageIntent",
+      "slots": [
+        {
+          "name": "Address",
+          "type": "AMAZON.PostalAddress"
+        }
+      ]
+    },
+    {
       "intent": "GetAddressIntent"
     },
     {

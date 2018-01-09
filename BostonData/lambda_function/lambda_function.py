@@ -15,6 +15,8 @@ from trash_intent import get_trash_day_info
 from unhandled_intent import unhandled_intent
 from alexa_utilities import build_speechlet_response, build_response
 from snow_parking_intent import get_snow_emergency_parking_intent
+#added user_address_and_trash_intent
+from user_address_and_trash_intent import get_garbage_intent
 
 
 def lambda_handler(event, context):
@@ -26,8 +28,8 @@ def lambda_handler(event, context):
           event['session']['application']['applicationId'])
 
     """
-    Uncomment this if statement and populate with your skill's application ID 
-    to prevent someone else from configuring a skill that sends requests to 
+    Uncomment this if statement and populate with your skill's application ID
+    to prevent someone else from configuring a skill that sends requests to
     this function.
     """
     # if (event['session']['application']['applicationId'] !=
@@ -79,6 +81,8 @@ def on_intent(intent_request, session):
           .format(intent, session['sessionId'], intent_name))
 
     # Dispatch to your skill's intent handlers
+    if intent_name == "GarbageIntent":
+        return get_garbage_intent(intent, session)
     if intent_name == "SetAddressIntent":
         return set_address_in_session(intent)
     elif intent_name == "GetAddressIntent":
@@ -93,7 +97,7 @@ def on_intent(intent_request, session):
                     intent_name == "AMAZON.CancelIntent":
         return handle_session_end_request()
     elif intent_name == "UnhandledIntent":
-        return unhandled_intent(intent, session) 
+        return unhandled_intent(intent, session)
     else:
         raise ValueError("Invalid intent")
 

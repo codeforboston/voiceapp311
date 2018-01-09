@@ -19,6 +19,9 @@ TrashDayIntent which day is recycling
 TrashDayIntent when should i put out my trash
 TrashDayIntent when is garbage pickup
 TrashDayIntent garbage collection day
+GarbageIntent what is the trash day for {Address}
+GarbageIntent I live on {Address}, when is my trash day?
+GarbageIntent my address is adress is {Address}, when is my trash picked up?
 SnowParkingIntent where can I park during a snow emergency
 SnowParkingIntent where can I park during snow
 SnowParkingIntent where can I park
@@ -28,7 +31,7 @@ UnhandledIntent blah blah blah
 UnhandledIntent gofougildags
 UnhandledIntent heh
 UnhandledIntent testing
-UnhandledIntent this is dumb 
+UnhandledIntent this is dumb
 UnhandledIntent workaround to get around
 UnhandledIntent thinking about things
 UnhandledIntent what up doe

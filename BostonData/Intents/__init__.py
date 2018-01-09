@@ -1,1 +1,1 @@
-__all__ = ["GetAddressIntent", "SetAddressIntent", "TrashDayIntent", "WorkZonesOnAnyStreetIntent", "WorkZonesOnMyStreetIntent"]
+__all__ = ["GarbageIntent","GetAddressIntent", "SetAddressIntent", "TrashDayIntent", "WorkZonesOnAnyStreetIntent", "WorkZonesOnMyStreetIntent"]
