@@ -66,7 +66,7 @@ This will generate the lambda_function.zip archive, which you will need later.
 9. **Save**.
 10. In the upper right you'll see a **ARN**. Copy this and go back to the tab
    you have open from Part 1.
-11. Set up a Google API key environment key. See directions [here](#Google-API-Keys). 
+11. Set up a Google API key environment key. See directions [here](#google-api-keys). 
 
 ### Part 3: Amazon Developer
 1. In the **Configuration** tab, for **Service Endpoint Type**, select
