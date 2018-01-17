@@ -10,11 +10,13 @@ http://amzn.to/1LzFrj6
 
 from __future__ import print_function
 from user_address_intent import set_address_in_session, \
-    get_address_from_session
+    get_address_from_session, create_set_address_intent_response, \
+    request_user_address_response
 from trash_intent import get_trash_day_info
 from unhandled_intent import unhandled_intent
 from alexa_utilities import build_speechlet_response, build_response
 from snow_parking_intent import get_snow_emergency_parking_intent
+import alexa_constants
 
 
 def lambda_handler(event, context):
@@ -77,15 +79,37 @@ def on_intent(intent_request, session):
 
     print("on_intent requestId={}, sessionId={}, intent_name={}"
           .format(intent, session['sessionId'], intent_name))
+    print("Session Data: {}".format(session))
 
-    # Dispatch to your skill's intent handlers
+    # Check if the user is setting the address. This is special cased
+    # since they may have been prompted for this info from another
+    # intent
     if intent_name == "SetAddressIntent":
-        return set_address_in_session(intent)
-    elif intent_name == "GetAddressIntent":
+        set_address_in_session(intent, session)
+
+        if alexa_constants.ADDRESS_PROMPTED_FROM_INTENT \
+                in session.get("attributes", {}):
+            # User was prompted from another intent. Set our current intent
+            # from this info and clear this from the session data
+            intent_name = session["attributes"][
+                alexa_constants.ADDRESS_PROMPTED_FROM_INTENT]
+            print("Address set after calling another intent. Redirecting "
+                  "intent to {}".format(intent_name))
+            del session["attributes"][
+                alexa_constants.ADDRESS_PROMPTED_FROM_INTENT]
+        else:
+            return create_set_address_intent_response(intent, session)
+
+    session_attributes = session.get("attributes", {})
+    if intent_name == "GetAddressIntent":
         return get_address_from_session(intent, session)
     elif intent_name == "TrashDayIntent":
+        if alexa_constants.CURRENT_ADDRESS_KEY not in session_attributes:
+            return request_user_address_response(intent, session)
         return get_trash_day_info(intent, session)
     elif intent_name == "SnowParkingIntent":
+        if alexa_constants.CURRENT_ADDRESS_KEY not in session_attributes:
+            return request_user_address_response(intent, session)
         return get_snow_emergency_parking_intent(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
