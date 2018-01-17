@@ -117,11 +117,7 @@ def get_welcome_response():
     session_attributes = {}
     card_title = "Welcome"
     speech_output = "Welcome to the Boston Public Services skill. " \
-                    "Uses include finding trash and recycling pick up days " \
-                    "for your address." \
-                    "First, set your home address," \
-                    "For example, if your address is 1 Elm street, say " \
-                    "'my address is 1 elm street"
+                    "How can I help you? " 
     # If the user either does not reply to the welcome message or says
     # something that is not understood, they will be prompted again with
     # this text.

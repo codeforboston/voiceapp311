@@ -19,10 +19,7 @@ def set_address_in_session(intent):
         current_address = intent['slots']['Address']['value']
         session_attributes = create_current_address_attributes(current_address)
         speech_output = "I now know your address is " + \
-                        current_address + \
-                        ". Now you can ask questions related to your address" \
-                        ". For example, when is trash day? or where can I park "\
-                        "during a snow emergency?"
+                        current_address 
         reprompt_text = "You can find out when trash is collected for your " \
                         "address by saying, when is trash day?"
     else:
