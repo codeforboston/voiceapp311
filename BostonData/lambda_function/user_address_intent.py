@@ -30,9 +30,7 @@ def create_set_address_intent_response(intent, session):
     if 'Address' in intent['slots']:
         current_address = intent['slots']['Address']['value']
         speech_output = "I now know your address is " + \
-                        current_address + \
-                        ". Now you can ask questions related to your address" \
-                        ". For example, when is trash day?"
+                        current_address 
         reprompt_text = "You can find out when trash is collected for your " \
                         "address by saying, when is trash day?"
     else:
