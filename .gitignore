@@ -60,6 +60,9 @@ typings/
 # dotenv environment variables file
 .env
 
+# pycharm config
+.idea/*
+
 # python modules
 BostonData/lambda_function/certifi*
 BostonData/lambda_function/chardet*

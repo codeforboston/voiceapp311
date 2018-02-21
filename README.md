@@ -6,14 +6,29 @@ days.
 
 ## Installation
 
-In order to create an Alexa skill we need to configure two main components. The first is the Alexa skill itself. This is done through the Amazon developers page. Here you need to configure an Alexa skill, allowing Alexa to understand and react to user voice commands. The second is a Amazon Web Service (AWS) lambda function to run our application logic. Finally, we need to connect the Alexa skill to run our lambda function when it is activated.
+In order to create an Alexa skill we need to configure two main components: 
+1. The Alexa skill itself.
+ 
+   This is done on the Amazon developers page (https://developer.amazon.com). 
+   Here you need to configure an Alexa skill, allowing Alexa to understand 
+   and react to user voice commands.
+2. An Amazon Web Service (AWS) lambda function to run our application logic. 
 
-The following instructions will walk you through creating the Boston Data Alexa skill, a new lambda function containing the Boston Data application, and then connecting the two together.
+   This is done on the AWS console (https://console.aws.amazon.com/lambda)
+   
+Finally, we need to connect the Alexa skill to run our lambda function when it 
+is activated.
 
-**NOTE:** The UI for some of the consoles used below has changed since this guide was written, however the general workflow is the same.
+The following instructions will walk you through creating the Boston Data Alexa 
+skill, a new lambda function containing the Boston Data application, and then 
+connecting the two together.
+
+**NOTE:** The UIs for some of the consoles used below change frequently, 
+however the general workflow is the same.
 
 ### Before you start
-Clone this repo and from the BostonData directory run
+Clone this repo and from the BostonData directory. Navigate to the BostonData 
+directory and run:
 ```
 python deploy_tools.py -p
 ```
@@ -21,52 +36,63 @@ This will generate the lambda_function.zip archive, which you will need later.
 
 ### Part 1: Amazon Developer
 1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
-2. Select **Alexa** from the menu bar near the top of the page.
-3. Select **Alexa Skills Kit** from the next page.
-4. Select **Add a New Skill** from the upper right corner of the next page.
-5. In the **Skill Information** section of the new skill fill in the following:
+2. Create a new **Alexa Skill**.
+3. In the **Skill Information** section of the new skill fill in the following:
+   * Skill Type: **Custom Interaction Model**
    * Language: **English (U.S.)**
    * Name: **Boston Data**
    * Invocation Name: **boston data**
    Leave everything else as is, click **Save** at the bottom, then **Next**.
-6. You should now be in the **Interaction Model** section of the skill. Do the following:
-   * In the **Intent Schema** input box, paste the contents of [intent_schema.json](BostonData/docs/intent_schema.json).
+4. In the **Interaction Model** section of the skill:
+   * In the **Intent Schema** input box, paste the contents of 
+     [intent_schema.json](BostonData/docs/intent_schema.json).
    * Leave the **Custom Slot Types** section blank.
-   * In the **Sample Utterances** input box, paste the contents of [sample_utterances.txt](BostonData/docs/sample_utterances.txt).
+   * In the **Sample Utterances** input box, paste the contents of 
+     [sample_utterances.txt](BostonData/docs/sample_utterances.txt).
    Click **Save** at the bottom and click **Next**.
-7. You should now be in the **Configuration** section of the skill. Leave this
-   tab open as you will enter information from your **Lambda** function here later.
+5. Leave this tab open as you will enter information from your **Lambda** 
+   function into the **Configuration** section later. 
 
 ### Part 2: AWS Lambda
 1. Open a new tab and log in to AWS (https://aws.amazon.com)
-2. From services, select **Lambda** (Under the **Compute** heading as of this writing).
-3. Select **Create function**.
-4. Select **Author from scratch**.
-5. Open a new tab and navigate to the AWS console. Under services, select **IAM** (Under the **Security, Identity & Compliance** heading as of this writing).
+2. Open a new tab and navigate to the AWS console again. Search for **IAM**:
    * Select **Roles**.
    * Select **Create role**.
    * Under **AWS service** select **Lambda**.
-   * Under **Permissions** search for *basic* and you should see **AWSLambdaBasicExecutionRole**. Select it.
-   * Name your role **lambda_basic_execution** (it can be anything, but this is the name we use).
-6. Under **Basic Information**,
+   * Under **Permissions** search for *basic* and you should see 
+     **AWSLambdaBasicExecutionRole**. Select it.
+   * Name your role **lambda_basic_execution** (it can be anything, but this is 
+     the name we use).
+3. Search for **Lambda** and select **Create function** (and **Author 
+   from scratch**).
+4. Under **Basic Information**,
    * give your Lambda the name **BostonData**
-   * for the role, select **Choose existing role** and select **lambda_basic_execution** (the role we created above).
-7. Under **Triggers**. Click inside the
-   empty dashed square and select **Alexa Skills Kit** from the menu that
-   pops up.
-8. Under **Configuration**:
-     * Description: *An Alexa skill allowing users to ask for information about
-       municipal services in Boston.*
-     * Runtime: **Python 3.6** (this won't matter because you'll upload the
-       code in a .zip file).
-    * Select **Upload a .zip file** from the
-      **Code entry type** pulldown. Upload the lambda_function.zip archive. This can be generated using the deploy_tools.py script.
-    * **Handler**, should be set to **lambda_function.lambda_handler**.
-    * **Execution role** should be set to the **lambda_basic_execution** role we created above.
+   * for the role, select **Choose existing role** and select 
+     **lambda_basic_execution** (the role we created above).
+7. Under **Triggers**. Click inside the empty dashed square and select 
+   **Alexa Skills Kit** from the menu that pops up.
+   * You will also need to enter the **Skill ID (also called Application ID)**. 
+     This can be found on the 
+     developer.amazon.com console for your skill.
+8. Under **Function code**:
+    * **Code entry type**: **Upload a .zip file** pulldown. 
+    * **Runtime**: Python 3.6
+    * **Handler**: lambda_function.lambda_handler
 9. **Save**.
 10. In the upper right you'll see a **ARN**. Copy this and go back to the tab
    you have open from Part 1.
-11. Set up a Google API key environment key. See directions [here](#google-api-keys). 
+11. Set up a Google API key environment key.
+    
+    Some of the intents require access to Google distance matrix which requires 
+    an access key to the Google API. In order to run these skills you will
+    need your own access key which can be created by going to the [Google
+    Distance Matrix developer site](https://developers.google.com/maps/documentation/distance-matrix/start)
+    and clicking the "Get A Key" button.
+
+    Once you have a key, go to your AWS lambda configuration page. Find
+    the environment variable section. Create a new environment variable
+    with the key ```GOOGLE_MAPS_API_KEY``` and the value should be your
+    personal key.
 
 ### Part 3: Amazon Developer
 1. In the **Configuration** tab, for **Service Endpoint Type**, select
@@ -88,13 +114,17 @@ Supports three custom intents right now.
 3. **When is trash/garbage/recycling day?**: Tells you the trash/recycling days
    for the address in the session.
 
-# Notes
+# Background Information
+
+This section contains general information about how Alexa skills are executed 
+and the services our intents interact with.
 
 ## Alexa skill execution overview
 
 This is basically a restatement of the guide at
 [https://moduscreate.com/build-an-alexa-skill-with-python-and-aws-lambda/](https://moduscreate.com/build-an-alexa-skill-with-python-and-aws-lambda/)
-with some additional clarification.
+with some additional clarification. It traces the path of execution as a user 
+interacts with our skill.
 
 1. User issues voice command to Echo by saying, "Alexa" followed by
    a skill name and an intent. The intent may have parameters.
@@ -117,8 +147,6 @@ with some additional clarification.
    command to a JSON document containing the intent and any parameters.
 
    This JSON is sent to the skill (Boston Data in this example).
-
-   For BostonData:
 
    ```
    intent    : trashday
@@ -147,13 +175,16 @@ with some additional clarification.
 
 ## Python-specific Notes
 
-Because the python code in Boston Data's Lambda function uses resources beyond
-Python's standard libraries, it must be uploaded as a .zip file.
+Because the python code in Boston Data's Lambda function uses external 
+libraries, it must be uploaded as a .zip file.
 
 To generate this .zip file, we must install all of the required Python packages
-in the directory that contains [our code](BostonData/lambda_function/lambda_function.py). For this project, that
-directory is [BostonData/lambda_function](BostonData/lambda_function). Amazon
-provides instructions on how to do so: [https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html)
+in the directory that contains 
+[our code](BostonData/lambda_function/lambda_function.py). 
+For this project, that directory is 
+[BostonData/lambda_function](BostonData/lambda_function). Amazon provides 
+instructions on how to do so: 
+[https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html](https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html)
 
 Once all the requisite libraries are installed, compress the contents of the
 directory. The instructions note:
@@ -300,17 +331,4 @@ Structure of the event object:
 ```
 
 The elements of this event object are discussed in detail at:
-[https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html](https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html)
-
-### Google API Keys
-
-Some of the intents require access to Google distance matrix which requires an 
-access key to the Google API. In order to run these skills you will
-need your own access key which can be created by going to the [Google
-Distance Matrix developer site](https://developers.google.com/maps/documentation/distance-matrix/start)
-and clicking the "Get A Key" button.
-
-Once you have a key, go to your AWS lambda configuration page. Find
-the environment variable section. Create a new environment variable
-with the key ```GOOGLE_MAPS_API_KEY``` and the value should be your
-personal key.
+[https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html](https://developer.amazon.com/docs/custom-skills/request-and-response-json-reference.html).
