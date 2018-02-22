@@ -30,5 +30,3 @@ def get_alerts():
                           for s in soup.find_all(class_ = "cds-t t--upper t--sans m-b300") \
                           for s_info in soup.find_all(class_ = "cds-d t--subinfo")}
     return service_alerts
-
-print(get_alerts())
