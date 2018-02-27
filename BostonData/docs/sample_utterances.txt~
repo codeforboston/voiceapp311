@@ -24,11 +24,6 @@ SnowParkingIntent where can I park during snow
 SnowParkingIntent where can I park
 SnowParkingIntent snow parking
 SnowParkingIntent emergency parking
-GetAlertsIntent give me all alerts
-GetAlertsIntent are there any alerts
-GetAlertsIntent are there any emergencies
-GetAlertsIntent are services running normally
-GetAlertsIntent all alerts
 UnhandledIntent blah blah blah
 UnhandledIntent gofougildags
 UnhandledIntent heh

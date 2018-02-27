@@ -116,8 +116,6 @@ def on_intent(intent_request, session):
     elif intent_name == "AMAZON.StopIntent" or \
                     intent_name == "AMAZON.CancelIntent":
         return handle_session_end_request()
-    elif intent_name == "GetAlertsIntent" :
-        return get_alerts_intent(intent, session)
     elif intent_name == "UnhandledIntent":
         return unhandled_intent(intent, session) 
     else:

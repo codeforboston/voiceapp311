@@ -29,10 +29,6 @@
     },
     {
       "intent": "AMAZON.CancelIntent"
-    },
-    {
-      "intent": GetAlertsIntent"
     }
-
   ]
 }
