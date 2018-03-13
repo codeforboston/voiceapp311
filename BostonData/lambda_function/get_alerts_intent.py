@@ -29,11 +29,14 @@ from enum import Enum
 from enum import auto
 
 class Services(Enum):
-    STREET_CLEANING = 'Street cleaning'
+    STREET_CLEANING = 'Street Cleaning'
     TRASH = 'Trash and recycling'
     CITY_BUILDING_HOURS = 'City building hours'
     PARKING_METERS = 'Parking meters'
     TOW_LOT = 'Tow lot'
+    PUBLIC_TRANSIT = 'Public Transit'
+    SCHOOLS = 'Schools'
+    ALERT_HEADER = 'Alert header'
     
 
 def get_alerts_info(intent, session):
@@ -44,7 +47,7 @@ def get_alerts_info(intent, session):
     print("IN GET_ALERTS_INFO, SESSION: " + str(session))
     alerts = get_alerts()
     print("DICTIONARY WITH ALERTS SCRAPED FROM BOSTON.GOV: " + str(alerts))
-    alerts = prune_normal_responses(service_alerts)
+    alerts = prune_normal_responses(alerts)
     print("DICTIONARY AFTER PRUNING: " + str(alerts))
     speech_output = alerts_to_speech_output(alerts)
     session_attributes = session.get('attributes', {})
@@ -61,8 +64,10 @@ def alerts_to_speech_output(alerts):
         return "There are no alerts. City services are operating on their normal schedule"
     else:
         all_alerts = ""
+        if alerts.__contains__(Services.ALERT_HEADER.value): # if there is a header, get it
+            all_alerts += alerts.pop(Services.ALERT_HEADER.value)
         for alert in alerts.values():
-            all_alerts += alert
+            all_alerts += alert + ' '
         return all_alerts
         
 
@@ -96,4 +101,9 @@ def get_alerts():
     alerts = {}
     for i in range(len(services)):
         alerts[services[i]] = service_info[i]
+    # get alert header, if any (this is something like "Winter Storm warning")
+    header = soup.find(class_ = "t--upper t--sans lh--000 t--cb").text + '. '
+    header += soup.find(class_ = "str str--r m-v300").text + '. ' 
+    header += soup.find(class_ = "t--sans t--cb lh--000 m-b500").text + ' '
+    alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
