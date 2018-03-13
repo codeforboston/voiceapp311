@@ -39,7 +39,7 @@ class Services(Enum):
     ALERT_HEADER = 'Alert header'
     
 
-def get_alerts_info(intent, session):
+def get_alerts_intent(intent, session):
     """
     Generate response object with information about citywide alerts
     """
@@ -64,7 +64,7 @@ def alerts_to_speech_output(alerts):
         return "There are no alerts. City services are operating on their normal schedule"
     else:
         all_alerts = ""
-        if alerts.__contains__(Services.ALERT_HEADER.value): # if there is a header, get it
+        if Services.ALERT_HEADER.value in alerts: # if there is a header, get it
             all_alerts += alerts.pop(Services.ALERT_HEADER.value)
         for alert in alerts.values():
             all_alerts += alert + ' '
@@ -85,7 +85,7 @@ def prune_normal_responses(service_alerts):
     # for any defined service, if its alert is that it's running normally, 
     # remove it from the dictionary
     for service in Services:
-        if str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
+        if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
             service_alerts.pop(service.value)                       # remove
     if service_alerts[Services.TOW_LOT.value] == tow_lot_normal_message:
         service_alerts.pop(Services.TOW_LOT.value)

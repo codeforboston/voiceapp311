@@ -16,6 +16,7 @@ from trash_intent import get_trash_day_info
 from unhandled_intent import unhandled_intent
 from alexa_utilities import build_speechlet_response, build_response
 from snow_parking_intent import get_snow_emergency_parking_intent
+from get_alerts_intent import get_alerts_intent
 import alexa_constants
 
 
