@@ -64,8 +64,7 @@ def alerts_to_speech_output(alerts):
         return "There are no alerts. City services are operating on their normal schedule"
     else:
         all_alerts = ""
-        if Services.ALERT_HEADER.value in alerts: # if there is a header, get it
-            all_alerts += alerts.pop(Services.ALERT_HEADER.value)
+        all_alerts += alerts.pop(Services.ALERT_HEADER.value)
         for alert in alerts.values():
             all_alerts += alert + ' '
         return all_alerts
@@ -102,8 +101,10 @@ def get_alerts():
     for i in range(len(services)):
         alerts[services[i]] = service_info[i]
     # get alert header, if any (this is something like "Winter Storm warning")
-    header = soup.find(class_ = "t--upper t--sans lh--000 t--cb").text + '. '
-    header += soup.find(class_ = "str str--r m-v300").text + '. ' 
-    header += soup.find(class_ = "t--sans t--cb lh--000 m-b500").text + ' '
+    header = ""
+    if soup.find(class_ = "t--upper t--sans lh--000 t--cb").text != "":
+        header += soup.find(class_ = "t--upper t--sans lh--000 t--cb").text + '. '
+        header += soup.find(class_ = "str str--r m-v300").text + '. ' 
+        header += soup.find(class_ = "t--sans t--cb lh--000 m-b500").text + ' '
     alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
