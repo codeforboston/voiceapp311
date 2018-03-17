@@ -102,7 +102,7 @@ def get_alerts():
         alerts[services[i]] = service_info[i]
     # get alert header, if any (this is something like "Winter Storm warning")
     header = ""
-    if soup.find(class_ = "t--upper t--sans lh--000 t--cb").text != "":
+    if soup.find(class_ = "t--upper t--sans lh--000 t--cb") != None:
         header += soup.find(class_ = "t--upper t--sans lh--000 t--cb").text + '. '
         header += soup.find(class_ = "str str--r m-v300").text + '. ' 
         header += soup.find(class_ = "t--sans t--cb lh--000 m-b500").text + ' '
