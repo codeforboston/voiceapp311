@@ -2,23 +2,27 @@
 Functions for Alexa responses related to trash day
 """
 
-from alexa_utilities import build_response, build_speechlet_response
-from custom_errors import InvalidAddressError, BadAPIResponse
+from .custom_errors import InvalidAddressError, BadAPIResponse
 from streetaddress import StreetAddressParser
 import requests
-import alexa_constants
+from . import intent_constants
 
 
-def get_trash_day_info(intent, session):
+def get_trash_day_info(mcd):
     """
     Generates response object for a trash day inquiry.
     """
-    reprompt_text = None
-    print("IN GET_TRASH_DAY_INFO, SESSION: " + str(session))
+    mcd.reprompt_text = None
+    print(
+        '[module: trash_intent]',
+        '[method: get_trash_day_info]',
+        'MyCityDataModel received:',
+        str(mcd)
+    )
 
-    if alexa_constants.CURRENT_ADDRESS_KEY in session.get('attributes', {}):
+    if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
         current_address = \
-            session['attributes'][alexa_constants.CURRENT_ADDRESS_KEY]
+            mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
 
         # grab relevant information from session address
         address_parser = StreetAddressParser()
@@ -31,25 +35,23 @@ def get_trash_day_info(intent, session):
             trash_days = get_trash_and_recycling_days(address)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
 
-            speech_output = "Trash and recycling is picked up on {}."\
+            mcd.output_speech = "Trash and recycling is picked up on {}."\
                 .format(trash_days_speech)
 
         except InvalidAddressError:
-            speech_output = "I can't seem to find {}. Try another address"\
+            mcd.output_speech = "I can't seem to find {}. Try another address"\
                .format(address)
         except BadAPIResponse:
-            speech_output = "Hmm something went wrong. Maybe try again?"
+            mcd.output_speech = "Hmm something went wrong. Maybe try again?"
 
-        session_attributes = session.get('attributes', {})
-        should_end_session = True
+        mcd.should_end_session = False
     else:
-        print("Error: Called snow_parking_intent with no address")
+        print("Error: Called trash_day_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
-    return build_response(session_attributes, build_speechlet_response(
-        intent['name'], speech_output, reprompt_text, should_end_session))
+    return mcd
 
 
 def get_trash_and_recycling_days(address):
@@ -163,9 +165,9 @@ def build_speech_from_list_of_days(days):
     if len(days) == 1:
         return days[0]
     elif len(days) == 2:
-        speech_output = " and ".join(days)
+        output_speech = " and ".join(days)
     else:
-        speech_output = ", ".join(days[0:-1])
-        speech_output += ", and {}".format(days[-1])
+        output_speech = ", ".join(days[0:-1])
+        output_speech += ", and {}".format(days[-1])
 
-    return speech_output
+    return output_speech

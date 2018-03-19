@@ -1,5 +1,4 @@
 """
-
 City services in alerts dict:
     Street Cleaning
     Trash and recycling
@@ -15,18 +14,12 @@ Example:
 service_alerts['Street Cleaning'] = "Today is the third Tuesday of the month \\
 and street cleaning is running on a normal schedule."
 
-
 """
 
-
-from alexa_utilities import build_response, build_speechlet_response
-from streetaddress import StreetAddressParser
 from bs4 import BeautifulSoup
-import requests
-import alexa_constants
-import urllib
+from urllib import request
 from enum import Enum
-from enum import auto
+
 
 class Services(Enum):
     STREET_CLEANING = 'Street Cleaning'
@@ -39,29 +32,34 @@ class Services(Enum):
     ALERT_HEADER = 'Alert header'
     
 
-def get_alerts_intent(intent, session):
+def get_alerts_intent(mcd):
     """
     Generate response object with information about citywide alerts
     """
-    reprompt_text=None
-    print("IN GET_ALERTS_INFO, SESSION: " + str(session))
+    print(
+        '[method: get_alerts_intent]',
+        'MyCityDataModel received:\n',
+        str(mcd)
+    )
+
     alerts = get_alerts()
-    print("DICTIONARY WITH ALERTS SCRAPED FROM BOSTON.GOV: " + str(alerts))
+    print("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
     alerts = prune_normal_responses(alerts)
-    print("DICTIONARY AFTER PRUNING: " + str(alerts))
-    speech_output = alerts_to_speech_output(alerts)
-    session_attributes = session.get('attributes', {})
-    should_end_session = True   # leave this as True for right now
-    return build_response(session_attributes, build_speechlet_response(
-            intent['name'], speech_output, reprompt_text, should_end_session))
+    print("[dictionary after pruning]:\n" + str(alerts))
+
+    mcd.reprompt_text = None
+    mcd.output_speech = alerts_to_speech_output(alerts)
+    mcd.should_end_session = True   # leave this as True for right now
+    return mcd
 
 
 def alerts_to_speech_output(alerts):
     """
-    Return a string that contains all alerts or a message that city services are operating normally
+    Return a string that contains all alerts or a message that city services
+    are operating normally.
     """
     if len(alerts) == 0:        # there are no alerts!
-        return "There are no alerts. City services are operating on their normal schedule"
+        return "There are no alerts. City services are operating on their normal schedule."
     else:
         all_alerts = ""
         all_alerts += alerts.pop(Services.ALERT_HEADER.value)
@@ -90,21 +88,25 @@ def prune_normal_responses(service_alerts):
         service_alerts.pop(Services.TOW_LOT.value)
     return service_alerts
 
+
 def get_alerts():
-    url = urllib.request.urlopen("https://www.boston.gov") # get page
-    soup = BeautifulSoup(url, "html.parser")               # feed into BS
+    # get boston.gov as an httpResponse object
+    url = request.urlopen("https://www.boston.gov")
+    # feed the url object into beautiful soup
+    soup = BeautifulSoup(url, "html.parser")
     url.close()
+
     # parse, sanitize returned strings, place in dictionary
-    services = [s.text.strip() for s in soup.find_all(class_ = "cds-t t--upper t--sans m-b300")]
-    service_info = [s_info.text.strip().replace(u'\xA0', u' ') for s_info in soup.find_all(class_ = "cds-d t--subinfo")]
+    services = [s.text.strip() for s in soup.find_all(class_="cds-t t--upper t--sans m-b300")]
+    service_info = [s_info.text.strip().replace(u'\xA0', u' ') for s_info in soup.find_all(class_="cds-d t--subinfo")]
     alerts = {}
     for i in range(len(services)):
         alerts[services[i]] = service_info[i]
     # get alert header, if any (this is something like "Winter Storm warning")
     header = ""
-    if soup.find(class_ = "t--upper t--sans lh--000 t--cb") != None:
-        header += soup.find(class_ = "t--upper t--sans lh--000 t--cb").text + '. '
-        header += soup.find(class_ = "str str--r m-v300").text + '. ' 
-        header += soup.find(class_ = "t--sans t--cb lh--000 m-b500").text + ' '
+    if soup.find(class_="t--upper t--sans lh--000 t--cb") is not None:
+        header += soup.find(class_="t--upper t--sans lh--000 t--cb").text + '. '
+        header += soup.find(class_="str str--r m-v300").text + '. '
+        header += soup.find(class_="t--sans t--cb lh--000 m-b500").text + ' '
     alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
