@@ -5,7 +5,7 @@
       "slots": [
         {
           "name": "Address",
-          "type": "AMAZON.PostalAddress"
+	            "type": "AMAZON.PostalAddress"
         }
       ]
     },
@@ -29,6 +29,10 @@
     },
     {
       "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "GetAlertsIntent"
     }
+
   ]
 }
