@@ -140,9 +140,8 @@ def get_welcome_response():
 
     session_attributes = {}
     card_title = "Welcome"
-    speech_output = "Welcome to the Boston Data skill. " \
-                    "To set your address, say " \
-                    "my address is, followed by your address."
+    speech_output = "Welcome to the Boston Public Services skill. " \
+                    "How can I help you? " 
     # If the user either does not reply to the welcome message or says
     # something that is not understood, they will be prompted again with
     # this text.
@@ -155,8 +154,8 @@ def get_welcome_response():
 
 
 def handle_session_end_request():
-    card_title = "Boston Data - Thanks"
-    speech_output = "Thank you for using the TrashApp skill. " \
+    card_title = "Boston Public Services - Thanks"
+    speech_output = "Thank you for using the Boston Public Services skill. " \
                     "See you next time!"
     should_end_session = True
     return build_response({}, build_speechlet_response(card_title,
