@@ -86,7 +86,8 @@ def prune_normal_responses(service_alerts):
     for service in Services:
         if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
             service_alerts.pop(service.value)                       # remove
-    if service_alerts[Services.TOW_LOT.value] == tow_lot_normal_message:
+    if service_alerts[Services.TOW_LOT.value].rstrip() == tow_lot_normal_message:
+        print("DDDDDD")
         service_alerts.pop(Services.TOW_LOT.value)
     return service_alerts
 
@@ -106,5 +107,8 @@ def get_alerts():
         header += soup.find(class_ = "t--upper t--sans lh--000 t--cb").text + '. '
         header += soup.find(class_ = "str str--r m-v300").text + '. ' 
         header += soup.find(class_ = "t--sans t--cb lh--000 m-b500").text + ' '
+
+    if soup.find(class_ = "t--sans t--ob lh--000 m-b500") != None: # another possible header tag
+        header += soup.find(class_ = "t--sans t--ob lh--000 m-b500").text
     alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
