@@ -1,34 +1,93 @@
 {
-  "intents": [
-    {
-      "intent": "SetAddressIntent",
-      "slots": [
+    "languageModel": {
+      "invocationName": "boston trash data",
+      "intents": [
         {
-          "name": "Address",
-          "type": "AMAZON.PostalAddress"
+          "name": "SetAddressIntent",
+          "slots": [
+            {
+              "name": "Address",
+              "type": "AMAZON.PostalAddress"
+            }
+          ],
+          "samples": [
+            "my address is {Address}",
+            "i live at {Address}",
+            "my home address is {Address}",
+            "set address {Address}",
+            "set my address to {Address}",
+            "change address to {Address}",
+            "update address to {Address}",
+            "new address is {Address}"
+          ]
+        },
+        {
+          "name": "GetAddressIntent",
+          "slots": [],
+          "samples": [
+            "what is my address set to",
+            "what is my home address",
+            "where do i live",
+            "what is my current address",
+            "give me my address"
+          ]
+        },
+        {
+          "name": "TrashDayIntent",
+          "slots": [],
+          "samples": [
+            "when is my trash day",
+            "when is garbage day",
+            "what day is recycling",
+            "what day should i put trash out",
+            "which day is recycling",
+            "when should i put out my trash",
+            "when is garbage pickup",
+            "garbage collection day"
+          ]
+        },
+        {
+          "name": "SnowParkingIntent",
+          "slots": [],
+          "samples": [
+            "where can I park during a snow emergency",
+            "where can I park during snow",
+            "where can I park",
+            "snow parking",
+            "emergency parking"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "UnhandledIntent",
+          "slots": [],
+          "samples": [
+            "blah blah blah",
+            "gofougildags",
+            "heh",
+            "testing",
+            "this is dumb",
+            "workaround to get around",
+            "thinking about things",
+            "what up doe",
+            "dealing with it",
+            "doing it",
+            "whatever",
+            "whatever and ever amen"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
         }
-      ]
-    },
-    {
-      "intent": "GetAddressIntent"
-    },
-    {
-      "intent": "TrashDayIntent"
-    },
-    {
-      "intent": "SnowParkingIntent"
-    },
-    {
-      "intent": "AMAZON.HelpIntent"
-    },
-    {
-      "intent": "UnhandledIntent"
-    },
-    {
-      "intent": "AMAZON.StopIntent"
-    },
-    {
-      "intent": "AMAZON.CancelIntent"
+      ],
+      "types": []
     }
-  ]
 }

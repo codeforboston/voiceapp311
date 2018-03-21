@@ -44,11 +44,8 @@ This will generate the lambda_function.zip archive, which you will need later.
    * Invocation Name: **boston data**
    Leave everything else as is, click **Save** at the bottom, then **Next**.
 4. In the **Interaction Model** section of the skill:
-   * In the **Intent Schema** input box, paste the contents of 
-     [intent_schema.json](BostonData/docs/intent_schema.json).
-   * Leave the **Custom Slot Types** section blank.
-   * In the **Sample Utterances** input box, paste the contents of 
-     [sample_utterances.txt](BostonData/docs/sample_utterances.txt).
+   * In the **Intents** dropdown list, navigate to JSON Editor and 
+     paste the contents of [intent_schema.json](BostonData/docs/intent_schema.json).
    Click **Save** at the bottom and click **Next**.
 5. Leave this tab open as you will enter information from your **Lambda** 
    function into the **Configuration** section later. 
