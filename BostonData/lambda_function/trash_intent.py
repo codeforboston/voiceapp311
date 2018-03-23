@@ -34,7 +34,9 @@ def get_trash_day_info(intent, session):
         print("RESPONSE FROM DATA.BOSTON.GOV: " + str(resp))
 
         # format script of response
-        record = resp['result']['records'][0]
+        # sorts the results by similarity
+        record = sorted(resp['result']['records'], key=lambda x:
+                        edit_distance(address, x['Address']))[0]
         speech_output = "Trash is picked up on the following days, " + \
             ", ".join(parse_days(record['Trash'])) + \
             ". Recycling is picked up on the following days, " + \
@@ -60,7 +62,7 @@ def parse_days(days):
     result = []
     for i in range(len(days)):
         if days[i] == 'T':
-            if i < len(days) - 1 and days[i+1] == 'H':
+            if i < len(days) - 1 and days[i + 1] == 'H':
                 result.append('Thursday')
             else:
                 result.append('Tuesday')
@@ -71,3 +73,34 @@ def parse_days(days):
         if days[i] == 'F':
             result.append('Friday')
     return result
+
+
+def edit_distance(address1, address2):
+    """
+    Calculates how similar two strings are. Returns the minimum number
+    of characters to delete to convert one string into the other.
+    """
+    def cost(matrix, i, j):
+        x = 2
+        if address1[i - 1] == address2[j - 1]:
+            x = 0
+        top = matrix[i - 1][j]
+        left = matrix[i][j - 1]
+        corner = matrix[i - 1][j - 1]
+        return min((top + 1, left + 1, corner + x))
+
+    matrix = []
+    for i in range(len(address1) + 1):
+        row = []
+        for j in range(len(address2) + 1):
+            if i == 0:
+                row.append(j)
+            elif j == 0:
+                row.append(i)
+            else:
+                row.append(0)
+        matrix.append(row)
+    for i in range(1, len(matrix)):
+        for j in range(1, len(matrix[0])):
+            matrix[i][j] = cost(matrix, i, j)
+    return matrix[-1][-1]
