@@ -84,11 +84,11 @@ def prune_normal_responses(service_alerts):
     # for any defined service, if its alert is that it's running normally, 
     # remove it from the dictionary
     for service in Services:
-        if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
+        if service.value in service_alerts and \
+                str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
             service_alerts.pop(service.value)                       # remove
     if service_alerts[Services.TOW_LOT.value].rstrip() == tow_lot_normal_message:
-        print("DDDDDD")
-        service_alerts.pop(Services.TOW_LOT.value)
+        service_alerts.pop(Services.TOW_LOT.value) # not sure comparison is working - 3.27.2018
     return service_alerts
 
 def get_alerts():
