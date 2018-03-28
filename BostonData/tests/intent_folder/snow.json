@@ -1,0 +1,47 @@
+{
+    "session": {
+      "new": false,
+      "sessionId": "SessionId.66849e23-260a-41cf-9375-abdb63716e87",
+      "application": {
+        "applicationId": "amzn1.ask.skill.75d4f6a1-9a46-4e7a-9160-cdd8e4f93ea2"
+      },
+      "attributes": {
+        "addressPromptedFromIntent": "SnowParkingIntent"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.AEPTIVLXAG4JDK7LSIX6EW3WMHMA2YK3MG4JADXO3XQTV5DJMME7YCLOMIFJU7CUVD34N36XCQDTOCCQWVATWRGFQLVMFC2LRVSUGBASCBDDOPYLDLU6GRCEY5BSHAO3R76FWUPR2TUUEVUCO4MYT7K2ZOK65IXWL6LW2W3Y6WLPJWTNZYAHBSWJWSBZW2UJLWQJ76MM66R4CUY"
+      }
+    },
+    "request": {
+      "type": "IntentRequest",
+      "requestId": "EdwRequestId.770914d5-e165-427a-b973-df7e94175737",
+      "intent": {
+        "name": "SetAddressIntent",
+        "slots": {
+          "Address": {
+            "name": "Address",
+            "value": "866 Huntington ave"
+          }
+        }
+      },
+      "locale": "en-US",
+      "timestamp": "2018-03-21T00:40:29Z"
+    },
+    "context": {
+      "AudioPlayer": {
+        "playerActivity": "IDLE"
+      },
+      "System": {
+        "application": {
+          "applicationId": "amzn1.ask.skill.75d4f6a1-9a46-4e7a-9160-cdd8e4f93ea2"
+        },
+        "user": {
+          "userId": "amzn1.ask.account.AEPTIVLXAG4JDK7LSIX6EW3WMHMA2YK3MG4JADXO3XQTV5DJMME7YCLOMIFJU7CUVD34N36XCQDTOCCQWVATWRGFQLVMFC2LRVSUGBASCBDDOPYLDLU6GRCEY5BSHAO3R76FWUPR2TUUEVUCO4MYT7K2ZOK65IXWL6LW2W3Y6WLPJWTNZYAHBSWJWSBZW2UJLWQJ76MM66R4CUY"
+        },
+        "device": {
+          "supportedInterfaces": {}
+        }
+      }
+    },
+    "version": "1.0"
+  }
