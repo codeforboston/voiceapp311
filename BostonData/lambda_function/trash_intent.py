@@ -28,13 +28,11 @@ def get_trash_day_info(intent, session):
         address = str(a['house']) + " " + str(a['street_name'])
 
         try:
-            trash_days, recycle_days = get_trash_and_recycling_days(address)
+            trash_days = get_trash_and_recycling_days(address)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
-            recycle_days_speech = build_speech_from_list_of_days(recycle_days)
 
-            speech_output = "Trash is picked up on {}. " \
-                            "Recycling is picked up on {}"\
-                .format(trash_days_speech, recycle_days_speech)
+            speech_output = "Trash and recycling is picked up on {}."\
+                .format(trash_days_speech)
 
         except InvalidAddressError:
             speech_output = "I can't seem to find {}. Try another address"\
@@ -56,10 +54,11 @@ def get_trash_day_info(intent, session):
 
 def get_trash_and_recycling_days(address):
     """
-    Determines the trash and recycling days for the provided address
+    Determines the trash and recycling days for the provided address.
+    These are on the same day, so only one array of days will be returned.
 
     :param address: String of address to find trash day for
-    :return: arrays containing next trash and recycling days
+    :return: array containing next trash and recycling days
     """
 
     api_params = get_address_api_info(address)
@@ -70,9 +69,9 @@ def get_trash_and_recycling_days(address):
     if not trash_data:
         raise BadAPIResponse
 
-    trash_days, recycling_days = get_trash_days_from_trash_data(trash_data)
+    trash_and_recycling_days = get_trash_days_from_trash_data(trash_data)
 
-    return trash_days, recycling_days
+    return trash_and_recycling_days
 
 
 def get_address_api_info(address):
@@ -138,7 +137,7 @@ def get_trash_days_from_trash_data(trash_data):
     days.
 
     :param trash_data: Trash data provided from ReCollect API
-    :return: Two arrays, with trash days and recycling days
+    :return: An array containing days trash and recycling are picked up
     """
 
     try:
@@ -148,7 +147,7 @@ def get_trash_days_from_trash_data(trash_data):
         # ReCollect API returned an unexpected JSON format
         raise BadAPIResponse
 
-    return trash_days, trash_days
+    return trash_days
 
 
 def build_speech_from_list_of_days(days):
