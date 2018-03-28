@@ -1,5 +1,4 @@
 """
-
 City services in alerts dict:
     Street Cleaning
     Trash and recycling
@@ -37,7 +36,17 @@ class Services(Enum):
     PUBLIC_TRANSIT = 'Public Transit'
     SCHOOLS = 'Schools'
     ALERT_HEADER = 'Alert header'
-    
+
+# constants for scraping boston.gov
+BOSTON_GOV = "https://www.boston.gov"
+SERVICE_NAMES = "cds-t t--upper t--sans m-b300"
+SEVICE_INFO = "cds-d t--subinfo"
+HEADER_1 = "t--upper t--sans lh--000 t--cb"
+HEADER_2 = "t--upper t--sans lh--000 t--cb"
+HEADER_3 = "str str--r m-v300"
+HEADER_4 = "t--sans t--cb lh--000 m-b500"
+ALT_HEADER_1 = "t--sans t--ob lh--000 m-b500"
+
 
 def get_alerts_intent(intent, session):
     """
@@ -84,27 +93,31 @@ def prune_normal_responses(service_alerts):
     # for any defined service, if its alert is that it's running normally, 
     # remove it from the dictionary
     for service in Services:
-        if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
+        if service.value in service_alerts and \
+                str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
             service_alerts.pop(service.value)                       # remove
-    if service_alerts[Services.TOW_LOT.value] == tow_lot_normal_message:
-        service_alerts.pop(Services.TOW_LOT.value)
+    if service_alerts[Services.TOW_LOT.value].rstrip() == tow_lot_normal_message:
+        service_alerts.pop(Services.TOW_LOT.value) # not sure comparison is working - 3.27.2018
     return service_alerts
 
 def get_alerts():
-    url = urllib.request.urlopen("https://www.boston.gov") # get page
+    url = urllib.request.urlopen(BOSTON_GOV) # get page
     soup = BeautifulSoup(url, "html.parser")               # feed into BS
     url.close()
     # parse, sanitize returned strings, place in dictionary
-    services = [s.text.strip() for s in soup.find_all(class_ = "cds-t t--upper t--sans m-b300")]
-    service_info = [s_info.text.strip().replace(u'\xA0', u' ') for s_info in soup.find_all(class_ = "cds-d t--subinfo")]
+    services = [s.text.strip() for s in soup.find_all(class_ = SERVICE_NAMES)]
+    service_info = [s_info.text.strip().replace(u'\xA0', u' ') for s_info in soup.find_all(class_ = SERVICE_INFO)]
     alerts = {}
     for i in range(len(services)):
         alerts[services[i]] = service_info[i]
     # get alert header, if any (this is something like "Winter Storm warning")
     header = ""
-    if soup.find(class_ = "t--upper t--sans lh--000 t--cb") != None:
-        header += soup.find(class_ = "t--upper t--sans lh--000 t--cb").text + '. '
-        header += soup.find(class_ = "str str--r m-v300").text + '. ' 
-        header += soup.find(class_ = "t--sans t--cb lh--000 m-b500").text + ' '
+    if soup.find(class_ = HEADER_1) != None: # no guarantee that this tag will always be the header
+        header += soup.find(class_ = HEADER_2).text + '. '
+        header += soup.find(class_ = HEADER_3).text + '. ' 
+        header += soup.find(class_ = HEADER_4).text + ' '
+
+    if soup.find(class_ = ALT_HEADER_1) != None: # another possible header tag, again this might change 
+        header += soup.find(class_ = ALT_HEADER_1).text
     alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
