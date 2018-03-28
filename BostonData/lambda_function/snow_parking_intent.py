@@ -3,6 +3,7 @@
 
 from alexa_utilities import build_response, build_speechlet_response
 import alexa_constants
+from arcgis.features import FeatureLayer
 import csv
 import os
 import requests
@@ -17,7 +18,7 @@ DRIVING_TIME_VALUE_KEY = "Driving time"
 DRIVING_TIME_TEXT_KEY = "Driving time text"
 PARKING_LOCATION_KEY = "Parking Address"
 
-BOSTON_DATA_PARKING_ADDRESS_INDEX = 9
+BOSTON_DATA_PARKING_ADDRESS_INDEX = 7 # ArcGIS features ordered differently from csv file == 9
 
 
 def get_snow_emergency_parking_intent(intent, session):
@@ -178,24 +179,49 @@ def _get_driving_info(origin, destinations):
     return driving_infos
 
 
+
+###################################################################
+# refactor of _get_emergency_parking_data using ArcGIS to return  #
+# a list of parking places with at least 1 space remaining        #
+###################################################################
+
 def _get_emergency_parking_data():
     """
-    Gets the emergency parking info from Boston Data
+    Gets the emergency parking info from ArcGIS.com 
 
-    :return: array of emergency parking info as provided in the Boston data
-    csv file
+    :return: array of emergency parking info as provided from 
+    ArcGIS Feature Server:SnowParking
     """
-    parking_data = []
-    with requests.Session() as session:
-        url = "http://bostonopendata-boston.opendata.arcgis.com/" + \
-              "datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
-        response = session.get(url)
+    server_url = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services' \
+                 + '/SnowParking/FeatureServer/0'
+    f = FeatureLayer(url = server_url)
+    feature_set = f.query(where = "Spaces > 0")
+    parking_lots = []
+    for parking_lot in feature_set: 
+        parking_lots.append(parking_lot.as_row[0]) # [0] = actual data, [1] = column names
+    return parking_lots
 
-        if response.status_code == requests.codes.ok:
-            response_data = response.content.decode()
-            csv_reader = csv.reader(response_data.splitlines())
-            parking_data = list(csv_reader)
-        else:
-            print("Failed to get parking data from Boston Open Data")
 
-    return parking_data[1:]
+
+
+# def _get_emergency_parking_data(): 
+#     """
+#     Gets the emergency parking info from Boston Data
+
+#     :return: array of emergency parking info as provided in the Boston data
+#     csv file
+#     """
+#     parking_data = []
+#     with requests.Session() as session:
+#         url = "http://bostonopendata-boston.opendata.arcgis.com/" + \
+#               "datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
+#         response = session.get(url)
+
+#         if response.status_code == requests.codes.ok:
+#             response_data = response.content.decode()
+#             csv_reader = csv.reader(response_data.splitlines())
+#             parking_data = list(csv_reader)
+#         else:
+#             print("Failed to get parking data from Boston Open Data")
+
+#     return parking_data[1:]

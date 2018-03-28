@@ -23,8 +23,11 @@ def zip_lambda_function_directory():
 
 def install_pip_dependencies():
     requirements_path = os.path.join(LAMBDA_FUNCTION_DIR, "requirements.txt")
+    requirements_no_deps_path = os.path.join(LAMBDA_FUNCTION_DIR, "requirements_no_deps.txt")
     install_args = ["install", "-r", requirements_path, "-t" "lambda_function"]
+    install_args_no_deps = ["install", "-r", requirements_no_deps_path, "--no-deps", "-t" "lambda_function"]
     pip.main(install_args)
+    pip.main(install_args_no_deps)
 
 def cleanup(keep_files):
     """
