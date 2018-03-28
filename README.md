@@ -47,8 +47,6 @@ This will generate the lambda_function.zip archive, which you will need later.
    * In the **Intent Schema** input box, paste the contents of 
      [intent_schema.json](BostonData/docs/intent_schema.json).
    * Leave the **Custom Slot Types** section blank.
-   * In the **Sample Utterances** input box, paste the contents of 
-     [sample_utterances.txt](BostonData/docs/sample_utterances.txt).
    Click **Save** at the bottom and click **Next**.
 5. Leave this tab open as you will enter information from your **Lambda** 
    function into the **Configuration** section later. 
@@ -265,13 +263,7 @@ Information on defining a custom slot type is available [here](https://developer
 ### Sample Utterances
 Alexa needs a list of phrases that correspond to each of our skill's intents.
 
-We provide this in the settings for our skill in the developer console (see Part 1 of installation).
-
-The format for the list of sample utterances is
-
-```
-[intent] [phrase]
-```
+We provide this in the settings for our skill in the developer console (see Part 1 of installation). The utterances are included in the intent_schema json file.
 
 The phrase may contain a reference to a slot if there is one associated with
 the intent it invokes. The format for this is
