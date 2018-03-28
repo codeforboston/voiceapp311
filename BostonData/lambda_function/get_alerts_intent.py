@@ -1,5 +1,4 @@
 """
-
 City services in alerts dict:
     Street Cleaning
     Trash and recycling
