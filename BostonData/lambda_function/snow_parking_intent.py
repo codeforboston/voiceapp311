@@ -149,7 +149,6 @@ def _get_driving_info(origin, destinations):
                              "distancematrix/json"
 
     driving_infos = []
-    print(url_parameters)
 
     with requests.Session() as session:
         response = session.get(driving_directions_url, params=url_parameters)
