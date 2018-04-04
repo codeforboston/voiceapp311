@@ -18,7 +18,7 @@ DRIVING_TIME_VALUE_KEY = "Driving time"
 DRIVING_TIME_TEXT_KEY = "Driving time text"
 PARKING_LOCATION_KEY = "Parking Address"
 
-BOSTON_DATA_PARKING_ADDRESS_INDEX = 7 # ArcGIS features ordered differently from csv file == 9
+BOSTON_DATA_PARKING_ADDRESS_INDEX = 7 # ArcGIS features ordered differently (== 7) from csv file (== 9)
 
 
 def get_snow_emergency_parking_intent(intent, session):
@@ -104,12 +104,15 @@ def _get_closest_emergency_parking(origin, parking_data):
     closest emergency parking location
     """
     parking_addresses = []
+    
 
     # Build up an array of each parking location
     for location in parking_data:
-        destination_address = location[BOSTON_DATA_PARKING_ADDRESS_INDEX]
+        destination_address = location[BOSTON_DATA_PARKING_ADDRESS_INDEX].rstrip()
         destination_address += " Boston, MA"
         parking_addresses.append(destination_address)
+
+
 
     parking_location_driving_info = _get_driving_info(origin,
                                                       parking_addresses)
@@ -146,6 +149,7 @@ def _get_driving_info(origin, destinations):
                              "distancematrix/json"
 
     driving_infos = []
+    print(url_parameters)
 
     with requests.Session() as session:
         response = session.get(driving_directions_url, params=url_parameters)
@@ -154,6 +158,7 @@ def _get_driving_info(origin, destinations):
             all_driving_data = response.json()
             try:
                 driving_data_row = all_driving_data["rows"][0]
+                                
                 for (driving_data, address) in \
                         zip(driving_data_row["elements"], destinations):
                     try:
@@ -225,3 +230,9 @@ def _get_emergency_parking_data():
 #             print("Failed to get parking data from Boston Open Data")
 
 #     return parking_data[1:]
+
+if __name__ == "__main__":
+    origin = "46 Everdean St., Boston, MA"
+    dest = _get_emergency_parking_data()
+    parking_data = _get_closest_emergency_parking(origin, dest)
+    
