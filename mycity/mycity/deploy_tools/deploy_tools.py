@@ -9,6 +9,7 @@ import pip
 import shutil
 import zipfile
 
+# TODO: This needs to be updated to give user some idea of how to run it and where to run it from
 PROJECT_ROOT = os.path.join(os.getcwd(), os.pardir, os.pardir)
 TEMP_DIR_PATH = os.path.join(PROJECT_ROOT, 'temp')
 LAMBDA_REL_PATH = 'platforms/amazon/lambda/custom/lambda_function.py'
@@ -17,6 +18,7 @@ MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
 
 
 def zip_lambda_function_directory(zip_target_dir):
+    # TODO: revise this to avoid changing directory
     os.chdir(zip_target_dir)
     zip_file_name = "lambda_function.zip"
     zip_file = zipfile.ZipFile(zip_file_name, 'w')
@@ -35,23 +37,6 @@ def install_pip_dependencies(requirements_path):
     install_args = ["install", "-r", requirements_path, "-t", TEMP_DIR_PATH]
     pip.main(install_args)
     print('DONE')
-
-#
-# def cleanup(keep_files):
-#     """
-#     Removes everything not contained in keep_files from the
-#     lambda_function directory.
-#     """
-#     print("Cleaning up temporary files/directories...")
-#     dir_contents = os.listdir(LAMBDA_FUNCTION_DIR)
-#     for item in dir_contents:
-#         if os.path.isfile(os.path.join(LAMBDA_FUNCTION_DIR, item)):
-#             if item not in keep_files:
-#                 os.remove(os.path.join(LAMBDA_FUNCTION_DIR, item))
-#         if os.path.isdir(os.path.join(LAMBDA_FUNCTION_DIR, item)):
-#             if item not in keep_files:
-#                 shutil.rmtree(os.path.join(LAMBDA_FUNCTION_DIR, item))
-#     print("Cleanup complete.")
 
 
 def package_lambda_function():
