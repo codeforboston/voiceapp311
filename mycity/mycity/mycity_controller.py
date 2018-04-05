@@ -7,8 +7,7 @@ This class handles all voice requests.
 from __future__ import print_function
 from mycity.mycity_data_model import MyCityDataModel
 from .intents.user_address_intent import set_address_in_session, \
-    get_address_from_session, create_set_address_intent_response, \
-    request_user_address_response
+    get_address_from_session, request_user_address_response
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
@@ -130,7 +129,7 @@ class MyCityController:
                 # from another intent.
                 del mcd.session_attributes[intent_constants.ADDRESS_PROMPTED_FROM_INTENT]
             else:
-                return create_set_address_intent_response(mcd)
+                return get_address_from_session(mcd)
 
         # session_attributes = session.get("attributes", {})
         if mcd.intent_name == "GetAddressIntent":

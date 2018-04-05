@@ -7,7 +7,7 @@ from . import intent_constants
 
 def set_address_in_session(mcd):
     """
-    Adds an address from the set address intent to the provided session object
+    Adds an address to the provided session object
 
     :param mcd: MyCityRequestModel object
     """
@@ -20,33 +20,6 @@ def set_address_in_session(mcd):
     if 'Address' in mcd.intent_variables:
         mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = \
             mcd.intent_variables['Address']['value']
-
-
-def create_set_address_intent_response(mcd):
-    """
-    Stores the user's address in the current session
-
-    :param mcd:
-    :return:
-    """
-    print(
-        '[module: user_address_intent]',
-        '[create_set_address_intent_response]',
-        'MyCityDataModel received:',
-        str(mcd)
-    )
-    mcd.should_end_session = False
-
-    if 'Address' in mcd.intent_variables:
-        current_address = mcd.intent_variables['Address']['value']
-        mcd.output_speech = "I now know your address is " + current_address
-    else:
-        mcd.output_speech = "I'm not sure what your address is. " \
-                            "Please try again."
-        mcd.reprompt_text = "I'm not sure what your address is. " \
-                            "You can tell me your address by saying, " \
-                            "\"my address is\" followed by your address."
-    return mcd
 
 
 def get_address_from_session(mcd):
