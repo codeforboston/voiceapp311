@@ -21,7 +21,7 @@ def lambda_handler(event, context):
 
     model = platform_to_mcd(event)
     controller = MyCityController(model)
-    return mcd_to_platform(controller.main())
+    return mcd_to_platform(controller.execute_request())
 
 
 def platform_to_mcd(event):
@@ -56,8 +56,6 @@ def platform_to_mcd(event):
     mcd.output_speech = None
     mcd.reprompt_text = None
     mcd.should_end_session = False
-    # if intent_variables was not set above, set it to an empty object here
-    mcd.intent_variables = mcd.intent_variables or {}
 
     return mcd
 
@@ -72,7 +70,7 @@ def mcd_to_platform(mcd):
     - a response "speechlet" dictionary containing information on how Alexa
       responds to the user command.
 
-    :param mcr:
+    :param mcd:
     :return:
     """
     print(

@@ -32,16 +32,14 @@ class MyCityController:
         @type mcd: MyCityDataModel
         @param mcd: Request from platform as a MyCityRequestModel object
         """
+        # @TODO: throughout the project we need better naming for mcd
         self._mcd = mcd
 
 
-    def main(self):
+    def execute_request(self):
         """
         Route the incoming request based on type (LaunchRequest, IntentRequest,
         etc.) The JSON body of the request is provided in the event parameter.
-
-        @type mcr: MyCityDataModel
-        @param mcr: Request from platform as a MyCityRequestModel object
         """
         print(
             self.LOG_CLASS,
@@ -50,6 +48,7 @@ class MyCityController:
             str(self._mcd)
         )
 
+        # TODO: This section should be generalized for all platforms if possible
         """
         Uncomment this if statement and populate with your skill's application ID 
         to prevent someone else from configuring a skill that sends requests to 
@@ -84,9 +83,6 @@ class MyCityController:
         """
         Called when the user launches the skill without specifying what
         they want.
-
-        @type mcd: MyCityDataModel
-        @param mcd: Request from platform as a MyCityRequestModel object
         """
         print(
             MyCityController.LOG_CLASS,

@@ -1,5 +1,5 @@
 '''
-Tools to package and deploy the lambda function for Boston Data app
+Tools to package and deploy the lambda function for Boston Data app.
 '''
 
 from __future__ import print_function
@@ -18,6 +18,14 @@ MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
 
 
 def zip_lambda_function_directory(zip_target_dir):
+    """
+    Generates a .zip file containing the contents of the temporary directory
+    where the project files have been copied. Note that this .zip file
+    contains the files with no intermediate directory.
+
+    :param zip_target_dir:
+    :return:
+    """
     # TODO: revise this to avoid changing directory
     os.chdir(zip_target_dir)
     zip_file_name = "lambda_function.zip"
@@ -33,6 +41,13 @@ def zip_lambda_function_directory(zip_target_dir):
 
 
 def install_pip_dependencies(requirements_path):
+    """
+    Uses requirements.txt to install all external libraries used by the project
+    in the temporary directory the .zip file is created from.
+
+    :param requirements_path:
+    :return: none
+    """
     print('Installing dependencies ... ', end='')
     install_args = ["install", "-r", requirements_path, "-t", TEMP_DIR_PATH]
     pip.main(install_args)
@@ -40,6 +55,13 @@ def install_pip_dependencies(requirements_path):
 
 
 def package_lambda_function():
+    """
+    Creates a temporary directory where the lambda file and all of its
+    dependencies are copied before being compressed. Removes the temporary
+    directory after creating the .zip file.
+
+    :return: none
+    """
     print('Creating temporary build directory ... ', end='')
     # create the temporary directory for the zip file's contents
     os.mkdir(TEMP_DIR_PATH)
