@@ -234,4 +234,15 @@ if __name__ == "__main__":
     origin = "46 Everdean St., Boston, MA"
     dest = _get_emergency_parking_data()
     parking_data = _get_closest_emergency_parking(origin, dest)
-    
+    test_session = \
+         {  "new": False, \
+            "sessionId": "amzn1.echo-api.session.d1bf498c-53e5-481a-a8f0-4e9ca7d09951", \
+            "application": { \
+                "applicationId": "amzn1.ask.skill.103d2641-6b17-453b-b71d-dec4e2c32cee" \
+                }, \
+            "attributes": { "currentAddress": "46 Everdean St."}, \
+            "user": { \
+                "userId": "amzn1.ask.account.AE7JHGNAY4GAVBXCOCIYDSZTSTBFS26XUIP225JZXDG2VC2JGPTSLERCO4ATTIOHKAWNCWEACKU2QADVAEGOG4SO2X2WC3S24G64YNNKH2DQUDWJJKDS3DFFITWVZKMI7XML2LE2Y3JDPCH4VD7PPPHF2VTL3FRG3CJXB6XKYYQREVUYQT5VGQ7VY2DKPD4EQH76Y3ARKWRQASA" \
+                }\
+            }\
+   
