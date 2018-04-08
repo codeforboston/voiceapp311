@@ -1,8 +1,6 @@
 """Alexa intent used to find snow emergency parking"""
 
-
-from alexa_utilities import build_response, build_speechlet_response
-import alexa_constants
+from . import intent_constants
 import csv
 import os
 import requests
@@ -20,11 +18,22 @@ PARKING_LOCATION_KEY = "Parking Address"
 BOSTON_DATA_PARKING_ADDRESS_INDEX = 9
 
 
-def get_snow_emergency_parking_intent(intent, session):
+def get_snow_emergency_parking_intent(mcd):
+    """
+    Populate MyCityDataModel with snow emergency parking response information.
 
-    if alexa_constants.CURRENT_ADDRESS_KEY in session.get('attributes', {}):
+    :param mcd:
+    :return:
+    """
+    print(
+        '[method: get_snow_emergency_parking_intent]',
+        'MyCityDataModel received:',
+        str(mcd)
+    )
 
-        origin_address = _build_origin_address(session)
+    if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
+
+        origin_address = _build_origin_address(mcd)
 
         print("Finding snow emergency parking for {}".format(origin_address))
 
@@ -32,37 +41,41 @@ def get_snow_emergency_parking_intent(intent, session):
             _get_snow_emergency_parking_location(origin_address)
 
         if not parking_address:
-            speech_output = "Uh oh. Something went wrong!"
+            mcd.output_speech = "Uh oh. Something went wrong!"
         else:
-            speech_output = \
+            mcd.output_speech = \
                 "The closest snow emergency parking location is at " \
                 "{}. It is {} away and should take you {} to drive " \
                 "there".format(parking_address, driving_distance, driving_time)
 
-        session_attributes = session.get('attributes', {})
-        should_end_session = True
+        mcd.should_end_session = False
     else:
         print("Error: Called snow_parking_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
-    reprompt_text = None
-    return build_response(session_attributes, build_speechlet_response(
-        intent['name'], speech_output, reprompt_text, should_end_session))
+    mcd.reprompt_text = None
+    return mcd
 
 
-def _build_origin_address(session):
+def _build_origin_address(mcd):
     """
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
 
-    :param session: Alexa session object
+    :param mcd: MyCityDataModel object
     :return: String containing full address
     """
+    print(
+        '[method: _build_origin_address]',
+        'MyCityDataModel received:',
+        str(mcd)
+    )
+    # @todo: Repeated code -- look into using same code here and in trash intent
     address_parser = StreetAddressParser()
     current_address = \
-        session['attributes'][alexa_constants.CURRENT_ADDRESS_KEY]
+        mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
     parsed_address = address_parser.parse(current_address)
     origin_address = " ".join([parsed_address["house"],
                                parsed_address["street_full"]])
@@ -83,6 +96,12 @@ def _get_snow_emergency_parking_location(origin_address):
     closest emergency parking location
     :return: parking address, distance, and driving time
     """
+    print(
+        '[method: _get_snow_emergency_parking_location]',
+        'origin_address received:',
+        origin_address
+    )
+
     parking_data = _get_emergency_parking_data()
     closest_parking_info = _get_closest_emergency_parking(origin_address,
                                                           parking_data)
@@ -102,6 +121,14 @@ def _get_closest_emergency_parking(origin, parking_data):
     :return: dictionary with address, distance, and driving time for the
     closest emergency parking location
     """
+    print(
+        '[method: _get_closest_emergency_parking]',
+        'origin received:',
+        origin,
+        'parking_data received:',
+        parking_data
+    )
+
     parking_addresses = []
 
     # Build up an array of each parking location
@@ -137,6 +164,14 @@ def _get_driving_info(origin, destinations):
     :return: dictionary with address, distance, and driving time from origin
     address
     """
+    print(
+        '[method: _get_driving_info]',
+        'origin received:',
+        origin,
+        'destinations received:',
+        destinations
+    )
+
     url_parameters = {"origins": origin,
                       "destinations": '|'.join(destinations),
                       "key": GOOGLE_MAPS_API_KEY,
@@ -185,6 +220,10 @@ def _get_emergency_parking_data():
     :return: array of emergency parking info as provided in the Boston data
     csv file
     """
+    print(
+        '[method: _get_emergency_parking_data]'
+    )
+
     parking_data = []
     with requests.Session() as session:
         url = "http://bostonopendata-boston.opendata.arcgis.com/" + \
