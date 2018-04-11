@@ -238,13 +238,6 @@ def _get_emergency_parking_data():
     print(
         '[method: _get_emergency_parking_data]'
     )
-def _get_emergency_parking_data():
-    """
-        Gets the emergency parking info from ArcGIS.com
-        
-        :return: array of emergency parking info as provided from
-        ArcGIS Feature Server:SnowParking
-        """
     server_url = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services' \
         + '/SnowParking/FeatureServer/0'
     f = FeatureLayer(url = server_url)
