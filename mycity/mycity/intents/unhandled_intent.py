@@ -3,7 +3,7 @@ Function(s) for dealing with unhandled intents
 """
 
 
-def unhandled_intent(mcd):
+def unhandled_intent(mycity_request, mycity_response):
     """
     Deals with unhandled intents by prompting the user again
     """
@@ -11,11 +11,13 @@ def unhandled_intent(mcd):
         '[module: unhandled_intent]',
         '[method: unhandled_intent]',
         'MyCityDataModel received:',
-        str(mcd)
+        str(mycity_request)
     )
-    mcd.reprompt_text = "So, what can I help you with today?"
-    mcd.output_speech = "I'm not sure what you're asking me. " \
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = "Unhandled intent"
+    mycity_response.reprompt_text = "So, what can I help you with today?"
+    mycity_response.output_speech = "I'm not sure what you're asking me. " \
                         "Please ask again."
-    mcd.should_end_session = False
+    mycity_response.should_end_session = False
 
-    return mcd
+    return mycity_response

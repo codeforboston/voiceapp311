@@ -32,14 +32,18 @@ class Services(Enum):
     ALERT_HEADER = 'Alert header'
     
 
-def get_alerts_intent(mcd):
+def get_alerts_intent(mycity_request, mycity_response):
     """
     Generate response object with information about citywide alerts
+
+    :param mycity_request: MyCityRequestModel object
+    :param mycity_response: MyCityResponseModel object
+    :return: MyCityResponseModel object
     """
     print(
         '[method: get_alerts_intent]',
         'MyCityDataModel received:\n',
-        str(mcd)
+        str(mycity_request)
     )
 
     alerts = get_alerts()
@@ -47,10 +51,12 @@ def get_alerts_intent(mcd):
     alerts = prune_normal_responses(alerts)
     print("[dictionary after pruning]:\n" + str(alerts))
 
-    mcd.reprompt_text = None
-    mcd.output_speech = alerts_to_speech_output(alerts)
-    mcd.should_end_session = True   # leave this as True for right now
-    return mcd
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.reprompt_text = None
+    mycity_response.output_speech = alerts_to_speech_output(alerts)
+    mycity_response.should_end_session = True   # leave this as True for right now
+    return mycity_response
 
 
 def alerts_to_speech_output(alerts):
