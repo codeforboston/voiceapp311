@@ -10,7 +10,7 @@ def unhandled_intent(mycity_request, mycity_response):
     print(
         '[module: unhandled_intent]',
         '[method: unhandled_intent]',
-        'MyCityDataModel received:',
+        'MyCityRequestDataModel received:',
         str(mycity_request)
     )
     mycity_response.session_attributes = mycity_request.session_attributes

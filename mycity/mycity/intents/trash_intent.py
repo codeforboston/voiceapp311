@@ -20,7 +20,7 @@ def get_trash_day_info(mycity_request, mycity_response):
     print(
         '[module: trash_intent]',
         '[method: get_trash_day_info]',
-        'MyCityDataModel received:',
+        'MyCityRequestDataModel received:',
         str(mycity_response)
     )
 

@@ -14,7 +14,7 @@ def set_address_in_session(mycity_request):
     print(
         '[module: user_address_intent]',
         '[method: set_address_in_session]',
-        'MyCityDataModel received:',
+        'MyCityRequestDataModel received:',
         str(mycity_request)
     )
     if 'Address' in mycity_request.intent_variables:
@@ -28,14 +28,14 @@ def get_address_from_session(mycity_request, mycity_response):
     response based on whether one exists or not. If one exists, it is
     preserved in the session.
 
-    :param mycity_request: MyCityDataModel
+    :param mycity_request: MyCityRequestDataModel
     :param mycity_response: MyCityResponseDataModel
     :return : MyCityResponseModel object
     """
     print(
         '[module: user_address_intent]',
         '[method: get_address_from_session]',
-        'MyCityDataModel received:',
+        'MyCityRequestDataModel received:',
         str(mycity_request)
     )
 
@@ -72,7 +72,7 @@ def request_user_address_response(mycity_request, mycity_response):
     print(
         '[module: user_address_intent]',
         '[method: set_address_in_session]',
-        'MyCityDataModel received:',
+        'MyCityRequestDataModel received:',
         str(mycity_request)
     )
 

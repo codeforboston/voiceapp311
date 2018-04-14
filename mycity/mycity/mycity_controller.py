@@ -5,7 +5,7 @@ This class handles all voice requests.
 """
 
 from __future__ import print_function
-from mycity.mycity_data_model import MyCityDataModel
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response
@@ -21,8 +21,8 @@ class MyCityController:
     Handles requests for the MyCity voice app.
 
 
-    @type mcr: MyCityDataModel
-    @param mcr: Request from platform as a MyCityRequestModel object
+    @type mycity_request: MyCityRequestDataModel
+    @param mycity_request: Request from platform as a MyCityRequestModel object
     """
     LOG_CLASS = '\n\n[class: MyCityController]'
 
@@ -30,7 +30,7 @@ class MyCityController:
         """
         Construct the controller.
 
-        @type mycity_request: MyCityDataModel
+        @type mycity_request: MyCityRequestDataModel
         @param mycity_request: Request from platform as a MyCityRequestModel object
         """
         self._mycity_request = mycity_request
@@ -43,7 +43,7 @@ class MyCityController:
         print(
             self.LOG_CLASS,
             '[method: main]',
-            'MyCityDataModel received:\n',
+            'MyCityRequestDataModel received:\n',
             str(self._mycity_request)
         )
 
@@ -104,7 +104,7 @@ class MyCityController:
             self.LOG_CLASS,
             '[method: on_intent]',
             '[intent: ' + mycity_request.intent_name + ']',
-            'MyCityDataModel received:',
+            'MyCityRequestDataModel received:',
             mycity_request
         )
 
@@ -160,7 +160,7 @@ class MyCityController:
         print(
             self.LOG_CLASS,
             '[method: on_session_ended]',
-            'MyCityDataModel received:',
+            'MyCityRequestDataModel received:',
             str(self._mycity_request)
         )
         return self._mycity_response

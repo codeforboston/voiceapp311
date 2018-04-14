@@ -42,7 +42,7 @@ def get_alerts_intent(mycity_request, mycity_response):
     """
     print(
         '[method: get_alerts_intent]',
-        'MyCityDataModel received:\n',
+        'MyCityRequestDataModel received:\n',
         str(mycity_request)
     )
 

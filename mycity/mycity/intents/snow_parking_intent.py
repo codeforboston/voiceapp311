@@ -20,7 +20,7 @@ BOSTON_DATA_PARKING_ADDRESS_INDEX = 9
 
 def get_snow_emergency_parking_intent(mycity_request, mycity_response):
     """
-    Populate MyCityDataModel with snow emergency parking response information.
+    Populate MyCityResponseDataModel with snow emergency parking response information.
 
     :param mycity_request: MyCityRequestModel object
     :param mycity_response: MyCityResponseModel object
@@ -28,7 +28,7 @@ def get_snow_emergency_parking_intent(mycity_request, mycity_response):
     """
     print(
         '[method: get_snow_emergency_parking_intent]',
-        'MyCityDataModel received:',
+        'MyCityRequestDataModel received:',
         str(mycity_request)
     )
 
@@ -68,12 +68,12 @@ def _build_origin_address(mycity_request):
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
 
-    :param mycity_request: MyCityDataModel object
+    :param mycity_request: MyCityRequestDataModel object
     :return: String containing full address
     """
     print(
         '[method: _build_origin_address]',
-        'MyCityDataModel received:',
+        'MyCityRequestDataModel received:',
         str(mycity_request)
     )
     # @todo: Repeated code -- look into using same code here and in trash intent

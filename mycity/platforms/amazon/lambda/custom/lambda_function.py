@@ -4,7 +4,7 @@ Boston Data Alexa skill.
 This module is the entry point for processing voice data from an Alexa device.
 """
 
-from mycity.mycity_data_model import MyCityDataModel
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_controller import MyCityController
 
 
@@ -26,7 +26,7 @@ def lambda_handler(event, context):
 
 def platform_to_mycity_request(event):
     """
-    Translates from Amazon platform request to MyCityDataModel
+    Translates from Amazon platform request to MyCityRequestDataModel
 
     :param event:
     :return:
@@ -37,7 +37,7 @@ def platform_to_mycity_request(event):
         "Amazon request received:\n",
         str(event)
     )
-    mycity_request = MyCityDataModel()
+    mycity_request = MyCityRequestDataModel()
     mycity_request.request_type = event['request']['type']
     mycity_request.request_id = event['request']['requestId']
     mycity_request.is_new_session = event['session']['new']
@@ -62,7 +62,7 @@ def platform_to_mycity_request(event):
 
 def mycity_response_to_platform(mycity_response):
     """
-    Translates from MyCityDataModel to Amazon platform response.
+    Translates from MyCityResponseDataModel to Amazon platform response.
 
     The platform response contains:
     - a version number,
@@ -76,7 +76,7 @@ def mycity_response_to_platform(mycity_response):
     print(
         "\n\n[module: lambda_function]",
         "[function: mycity_response_to_platform]",
-        "MyCityDataModel object received: " + str(mycity_response)
+        "MyCityResponseDataModel object received: " + str(mycity_response)
     )
     result = {
         'version': '1.0',
