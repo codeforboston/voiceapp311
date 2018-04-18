@@ -17,6 +17,7 @@ from streetaddress import StreetAddressParser
 
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
+GOOGLE_MAPS_URL = "https://maps.googleapis.com/maps/distancematrix/json"
 DRIVING_DISTANCE_VALUE_KEY = "Driving distance"
 DRIVING_DISTANCE_TEXT_KEY = "Driving distance text"
 DRIVING_TIME_VALUE_KEY = "Driving time"
@@ -149,7 +150,7 @@ def _get_driving_info(origin, feature_key, dest_addresses):
     :return driving_infos: dictionary with address, distance, and driving time from origin
     address
     """
-    print(                      # not sure if it's within our style guidelines to have this here 
+    print(
         '[method: location_utils._get_driving_info]',
         'origin received:',
         origin,
@@ -158,9 +159,7 @@ def _get_driving_info(origin, feature_key, dest_addresses):
     )
 
     url_parameters = _setup_google_maps_query_params(origin, destinations)
-    driving_directions_url = "https://maps.googleapis.com/maps/api/" \
-                             "distancematrix/json"
-
+    driving_directions_url = GOOGLE_MAPS_URL
     with requests.Session() as session:
         response = session.get(driving_directions_url, params=url_parameters)
 
