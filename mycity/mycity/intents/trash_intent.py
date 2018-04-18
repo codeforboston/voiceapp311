@@ -1,7 +1,7 @@
 """
 Functions for Alexa responses related to trash day
 """
-from build_origin_address import build_origin_address
+from location_utils import build_origin_address
 from .custom_errors import InvalidAddressError, BadAPIResponse
 import requests
 from . import intent_constants

@@ -1,7 +1,7 @@
 """Alexa intent used to find snow emergency parking"""
 
 from . import intent_constants
-from build_origin_address import build_origin_addres
+from location_utils import build_origin_address
 import csv
 import os
 import requests
