@@ -10,16 +10,22 @@ import os
 import requests
 from streetaddress import StreetAddressParser
 
-# for calculting shortest distance to a feature
-GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 
-# constants that are used in returning nearest feature dictionary
+###############################################################
+# Constants for querying Google Maps and parsing return data  #
+###############################################################
+
+
+GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 DRIVING_DISTANCE_VALUE_KEY = "Driving distance"
 DRIVING_DISTANCE_TEXT_KEY = "Driving distance text"
 DRIVING_TIME_VALUE_KEY = "Driving time"
 DRIVING_TIME_TEXT_KEY = "Driving time text"
 
 
+####################
+# Public functions #
+####################
 
 def build_origin_address(mcd):
     """
@@ -47,24 +53,6 @@ def build_origin_address(mcd):
         origin_address += " Boston MA"
 
     return origin_address
-
-
-
-def get_features_from_feature_server(url, query):
-    """
-    Given a url to a City of Boston Feature Server, return a list
-    of Features (for example, parking lots that are not full)
-
-    :param url: url for Feature Server
-    :param query: query to select features (example: "Spaces > 0")
-    :return features: list of all features
-    """
-    features = []
-    f = FeatureLayer(url = url)
-    feature_set = f.query(where = query)
-    for feature in feature_set:
-        features.append(feature.as_row[0]) # [0] = data, [1] = column names
-    return features
 
 
 def get_closest_feature(origin, feature_address_index, feature_key, error_message, features):
@@ -96,23 +84,33 @@ def get_closest_feature(origin, feature_address_index, feature_key, error_messag
     return closest_location_info
 
 
-def _get_dest_addresses(feature_address_index, features):
+########################################################################
+# Function that interacts with ArcGIS feature servers. Feature servers #
+# serve information about locations in Boston, like locations defined  #
+# as "open spaces" or snow emergency parking lots                      #
+########################################################################
+
+
+def get_features_from_feature_server(url, query):
     """
+    Given a url to a City of Boston Feature Server, return a list
+    of Features (for example, parking lots that are not full)
 
-    :param feature_address_index: to retrieve address string in feature
-    :param features: list of features retrieved from FeatureServer
-
-    :return dest_address: list of destination addresses
+    :param url: url for Feature Server
+    :param query: query to select features (example: "Spaces > 0")
+    :return features: list of all features
     """
-    dest_addresses = []
+    features = []
+    f = FeatureLayer(url = url)
+    feature_set = f.query(where = query)
+    for feature in feature_set:
+        features.append(feature.as_row[0]) # [0] = data, [1] = column names
+    return features
 
-    # build array of each feature location
-    for feature in features:
-        dest_address = feature[feature_address_index]
-        dest_address += " Boston, MA"
-        dest_addresses.append(dest_address)
-    
-    return dest_addresses
+
+#############################################
+# Functions that interact with Google Maps  #
+#############################################
 
 
 def _get_driving_info(origin, feature_key, dest_addresses):
@@ -147,6 +145,46 @@ def _get_driving_info(origin, feature_key, dest_addresses):
             all_driving_data = response.json()
             driving_infos = _parse_driving_data(all_driving_data, feature_key, destinations)
     return driving_infos
+
+
+def _setup_google_maps_query_params(origin, destinations):
+    """
+    Builds a dictionary for querying Google Maps 
+
+    :param: origin: "from" address in query
+    :param: destinations: "to" addresses in query
+
+    :return: a dictionary to use as url parameters for query
+
+    """
+    return {"origins": origin,
+            "destinations": '|'.join(destinations),
+            "key": GOOGLE_MAPS_API_KEY,
+            "units": "imperial"}
+
+
+##########################################################################
+# Functions that parse data returned from Google Maps and FeatureServers #
+##########################################################################
+
+
+def _get_dest_addresses(feature_address_index, features):
+    """
+
+    :param feature_address_index: to retrieve address string in feature
+    :param features: list of features retrieved from FeatureServer
+
+    :return dest_address: list of destination addresses
+    """
+    dest_addresses = []
+
+    # build array of each feature location
+    for feature in features:
+        dest_address = feature[feature_address_index]
+        dest_address += " Boston, MA"
+        dest_addresses.append(dest_address)
+    
+    return dest_addresses
 
 
 def _parse_driving_data(all_driving_data, feature_key, destinations):
@@ -188,18 +226,3 @@ def _parse_driving_data(all_driving_data, feature_key, destinations):
     else:
         print("Failed to get driving directions")
     return driving_infos
-
-def _setup_google_maps_query_params(origin, destinations):
-    """
-    Builds a dictionary for querying Google Maps 
-
-    :param: origin: "from" address in query
-    :param: destinations: "to" addresses in query
-
-    :return: a dictionary to use as url parameters for query
-
-    """
-    return {"origins": origin,
-            "destinations": '|'.join(destinations),
-            "key": GOOGLE_MAPS_API_KEY,
-            "units": "imperial"}
