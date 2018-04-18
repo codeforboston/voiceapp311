@@ -1,7 +1,7 @@
 """Alexa intent used to find snow emergency parking"""
 
 from . import intent_constants
-from location_utils import build_origin_address
+from location_utils import build_origin_address, get_features_from_feature_server
 import csv
 import os
 import requests
@@ -16,7 +16,7 @@ DRIVING_TIME_VALUE_KEY = "Driving time"
 DRIVING_TIME_TEXT_KEY = "Driving time text"
 PARKING_LOCATION_KEY = "Parking Address"
 
-BOSTON_DATA_PARKING_ADDRESS_INDEX = 9
+BOSTON_DATA_PARKING_ADDRESS_INDEX = 7 # Features store parking lot address at index
 
 
 def get_snow_emergency_parking_intent(mcd):
@@ -191,24 +191,15 @@ def _get_emergency_parking_data():
     """
     Gets the emergency parking info from Boston Data
 
-    :return: array of emergency parking info as provided in the Boston data
-    csv file
+    :return: array of emergency parking info as provided from City's ArcGIS
+    Feature Server for snow parking lots
     """
     print(
         '[method: _get_emergency_parking_data]'
     )
 
-    parking_data = []
-    with requests.Session() as session:
-        url = "http://bostonopendata-boston.opendata.arcgis.com/" + \
-              "datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
-        response = session.get(url)
-
-        if response.status_code == requests.codes.ok:
-            response_data = response.content.decode()
-            csv_reader = csv.reader(response_data.splitlines())
-            parking_data = list(csv_reader)
-        else:
-            print("Failed to get parking data from Boston Open Data")
-
-    return parking_data[1:]
+    parking_url = \
+        'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services'\
+        + '/SnowParking/FeatureServer/0'
+    query = "Space > 0"
+    return get_features_feature_server(url, query)
