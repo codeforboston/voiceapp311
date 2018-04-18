@@ -10,7 +10,9 @@ import requests
 
 # Constants 
 PARKING_LOCATION_KEY = "Parking Address"
-BOSTON_DATA_PARKING_ADDRESS_INDEX = 7 # Features store parking lot address at index
+PARKING_INFO_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
+    + 'services/SnowParking/FeatureServer/0'
+BOSTON_DATA_PARKING_ADDRESS_INDEX = 7
 
 
 def get_snow_emergency_parking_intent(mcd):
@@ -71,11 +73,12 @@ def _get_snow_emergency_parking_location(origin_address):
     )
     error_message = "Didn't find any parking locations"
     parking_data = _get_emergency_parking_data()
-    closest_parking_lot = location_utils.get_closest_feature(origin_address,
-                                                             BOSTON_DATA_PARKING_ADDRESS_INDEX,
-                                                             PARKING_LOCATION_KEY,
-                                                             error_message,
-                                                             parking_data)
+    closest_parking_lot = \
+        location_utils.get_closest_feature(origin_address,
+                                           BOSTON_DATA_PARKING_ADDRESS_INDEX,
+                                           PARKING_LOCATION_KEY,
+                                           error_message,
+                                           parking_data)
     return closest_parking_lot
 
                                                              
@@ -88,10 +91,7 @@ def _get_emergency_parking_data():
     """
     print(
         '[method: _get_emergency_parking_data]'
-    )
-
-    parking_url = \
-        'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services'\
-        + '/SnowParking/FeatureServer/0'
+    )     
     query = "Space > 0"
-    return location_utils.get_features_feature_server(url, query)
+    return location_utils.get_features_from_feature_server(PARKING_INFO_URL, 
+                                                           query)
