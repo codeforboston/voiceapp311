@@ -20,8 +20,8 @@ def lambda_handler(event, context):
     )
 
     model = platform_to_mycity_request(event)
-    controller = MyCityController(model)
-    return mycity_response_to_platform(controller.execute_request())
+    controller = MyCityController()
+    return mycity_response_to_platform(controller.execute_request(model))
 
 
 def platform_to_mycity_request(event):

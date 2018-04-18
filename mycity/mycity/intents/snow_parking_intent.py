@@ -5,7 +5,7 @@ import csv
 import os
 import requests
 from streetaddress import StreetAddressParser
-
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 
@@ -18,7 +18,7 @@ PARKING_LOCATION_KEY = "Parking Address"
 BOSTON_DATA_PARKING_ADDRESS_INDEX = 9
 
 
-def get_snow_emergency_parking_intent(mycity_request, mycity_response):
+def get_snow_emergency_parking_intent(mycity_request):
     """
     Populate MyCityResponseDataModel with snow emergency parking response information.
 
@@ -32,6 +32,7 @@ def get_snow_emergency_parking_intent(mycity_request, mycity_response):
         str(mycity_request)
     )
 
+    mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
 
         origin_address = _build_origin_address(mycity_request)

@@ -1,9 +1,9 @@
 """
 Function(s) for dealing with unhandled intents
 """
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
-
-def unhandled_intent(mycity_request, mycity_response):
+def unhandled_intent(mycity_request):
     """
     Deals with unhandled intents by prompting the user again
     """
@@ -13,6 +13,7 @@ def unhandled_intent(mycity_request, mycity_response):
         'MyCityRequestDataModel received:',
         str(mycity_request)
     )
+    mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Unhandled intent"
     mycity_response.reprompt_text = "So, what can I help you with today?"

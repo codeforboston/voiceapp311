@@ -19,7 +19,7 @@ and street cleaning is running on a normal schedule."
 from bs4 import BeautifulSoup
 from urllib import request
 from enum import Enum
-
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 class Services(Enum):
     STREET_CLEANING = 'Street Cleaning'
@@ -32,7 +32,7 @@ class Services(Enum):
     ALERT_HEADER = 'Alert header'
     
 
-def get_alerts_intent(mycity_request, mycity_response):
+def get_alerts_intent(mycity_request):
     """
     Generate response object with information about citywide alerts
 
@@ -46,6 +46,7 @@ def get_alerts_intent(mycity_request, mycity_response):
         str(mycity_request)
     )
 
+    mycity_response = MyCityResponseDataModel()
     alerts = get_alerts()
     print("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
     alerts = prune_normal_responses(alerts)

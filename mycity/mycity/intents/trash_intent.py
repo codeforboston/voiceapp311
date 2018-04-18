@@ -4,26 +4,27 @@ Functions for Alexa responses related to trash day
 
 from .custom_errors import InvalidAddressError, BadAPIResponse
 from streetaddress import StreetAddressParser
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 import requests
 from . import intent_constants
 
 
-def get_trash_day_info(mycity_request, mycity_response):
+def get_trash_day_info(mycity_request):
     """
     Generates response object for a trash day inquiry.
 
-    :param mycity_request: MyCityRequestModel object
-    :param mycity_response: MyCityResponseModel object
-    :return: MyCityResponseModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     
     print(
         '[module: trash_intent]',
         '[method: get_trash_day_info]',
         'MyCityRequestDataModel received:',
-        str(mycity_response)
+        str(mycity_request)
     )
 
+    mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
         current_address = \
             mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]

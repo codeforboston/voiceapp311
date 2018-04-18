@@ -3,7 +3,7 @@ Functions for setting and getting the current user address
 """
 
 from . import intent_constants
-
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 def set_address_in_session(mycity_request):
     """
@@ -22,7 +22,7 @@ def set_address_in_session(mycity_request):
             mycity_request.intent_variables['Address']['value']
 
 
-def get_address_from_session(mycity_request, mycity_response):
+def get_address_from_session(mycity_request):
     """
     Looks for a current address in the session attributes and constructs a
     response based on whether one exists or not. If one exists, it is
@@ -39,6 +39,7 @@ def get_address_from_session(mycity_request, mycity_response):
         str(mycity_request)
     )
 
+    mycity_response = MyCityResponseDataModel()
     # print("GETTING ADDRESS FROM SESSION")
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = mycity_request.intent_name
@@ -61,7 +62,7 @@ def get_address_from_session(mycity_request, mycity_response):
     return mycity_response
 
 
-def request_user_address_response(mycity_request, mycity_response):
+def request_user_address_response(mycity_request):
     """
     Creates a response to request the user's address
 
@@ -76,6 +77,7 @@ def request_user_address_response(mycity_request, mycity_response):
         str(mycity_request)
     )
 
+    mycity_response = MyCityResponseDataModel()
     mycity_request.session_attributes[intent_constants.ADDRESS_PROMPTED_FROM_INTENT] = \
         mycity_request.intent_name
     
