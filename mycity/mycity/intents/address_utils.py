@@ -1,9 +1,15 @@
 """ 
+Utility functions for building addresses and finding the closest feature to an
+address.
+
 Common code used across intents to build a string using the MyCity object to
 represent the user's address
+
+
 """
 
 from . import intent_constants
+from arcgis.features import FeatureLayer
 from streetaddress import StreetAddressParser
 
 
@@ -36,3 +42,18 @@ def build_origin_address(mcd):
 
 
 
+def get_features_from_feature_server(url, query):
+    """
+    Given a url to a City of Boston Feature Server, return a list
+    of Features (for example, parking lots that are not full)
+
+    :param url: url for Feature Server
+    :param query: query to select features (example: "Spaces > 0")
+    :return features: list of all features
+    """
+    features = []
+    f = FeatureLayer(url = url)
+    feature_set = f.query(where = query)
+    for feature in feature_set:
+        features.append(feature.as_row[0]) # [0] = data, [1] = column names
+    return features

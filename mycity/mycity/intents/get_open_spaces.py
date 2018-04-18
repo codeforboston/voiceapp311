@@ -4,6 +4,7 @@ given address
 
 """
 
+from . import intent_constants
 from arcgis.features import Feature, FeatureLayer, FeatureSet
 
 
