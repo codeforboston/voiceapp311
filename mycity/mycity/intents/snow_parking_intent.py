@@ -1,10 +1,11 @@
 """Alexa intent used to find snow emergency parking"""
 
 from . import intent_constants
+from build_origin_address import build_origin_addres
 import csv
 import os
 import requests
-from streetaddress import StreetAddressParser
+
 
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
@@ -33,7 +34,7 @@ def get_snow_emergency_parking_intent(mcd):
 
     if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
 
-        origin_address = _build_origin_address(mcd)
+        origin_address = build_origin_address(mcd)
 
         print("Finding snow emergency parking for {}".format(origin_address))
 
@@ -58,33 +59,6 @@ def get_snow_emergency_parking_intent(mcd):
     mcd.reprompt_text = None
     return mcd
 
-
-def _build_origin_address(mcd):
-    """
-    Builds an address from an Alexa session. Assumes city is Boston if not
-    specified
-
-    :param mcd: MyCityDataModel object
-    :return: String containing full address
-    """
-    print(
-        '[method: _build_origin_address]',
-        'MyCityDataModel received:',
-        str(mcd)
-    )
-    # @todo: Repeated code -- look into using same code here and in trash intent
-    address_parser = StreetAddressParser()
-    current_address = \
-        mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
-    parsed_address = address_parser.parse(current_address)
-    origin_address = " ".join([parsed_address["house"],
-                               parsed_address["street_full"]])
-    if parsed_address["other"]:
-        origin_address += " {}".format(parsed_address["other"])
-    else:
-        origin_address += " Boston MA"
-
-    return origin_address
 
 
 def _get_snow_emergency_parking_location(origin_address):
