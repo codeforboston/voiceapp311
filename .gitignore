@@ -1,3 +1,17 @@
+# emacs copy files
+*~
+
+# virtualenv files/dirs
+
+bin/*
+lib/*
+include/*
+.Python
+
+pip-selfcheck.json
+
+
+
 # Logs
 logs
 *.log
