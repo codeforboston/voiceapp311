@@ -57,6 +57,8 @@ def get_alerts_intent(mcd):
 
     mcd.reprompt_text = None
     mcd.output_speech = alerts_to_speech_output(alerts)
+    if has_no_alerts(mcd.output_speech):
+        mcd.output_speech = get_no_alerts_response()
     mcd.should_end_session = True   # leave this as True for right now
     return mcd
 
@@ -118,3 +120,14 @@ def get_alerts():
         header += soup.find(class_= HEADER_3).text + ' '
     alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
+
+
+###########################################################
+# functions to generate a response if there are no alerts #
+###########################################################
+
+def has_no_alerts(speech_output):
+    return speech_output == ""
+
+def get_no_alerts_response():
+    return "There are no alerts!"
