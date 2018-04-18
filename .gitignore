@@ -59,6 +59,7 @@ typings/
 
 # dotenv environment variables file
 .env
+voiceapp_env/
 
 # pycharm config
 .idea/*

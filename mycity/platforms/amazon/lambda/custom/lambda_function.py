@@ -11,6 +11,8 @@ from mycity.mycity_controller import MyCityController
 def lambda_handler(event, context):
     """
     Translate the Amazon request to a MC_Request_Model and call main.
+    :param event: a dictionary containing event data
+    :param context: a LambdaContext object containing runtime info
     """
     print(
         "[module: lambda_function]",

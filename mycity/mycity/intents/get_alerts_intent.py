@@ -90,6 +90,10 @@ def prune_normal_responses(service_alerts):
 
 
 def get_alerts():
+    """
+    Scrapes alerts from Boston.gov
+    Returns a dictionary that maps alert names to detailed alert
+    """
     # get boston.gov as an httpResponse object
     url = request.urlopen("https://www.boston.gov")
     # feed the url object into beautiful soup
