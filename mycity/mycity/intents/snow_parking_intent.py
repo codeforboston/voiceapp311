@@ -1,10 +1,8 @@
 """Alexa intent used to find snow emergency parking"""
 
 from . import intent_constants
-import csv
 import location_utils
-import os
-import requests
+
 
 
 
@@ -12,7 +10,7 @@ import requests
 PARKING_LOCATION_KEY = "Parking Address"
 PARKING_INFO_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
     + 'services/SnowParking/FeatureServer/0'
-BOSTON_DATA_PARKING_ADDRESS_INDEX = 7
+PARKING_ADDRESS_INDEX = 7
 
 
 def get_snow_emergency_parking_intent(mcd):
@@ -35,7 +33,7 @@ def get_snow_emergency_parking_intent(mcd):
         print("Finding snow emergency parking for {}".format(origin_address))
 
         parking_address, driving_distance, driving_time = \
-            _get_snow_emergency_parking_location(origin_address)
+            _get_closest_parking_location(origin_address)
 
         if not parking_address:
             mcd.output_speech = "Uh oh. Something went wrong!"
@@ -57,7 +55,7 @@ def get_snow_emergency_parking_intent(mcd):
 
 
 
-def _get_snow_emergency_parking_location(origin_address):
+def _get_closest_parking_location(origin_address):
     """
     Calculates the address, distance, and driving time for the closest snow
     emergency parking location.
@@ -75,7 +73,7 @@ def _get_snow_emergency_parking_location(origin_address):
     parking_data = _get_emergency_parking_data()
     closest_parking_lot = \
         location_utils.get_closest_feature(origin_address,
-                                           BOSTON_DATA_PARKING_ADDRESS_INDEX,
+                                           PARKING_ADDRESS_INDEX,
                                            PARKING_LOCATION_KEY,
                                            error_message,
                                            parking_data)
