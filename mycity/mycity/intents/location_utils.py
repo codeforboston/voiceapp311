@@ -70,6 +70,19 @@ def get_closest_feature(origin, feature_address_index, feature_key, error_messag
     :return: dictionary with address, distance, and driving time for
     closest feature
     """
+    print(
+        '[method: location_utils.get_closest_feature]',
+        'origin received:',
+        origin,
+        'feature_address_index received:',
+        feature_address_index,
+        'feature_key received:',
+        feature_key,
+        'error_message received:',
+        error_message,
+        'features received:',
+        features
+    )
 
     dest_addresses = _get_dest_addresses(feature_address_index, features)
     location_driving_info = _get_driving_info(origin, feature_key, dest_addresses)
@@ -100,6 +113,15 @@ def get_features_from_feature_server(url, query):
     :param query: query to select features (example: "Spaces > 0")
     :return features: list of all features
     """
+
+    print(
+        '[method: location_utils.get_features_from_feature_server]',
+        'url received:',
+        url,
+        'query received:',
+        query
+    )
+
     features = []
     f = FeatureLayer(url = url)
     feature_set = f.query(where = query)
@@ -117,7 +139,6 @@ def _get_driving_info(origin, feature_key, dest_addresses):
     """
     Gets the driving info from the provided origin address to each destination
     address
-
     :param origin: string containing driving starting address
     :param destinations: array of address to calculate driving info from origin
     address
@@ -127,7 +148,7 @@ def _get_driving_info(origin, feature_key, dest_addresses):
     address
     """
     print(                      # not sure if it's within our style guidelines to have this here 
-        '[method: _get_driving_info]',
+        '[method: location_utils._get_driving_info]',
         'origin received:',
         origin,
         'destinations received:',
@@ -157,6 +178,13 @@ def _setup_google_maps_query_params(origin, destinations):
     :return: a dictionary to use as url parameters for query
 
     """
+    print(                      
+        '[method: location_utils._setup_google_maps_query]',
+        'origin received:',
+        origin,
+        'destinations received:',
+        destinations
+    )
     return {"origins": origin,
             "destinations": '|'.join(destinations),
             "key": GOOGLE_MAPS_API_KEY,
