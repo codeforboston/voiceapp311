@@ -55,7 +55,8 @@ def build_origin_address(mcd):
     return origin_address
 
 
-def get_closest_feature(origin, feature_address_index, feature_key, error_message, features):
+def get_closest_feature(origin, feature_address_index, feature_key, 
+                        error_message, features):
     """
     Calculates the nearest feature given an origin
 
@@ -85,7 +86,8 @@ def get_closest_feature(origin, feature_address_index, feature_key, error_messag
     )
 
     dest_addresses = _get_dest_addresses(feature_address_index, features)
-    location_driving_info = _get_driving_info(origin, feature_key, dest_addresses)
+    location_driving_info = _get_driving_info(origin, feature_key, 
+                                              dest_addresses)
     if len(location_driving_info) > 0:
         closest_location_info = min(location_driving_info,
                                     key= lambda x: x[DRIVING_DISTANCE_VALUE_KEY])
