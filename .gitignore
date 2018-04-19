@@ -85,9 +85,9 @@ BostonData/lambda_function/requests*
 BostonData/lambda_function/street*
 BostonData/lambda_function/urllib3*
 
-# pycache 
+# pycache and pyc files
 
-__pycache__/
-
+*/__pycache__
+*.pyc
 
 lambda_function.zip
