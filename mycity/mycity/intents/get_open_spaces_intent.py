@@ -39,9 +39,9 @@ def get_open_spaces_intent(mdc):
             mcd.output_speech = "Uh oh. Something went wrong!"
         else:
             mcd.output_speech = \
-                "The closest open space is at {}. " \
-                "It is {} away and should take you {} to drive "\ 
-                "there".format(open_space_address, driving_distance, 
+                ("The closest open space is at {}. "
+                "It is {} away and should take you {} to drive "
+                "there").format(open_space_address, driving_distance, 
                                driving_time)
         mcd.should_end_session = False
     else:
@@ -67,7 +67,7 @@ def _get_closest_open_space(origin_address):
         '[method: _get_closest_open_space]',
         'origin_address received:',
         origin_address
-    )
+        )
     error_message = "Didn't find any open spaces" 
     all_open_spaces = _get_open_spaces()
     closest_open_space = \
@@ -86,6 +86,7 @@ def _get_all_open_spaces():
     :return: array of emergency parking info as provided from City's ArcGIS
     Feature Server for snow parking lots
     """
+
     print(
         '[method: _get_all_open_spaces]'
     )     

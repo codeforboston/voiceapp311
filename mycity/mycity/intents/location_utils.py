@@ -47,7 +47,7 @@ def build_origin_address(mcd):
         mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
     parsed_address = address_parser.parse(current_address)
     origin_address = " ".join([parsed_address["house"],
-                               parsed_address["street_full"]])
+                               parsed_address["street_full"]]) # how 
     if parsed_address["other"]:
         origin_address += " {}".format(parsed_address["other"])
     else:

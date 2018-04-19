@@ -1,6 +1,6 @@
 """Alexa intent used to find snow emergency parking"""
 
-from . import intent_constants
+import intent_constants
 import location_utils
 
 
@@ -90,6 +90,6 @@ def _get_emergency_parking_data():
     print(
         '[method: _get_emergency_parking_data]'
     )     
-    query = "Space > 0"
+    query = "Spaces > 0"
     return location_utils.get_features_from_feature_server(PARKING_INFO_URL, 
                                                            query)
