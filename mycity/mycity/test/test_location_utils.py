@@ -1,8 +1,11 @@
 import os
 import sys
 
+# TODO: running test_suite will only work when executed from this dir
+# Configure test dir/suite so tests can be run from deploy_tools
 sys.path.insert(0, os.getcwd() + '/../') # this seems kludgy. sure there's a better way
                                  # to do this
+sys.path.insert(0, os.getcwd() + '/../intents')
 
 import ast
 from intents import intent_constants

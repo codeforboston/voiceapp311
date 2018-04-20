@@ -4,13 +4,16 @@ given address
 
 """
 
-from . import intent_constants
+import intent_constants
 import location_utils
 
 # Constants
 OPEN_SPACES_LOCATION_KEY = "Open Space Address"
 OPEN_SPACES_INFO_URL = "http://gis.cityofboston.gov/arcgis/rest/" \
         + "services/EnvironmentEnergy/OpenData/MapServer/7"
+# todo: it would be good if we could preserve the name of an open 
+# space while looking up driving directions
+OPEN_SPACES_NAME_INDEX = 1
 OPEN_SPACES_ADDRESS_INDEX = 7
 
 
@@ -21,7 +24,6 @@ def get_open_spaces_intent(mdc):
 
     :param mcd: a MyCityDataModel
     :return mcd: the MyCityDataModel populated with a new speech response
-
     """
     print(
         '[method: get_open_spaces_intent]',
@@ -33,13 +35,13 @@ def get_open_spaces_intent(mdc):
         origin_address = location_utils.build_origin_address(mcd)
         print("Finding a nearby open space for {}".format(origin_address))
         open_space_address, driving_distance, driving_time = \
-            _get_closest_open_space(origin_adress)
+            _get_closest_open_space(origin_address)
 
         if not open_space_address:
             mcd.output_speech = "Uh oh. Something went wrong!"
         else:
             mcd.output_speech = \
-                ("The closest open space is at {}. "
+                ("The closest public park or playground is at {}. "
                 "It is {} away and should take you {} to drive "
                 "there").format(open_space_address, driving_distance, 
                                driving_time)
@@ -55,7 +57,7 @@ def get_open_spaces_intent(mdc):
     
 
 def _get_closest_open_space(origin_address):
- """
+    """
     Calculates the address, distance, and driving time for the closest
     open space.
 
@@ -90,7 +92,7 @@ def _get_all_open_spaces():
     print(
         '[method: _get_all_open_spaces]'
     )     
-    query = "1=1"
+    query = "Ownership not like 'Private'"  # exclude private spaces 
     return location_utils.get_features_from_feature_server(OPEN_SPACES_INFO_URL, 
                                                            query)
 

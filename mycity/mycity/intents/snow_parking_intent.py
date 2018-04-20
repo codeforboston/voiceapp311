@@ -10,6 +10,9 @@ import location_utils
 PARKING_LOCATION_KEY = "Parking Address"
 PARKING_INFO_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
     + 'services/SnowParking/FeatureServer/0'
+# todo: modify location_utils functions to keep name of parking lot available
+# for concating to speech output 
+PARKING_NAME_INDEX = 6
 PARKING_ADDRESS_INDEX = 7
 
 
