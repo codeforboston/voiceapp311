@@ -1,9 +1,8 @@
 """
 Functions for Alexa responses related to trash day
 """
-
+from location_utils import build_origin_address
 from .custom_errors import InvalidAddressError, BadAPIResponse
-from streetaddress import StreetAddressParser
 import requests
 from . import intent_constants
 
@@ -22,15 +21,8 @@ def get_trash_day_info(mcd):
 
     if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
         current_address = \
-            mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
-
-        # grab relevant information from session address
-        address_parser = StreetAddressParser()
-        a = address_parser.parse(current_address)
-        # currently assumes that trash day is the same for all units at
-        # the same street address
-        address = str(a['house']) + " " + str(a['street_name'])
-
+            mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] 
+        address = build_origin_address(mcd) # refactored code into build_origin_address.py
         try:
             trash_days = get_trash_and_recycling_days(address)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
