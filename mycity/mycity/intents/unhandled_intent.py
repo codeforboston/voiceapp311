@@ -1,21 +1,24 @@
 """
 Function(s) for dealing with unhandled intents
 """
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
-
-def unhandled_intent(mcd):
+def unhandled_intent(mycity_request):
     """
     Deals with unhandled intents by prompting the user again
     """
     print(
         '[module: unhandled_intent]',
         '[method: unhandled_intent]',
-        'MyCityDataModel received:',
-        str(mcd)
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
     )
-    mcd.reprompt_text = "So, what can I help you with today?"
-    mcd.output_speech = "I'm not sure what you're asking me. " \
+    mycity_response = MyCityResponseDataModel()
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = "Unhandled intent"
+    mycity_response.reprompt_text = "So, what can I help you with today?"
+    mycity_response.output_speech = "I'm not sure what you're asking me. " \
                         "Please ask again."
-    mcd.should_end_session = False
+    mycity_response.should_end_session = False
 
-    return mcd
+    return mycity_response

@@ -1,4 +1,4 @@
-class MyCityDataModel:
+class MyCityResponseDataModel:
     """
     Represents a request from a voice platform.
 
@@ -6,13 +6,8 @@ class MyCityDataModel:
     """
 
     def __init__(self):
-        self._request_type = None
-        self._request_id = None
-        self._is_new_session = None
-        self._session_id = None
         self._session_attributes = {}
-        self._application_id = None
-        self._intent_name = None
+        self._card_title = None
         self._output_speech = None
         self._reprompt_text = None
         self._should_end_session = None
@@ -20,68 +15,22 @@ class MyCityDataModel:
 
     def __str__(self):
         return """\
-        <MyCityDataModel
-            request_type={},
-            request_id={},
-            is_new_session={},
-            session_id={},
+        <MyCityResponseDataModel
             session_attributes={},
-            application_id={},
-            intent_name={},
+            card_title={},
             output_speech={},
             reprompt_text={},
             should_end_session={},
             intent_variables={}
         >
         """.format(
-            self._request_type,
-            self._request_id,
-            self._is_new_session,
-            self._session_id,
             self._session_attributes,
-            self._application_id,
-            self._intent_name,
+            self._card_title,
             self._output_speech,
             self._reprompt_text,
             self._should_end_session,
             self._intent_variables
         )
-
-    @property
-    def request_type(self):
-        """The type of this request."""
-        return self._request_type
-
-    @request_type.setter
-    def request_type(self, value):
-        self._request_type = value
-
-    @property
-    def request_id(self):
-        """The unique identifier for this request."""
-        return self._request_id
-
-    @request_id.setter
-    def request_id(self, value):
-        self._request_id = value
-
-    @property
-    def is_new_session(self):
-        """True if this is a new session, false otherwise.."""
-        return self._is_new_session
-
-    @is_new_session.setter
-    def is_new_session(self, value):
-        self._is_new_session = value
-
-    @property
-    def session_id(self):
-        """Unique identifier for this session."""
-        return self._session_id
-
-    @session_id.setter
-    def session_id(self, value):
-        self._session_id = value
 
     @property
     def session_attributes(self):
@@ -93,22 +42,13 @@ class MyCityDataModel:
         self._session_attributes = value
 
     @property
-    def application_id(self):
-        """Unique identifier for this application (a.k.a. skill id)."""
-        return self._application_id
+    def card_title(self):
+        """An object containing the title of the card that will be shown."""
+        return self._card_title
 
-    @application_id.setter
-    def application_id(self, value):
-        self._application_id = value
-
-    @property
-    def intent_name(self):
-        """The name of the intent being handled."""
-        return self._intent_name
-
-    @intent_name.setter
-    def intent_name(self, value):
-        self._intent_name = value
+    @card_title.setter
+    def card_title(self, value):
+        self._card_title = value
 
     @property
     def output_speech(self):

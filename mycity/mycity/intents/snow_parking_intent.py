@@ -5,7 +5,7 @@ import csv
 import os
 import requests
 from streetaddress import StreetAddressParser
-
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 
@@ -18,22 +18,24 @@ PARKING_LOCATION_KEY = "Parking Address"
 BOSTON_DATA_PARKING_ADDRESS_INDEX = 9
 
 
-def get_snow_emergency_parking_intent(mcd):
+def get_snow_emergency_parking_intent(mycity_request):
     """
-    Populate MyCityDataModel with snow emergency parking response information.
+    Populate MyCityResponseDataModel with snow emergency parking response information.
 
-    :param mcd:
-    :return:
+    :param mycity_request: MyCityRequestModel object
+    :param mycity_response: MyCityResponseModel object
+    :return: MyCityResponseModel object
     """
     print(
         '[method: get_snow_emergency_parking_intent]',
-        'MyCityDataModel received:',
-        str(mcd)
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
     )
 
-    if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
+    mycity_response = MyCityResponseDataModel()
+    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
 
-        origin_address = _build_origin_address(mcd)
+        origin_address = _build_origin_address(mycity_request)
 
         print("Finding snow emergency parking for {}".format(origin_address))
 
@@ -41,41 +43,44 @@ def get_snow_emergency_parking_intent(mcd):
             _get_snow_emergency_parking_location(origin_address)
 
         if not parking_address:
-            mcd.output_speech = "Uh oh. Something went wrong!"
+            mycity_response.output_speech = "Uh oh. Something went wrong!"
         else:
-            mcd.output_speech = \
+            mycity_response.output_speech = \
                 "The closest snow emergency parking location is at " \
                 "{}. It is {} away and should take you {} to drive " \
                 "there".format(parking_address, driving_distance, driving_time)
 
-        mcd.should_end_session = False
+        mycity_response.should_end_session = False
     else:
         print("Error: Called snow_parking_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
-    mcd.reprompt_text = None
-    return mcd
+    mycity_response.reprompt_text = None
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = mycity_request.intent_name
+    
+    return mycity_response
 
 
-def _build_origin_address(mcd):
+def _build_origin_address(mycity_request):
     """
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
 
-    :param mcd: MyCityDataModel object
+    :param mycity_request: MyCityRequestDataModel object
     :return: String containing full address
     """
     print(
         '[method: _build_origin_address]',
-        'MyCityDataModel received:',
-        str(mcd)
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
     )
     # @todo: Repeated code -- look into using same code here and in trash intent
     address_parser = StreetAddressParser()
     current_address = \
-        mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+        mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
     parsed_address = address_parser.parse(current_address)
     origin_address = " ".join([parsed_address["house"],
                                parsed_address["street_full"]])
