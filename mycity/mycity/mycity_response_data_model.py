@@ -46,7 +46,7 @@ class MyCityResponseDataModel:
         """An object containing the title of the card that will be shown."""
         return self._card_title
 
-    @session_attributes.setter
+    @card_title.setter
     def card_title(self, value):
         self._card_title = value
 
