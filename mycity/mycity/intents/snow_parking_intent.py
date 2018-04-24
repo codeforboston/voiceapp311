@@ -1,7 +1,7 @@
 """Alexa intent used to find snow emergency parking"""
 
-import intent_constants
-import location_utils
+from . import intent_constants
+from . import location_utils
 
 # Constants 
 PARKING_LOCATION_KEY = "Parking Address"
@@ -29,12 +29,17 @@ def get_snow_emergency_parking_intent(mcd):
     if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
 
         origin_address = location_utils.build_origin_address(mcd)
-        print("AAAAAA")
-        print(origin_address)
-        # BUG: Too many values to unpack here!
-        parking_address, driving_distance, driving_time, something_else = \
-            _get_closest_parking_location(origin_address)
-    
+        closest_parking_location = _get_closest_parking_location(origin_address)
+
+        # closest_location_info dictionary. c_l_i has keys
+        # location_utils.DRIVING_DISTANCE_TEXT_KEY and
+        # location_utils.DRIVING_TIME_TEXT_KEY and PARKING_LOCATION_KEY
+        closest_location_info = _get_closest_parking_location(origin_address) 
+        parking_address = closest_location_info[PARKING_LOCATION_KEY]
+        driving_distance = \
+            closest_location_info[location_utils.DRIVING_DISTANCE_TEXT_KEY]
+        driving_time = \
+            closest_location_info[location_utils.DRIVING_TIME_TEXT_KEY]
         if not parking_address:
             mcd.output_speech = "Uh oh. Something went wrong!"
         else:

@@ -4,8 +4,8 @@ given address
 
 """
 
-import intent_constants
-import location_utils
+from . import intent_constants
+from . import location_utils
 
 # Constants
 OPEN_SPACES_LOCATION_KEY = "Open Space Address"

@@ -5,7 +5,7 @@ address.
 """
 
 from arcgis.features import FeatureLayer
-import intent_constants
+from . import intent_constants
 import os
 import requests
 from streetaddress import StreetAddressParser
@@ -97,12 +97,10 @@ def get_closest_feature(origin, feature_address_index,
         closest_location_info = { feature_type: False,
                                   DRIVING_DISTANCE_TEXT_KEY: False,
                                   DRIVING_TIME_TEXT_KEY: False }
-
-    return closest_location_info # this is the problem!!!! returning too many
-                                 # values, so only select from closest_location
-                                 # dict the values you want
-
-
+    closest_location_info = \
+        _parse_closest_location_info(feature_type, closest_location_info)
+    
+    return closest_location_info
 
 
 ########################################################################
@@ -178,6 +176,7 @@ def _get_driving_info(origin, feature_type, destinations):
             print("Failed to get driving directions")
     return driving_infos
 
+
 def _setup_google_maps_query_params(origin, destinations):
     """
     Builds a dictionary for querying Google Maps 
@@ -239,6 +238,18 @@ def _parse_driving_data(all_driving_data, feature_type, destinations):
     each address
     
     """
+    print(
+        '[method: location_utils._parse_driving_data]',
+        'all_driving_data received:',
+        all_driving_data,
+        'feature_type received:',
+        feature_type,
+        'destinations received:',
+        destinations
+    )
+
+
+
     driving_infos = []
     try:
         driving_data_row = all_driving_data["rows"][0]
@@ -262,3 +273,27 @@ def _parse_driving_data(all_driving_data, feature_type, destinations):
         pass
     finally:
         return driving_infos
+
+
+def _parse_closest_location_info(feature_type, closest_location_info):
+    """
+    Return a sub-dictionary of the dictionary returned by the Google Maps
+    estimated driving time call
+
+    :param: closest_location_info: a dictionary with keys
+    'Driving distance', 'Driving distance text', 'Driving time', 
+    'Driving time text', feature_type.
+
+    :return pruned: a dictionary with keys feature_type,
+                                  DRIVING_DISTANCE_TEXT_KEY,
+                                  DRIVING_TIME_TEXT_KEY
+    """
+    print(
+        '[method: location_utils._parse_closest_location_info]',
+        'feature_type received:',
+        feature_type,
+        'closest_location_info received:',
+        closest_location_info
+    )
+    keys_to_keep = [feature_type, DRIVING_DISTANCE_TEXT_KEY, DRIVING_TIME_TEXT_KEY]
+    return {key:closest_location_info[key] for key in keys_to_keep}

@@ -89,3 +89,17 @@ class LocationUtilsTestCase(unittest.TestCase):
         self.assertEqual(origin, to_test["origins"])
         self.assertEqual(dests, to_test["destinations"].split("|"))
         self.assertEqual("imperial", to_test["units"])
+
+    def test_parse_closest_location_info(self):
+        feature_type = 'Fake feature'
+        closest_location_info = {'Driving distance': 'fake',
+                              'Driving distance text': 'also fake',
+                              'Driving time': 'triply fake',
+                              'Driving time text': 'fake like a mug',
+                              feature_type: 'fake fake fake fake'}
+        to_test = location_utils._parse_closest_location_info(feature_type, closest_location_info)
+        self.assertIn(location_utils.DRIVING_DISTANCE_TEXT_KEY, to_test)
+        self.assertIn(location_utils.DRIVING_TIME_TEXT_KEY, to_test)
+        self.assertIn(feature_type, to_test)
+        self.assertNotIn('Driving time', to_test)
+        self.assertNotIn('Driving distance', to_test)
