@@ -19,7 +19,7 @@ and street cleaning is running on a normal schedule."
 from bs4 import BeautifulSoup
 from urllib import request
 from enum import Enum
-
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 class Services(Enum):
     STREET_CLEANING = 'Street Cleaning'
@@ -40,25 +40,32 @@ HEADER_2 = "str str--r m-v300"
 HEADER_3 = "t--sans t--cb lh--000 m-b500"
 
 
-def get_alerts_intent(mcd):
+def get_alerts_intent(mycity_request):
     """
     Generate response object with information about citywide alerts
+
+    :param mycity_request: MyCityRequestModel object
+    :param mycity_response: MyCityResponseModel object
+    :return: MyCityResponseModel object
     """
     print(
         '[method: get_alerts_intent]',
-        'MyCityDataModel received:\n',
-        str(mcd)
+        'MyCityRequestDataModel received:\n',
+        str(mycity_request)
     )
 
+    mycity_response = MyCityResponseDataModel()
     alerts = get_alerts()
     print("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
     alerts = prune_normal_responses(alerts)
     print("[dictionary after pruning]:\n" + str(alerts))
 
-    mcd.reprompt_text = None
-    mcd.output_speech = alerts_to_speech_output(alerts)
-    mcd.should_end_session = True   # leave this as True for right now
-    return mcd
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.reprompt_text = None
+    mycity_response.output_speech = alerts_to_speech_output(alerts)
+    mycity_response.should_end_session = True   # leave this as True for right now
+    return mycity_response
 
 
 def alerts_to_speech_output(alerts):
@@ -98,6 +105,10 @@ def prune_normal_responses(service_alerts):
 
 
 def get_alerts():
+    """
+    Scrapes alerts from Boston.gov
+    Returns a dictionary that maps alert names to detailed alert
+    """
     # get boston.gov as an httpResponse object
     url = request.urlopen(BOSTON_GOV)
     # feed the url object into beautiful soup

@@ -1,7 +1,11 @@
 """Alexa intent used to find snow emergency parking"""
 
-import intent_constants
-import location_utils
+from . import intent_constants
+import csv
+import os
+import requests
+from streetaddress import StreetAddressParser
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 
 
@@ -13,22 +17,26 @@ PARKING_INFO_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
 PARKING_ADDRESS_INDEX = 7
 
 
-def get_snow_emergency_parking_intent(mcd):
+def get_snow_emergency_parking_intent(mycity_request):
     """
-    Populate MyCityDataModel with snow emergency parking response information.
+    Populate MyCityResponseDataModel with snow emergency parking response information.
 
-    :param mcd:
-    :return:
+    :param mycity_request: MyCityRequestModel object
+    :param mycity_response: MyCityResponseModel object
+    :return: MyCityResponseModel object
     """
     print(
         '[method: get_snow_emergency_parking_intent]',
-        'MyCityDataModel received:',
-        str(mcd)
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
     )
 
-    if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
+    mycity_response = MyCityResponseDataModel()
+    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
 
-        origin_address = location_utils.build_origin_address(mcd)
+
+        origin_address = _build_origin_address(mycity_request)
+
 
         print("Finding snow emergency parking for {}".format(origin_address))
 
@@ -36,60 +44,53 @@ def get_snow_emergency_parking_intent(mcd):
             _get_closest_parking_location(origin_address)
 
         if not parking_address:
-            mcd.output_speech = "Uh oh. Something went wrong!"
+            mycity_response.output_speech = "Uh oh. Something went wrong!"
         else:
-            mcd.output_speech = \
+            mycity_response.output_speech = \
                 "The closest snow emergency parking location is at " \
                 "{}. It is {} away and should take you {} to drive " \
                 "there".format(parking_address, driving_distance, driving_time)
 
-        mcd.should_end_session = False
+        mycity_response.should_end_session = False
     else:
         print("Error: Called snow_parking_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
-    mcd.reprompt_text = None
-    return mcd
+    mycity_response.reprompt_text = None
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = mycity_request.intent_name
+    
+    return mycity_response
 
 
-
-def _get_closest_parking_location(origin_address):
+def _build_origin_address(mycity_request):
     """
-    Calculates the address, distance, and driving time for the closest snow
-    emergency parking location.
+    Builds an address from an Alexa session. Assumes city is Boston if not
+    specified
 
-    :param origin_address: string containing the address used to find the
-    closest emergency parking location
-    :return: parking address, distance, and driving time
+    :param mycity_request: MyCityRequestDataModel object
+    :return: String containing full address
     """
     print(
-        '[method: _get_snow_emergency_parking_location]',
-        'origin_address received:',
-        origin_address
+        '[method: _build_origin_address]',
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
     )
-    error_message = "Didn't find any parking locations"
-    parking_data = _get_emergency_parking_data()
-    closest_parking_lot = \
-        location_utils.get_closest_feature(origin_address,
-                                           PARKING_ADDRESS_INDEX,
-                                           PARKING_LOCATION_KEY,
-                                           error_message,
-                                           parking_data)
-    return closest_parking_lot
+    # @todo: Repeated code -- look into using same code here and in trash intent
+    address_parser = StreetAddressParser()
+    current_address = \
+        mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+    parsed_address = address_parser.parse(current_address)
+    origin_address = " ".join([parsed_address["house"],
+                               parsed_address["street_full"]])
+    if parsed_address["other"]:
+        origin_address += " {}".format(parsed_address["other"])
+    else:
+        origin_address += " Boston MA"
 
-                                                             
-def _get_emergency_parking_data():
-    """
-    Gets the emergency parking info from Boston Data
+    return origin_address
 
-    :return: array of emergency parking info as provided from City's ArcGIS
-    Feature Server for snow parking lots
-    """
-    print(
-        '[method: _get_emergency_parking_data]'
-    )     
-    query = "Spaces > 0"
-    return location_utils.get_features_from_feature_server(PARKING_INFO_URL, 
-                                                           query)
+
+def _get_snow_emergency_parking_location(origin_address):
