@@ -1,49 +1,65 @@
 """
 Functions for Alexa responses related to trash day
 """
-from location_utils import build_origin_address
+from .location_utils import build_origin_address
 from .custom_errors import InvalidAddressError, BadAPIResponse
+from streetaddress import StreetAddressParser
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 import requests
 from . import intent_constants
 
 
-def get_trash_day_info(mcd):
+def get_trash_day_info(mycity_request):
     """
     Generates response object for a trash day inquiry.
+
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
-    mcd.reprompt_text = None
+    
     print(
         '[module: trash_intent]',
         '[method: get_trash_day_info]',
-        'MyCityDataModel received:',
-        str(mcd)
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
     )
 
-    if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
+    mycity_response = MyCityResponseDataModel()
+    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
         current_address = \
-            mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] 
-        address = build_origin_address(mcd) # refactored code into build_origin_address.py
+            mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+
+        # grab relevant information from session address
+        address_parser = StreetAddressParser()
+        a = address_parser.parse(current_address)
+        # currently assumes that trash day is the same for all units at
+        # the same street address
+        address = str(a['house']) + " " + str(a['street_name'])
+
         try:
             trash_days = get_trash_and_recycling_days(address)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
 
-            mcd.output_speech = "Trash and recycling is picked up on {}."\
+            mycity_response.output_speech = "Trash and recycling is picked up on {}."\
                 .format(trash_days_speech)
 
         except InvalidAddressError:
-            mcd.output_speech = "I can't seem to find {}. Try another address"\
+            mycity_response.output_speech = "I can't seem to find {}. Try another address"\
                .format(address)
         except BadAPIResponse:
-            mcd.output_speech = "Hmm something went wrong. Maybe try again?"
+            mycity_response.output_speech = "Hmm something went wrong. Maybe try again?"
 
-        mcd.should_end_session = False
+        mycity_response.should_end_session = False
     else:
         print("Error: Called trash_day_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
-    return mcd
+    mycity_response.reprompt_text = None
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = mycity_request.intent_name
+    return mycity_response
 
 
 def get_trash_and_recycling_days(address):
