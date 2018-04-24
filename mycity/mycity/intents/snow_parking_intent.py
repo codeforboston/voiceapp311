@@ -3,14 +3,11 @@
 import intent_constants
 import location_utils
 
-
-
-
 # Constants 
 PARKING_LOCATION_KEY = "Parking Address"
 PARKING_INFO_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
     + 'services/SnowParking/FeatureServer/0'
-# todo: modify location_utils functions to keep name of parking lot available
+# TODO: modify location_utils functions to keep name of parking lot available
 # for concating to speech output 
 PARKING_NAME_INDEX = 6
 PARKING_ADDRESS_INDEX = 7
@@ -32,12 +29,12 @@ def get_snow_emergency_parking_intent(mcd):
     if intent_constants.CURRENT_ADDRESS_KEY in mcd.session_attributes:
 
         origin_address = location_utils.build_origin_address(mcd)
-
-        print("Finding snow emergency parking for {}".format(origin_address))
-
-        parking_address, driving_distance, driving_time = \
+        print("AAAAAA")
+        print(origin_address)
+        # BUG: Too many values to unpack here!
+        parking_address, driving_distance, driving_time, something_else = \
             _get_closest_parking_location(origin_address)
-
+    
         if not parking_address:
             mcd.output_speech = "Uh oh. Something went wrong!"
         else:

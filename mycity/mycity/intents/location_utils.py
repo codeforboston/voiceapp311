@@ -4,8 +4,8 @@ address.
 
 """
 
-import intent_constants
 from arcgis.features import FeatureLayer
+import intent_constants
 import os
 import requests
 from streetaddress import StreetAddressParser
@@ -17,7 +17,7 @@ from streetaddress import StreetAddressParser
 
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
-GOOGLE_MAPS_URL = "https://maps.googleapis.com/maps/distancematrix/json"
+GOOGLE_MAPS_URL = "https://maps.googleapis.com/maps/api/distancematrix/json"
 DRIVING_DISTANCE_VALUE_KEY = "Driving distance"
 DRIVING_DISTANCE_TEXT_KEY = "Driving distance text"
 DRIVING_TIME_VALUE_KEY = "Driving time"
@@ -87,7 +87,7 @@ def get_closest_feature(origin, feature_address_index,
     )
 
     dest_addresses = _get_dest_addresses(feature_address_index, features)
-    location_driving_info = _get_driving_info(origin, feature_name, feature_type, 
+    location_driving_info = _get_driving_info(origin, feature_type, 
                                               dest_addresses)
     if len(location_driving_info) > 0:
         closest_location_info = min(location_driving_info,
@@ -97,7 +97,12 @@ def get_closest_feature(origin, feature_address_index,
         closest_location_info = { feature_type: False,
                                   DRIVING_DISTANCE_TEXT_KEY: False,
                                   DRIVING_TIME_TEXT_KEY: False }
-    return closest_location_info
+
+    return closest_location_info # this is the problem!!!! returning too many
+                                 # values, so only select from closest_location
+                                 # dict the values you want
+
+
 
 
 ########################################################################
@@ -138,7 +143,7 @@ def get_features_from_feature_server(url, query):
 #############################################
 
 
-def _get_driving_info(origin, feature_type, dest_addresses):
+def _get_driving_info(origin, feature_type, destinations):
     """
     Gets the driving info from the provided origin address to each destination
     address
@@ -163,14 +168,15 @@ def _get_driving_info(origin, feature_type, dest_addresses):
 
     url_parameters = _setup_google_maps_query_params(origin, destinations)
     driving_directions_url = GOOGLE_MAPS_URL
+    driving_infos = None
     with requests.Session() as session:
         response = session.get(driving_directions_url, params=url_parameters)
-
         if response.status_code == requests.codes.ok:
             all_driving_data = response.json()
             driving_infos = _parse_driving_data(all_driving_data, feature_type, destinations)
+        else:
+            print("Failed to get driving directions")
     return driving_infos
-
 
 def _setup_google_maps_query_params(origin, destinations):
     """
@@ -212,7 +218,7 @@ def _get_dest_addresses(feature_address_index, features):
 
     # build array of each feature location
     for feature in features:
-        dest_address = feature[feature_address_index]
+        dest_address = feature[feature_address_index].rstrip() # to strip \r\n 
         dest_address += " Boston, MA"
         dest_addresses.append(dest_address)
     
@@ -236,25 +242,23 @@ def _parse_driving_data(all_driving_data, feature_type, destinations):
     driving_infos = []
     try:
         driving_data_row = all_driving_data["rows"][0]
-        for (driving_data, address) in \
-                zip(driving_data_row["elements"], destinations):
-                driving_data_row = all_driving_data["rows"][0]
-                try:
-                    driving_info = {
-                        DRIVING_DISTANCE_VALUE_KEY:
-                            driving_data["distance"]["value"],
-                        DRIVING_DISTANCE_TEXT_KEY:
-                            driving_data["distance"]["text"],
-                        DRIVING_TIME_VALUE_KEY:
-                            driving_data["duration"]["value"],
-                        DRIVING_TIME_TEXT_KEY:
-                            driving_data["duration"]["text"],
-                        feature_type: address}
-                    driving_infos.append(driving_info)
-                except KeyError:
-                    print("Could not parse driving info {}".format(driving_data))
+        for (driving_data, address) in zip(driving_data_row["elements"], 
+                                           destinations):
+            try:
+                driving_info = {
+                    DRIVING_DISTANCE_VALUE_KEY:
+                        driving_data["distance"]["value"],
+                    DRIVING_DISTANCE_TEXT_KEY:
+                        driving_data["distance"]["text"],
+                    DRIVING_TIME_VALUE_KEY:
+                        driving_data["duration"]["value"],
+                    DRIVING_TIME_TEXT_KEY:
+                        driving_data["duration"]["text"],
+                    feature_type: address}
+                driving_infos.append(driving_info)
+            except KeyError:
+                print("Could not parse driving info {}".format(driving_data))
     except KeyError:
+        pass
+    finally:
         return driving_infos
-    else:
-        print("Failed to get driving directions")
-    return driving_infos
