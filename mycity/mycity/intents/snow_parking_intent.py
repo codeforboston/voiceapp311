@@ -3,10 +3,6 @@
 
 from . import intent_constants
 from . import location_utils
-import csv
-import os
-import requests
-from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 
