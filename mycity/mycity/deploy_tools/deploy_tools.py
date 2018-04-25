@@ -40,7 +40,7 @@ def zip_lambda_function_directory(zip_target_dir):
     zip_file.close()
 
 
-def install_pip_dependencies(requirements_path):
+def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     """
     Uses requirements.txt to install all external libraries used by the project
     in the temporary directory the .zip file is created from.
@@ -50,6 +50,10 @@ def install_pip_dependencies(requirements_path):
     """
     print('Installing dependencies ... ', end='')
     install_args = ["install", "-r", requirements_path, "-t", TEMP_DIR_PATH]
+    pip.main(install_args)
+    print('Installing dependencies from requirements_no_deps.txt ...', end='')
+    install_args = ["install", "--no-deps", "-r", requirements_path_no_deps,
+                    "-t", TEMP_DIR_PATH]
     pip.main(install_args)
     print('DONE')
 
@@ -69,10 +73,11 @@ def package_lambda_function():
     shutil.copy(LAMBDA_FUNCTION_PATH, TEMP_DIR_PATH)
     shutil.copytree(MYCITY_PATH, os.path.join(TEMP_DIR_PATH, 'mycity'))
     requirements_path = os.path.join(os.getcwd(), 'requirements.txt')
+    requirements_path_no_deps = os.path.join(os.getcwd(), 'requirements_no_deps.txt')
     shutil.copy(requirements_path, TEMP_DIR_PATH)
     print('DONE')
     # install dependencies
-    install_pip_dependencies(requirements_path)
+    install_pip_dependencies(requirements_path, requirements_no_deps)
     # build zip file in project root
     zip_lambda_function_directory(PROJECT_ROOT)
     # delete temp directory
