@@ -1,11 +1,10 @@
 """ 
 Utility functions for building addresses and finding the closest feature to an
 address.
-
 """
 
-import intent_constants
 from arcgis.features import FeatureLayer
+from . import intent_constants
 import os
 import requests
 from streetaddress import StreetAddressParser
@@ -17,7 +16,7 @@ from streetaddress import StreetAddressParser
 
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
-GOOGLE_MAPS_URL = "https://maps.googleapis.com/maps/distancematrix/json"
+GOOGLE_MAPS_URL = "https://maps.googleapis.com/maps/api/distancematrix/json"
 DRIVING_DISTANCE_VALUE_KEY = "Driving distance"
 DRIVING_DISTANCE_TEXT_KEY = "Driving distance text"
 DRIVING_TIME_VALUE_KEY = "Driving time"
@@ -28,23 +27,22 @@ DRIVING_TIME_TEXT_KEY = "Driving time text"
 # Public functions #
 ####################
 
-def build_origin_address(mcd):
+def build_origin_address(mcrd):
     """
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
-
-    :param mcd: MyCityDataModel object
+    :param mcrd: MyCityRequestDataModel object
     :return: String containing full address
     """
     print(
         '[method: _build_origin_address]',
-        'MyCityDataModel received:',
-        str(mcd)
+        'MyCityRequestDataModel received:',
+        str(mcrd)
     )
 
     address_parser = StreetAddressParser()
     current_address = \
-        mcd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+        mcrd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
     parsed_address = address_parser.parse(current_address)
     origin_address = " ".join([parsed_address["house"],
                                parsed_address["street_full"]]) # how 
@@ -60,7 +58,6 @@ def get_closest_feature(origin, feature_address_index,
                         feature_type, error_message, features):
     """
     Calculates the nearest feature given an origin
-
     :param origin: String containing starting address we calculate
     shortest distance from
     :param feature_address_index: index where address in features
@@ -87,7 +84,7 @@ def get_closest_feature(origin, feature_address_index,
     )
 
     dest_addresses = _get_dest_addresses(feature_address_index, features)
-    location_driving_info = _get_driving_info(origin, feature_name, feature_type, 
+    location_driving_info = _get_driving_info(origin, feature_type, 
                                               dest_addresses)
     if len(location_driving_info) > 0:
         closest_location_info = min(location_driving_info,
@@ -97,6 +94,9 @@ def get_closest_feature(origin, feature_address_index,
         closest_location_info = { feature_type: False,
                                   DRIVING_DISTANCE_TEXT_KEY: False,
                                   DRIVING_TIME_TEXT_KEY: False }
+    closest_location_info = \
+        _parse_closest_location_info(feature_type, closest_location_info)
+    
     return closest_location_info
 
 
@@ -111,7 +111,6 @@ def get_features_from_feature_server(url, query):
     """
     Given a url to a City of Boston Feature Server, return a list
     of Features (for example, parking lots that are not full)
-
     :param url: url for Feature Server
     :param query: query to select features (example: "Spaces > 0")
     :return features: list of all features
@@ -138,7 +137,7 @@ def get_features_from_feature_server(url, query):
 #############################################
 
 
-def _get_driving_info(origin, feature_type, dest_addresses):
+def _get_driving_info(origin, feature_type, destinations):
     """
     Gets the driving info from the provided origin address to each destination
     address
@@ -163,24 +162,23 @@ def _get_driving_info(origin, feature_type, dest_addresses):
 
     url_parameters = _setup_google_maps_query_params(origin, destinations)
     driving_directions_url = GOOGLE_MAPS_URL
+    driving_infos = None
     with requests.Session() as session:
         response = session.get(driving_directions_url, params=url_parameters)
-
         if response.status_code == requests.codes.ok:
             all_driving_data = response.json()
             driving_infos = _parse_driving_data(all_driving_data, feature_type, destinations)
+        else:
+            print("Failed to get driving directions")
     return driving_infos
 
 
 def _setup_google_maps_query_params(origin, destinations):
     """
     Builds a dictionary for querying Google Maps 
-
     :param: origin: "from" address in query
     :param: destinations: "to" addresses in query
-
     :return: a dictionary to use as url parameters for query
-
     """
     print(                      
         '[method: location_utils._setup_google_maps_query]',
@@ -202,17 +200,15 @@ def _setup_google_maps_query_params(origin, destinations):
 
 def _get_dest_addresses(feature_address_index, features):
     """
-
     :param feature_address_index: to retrieve address string in feature
     :param features: list of features retrieved from FeatureServer
-
     :return dest_address: list of destination addresses
     """
     dest_addresses = []
 
     # build array of each feature location
     for feature in features:
-        dest_address = feature[feature_address_index]
+        dest_address = feature[feature_address_index].rstrip() # to strip \r\n 
         dest_address += " Boston, MA"
         dest_addresses.append(dest_address)
     
@@ -228,33 +224,62 @@ def _parse_driving_data(all_driving_data, feature_type, destinations):
     :param all_driving_data: JSON blob returned from Google Maps query
     :param destinations: list of destination addresses
     :param feature_type: string that identifies type of feature we're driving to
-
     :return driving_infos: list of dictionaries representing driving data for
     each address
     
     """
+    print(
+        '[method: location_utils._parse_driving_data]',
+        'all_driving_data received:',
+        all_driving_data,
+        'feature_type received:',
+        feature_type,
+        'destinations received:',
+        destinations
+    )
+
     driving_infos = []
     try:
         driving_data_row = all_driving_data["rows"][0]
-        for (driving_data, address) in \
-                zip(driving_data_row["elements"], destinations):
-                driving_data_row = all_driving_data["rows"][0]
-                try:
-                    driving_info = {
-                        DRIVING_DISTANCE_VALUE_KEY:
-                            driving_data["distance"]["value"],
-                        DRIVING_DISTANCE_TEXT_KEY:
-                            driving_data["distance"]["text"],
-                        DRIVING_TIME_VALUE_KEY:
-                            driving_data["duration"]["value"],
-                        DRIVING_TIME_TEXT_KEY:
-                            driving_data["duration"]["text"],
-                        feature_type: address}
-                    driving_infos.append(driving_info)
-                except KeyError:
-                    print("Could not parse driving info {}".format(driving_data))
+        for (driving_data, address) in zip(driving_data_row["elements"], 
+                                           destinations):
+            try:
+                driving_info = {
+                    DRIVING_DISTANCE_VALUE_KEY:
+                        driving_data["distance"]["value"],
+                    DRIVING_DISTANCE_TEXT_KEY:
+                        driving_data["distance"]["text"],
+                    DRIVING_TIME_VALUE_KEY:
+                        driving_data["duration"]["value"],
+                    DRIVING_TIME_TEXT_KEY:
+                        driving_data["duration"]["text"],
+                    feature_type: address}
+                driving_infos.append(driving_info)
+            except KeyError:
+                print("Could not parse driving info {}".format(driving_data))
     except KeyError:
+        pass
+    finally:
         return driving_infos
-    else:
-        print("Failed to get driving directions")
-    return driving_infos
+
+
+def _parse_closest_location_info(feature_type, closest_location_info):
+    """
+    Return a sub-dictionary of the dictionary returned by the Google Maps
+    estimated driving time call
+    :param: closest_location_info: a dictionary with keys
+    'Driving distance', 'Driving distance text', 'Driving time', 
+    'Driving time text', feature_type.
+    :return pruned: a dictionary with keys feature_type,
+                                  DRIVING_DISTANCE_TEXT_KEY,
+                                  DRIVING_TIME_TEXT_KEY
+    """
+    print(
+        '[method: location_utils._parse_closest_location_info]',
+        'feature_type received:',
+        feature_type,
+        'closest_location_info received:',
+        closest_location_info
+    )
+    keys_to_keep = [feature_type, DRIVING_DISTANCE_TEXT_KEY, DRIVING_TIME_TEXT_KEY]
+    return {key:closest_location_info[key] for key in keys_to_keep}
