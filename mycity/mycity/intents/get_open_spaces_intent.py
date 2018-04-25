@@ -35,7 +35,7 @@ def get_open_spaces_intent(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        origin_address = location_utils.build_origin_address(mcd)
+        origin_address = location_utils.build_origin_address(mycity_response)
         print("Finding a nearby open space for {}".format(origin_address))
         closest_open_space = _get_closest_open_space(origin_address)
         open_space_address = closest_open_space[OPEN_SPACES_LOCATION_KEY]
