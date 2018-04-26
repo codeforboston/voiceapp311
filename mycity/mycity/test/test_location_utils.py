@@ -1,7 +1,7 @@
 import ast
-import intents.intent_constants as intent_constants
-import intents.location_utils as location_utils
-import test.test_constants as test_constants
+import mycity.intents.intent_constants as intent_constants
+import mycity.intents.location_utils as location_utils
+import mycity.test.test_constants as test_constants
 import unittest
 import unittest.mock
 
