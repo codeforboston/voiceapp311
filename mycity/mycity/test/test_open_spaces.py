@@ -1,21 +1,21 @@
-import mycity.intents.snow_parking_intent
+import mycity.intents.get_open_spaces_intent
 import mycity.test.integration_test_case_prototype as itp
 
 
-##########################################
-# TestCase class for snow_parking_intent #
-##########################################
+#########################################
+# TestCase class for open_spaces_intent #
+#########################################
 
 
-class SnowEmergencyTestCase(itp.IntegrationTestCasePrototype):
+class GetOpenSpacesTestCase(itp.IntegrationTestCasePrototype):
 
     def setUp(self):
-        super(SnowEmergencyTestCase, self).setUp()
-        self.intent_to_test = "SnowParkingIntent"
+        super().setUp()
+        self.intent_to_test = "GetOpenSpacesIntent"
         self.request.intent_name = self.intent_to_test
 
     def tearDown(self):
-        super(SnowEmergencyTestCase, self).tearDown()
+        super().tearDown()
 
     def test_for_smoke(self):
         response = self.controller.on_intent(self.request)
@@ -29,3 +29,4 @@ class SnowEmergencyTestCase(itp.IntegrationTestCasePrototype):
     def test_returning_no_reprompt_text(self):
         response = self.controller.on_intent(self.request)
         self.assertIsNone(response.reprompt_text)
+

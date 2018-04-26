@@ -14,13 +14,14 @@ import unittest.mock as mock
 # NOTE: Assumes that address has already been set.                            #
 ###############################################################################
 
-class IntegrationTestCaseParent(unittest.TestCase):
+class IntegrationTestCasePrototype(unittest.TestCase):
 
     def setUp(self):
         self.controller = mcc.MyCityController()
         self.request = req.MyCityRequestDataModel()
         key = intent_constants.CURRENT_ADDRESS_KEY
         self.request._session_attributes[key] = "46 Everdean St"
+        self.intent_to_test = None
     
     def tearDown(self):
         self.controller = None
