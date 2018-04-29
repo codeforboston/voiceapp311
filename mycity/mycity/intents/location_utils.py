@@ -79,8 +79,10 @@ def get_closest_feature(origin, feature_address_index,
         feature_type,
         'error_message received:',
         error_message,
-        'features received:',
-        features
+        'features received (printing first five):',
+        features[:5],            # only return first 5 features
+        '...count(features):',
+        len(features)
     )
 
     dest_addresses = _get_dest_addresses(feature_address_index, features)
@@ -156,15 +158,17 @@ def _get_driving_info(origin, feature_type, destinations):
         origin,
         'feature_type received:',
         feature_type,
-        'destinations received:',
-        destinations
+        'destinations received (printing first five):',
+        destinations[:5],       # only print first five destinations
+        'count(destinations):',
+        len(destinations)
     )
 
     url_parameters = _setup_google_maps_query_params(origin, destinations)
     driving_directions_url = GOOGLE_MAPS_URL
     driving_infos = None
     with requests.Session() as session:
-        response = session.get(driving_directions_url, params=url_parameters)
+        response = session.get(driving_directions_url, params=url_parameters) # this is failing for open_spaces: problem with params?
         if response.status_code == requests.codes.ok:
             all_driving_data = response.json()
             driving_infos = _parse_driving_data(all_driving_data, feature_type, destinations)
@@ -184,8 +188,10 @@ def _setup_google_maps_query_params(origin, destinations):
         '[method: location_utils._setup_google_maps_query]',
         'origin received:',
         origin,
-        'destinations received:',
-        destinations
+        'destinations received (printing first five):',
+        destinations[:5],       # only print first five destinations
+        'count(destinations):',
+        len(destinations)
     )
     return {"origins": origin,
             "destinations": '|'.join(destinations),
@@ -204,13 +210,25 @@ def _get_dest_addresses(feature_address_index, features):
     :param features: list of features retrieved from FeatureServer
     :return dest_address: list of destination addresses
     """
+    print(
+        '[method: location_utils._get_dest_addresses]',
+        'feature_address_index received;',
+        feature_address_index,
+        'features received (printing first five):',
+        features[:5],
+        'count(features):',
+        len(features)
+    )
+
+
     dest_addresses = []
 
     # build array of each feature location
     for feature in features:
-        dest_address = feature[feature_address_index].rstrip() # to strip \r\n 
-        dest_address += " Boston, MA"
-        dest_addresses.append(dest_address)
+        if feature[feature_address_index]:
+            dest_address = feature[feature_address_index].rstrip() # to strip \r\n 
+            dest_address += " Boston, MA"
+            dest_addresses.append(dest_address)
     
     return dest_addresses
 
@@ -234,8 +252,10 @@ def _parse_driving_data(all_driving_data, feature_type, destinations):
         all_driving_data,
         'feature_type received:',
         feature_type,
-        'destinations received:',
-        destinations
+        'destinations received (printing first five):',
+        destinations[:5],       # only print first five 
+        'count(destinations):',
+        len(destinations)
     )
 
     driving_infos = []

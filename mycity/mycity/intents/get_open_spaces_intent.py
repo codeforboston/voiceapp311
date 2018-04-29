@@ -35,7 +35,7 @@ def get_open_spaces_intent(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        origin_address = location_utils.build_origin_address(mcd)
+        origin_address = location_utils.build_origin_address(mycity_request)
         print("Finding a nearby open space for {}".format(origin_address))
         closest_open_space = _get_closest_open_space(origin_address)
         open_space_address = closest_open_space[OPEN_SPACES_LOCATION_KEY]
@@ -79,7 +79,7 @@ def _get_closest_open_space(origin_address):
         origin_address
         )
     error_message = "Didn't find any open spaces" 
-    all_open_spaces = _get_open_spaces()
+    all_open_spaces = _get_all_open_spaces()
     closest_open_space = \
         location_utils.get_closest_feature(origin_address,
                                            OPEN_SPACES_ADDRESS_INDEX,
@@ -100,7 +100,7 @@ def _get_all_open_spaces():
     print(
         '[method: _get_all_open_spaces]'
     )     
-    query = "Ownership not like 'Private'"  # exclude private spaces 
+    query = "Ownership not like 'Private' and Address not like ''"  # exclude private spaces 
     return location_utils.get_features_from_feature_server(OPEN_SPACES_INFO_URL, 
                                                            query)
 

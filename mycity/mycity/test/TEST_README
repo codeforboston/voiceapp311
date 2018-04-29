@@ -1,0 +1,44 @@
+Running all tests for project:
+
+    from PROJECT_ROOT:
+    	 (PROJECT_ROOT)$ python run_tests.py
+
+
+
+Adding an testcase for a new intent:
+
+    1. create a subclass mycity.test.intent_base_case.IntentBaseCase.
+
+       These fields should be defined with the name of your intent 
+       as it's identified in the MyCityController and on its title
+       card. Indicate whether the intent has a reprompt response
+       (ie., "Is there something else I can help you with") with
+       the returns_reprompt_text flag
+
+       test_example_intent.py
+
+       from mycity.test.intent_base_case import IntentBaseCase
+
+
+       class ExampleTestCase(IntentBaseCase): 
+       
+	     __test__ = True
+
+	     intent_to_test = "ExampleIntent"
+    	     returns_reprompt_text = False
+
+
+    2. Add your TestCase to the test_cases list in run_tests.py. load_tests
+    will pick up your TestCase and bundle it in the TestSuite run by executing 
+    'python run_tests.py'.
+
+    run_tests.py
+    ...
+
+    import mycity.test.test_example_intent as example
+    ...
+
+    TEST_CASES = [...,
+		 example.ExampleTestCase,
+		 ...
+		 ]
