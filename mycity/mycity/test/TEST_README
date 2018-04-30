@@ -7,7 +7,7 @@ Running all tests for project:
 
 Adding an testcase for a new intent:
 
-    1. create a subclass mycity.test.intent_base_case.IntentBaseCase.
+    1. create a subclass of mycity.test.intent_base_case.IntentBaseCase.
 
        These fields should be defined with the name of your intent 
        as it's identified in the MyCityController and on its title

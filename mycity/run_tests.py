@@ -8,11 +8,6 @@ import mycity.test.test_unhandled_intent as unhandled_intent
 import mycity.test.test_get_alerts as get_alerts
 
 
-##################################################################################
-# Functions that are used by intents by are not intents per se. You will have to #
-# write unittests for these explicitly                                           #
-##################################################################################
-
 # add test case to list
 TEST_CASES = [snow_parking.SnowEmergencyTestCase,
               open_spaces.GetOpenSpacesTestCase,
