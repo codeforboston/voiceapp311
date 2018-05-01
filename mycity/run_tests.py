@@ -28,7 +28,7 @@ TEST_CASES = [ my_controller.MyCityControllerUnitTestCase,
                snow_parking.SnowEmergencyTestCase,
                get_alerts.GetAlertsTestCase,
                trash_intent.TrashDayTestCase
-
+               ]
 
 def load_tests():
     suite = unittest.TestSuite()
