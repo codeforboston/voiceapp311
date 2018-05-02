@@ -55,17 +55,6 @@
             "emergency parking"
           ]
         },
-	{
-	  "name": "GetOpenSpacesIntent",
-	  "samples": [
-	    "where is the nearest park",
-	    "where can I play",
-	    "where is a park",
-	    "where is the nearest open space",
-	    "Is there a park nearby",
-	    "open spaces"
-	  ]
-	},
         {
           "name": "GetAlertsIntent",
           "samples": [
