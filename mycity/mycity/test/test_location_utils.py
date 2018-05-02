@@ -1,9 +1,13 @@
 import ast
+import arcgis.features as features
+import unittest
+import unittest.mock as mock
+
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.location_utils as location_utils
 import mycity.test.test_constants as test_constants
-import unittest
-import unittest.mock
+
+
 
 # char that indicates that line in a data file is a comment
 COMMENT_CHAR = "#"
@@ -62,10 +66,6 @@ class LocationUtilsTestCase(unittest.TestCase):
         self.change_address("46 Everdean St.")
         self.compare_built_address("46 Everdean St Boston MA")
         
-    def test_build_origin_address_with_malformed_address(self):
-        self.change_address("foobar 46")
-        self.compare_built_address("foobar Boston MA")
-
     def test_get_dest_addresses(self):
         data = get_test_data(COMMENT_CHAR, test_constants.PARKING_LOTS_TEST_DATA)
         to_test = \
@@ -75,6 +75,41 @@ class LocationUtilsTestCase(unittest.TestCase):
             )
         for address in to_test:
             self.assertTrue(address.find("Boston, MA"))
+
+    def test_setup_google_maps_query_params(self):
+        origin = "46 Everdean St Boston, MA"
+        dests = ["123 Fake St Boston, MA", "1600 Penn Ave Washington, DC"]
+        to_test = location_utils._setup_google_maps_query_params(origin, dests)
+        self.assertEqual(origin, to_test["origins"])
+        self.assertEqual(dests, to_test["destinations"].split("|"))
+        self.assertEqual("imperial", to_test["units"])
+
+    def test_parse_closest_location_info(self):
+        feature_type = 'Fake feature'
+        closest_location_info = {'Driving distance': 'fake',
+                              'Driving distance text': 'also fake',
+                              'Driving time': 'triply fake',
+                              'Driving time text': 'fake like a mug',
+                              feature_type: 'fake fake fake fake'}
+        to_test = location_utils._parse_closest_location_info(feature_type, closest_location_info)
+        self.assertIn(location_utils.DRIVING_DISTANCE_TEXT_KEY, to_test)
+        self.assertIn(location_utils.DRIVING_TIME_TEXT_KEY, to_test)
+        self.assertIn(feature_type, to_test)
+        self.assertNotIn('Driving time', to_test)
+        self.assertNotIn('Driving distance', to_test)
+
+
+    ####################################################################
+    # Tests that should only be run if we're connected to the Internet #
+    ####################################################################
+
+    def test_get_features_from_feature_server(self):
+        url = ('https://services.arcgis.com/sFnw0xNflSi8J0uh/'
+               'ArcGIS/rest/services/SnowParking/FeatureServer/0')
+        query = '1=1'
+        test_set = location_utils.get_features_from_feature_server(url, query)
+        self.assertIsInstance(test_set[0], list)
+
 
     def test_get_closest_feature(self):
         origin = "46 Everdean St"
@@ -118,25 +153,3 @@ class LocationUtilsTestCase(unittest.TestCase):
         self.assertFalse(closest[location_utils.DRIVING_DISTANCE_TEXT_KEY])
         self.assertFalse(closest[location_utils.DRIVING_TIME_TEXT_KEY])
 
-
-    def test_setup_google_maps_query_params(self):
-        origin = "46 Everdean St Boston, MA"
-        dests = ["123 Fake St Boston, MA", "1600 Penn Ave Washington, DC"]
-        to_test = location_utils._setup_google_maps_query_params(origin, dests)
-        self.assertEqual(origin, to_test["origins"])
-        self.assertEqual(dests, to_test["destinations"].split("|"))
-        self.assertEqual("imperial", to_test["units"])
-
-    def test_parse_closest_location_info(self):
-        feature_type = 'Fake feature'
-        closest_location_info = {'Driving distance': 'fake',
-                              'Driving distance text': 'also fake',
-                              'Driving time': 'triply fake',
-                              'Driving time text': 'fake like a mug',
-                              feature_type: 'fake fake fake fake'}
-        to_test = location_utils._parse_closest_location_info(feature_type, closest_location_info)
-        self.assertIn(location_utils.DRIVING_DISTANCE_TEXT_KEY, to_test)
-        self.assertIn(location_utils.DRIVING_TIME_TEXT_KEY, to_test)
-        self.assertIn(feature_type, to_test)
-        self.assertNotIn('Driving time', to_test)
-        self.assertNotIn('Driving distance', to_test)

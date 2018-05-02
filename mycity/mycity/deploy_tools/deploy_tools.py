@@ -77,7 +77,7 @@ def package_lambda_function():
     shutil.copy(requirements_path, TEMP_DIR_PATH)
     print('DONE')
     # install dependencies
-    install_pip_dependencies(requirements_path, requirements_no_deps)
+    install_pip_dependencies(requirements_path, requirements_path_no_deps)
     # build zip file in project root
     zip_lambda_function_directory(PROJECT_ROOT)
     # delete temp directory

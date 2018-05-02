@@ -34,7 +34,7 @@ class Services(Enum):
 # constants for scraping boston.gov                                                                   
 BOSTON_GOV = "https://www.boston.gov"
 SERVICE_NAMES = "cds-t t--upper t--sans m-b300"
-SEVICE_INFO = "cds-d t--subinfo"
+SERVICE_INFO = "cds-d t--subinfo"
 HEADER_1 = "t--upper t--sans lh--000 t--cb"
 HEADER_2 = "str str--r m-v300"
 HEADER_3 = "t--sans t--cb lh--000 m-b500"

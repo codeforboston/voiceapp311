@@ -62,12 +62,6 @@ class MyCityControllerUnitTestCase(unittest.TestCase):
         response = self.controller.execute_request(self.request)
         self.assertIsNone(response)
 
-    def test_session_end_request(self):
-        self.request.is_new_session = False
-        self.request.request_type == "SessionEndedRequest"
-        response = self.controller.execute_request(self.request)
-        self.assertEqual(response, mycity_res.MyCityResponseDataModel()) # empty response
-
     def test_on_intent_AMAZON_StopIntent(self):
         expected_attributes = self.request.session_attributes
         expected_output_speech = ("Thank you for using the Boston Public "
@@ -105,9 +99,9 @@ class MyCityControllerUnitTestCase(unittest.TestCase):
         self.controller.on_intent(self.request)
         mock_get_addr.assert_called_with(self.request)
 
-    @mock.patch('mycity.mycity_controller.get_open_spaces_intent')
+    @mock.patch('mycity.mycity_controller.get_trash_day_info')
     def test_intent_that_needs_address_with_address_in_session_attributes(self, mock_intent):
-        self.request.intent_name = "GetOpenSpacesIntent"
+        self.request.intent_name = "TrashDayIntent"
         self.request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "46 Everdean St"
         self.controller.on_intent(self.request)
         mock_intent.assert_called_with(self.request)
