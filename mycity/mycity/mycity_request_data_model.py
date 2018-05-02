@@ -25,7 +25,9 @@ class MyCityRequestDataModel:
             session_attributes={},
             application_id={},
             intent_name={},
-            intent_variables={}
+            intent_variables={},
+            device_id={},
+            api_access_token={}
         >
         """.format(
             self._request_type,
@@ -35,7 +37,9 @@ class MyCityRequestDataModel:
             self._session_attributes,
             self._application_id,
             self._intent_name,
-            self._intent_variables
+            self._intent_variables,
+            self._device_id,
+            self._api_access_token
         )
 
     @property
@@ -114,3 +118,26 @@ class MyCityRequestDataModel:
     @intent_variables.setter
     def intent_variables(self, value):
         self._intent_variables = value
+
+
+    @property
+    def device_id(self):
+        """
+        An id to identify which device Alexa is utlizing for the service
+        """
+        return self._device_id
+
+    @device_id.setter
+    def device_id(self, value):
+        self._device_id = value
+
+    @property
+    def api_access_token(self):
+        """
+        the token which is neccessary to acquire access to a user's personal information
+        """
+        return self._api_access_token
+
+    @api_access_token.setter
+    def api_access_token(self, value):
+        self._api_access_token = value
