@@ -1,4 +1,4 @@
-import mycity.test.intent_base_case as base_case
+import mycity.test.integration_tests.intent_base_case as base_case
 
 
 ########################################

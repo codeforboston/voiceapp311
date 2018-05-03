@@ -158,8 +158,7 @@ class MyCityController:
             'MyCityRequestDataModel received:',
             str(mycity_request)
         )
-        response = MyCityResponseDataModel()
-        return response
+        return MyCityResponseDataModel()
         # add cleanup logic here
 
     def get_welcome_response(self, mycity_request):
