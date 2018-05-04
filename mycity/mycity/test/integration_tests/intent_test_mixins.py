@@ -20,7 +20,7 @@ class CardTitleTestMixIn:
 # there are some intents where it makes sense to write custom tests for error
 # messages so we can abstract the most common test as a mix in
 
-class TestForSpeechOutputErrorMixIn:
+class CorrectSpeechOutputTestMixIn:
 
     def test_for_error_message(self):
         response = self.controller.on_intent(self.request)

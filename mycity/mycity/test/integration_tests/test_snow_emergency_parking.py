@@ -11,7 +11,7 @@ import mycity.test.test_constants as test_constants
 
 class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn, 
                             mix_ins.CardTitleTestMixIn,
-                            mix_ins.TestForSpeechOutputErrorMixIn,
+                            mix_ins.CorrectSpeechOutputTestMixIn,
                             base_case.IntentBaseCase):
 
     intent_to_test = "SnowParkingIntent"

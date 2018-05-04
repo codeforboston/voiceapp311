@@ -9,7 +9,7 @@ import mycity.test.integration_tests.intent_base_case as base_case
 
 class UnhandledIntentTestCase(mix_ins.RepromptTextTestMixIn,
                               mix_ins.CardTitleTestMixIn,
-                              mix_ins.TestForSpeechOutputErrorMixIn,
+                              mix_ins.CorrectSpeechOutputTestMixIn,
                               base_case.IntentBaseCase):
 
     intent_to_test = "UnhandledIntent"

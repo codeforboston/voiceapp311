@@ -13,7 +13,7 @@ import mycity.test.integration_tests.intent_test_mixins as mix_ins
 
 class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
                        mix_ins.CardTitleTestMixIn,
-                       mix_ins.TestForSpeechOutputErrorMixIn,
+                       mix_ins.CorrectSpeechOutputTestMixIn,
                        base_case.IntentBaseCase):
 
 
