@@ -73,7 +73,8 @@ def alerts_to_speech_output(alerts):
     are operating normally.
     """
     all_alerts = ""
-    all_alerts += alerts.pop(Services.ALERT_HEADER.value)
+    if Services.ALERT_HEADER.value in all_alerts:
+        all_alerts += alerts.pop(Services.ALERT_HEADER.value)
     for alert in alerts.values():
         all_alerts += alert + ' '
     if all_alerts == '':        # this is a kludgy fix for the {'alert header': ''} bug 
