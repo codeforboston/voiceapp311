@@ -37,7 +37,6 @@ def get_snow_emergency_parking_intent(mycity_request):
         origin_address = location_utils.build_origin_address(mycity_request) 
 
         print("Finding snow emergency parking for {}".format(origin_address))
-
         closest_parking_lot = _get_closest_parking_location(origin_address)
         parking_address = closest_parking_lot[PARKING_LOCATION_KEY]
         driving_distance = closest_parking_lot[location_utils.DRIVING_DISTANCE_TEXT_KEY]

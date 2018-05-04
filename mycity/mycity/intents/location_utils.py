@@ -4,7 +4,7 @@ address.
 """
 
 from arcgis.features import FeatureLayer
-from . import intent_constants
+import mycity.intents.intent_constants as intent_constants
 import os
 import requests
 from streetaddress import StreetAddressParser

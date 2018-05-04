@@ -1,8 +1,10 @@
 import ast
 import arcgis.features as features
+import json
 import unittest
 import unittest.mock as mock
 
+import mycity.mycity_request_data_model as my_req
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.location_utils as location_utils
 import mycity.test.test_constants as test_constants
@@ -11,6 +13,14 @@ import mycity.test.test_constants as test_constants
 
 # char that indicates that line in a data file is a comment
 COMMENT_CHAR = "#"
+# mocked return value for _get_driving_info
+GOOGLE_MAPS_JSON = [{'Driving distance': 2458, 'Driving distance text': '1.5 mi', 
+                     'Driving time': 427, 'Driving time text': '7 mins', 
+                     'test': '94 Sawyer Ave Boston, MA'}, 
+                    {'Driving distance': 692625, 'Driving distance text': '430 mi',
+                     'Driving time': 24533, 'Driving time text': '6 hours 49 mins',
+                     'test': '4 Olivewood Ct Greenbelt, MD'}]
+
 
 ############################################################
 # functions for pulling saved test data from "/test_data"  #
@@ -22,6 +32,8 @@ def get_test_data(comment_tag, filename):
     Reads test data from file that separates datum with newlines
     :param comment_tag: character indicating this value is 
      a comment
+    :param is_json: flag to use json.load instead of ast 
+     to build return
     : return ret: a list with all test data 
     """
     ret = []
@@ -57,26 +69,23 @@ class LocationUtilsTestCase(unittest.TestCase):
             arcgis.features.FeatureLayer -> for functions that query arcgis
             servers
         """
-
-
-        mcrd_id = 'mycity.mycity_request_data_model.MyCityRequestDataModel'
-        self.mcrd = mock.MagicMock(spec=mcrd_id, autospec=True) 
-        self.mcrd.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = ""
+        self.mcrd = my_req.MyCityRequestDataModel()
+        self.mcrd._session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = ""
         
         # here come the patches
         # patch for utilities that use requests.session
         requests_patch_path = 'mycity.intents.location_utils.requests.sessions'
-        self.requests_patch = mock.patch.object(requests_patch_path,
-                                                autospec=True) 
+        self.requests_patch = mock.patch(requests_patch_path)
+
 
         # patch for utilities that use requests.Response
         response_patch_path = 'mycity.intents.location_utils.requests.Response'
-        self.response_patch = mock.patch.object(response_patch_path)
+        self.response_patch = mock.patch(response_patch_path)
 
         # patch for utilities that use arcgis FeatureLayer.query
         feature_patch_path = 'mycity.intents.location_utils.FeatureLayer'
-        self.feature_layer_patch = mock.patch.object(feature_patch_path, 
-                                                     autospec=True)
+        self.feature_layer_patch = mock.patch(feature_patch_path) 
+                                                     
 
         # start the patches
         self.requests_patch.start()
@@ -133,12 +142,26 @@ class LocationUtilsTestCase(unittest.TestCase):
         self.assertNotIn('Driving time', to_test)
         self.assertNotIn('Driving distance', to_test)
 
-    @mock.patch('location_utils._get_driving_info', return_value="wes")
-    @mock.patch('location_utils._get_dest_addresses', return_value="drew")
-    def test_get_closest_feature(self, mock_get_dest_addresses, 
-                                 mock_get_driving_info):
-        pass
-        
+    @mock.patch('mycity.intents.location_utils._get_driving_info', 
+                return_value=GOOGLE_MAPS_JSON)
+    def test_get_closest_feature(self, mock_get_driving_info):
+        test_origin = "46 Everdean St Boston, MA"
+        test_features = [['close', '94 Sawyer Ave Boston, MA'],
+                         ['far', '4 Olivewood Ct Greenbelt, MD']]
+        feature_address_index = 1
+        feature_type = "test"
+        error_message = "Test error message"
+        result = location_utils.get_closest_feature(test_origin, 
+                                                    feature_address_index,
+                                                    feature_type,
+                                                    error_message,
+                                                    test_features)
+        self.assertEqual("94 Sawyer Ave Boston, MA", result[feature_type])
+        self.assertEqual('7 mins', result[location_utils.DRIVING_TIME_TEXT_KEY])
+        self.assertEqual('1.5 mi', result[location_utils.DRIVING_DISTANCE_TEXT_KEY])
+
+
+    
 
 
     ####################################################################

@@ -59,7 +59,6 @@ def get_alerts_intent(mycity_request):
     print("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
     alerts = prune_normal_responses(alerts)
     print("[dictionary after pruning]:\n" + str(alerts))
-
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = mycity_request.intent_name
     mycity_response.reprompt_text = None
@@ -73,13 +72,13 @@ def alerts_to_speech_output(alerts):
     Return a string that contains all alerts or a message that city services
     are operating normally.
     """
-    if len(alerts) == 0:        # there are no alerts!
-        return "There are no alerts. City services are operating on their normal schedule."
+    all_alerts = ""
+    all_alerts += alerts.pop(Services.ALERT_HEADER.value)
+    for alert in alerts.values():
+        all_alerts += alert + ' '
+    if all_alerts == '':        # this is a kludgy fix for the {'alert header': ''} bug 
+        return "There are no alerts. City services are operating on their normal schedule."       
     else:
-        all_alerts = ""
-        all_alerts += alerts.pop(Services.ALERT_HEADER.value)
-        for alert in alerts.values():
-            all_alerts += alert + ' '
         return all_alerts
         
 
@@ -127,5 +126,8 @@ def get_alerts():
         header += soup.find(class_= HEADER_1).text + '. '
         header += soup.find(class_= HEADER_2).text + '. '
         header += soup.find(class_= HEADER_3).text + ' '
-    alerts[Services.ALERT_HEADER.value] = header.rstrip()
+    # weird bug where a blank header was appended to dictionary. this should
+    # prevent that
+    if header != '':
+        alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts

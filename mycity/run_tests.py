@@ -9,10 +9,7 @@ import mycity.test.unit_tests.test_mycity_controller as my_controller
 
 
 TEST_CASES = [ my_controller.MyCityControllerUnitTestCase,
-               loc_utils.LocationUtilsTestCase, # these testcases need mocked
-                                                # requests for googlemaps,
-                                                # featureservers, and other web
-                                                # resources
+               loc_utils.LocationUtilsTestCase,
                snow_parking.SnowEmergencyTestCase,
                get_alerts.GetAlertsTestCase,
                trash_intent.TrashDayTestCase
