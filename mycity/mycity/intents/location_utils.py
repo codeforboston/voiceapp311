@@ -64,8 +64,8 @@ def get_closest_feature(origin, feature_address_index,
     is stored
     :param feature_type: string describing the type of feature we are calculating
     the shortest distance to
-    :param features: list of features fetched from FeatureServer
     :param error_message: string to print if we fail to find a closest feature
+    :param features: list of features fetched from FeatureServer
     :return: dictionary with address, distance, and driving time for
     closest feature
     """
