@@ -5,40 +5,65 @@ Running all tests for project:
 
 
 
-Adding an testcase for a new intent:
+test_dir_structure:
+	|
+	|
+	|
+	----unit_tests: unit-y tests (there are some integration-like tests here)
+	|
+	|
+	|
+	----integration_tests: tests of intents with network resources mocked
+	|
+	|
+	|
+	|
+	----test_constants.py: contains some file_paths and mocked_return_values
+	|    for patched functions in integration_tests modules
+	|
+	|
+	|
+	----test_data: mostly unused for now, most of the relevant data has been 
+	    incorporated into test_constants.py
 
-    1. create a subclass of mycity.test.intent_base_case.IntentBaseCase.
 
-       These fields should be defined with the name of your intent 
-       as it's identified in the MyCityController and on its title
-       card. Indicate whether the intent has a reprompt response
-       (ie., "Is there something else I can help you with") with
-       the returns_reprompt_text flag
-
-       test_example_intent.py
-
-       from mycity.test.intent_base_case import IntentBaseCase
+Creating an integration_test for some_intent.py:
 
 
-       class ExampleTestCase(IntentBaseCase): 
-       
-	     __test__ = True
+1. import mycity.test.integration_tests.intent_test_mixins 
+     - contains common test functions like testing if response.output_speech
+     has an error message, the card title is correctly configured, etc.
 
-	     intent_to_test = "ExampleIntent"
-    	     returns_reprompt_text = False
+2. import mycity.test.integration_tests.intent_base_case
+    - does the setUp and tearDown common to all intents 
+    - if you need to do some function patching or some other setup, overwrite
+    setUp and tearDown in child class, but don't forget to call super().setUp()
+    and super().tearDown(), respectively
+
+3. if you need a return value for a mocked function, write and store it in
+mycity.test.test_constants and reference it as mycity.test.test_constants.SOME_VALUE.
 
 
-    2. Add your TestCase to the test_cases list in run_tests.py. load_tests
-    will pick up your TestCase and bundle it in the TestSuite run by executing 
-    'python run_tests.py'.
+class SomeIntentTestCase(mix_ins.RepromptTextTestMixIn,
+	                 mix_ins.TestForOutputSpeechErrorMixIn,
+			 base_case.IntentBaseCase):
 
-    run_tests.py
-    ...
+    intent_to_test = "SomeIntent"
+    returns_reprompt_text = False
 
-    import mycity.test.test_example_intent as example
-    ...
+    def setUp(self): 
+        super().setUp() 
+	 ...patch whatever functions you need to
+        (don't forget to start the patch/es)...
 
-    TEST_CASES = [...,
-		 example.ExampleTestCase,
-		 ...
-		 ]
+    def tearDown(self):
+        super().tearDown()
+	...stop all your patches...
+
+    def test_that_is_unique_to_this_intent(self): 
+        ...do whatever you need to! Mixed-in tests will rely on your setUp 
+	and tearDown for any needed patching tho
+
+4. make sure you add your testCase to TEST_CASES in run_tests.py!
+
+

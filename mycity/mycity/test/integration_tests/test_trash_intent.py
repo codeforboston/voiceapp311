@@ -11,9 +11,9 @@ import mycity.test.integration_tests.intent_test_mixins as mix_ins
 # TestCase class for trash_intent #
 ###################################
 
-class TrashDayTestCase(mix_ins.IntentRepromptTextTestMixIn,
-                       mix_ins.IntentCardTitleTestMixIn,
-                       mix_ins.IntentTestForErrorMixIn,
+class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
+                       mix_ins.CardTitleTestMixIn,
+                       mix_ins.TestForSpeechOutputErrorMixIn,
                        base_case.IntentBaseCase):
 
 

@@ -12,7 +12,8 @@ TEST_CASES = [ my_controller.MyCityControllerUnitTestCase,
                loc_utils.LocationUtilsTestCase,
                snow_parking.SnowEmergencyTestCase,
                get_alerts.GetAlertsTestCase,
-               trash_intent.TrashDayTestCase
+               trash_intent.TrashDayTestCase,
+               unhandled_intent.UnhandledIntentTestCase
                ]
 
 def load_tests():

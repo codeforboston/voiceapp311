@@ -1,6 +1,6 @@
 import unittest
 
-class IntentRepromptTextTestMixIn:
+class RepromptTextTestMixIn:
 
     def test_returns_reprompt_text(self):
         response = self.controller.on_intent(self.request)
@@ -10,7 +10,7 @@ class IntentRepromptTextTestMixIn:
             self.assertIsNone(response.reprompt_text)
 
 
-class IntentCardTitleTestMixIn:
+class CardTitleTestMixIn:
 
     def test_returns_correct_title_card(self):
         response = self.controller.on_intent(self.request)
@@ -20,7 +20,7 @@ class IntentCardTitleTestMixIn:
 # there are some intents where it makes sense to write custom tests for error
 # messages so we can abstract the most common test as a mix in
 
-class IntentTestForErrorMixIn:
+class TestForSpeechOutputErrorMixIn:
 
     def test_for_error_message(self):
         response = self.controller.on_intent(self.request)

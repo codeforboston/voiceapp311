@@ -9,8 +9,8 @@ import mycity.test.test_constants as test_constants
 # TestCase class for get_alerts_intent #
 ########################################
 
-class GetAlertsTestCase(mix_ins.IntentRepromptTextTestMixIn,
-                        mix_ins.IntentCardTitleTestMixIn,
+class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
+                        mix_ins.CardTitleTestMixIn,
                         base_case.IntentBaseCase):
 
     intent_to_test = "GetAlertsIntent"
@@ -37,6 +37,7 @@ class GetAlertsTestCase(mix_ins.IntentRepromptTextTestMixIn,
         self.mock_get_alerts.stop()
         self.mock_get_alerts = None
 
+    # these tests required patches to pass tests...not sure why    
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value = no_alerts.copy())
     def test_response_with_no_alerts(self, mock_get_alerts):
@@ -44,7 +45,7 @@ class GetAlertsTestCase(mix_ins.IntentRepromptTextTestMixIn,
         expected_response = ("There are no alerts. City services are "
                              "operating on their normal schedule.")
         self.assertEqual(response.output_speech, expected_response)
-     
+        
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value = some_alerts.copy())
     def test_response_with_alerts(self, mock_get_alerts):
