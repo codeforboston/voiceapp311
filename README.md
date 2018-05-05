@@ -61,7 +61,7 @@ This will generate the lambda_function.zip archive, which you will need later.
      the name we use).
 3. Search for **Lambda** and select **Create function** (and **Author 
    from scratch**).
-4. Make sure you're in **US East (Ohio)** region (top right) - this is the region
+4. Make sure you're in **US East (N. Virginia)** region (top right) - this is the region
 	for which Alexa Skill Kit is available.
 5. Under **Basic Information**,
    * give your Lambda the name **BostonData**
