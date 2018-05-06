@@ -14,6 +14,8 @@ class MyCityRequestDataModel:
         self._application_id = None
         self._intent_name = None
         self._intent_variables = {}
+        self._device_id = None
+        self._api_access_token = None
 
     def __str__(self):
         return """\
