@@ -45,7 +45,7 @@ def _get_driving_info(origin, location_type, destinations):
     driving_directions_url = GOOGLE_MAPS_URL
     driving_infos = None
     with requests.Session() as session:
-        response = session.get(driving_directions_url, params=url_parameters) # this is failing for open_spaces: problem with params?
+        response = session.get(driving_directions_url, params=url_parameters)
         if response.status_code == requests.codes.ok:
             all_driving_data = response.json()
             driving_infos = _parse_driving_data(all_driving_data, feature_type, destinations)

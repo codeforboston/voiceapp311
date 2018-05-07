@@ -10,35 +10,49 @@ import mycity.utilities.csv_utils as csv_utils
 
 class CSVUtilitiesTestCase(base.BaseTestCase):
 
-    def test_create_record_model(self):
+    def test_create_record_model_with_arbitrary_fields(self):
         Record = collections.namedtuple('TestRecord', ['field_1', 'field_2'])
-        to_test = csv_utils.create_record_model(model_name = 'TestRecord',
-                                                     fields=['\tfield_1', 'field_2\n\n'])
-        self.assertEqual(Record, to_test)
+        attributes = ['field_1', 'field_2']
+        model = csv_utils.create_record_model('TestRecord', attributes)
+        to_test = model(4, 5)
+        self.assertEqual(to_test.field_1, 4)
+        self.assertEqual(to_test.field_2, 5)
+
+    def test_create_record_model_with_csv_header(self):
+        test_file = test_constants.PARKING_LOTS_TEST_CSV
+        attributes = None
+        with open(test_file, encoding='utf-8-sig') as f:
+            csv_file = csv.reader(f, delimiter = ',')
+            attributes = next(csv_file)           
+            model = csv_utils.create_record_model('TestRecord', attributes)
+        for attribute in attributes:
+            self.assertTrue(hasattr(model, attribute))
 
     def test_csv_to_namedtuples(self):
-        csv = test_constants.PARKING_LOTS_TEST_CSV
-        fields = ['X','Y','FID','OBJECTID','Spaces','Fee','Comments','Phone','Name','Address',
-                  'Neighborho','Maxspaces','Hours','GlobalID','CreationDate','Creator',
-                  'EditDate','Editor']
+        test_file = test_constants.PARKING_LOTS_TEST_CSV
+        fields = ['X','Y','FID','OBJECTID','Spaces','Fee','Comments','Phone',
+                  'Name','Address', 'Neighborho','Maxspaces','Hours','GlobalID',
+                  'CreationDate','Creator', 'EditDate','Editor']
         Record = collections.namedtuple('Record', fields)
-        with open(csv, 'r') as csv_file:
-            csv_file.readline()        # remove header
-            to_test= csv_utils.csv_to_namedtuples(Record, csv_file)
-        self.assertIsInstance(collections.namedtuple, to_test[0])
+        with open(test_file, encoding='utf-8-sig') as csv_file:
+            reader = csv.reader(csv_file, delimiter = ',')
+            next(reader)                         # remove header
+            to_test = csv_utils.csv_to_namedtuples(Record, reader)
+        for item in to_test:
+            self.assertIsInstance(item, Record)
 
     def test_csv_to_namedtuples_address_field_not_null(self):
-        csv = test_constants.PARKING_LOTS_TEST_CSV
-        fields = ['X','Y','FID','OBJECTID','Spaces','Fee','Comments','Phone','Name','Address',
-                  'Neighborho','Maxspaces','Hours','GlobalID','CreationDate','Creator',
-                  'EditDate','Editor']
+        test_file = test_constants.PARKING_LOTS_TEST_CSV
+        fields = ['X','Y','FID','OBJECTID','Spaces','Fee','Comments','Phone',
+                  'Name','Address', 'Neighborho','Maxspaces','Hours','GlobalID',
+                  'CreationDate','Creator', 'EditDate','Editor']
         Record = collections.namedtuple('Record', fields)
-        with open(csv, 'r') as csv_file:
-            csv_file.readline()        # remove header
-            csv_reader = csv.reader(csv_file, delimiter = ",")
+        with open(test_file, encoding='utf-8-sig') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter = ',')
+            next(csv_reader)    # remove header
             records = csv_utils.csv_to_namedtuples(Record, csv_reader)
-        record_to_test = records[0]
-        self.assertIsNotNone(record_to_test.Address)
+        for record_to_test in records:
+            self.assertIsNotNone(record_to_test.Address)
 
     def test_add_city_and_state_to_records(self):
         Record = collections.namedtuple('Record', ['test_field', 'Address'])
@@ -52,9 +66,9 @@ class CSVUtilitiesTestCase(base.BaseTestCase):
     def test_map_addresses_to_record(self):
         Record = collections.namedtuple('Record', ['test_field', 'Address'])
         records = []
-        records.append(Record._make('wes', '1000 Dorchester Ave'))
-        records.append(Record._make('drew', '123 Fake St'))
+        records.append(Record('wes', '1000 Dorchester Ave'))
+        records.append(Record('drew', '123 Fake St'))
         to_test = csv_utils.map_addresses_to_records(records)
-        self.assertEqual(records[0].Address, to_test['1000 Dorchester Ave'])
+        self.assertEqual(records[0], to_test['1000 Dorchester Ave'])
 
 

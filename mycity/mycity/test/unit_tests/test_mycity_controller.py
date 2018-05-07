@@ -6,12 +6,11 @@ unit test for MyCityController
 import unittest
 import unittest.mock as mock
 
+import mycity.mycity_controller as my_con
 import mycity.intents.intent_constants as intent_constants
-import mycity.mycity_controller as mycity_con
-import mycity.mycity_request_data_model as mycity_req
-import mycity.mycity_response_data_model as mycity_res
+import mycity.test.unit_tests.base as base
 
-class MyCityControllerUnitTestCase(unittest.TestCase):
+class MyCityControllerUnitTestCase(base.BaseTestCase):
     """
     testing:
         session started
@@ -25,22 +24,6 @@ class MyCityControllerUnitTestCase(unittest.TestCase):
 
     """
 
-    def setUp(self):
-        self.controller = mycity_con.MyCityController()
-        self.request = mycity_req.MyCityRequestDataModel()
-
-    def tearDown(self):
-        self.controller = None
-
-    @mock.patch('mycity.mycity_controller.print', create=True)
-    def test_on_session_started_called_at_new_session(self, mock_print):
-        self.request.is_new_session = True
-        self.controller.execute_request(self.request)
-        mock_print.assert_called_with(mycity_con.MyCityController.LOG_CLASS,
-                                      '[method: on_session_started]',
-                                      '[requestId: ' + str(self.request.request_id) + ']',
-                                      '[sessionId: ' + str(self.request.session_id) + ']')
-    
     def test_on_launch(self):
         self.request.is_new_session = False
         expected_session_attributes = self.request.session_attributes

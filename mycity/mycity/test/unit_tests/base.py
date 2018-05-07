@@ -10,7 +10,6 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         self.controller = my_con.MyCityController()
         self.request = my_req.MyCityRequestDataModel()
-        self.request._session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = ""
         
     def tearDown(self):
         self.controller = None

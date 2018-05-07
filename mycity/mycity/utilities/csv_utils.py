@@ -5,7 +5,7 @@ Utility functions for manipulating csv files
 import collections
 
 
-def create_record_model(model_name='Record', fields=[]):
+def create_record_model(model_name, attributes):
     """
     Spin up a namedtuple class to represent a record from a csv 
     file
@@ -18,19 +18,18 @@ def create_record_model(model_name='Record', fields=[]):
 
     :ret: a constructor for this namedtuple subclass
     """
-    attributes = [field.strip() for field in fields] # remove newline/tabs 
     Model = collections.namedtuple(model_name, attributes)
     return Model
                                    
 
-def csv_to_namedtuples(Model, csv):
+def csv_to_namedtuples(Model, csv_reader):
     """
     Return a list of namedtuples representing a record from the 
     csv. Records fields in fields to select.
     
     :param: Model: namedtuple subclass to convert each line in csv
     file to
-    :param: csv: csv file
+    :param: csv_reader: csv reader object
     :param: fields_to_select: list of strings to select. If None,
       all fields are selected 
 
@@ -38,8 +37,7 @@ def csv_to_namedtuples(Model, csv):
    
     """
     records = []
-    for line in csv:
-        print(line)
+    for line in csv_reader:
         records.append(Model._make(line))
     return records
 

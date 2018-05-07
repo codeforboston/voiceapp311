@@ -1,22 +1,19 @@
 """Alexa intent used to find snow emergency parking"""
+import csv
+import requests
 
-
-from . import intent_constants
-from . import location_utils
+import mycity.intents.intent_constants as intent_constants
+import mycity.utilities.address_utils as address_utils
+import mycity.utilities.csv_utils as csv_utils
+import mycity.utilities.google_maps_utils as g_maps_utils
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 
 
 
 # Constants 
-PARKING_LOCATION_KEY = "Parking Address"
-PARKING_INFO_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
-    + 'services/SnowParking/FeatureServer/0'
-# TODO: modify location_utils functions to keep name of parking lot available
-# for concating to speech output 
-PARKING_NAME_INDEX = 6
-PARKING_ADDRESS_INDEX = 7
-
+PARKING_INFO_URL = ("http://bostonopendata-boston.opendata.arcgis.com/datasets/"
+                    "53ebc23fcc654111b642f70e61c63852_0.csv")
 
 def get_snow_emergency_parking_intent(mycity_request):
     """
@@ -34,23 +31,29 @@ def get_snow_emergency_parking_intent(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        origin_address = location_utils.build_origin_address(mycity_request) 
-
+        origin_address = address_utils.build_origin_address(mycity_request) 
         print("Finding snow emergency parking for {}".format(origin_address))
-        closest_parking_lot = _get_closest_parking_location(origin_address)
-        parking_address = closest_parking_lot[PARKING_LOCATION_KEY]
-        driving_distance = closest_parking_lot[location_utils.DRIVING_DISTANCE_TEXT_KEY]
-        driving_time = closest_parking_lot[location_utils.DRIVING_TIME_TEXT_KEY]
-
-        if not parking_address:
+        parking_locations = get_parking_locations()
+        closest_location, distance, time = \
+            get_closest_parking_location(origin_address, parking_locations)
+        if not closest_location:
             mycity_response.output_speech = "Uh oh. Something went wrong!"
         else:
+            phone_number = \
+                "Call {} for information.".format(closest_location.Phone) \
+                if closest_location.Phone else ""
+            fee = "There is a fee of {}.".format(closest_location.Fee) \
+                if closest_location.Fee != "No Charge" else "There is no fee."
+            comment = "NOTE: {}.".format(closest_location.Comments) \
+                if closest_location.Comments else ""
             mycity_response.output_speech = \
-                "The closest snow emergency parking location is at " \
-                "{}. It is {} away and should take you {} to drive " \
-                "there".format(parking_address, driving_distance, driving_time)
-
-        mycity_response.should_end_session = False
+                ("The closest snow emergency parking location, {}, is at "
+                "{}. It is {} away and should take you {} to drive " 
+                "there. The parking lot has {} spaces when empty. {}"
+                 "{} {}").format(closest_location.Name, closest_location.Address,
+                               distance, time, closest_location.Spaces,
+                                 fee, comment, phone_number)
+            mycity_response.should_end_session = False
     else:
         print("Error: Called snow_parking_intent with no address")
 
@@ -66,41 +69,79 @@ def get_snow_emergency_parking_intent(mycity_request):
 
 
 
-def _get_closest_parking_location(origin_address):
+def get_closest_parking_location(origin_address, parking_locations):
     """
     Calculates the address, distance, and driving time for the closest snow
     emergency parking location.
 
     :param origin_address: string containing the address used to find the
     closest emergency parking location
-    :return: parking address, distance, and driving time
+    :param parking_locations: a list of Record namedtuples with attributes
+    taken from Snow Parking CSV
+    :return: the Record closest to origin_address
     """
     print(
-        '[method: _get_snow_emergency_parking_location]',
+        '[method: get_closest_parking_location]',
         'origin_address received:',
-        origin_address
+        origin_address,
+        'parking_locations (first five):',
+        parking_locations[:5]
     )
-    error_message = "Didn't find any parking locations"
-    parking_data = _get_emergency_parking_data()
-    closest_parking_lot = \
-        location_utils.get_closest_feature(origin_address,
-                                           PARKING_ADDRESS_INDEX,
-                                           PARKING_LOCATION_KEY,
-                                           error_message,
-                                           parking_data)
-    return closest_parking_lot
+    addr_to_record = csv_utils.map_addresses_to_records(parking_locations)
+    destinations = [location.Address for location in parking_locations] 
+    closest_parking_lot = g_maps_utils._get_driving_info(origin_address, 
+                                                         "Parking Lot",
+                                                         destinations)
+    if closest_parking_lot:     # if this dictionary exists, use the address
+                                # keyed at "Parking Lot" to return the relevant
+                                # record with the DRIVING_DISTANCE_TEXT_KEY and
+                                # DRIVING_TIME_TEXT_KEY
+        closest_addr = closest_parking_lot["Parking Lot"]
+        return (addr_to_record[closest_addr], 
+                closest_parking_lot[g_maps_utils.DRIVING_DISTANCE_TEXT_KEY],
+                closest_parking_lot[g_maps_utils.DRIVING_TIME_TEXT_KEY])
 
-                                                             
-def _get_emergency_parking_data():
-    """
-    Gets the emergency parking info from Boston Data
 
-    :return: array of emergency parking info as provided from City's ArcGIS
-    Feature Server for snow parking lots
+def get_parking_locations():
+    print('[method: get_parking_locations]')
+    reader = _get_parking_locations()
+    if reader:
+        return convert_csv_reader_into_namedtuples(reader)
+
+
+
+# moving request into private function to make it more testable
+def _get_parking_locations():
     """
-    print(
-        '[method: _get_emergency_parking_data]'
-    )     
-    query = "Spaces > 0"
-    return location_utils.get_features_from_feature_server(PARKING_INFO_URL, 
-                                                           query)
+    Build a list of parking location records from csv_file retrieved from 
+    PARKING_INFO_URL
+
+    :return None if request fails or a csv_reader object
+    """
+    print('[method: _get_parking_locations]')
+    print('Retrieving csv file from PARKING_INFO_URL')
+    r = requests.get(PARKING_INFO_URL)
+    if r.status_code == r.codes.ok:
+        file_contents = r.content.decode(r.apparent_encoding)
+        reader = csv.reader(file_contents.splitlines(), delimiter=',')
+        return reader
+
+
+def convert_csv_reader_into_namedtuples(reader):
+    """
+    Build a list of parking location records from a csv_reader.
+
+    :return records: list of namedtuple records
+    """
+    print('[method: convert_csv_reader_into_namedtuples]')
+    print('reader: ' + str(reader))
+    model = csv_utils.create_record_model("Record", 
+                                              next(reader)) # consume header
+    records = csv_utils.csv_to_namedtuples(model, reader)
+    records = csv_utils.add_city_and_state_to_records(records,
+                                                      "Boston",
+                                                      "MA")
+    print("Printing first five records...")
+    print(records[:5])
+    return records
+        
