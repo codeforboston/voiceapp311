@@ -1,5 +1,9 @@
 import os
 
+#CSV files for testing location_util's csv functions
+PARKING_LOTS_TEST_CSV = os.getcwd() + "/mycity/test/test_data/Snow_Emergency_Parking.csv"
+
+
 # because getcwd() will be run from project root we need to append test_data's path
 PARKING_LOTS_TEST_DATA = os.getcwd() + "/mycity/test/test_data/parking_lots"
 PARKING_LOTS_ADDR_INDEX = 7
@@ -8,6 +12,39 @@ PARKING_LOTS_ADDR_INDEX = 7
 ##################################################################
 # Mocked returns for patched functions that access web resources #
 ##################################################################
+
+
+# gis_utils.get_closest_feature
+
+GOOGLE_MAPS_JSON = [{'Driving distance': 2458, 'Driving distance text': '1.5 mi', 
+                     'Driving time': 427, 'Driving time text': '7 mins', 
+                     'test': '94 Sawyer Ave Boston, MA'}, 
+                    {'Driving distance': 692625, 'Driving distance text': '430 mi',
+                     'Driving time': 24533, 'Driving time text': '6 hours 49 mins',
+                     'test': '4 Olivewood Ct Greenbelt, MD'}]
+
+
+# gis_utils._get_dest_addresses_from_features
+
+
+PARKING_LOT_FEATURES = \
+[ [1, 1, 60, 'No Charge', ' ', ' ', 'Municipal Lot #003', '115 Harvard Ave',
+   ' ', 0, ' ', '1bc385c4-285f-49d6-a606-151380906d38', 1512407360712,
+   'BostonGIS', 1512407360712, 'BostonGIS',
+   {'x': -7918414.198468381, 'y': 5213945.511252668}],
+  [2, 2, 42, 'No Charge', ' ', ' ', 'Municipal Lot #002', '398 Market St',
+   ' ', 0, ' ', 'a9fcf634-ae60-407a-8b05-9bcac6bfeb63', 1512407360712,
+   'BostonGIS', 1512407360712, 'BostonGIS',
+   {'x': -7920695.3886001585, 'y': 5213501.824205618}],
+  [4, 4, 18, 'No Charge', ' ', ' ', 'Municipal Lot #034', '1891 Centre Street',
+   ' ', 0, ' ', '0cddfbc4-5afb-40fb-a783-d9f98c95f3a7', 1512407360712,
+   'BostonGIS', 1512407360712, 'BostonGIS',
+   {'x': -7921074.252411649, 'y': 5203874.208464791}]
+]
+
+
+
+
 
 # Trash Day intent
 

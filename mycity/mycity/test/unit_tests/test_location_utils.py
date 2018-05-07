@@ -1,5 +1,7 @@
 import ast
 import arcgis.features as features
+import collections
+import csv
 import json
 import unittest
 import unittest.mock as mock
@@ -7,6 +9,7 @@ import unittest.mock as mock
 import mycity.mycity_request_data_model as my_req
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.location_utils as location_utils
+import mycity.utilities.gis_utils as gis_utils
 import mycity.test.test_constants as test_constants
 
 
@@ -110,10 +113,10 @@ class LocationUtilsTestCase(unittest.TestCase):
         self.change_address("46 Everdean St.")
         self.compare_built_address("46 Everdean St Boston MA")
         
-    def test_get_dest_addresses(self):
+    def test_get_dest_addresses_from_features(self):
         data = get_test_data(COMMENT_CHAR, test_constants.PARKING_LOTS_TEST_DATA)
         to_test = \
-            location_utils._get_dest_addresses(
+            location_utils._get_dest_addresses_from_features(
             test_constants.PARKING_LOTS_ADDR_INDEX, 
             data[0:5]
             )
@@ -152,16 +155,61 @@ class LocationUtilsTestCase(unittest.TestCase):
         feature_type = "test"
         error_message = "Test error message"
         result = location_utils.get_closest_feature(test_origin, 
-                                                    feature_address_index,
+                                                   feature_address_index,
                                                     feature_type,
                                                     error_message,
                                                     test_features)
         self.assertEqual("94 Sawyer Ave Boston, MA", result[feature_type])
         self.assertEqual('7 mins', result[location_utils.DRIVING_TIME_TEXT_KEY])
         self.assertEqual('1.5 mi', result[location_utils.DRIVING_DISTANCE_TEXT_KEY])
-
-
     
+    def test_create_record_model(self):
+        Record = collections.namedtuple('TestRecord', ['field_1', 'field_2'])
+        to_test = location_utils.create_record_model(model_name = 'TestRecord',
+                                                     fields=['\tfield_1', 'field_2\n\n'])
+        self.assertEqual(Record, to_test)
+
+    def test_csv_to_namedtuples(self):
+        csv = test_constants.PARKING_LOTS_TEST_CSV
+        fields = ['X','Y','FID','OBJECTID','Spaces','Fee','Comments','Phone','Name','Address',
+                  'Neighborho','Maxspaces','Hours','GlobalID','CreationDate','Creator',
+                  'EditDate','Editor']
+        Record = collections.namedtuple('Record', fields)
+        with open(csv, 'r') as csv_file:
+            csv_file.readline()        # remove header
+            to_test= location_utils.csv_to_namedtuples(Record, csv_file)
+        self.assertIsInstance(collections.namedtuple, to_test[0])
+
+    def test_csv_to_namedtuples_address_field_not_null(self):
+        csv = test_constants.PARKING_LOTS_TEST_CSV
+        fields = ['X','Y','FID','OBJECTID','Spaces','Fee','Comments','Phone','Name','Address',
+                  'Neighborho','Maxspaces','Hours','GlobalID','CreationDate','Creator',
+                  'EditDate','Editor']
+        Record = collections.namedtuple('Record', fields)
+        with open(csv, 'r') as csv_file:
+            csv_file.readline()        # remove header
+            csv_reader = csv.reader(csv_file, delimiter = ",")
+            records = location_utils.csv_to_namedtuples(Record, csv_reader)
+        record_to_test = records[0]
+        self.assertIsNotNone(record_to_test.Address)
+
+    def test_add_city_and_state_to_records(self):
+        Record = collections.namedtuple('Record', ['test_field', 'Address'])
+        records = []
+        records.append(Record(test_field='wes', Address = '1000 Dorchester Ave'))
+        records.append(Record(test_field='drew', Address = '123 Fake St'))
+        to_test = location_utils.add_city_and_state_to_records(records, 'Boston', 'MA')
+        for record in to_test:
+            self.assertIn("Boston, MA", record)
+
+    def test_map_addresses_to_record(self):
+        Record = collections.namedtuple('Record', ['test_field', 'Address'])
+        records = []
+        records.append(Record._make('wes', '1000 Dorchester Ave'))
+        records.append(Record._make('drew', '123 Fake St'))
+        to_test = location_utils.map_addresses_to_records(records)
+        self.assertEqual(records[0].Address, to_test['1000 Dorchester Ave'])
+
 
 
     ####################################################################
