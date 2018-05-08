@@ -45,7 +45,7 @@ def get_snow_emergency_parking_intent(mycity_request):
                 if closest_location.Phone.strip() != "" else ""
             fee = "There is a fee of {}.".format(closest_location.Fee) \
                 if closest_location.Fee != "No Charge" else "There is no fee. "
-            comment = "NOTE: {}.".format(closest_location.Comments) \
+            comment = "NOTE: {}. ".format(closest_location.Comments) \
                 if closest_location.Comments.strip() != "" else ""
             mycity_response.output_speech = \
                 ("The closest snow emergency parking location, {}, is at "
