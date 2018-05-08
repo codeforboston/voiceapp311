@@ -34,7 +34,7 @@ def _get_driving_info(origin, location_type, destinations):
         'origin received:',
         origin,
         'feature_type received:',
-        feature_type,
+        location_type,
         'destinations received (printing first five):',
         destinations[:5],       # only print first five destinations
         'count(destinations):',
@@ -48,7 +48,9 @@ def _get_driving_info(origin, location_type, destinations):
         response = session.get(driving_directions_url, params=url_parameters)
         if response.status_code == requests.codes.ok:
             all_driving_data = response.json()
-            driving_infos = _parse_driving_data(all_driving_data, feature_type, destinations)
+            driving_infos = combine_driving_data_with_destinations(all_driving_data, 
+                                                                   location_type, 
+                                                                   destinations)
         else:
             print("Failed to get driving directions")
     return driving_infos
@@ -76,7 +78,7 @@ def _setup_google_maps_query_params(origin, destinations):
             "units": "imperial"}
 
 
-def _parse_driving_data(all_driving_data, location_type, destinations):
+def combine_driving_data_with_destinations(all_driving_data, location_type, destinations):
     """
     Retrieve data from Google Maps query into dictionary with data stored as
     key, value pairs (our keys being the constants defined at beginning of file)

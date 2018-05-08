@@ -10,15 +10,15 @@ import mycity.test.unit_tests.test_csv_utils as csv_utils
 import mycity.test.unit_tests.test_gis_utils as gis_utils
 
 
-TEST_CASES = [ my_controller.MyCityControllerUnitTestCase,
-               address_utils.AddressUtilitiesTestCase,
-               csv_utils.CSVUtilitiesTestCase,
-               gis_utils.GISUtilitiesTestCase,
-               get_alerts.GetAlertsTestCase,
-               trash_intent.TrashDayTestCase,
-               unhandled_intent.UnhandledIntentTestCase,
-               snow_parking.SnowEmergencyTestCase
-               ]
+TEST_CASES = [  my_controller.MyCityControllerUnitTestCase,
+                address_utils.AddressUtilitiesTestCase,
+                csv_utils.CSVUtilitiesTestCase,
+                gis_utils.GISUtilitiesTestCase,
+                get_alerts.GetAlertsTestCase,
+                trash_intent.TrashDayTestCase,
+                unhandled_intent.UnhandledIntentTestCase,
+                snow_parking.SnowEmergencyTestCase
+                ]
 
 def load_tests():
     suite = unittest.TestSuite()

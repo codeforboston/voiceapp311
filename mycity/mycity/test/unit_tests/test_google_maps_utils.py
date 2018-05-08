@@ -7,14 +7,15 @@ import mycity.utilities.google_maps_utils as g_maps_utils
 
 class TestGoogleMapsUtilities(base.BaseTestCase):
 
-    def test_parse_closest_location_info(self):
+    def test_combine_driving_data_with_destinations(self):
         location_type = 'Fake location'
         closest_location_info = {'Driving distance': 'fake',
                               'Driving distance text': 'also fake',
                               'Driving time': 'triply fake',
                               'Driving time text': 'fake like a mug',
                               location_type: 'fake fake fake fake'}
-        to_test = g_maps_utils._parse_closest_location_info(location_type, closest_location_info)
+        to_test = g_maps_utils.combine_driving_data_with_destinations(location_type, 
+                                                                      closest_location_info)
         self.assertIn(g_maps_utils.DRIVING_DISTANCE_TEXT_KEY, to_test)
         self.assertIn(g_maps_utils.DRIVING_TIME_TEXT_KEY, to_test)
         self.assertIn(location_type, to_test)

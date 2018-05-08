@@ -1,4 +1,5 @@
 """Alexa intent used to find snow emergency parking"""
+
 import csv
 import requests
 
@@ -41,11 +42,11 @@ def get_snow_emergency_parking_intent(mycity_request):
         else:
             phone_number = \
                 "Call {} for information.".format(closest_location.Phone) \
-                if closest_location.Phone else ""
+                if closest_location.Phone.strip() != "" else ""
             fee = "There is a fee of {}.".format(closest_location.Fee) \
-                if closest_location.Fee != "No Charge" else "There is no fee."
+                if closest_location.Fee != "No Charge" else "There is no fee. "
             comment = "NOTE: {}.".format(closest_location.Comments) \
-                if closest_location.Comments else ""
+                if closest_location.Comments.strip() != "" else ""
             mycity_response.output_speech = \
                 ("The closest snow emergency parking location, {}, is at "
                 "{}. It is {} away and should take you {} to drive " 
@@ -89,17 +90,20 @@ def get_closest_parking_location(origin_address, parking_locations):
     )
     addr_to_record = csv_utils.map_addresses_to_records(parking_locations)
     destinations = [location.Address for location in parking_locations] 
-    closest_parking_lot = g_maps_utils._get_driving_info(origin_address, 
+    all_parking_lots = g_maps_utils._get_driving_info(origin_address, 
                                                          "Parking Lot",
                                                          destinations)
-    if closest_parking_lot:     # if this dictionary exists, use the address
-                                # keyed at "Parking Lot" to return the relevant
-                                # record with the DRIVING_DISTANCE_TEXT_KEY and
-                                # DRIVING_TIME_TEXT_KEY
-        closest_addr = closest_parking_lot["Parking Lot"]
+    if all_parking_lots:     # if this exists, for the entry with the least
+                             # driving time use the address keyed at "Parking
+                             # Lot" to return the relevant record with the
+                             # DRIVING_DISTANCE_TEXT_KEY and
+                             # DRIVING_TIME_TEXT_KEY
+        shortest_drive = min(all_parking_lots,
+                             key=lambda x: x[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY])
+        closest_addr = shortest_drive["Parking Lot"]
         return (addr_to_record[closest_addr], 
-                closest_parking_lot[g_maps_utils.DRIVING_DISTANCE_TEXT_KEY],
-                closest_parking_lot[g_maps_utils.DRIVING_TIME_TEXT_KEY])
+                shortest_drive[g_maps_utils.DRIVING_DISTANCE_TEXT_KEY],
+                shortest_drive[g_maps_utils.DRIVING_TIME_TEXT_KEY])
 
 
 def get_parking_locations():
@@ -121,7 +125,7 @@ def _get_parking_locations():
     print('[method: _get_parking_locations]')
     print('Retrieving csv file from PARKING_INFO_URL')
     r = requests.get(PARKING_INFO_URL)
-    if r.status_code == r.codes.ok:
+    if r.status_code == 200:
         file_contents = r.content.decode(r.apparent_encoding)
         reader = csv.reader(file_contents.splitlines(), delimiter=',')
         return reader

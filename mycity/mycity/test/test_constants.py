@@ -65,6 +65,25 @@ GET_TRASH_DAY_MOCK = {'place': {'house': '1000', 'unit': '', 'lng': '36.6748', '
 
 # Snow Emergency Parking Intent
 
+
+CLOSEST_PARKING_DRIVING_DATA = [{'Driving distance': 12682, 'Driving distance text': '7.9 mi', 'Driving time':
+                                     1130, 'Driving time text': '19 mins', 'Parking Lot': '115 Harvard Ave Boston, MA'}, 
+                                {'Driving distance': 14653, 'Driving distance text': '9.1 mi', 'Driving time': 1271, 
+                                 'Driving time text': '21 mins', 'Parking Lot': '398 Market St Boston, MA'}, 
+                                {'Driving distance': 11670, 'Driving distance text': '7.3 mi', 'Driving time': 1015, 
+                                 'Driving time text': '17 mins', 'Parking Lot': '111 Western Ave Boston, MA'}, 
+                                {'Driving distance': 11586, 'Driving distance text': '7.2 mi', 'Driving time': 1507,
+                                 'Driving time text': '25 mins', 'Parking Lot': '1891 Centre Street Boston, MA'},
+                                {'Driving distance': 8846, 'Driving distance text': '5.5 mi', 'Driving time': 1022,
+                                 'Driving time text': '17 mins', 'Parking Lot': '39-41 Corey St Boston, MA'}, 
+                                {'Driving distance': 5438, 'Driving distance text': '3.4 mi', 'Driving time': 745,
+                                 'Driving time text': '12 mins', 'Parking Lot': '1 Avenue De Lafayette Boston, MA'}]
+
+
+
+
+
+
 CLOSEST_PARKING_MOCK_RETURN = {'Driving distance': 2458, 
                                'Driving distance text': '1.5 mi', 
                                'Driving time': 427, 

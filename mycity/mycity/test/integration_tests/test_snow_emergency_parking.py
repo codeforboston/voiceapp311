@@ -29,11 +29,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
         super().setUp()
         self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV, encoding = 'utf-8-sig')
         mock_parking_locations_return = csv.reader(self.csv_file, delimiter =',')
-        mock_get_driving_info_return = {"Parking Lot": "111 Western Ave Boston, MA",
-                                        g_maps_utils.DRIVING_DISTANCE_TEXT_KEY:
-                                            "100 miles",
-                                        g_maps_utils.DRIVING_TIME_TEXT_KEY:
-                                            "15 minutes"}
+        mock_get_driving_info_return = test_constants.CLOSEST_PARKING_DRIVING_DATA
         self.get_parking_location_patch = \
             mock.patch(('mycity.intents.snow_parking_intent.'
                         '_get_parking_locations'),
@@ -45,7 +41,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
         self.get_parking_location_patch.start()
         self.get_driving_info_patch.start()
 
-
+ 
     def tearDown(self):
         super().tearDown()
         self.csv_file.close()
