@@ -10,7 +10,7 @@ include/*
 
 pip-selfcheck.json
 
-
+selenium/*
 
 # Logs
 logs
@@ -84,5 +84,10 @@ BostonData/lambda_function/idna*
 BostonData/lambda_function/requests*
 BostonData/lambda_function/street*
 BostonData/lambda_function/urllib3*
+
+# pycache and pyc files
+
+*/__pycache__
+*.pyc
 
 lambda_function.zip

@@ -1,7 +1,6 @@
 """
 Functions for Alexa responses related to trash day
 """
-
 from .custom_errors import InvalidAddressError, BadAPIResponse
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
