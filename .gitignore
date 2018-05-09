@@ -10,7 +10,7 @@ include/*
 
 pip-selfcheck.json
 
-
+selenium/*
 
 # Logs
 logs
