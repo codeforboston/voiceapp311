@@ -27,12 +27,13 @@ connecting the two together.
 however the general workflow is the same.
 
 ### Before you start
-Clone this repo and from the BostonData directory. Navigate to the BostonData 
+Clone this repo and navigate to the **voiceapp311/mycity/mycity/deploy_tools**
 directory and run:
 ```
 python deploy_tools.py -p
 ```
-This will generate the lambda_function.zip archive, which you will need later.
+This will generate the lambda_function.zip archive (two levels up in the
+directory), which you will need later.
 
 ### Part 1: Amazon Developer
 1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
@@ -45,7 +46,7 @@ This will generate the lambda_function.zip archive, which you will need later.
      [en_US.json](mycity/platforms/amazon/models/en_US.json).
    * Leave the **Slot Types** section blank.
    * Click **Save model**
-5. Click **3.Build Model** on the righ or **Build Model** on the top.
+5. Click **3.Build Model** on the right or **Build Model** on the top.
 6. Leave this tab open as you will enter information from your **Lambda** 
    function into the **Configuration** section later. 
 
@@ -61,31 +62,36 @@ This will generate the lambda_function.zip archive, which you will need later.
      the name we use).
 3. Search for **Lambda** and select **Create function** (and **Author 
    from scratch**).
-4. Make sure you're in **US East (Ohio)** region (top right) - this is the region
+4. Make sure you're in **US East (N. Virginia)** region (top right) - this is the region
 	for which Alexa Skill Kit is available.
-5. Under **Basic Information**,
+5. Under **Author from scratch** info:
    * give your Lambda the name **BostonData**
-   * for the role, select **Choose existing role** and select 
+   * For the runtime select **Python 3.6**
+   * For the role, select **Choose existing role** and select 
      **lambda_basic_execution** (the role we created above).
-7. Under **Triggers**. Drag **Alexa Skills Kit** from the menu on the left to the empty 
-	dashed rectangle.
+6. Under **Triggers**, click **Alexa Skills Kit** from the menu on the left
+   and it will appear in the empty dashed rectangle.
    * You will also need to enter the **Skill ID (also called Application ID)**. 
      This can be found on the developer.amazon.com console for your skill. 
 	(go to your skill list by clicking **Your Skills**, you can see it under the skill name).
-8. Under **Function code**:
-    * **Code entry type**: **Upload a .zip file** pulldown. 
+7. Click the uppermost box in the tree named **BostonData** (next to the
+   orange icon) to open and modify the **Function code** section:
+    * **Code entry type**: **Upload a .zip file** pulldown.
+        * Click on the "upload" button, and browse to and select the
+          **lambda_function.zip** archive created earlier.
     * **Runtime**: Python 3.6
     * **Handler**: lambda_function.lambda_handler
-9. **Save**.
-10. In the upper right you'll see a **ARN**. Copy this and go back to the tab
+8. **Save**.
+9. In the upper right you'll see a **ARN**. Copy this and go back to the tab
    you have open from Part 1.
-11. Set up a Google API key environment key.
+10. Set up a Google API key environment key.
     
     Some of the intents require access to Google distance matrix which requires 
     an access key to the Google API. In order to run these skills you will
     need your own access key which can be created by going to the [Google
     Distance Matrix developer site](https://developers.google.com/maps/documentation/distance-matrix/start)
-    and clicking the "Get A Key" button.
+    and clicking the "Get Started" button. The distance matrix API is now
+    grouped under the "Routes" API product.
 
     Once you have a key, go to your AWS lambda configuration page. Find
     the environment variable section. Create a new environment variable
