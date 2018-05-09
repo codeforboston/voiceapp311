@@ -11,8 +11,8 @@ from .intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
-from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.get_alerts_intent import get_alerts_intent
+from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents import intent_constants
 
 
@@ -68,7 +68,6 @@ def on_session_started(mycity_request):
             'ERROR - request should be a MyCityRequestDataModel.]'
         )
     )
-
 
 def on_launch(mycity_request):
     """
