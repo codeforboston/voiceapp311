@@ -70,7 +70,6 @@ def on_session_started(mycity_request):
     )
     return get_address_from_user_device(mycity_request)
 
-
 def on_launch(mycity_request):
     """
     Called when the user launches the skill without specifying what
