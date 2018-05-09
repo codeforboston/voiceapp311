@@ -13,6 +13,7 @@ from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
+from .intents.get_open_spaces_intent import get_open_spaces_intent
 from .intents import intent_constants
 
 
@@ -127,6 +128,11 @@ def on_intent(mycity_request):
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_trash_day_info(mycity_request)
+    elif mycity_request.intent_name == "OpenSpacesIntent":
+        return request_user_address_response(mycity_request) \
+            if intent_constants.CURRENT_ADDRESS_KEY \
+            not in mycity_request.session_attributes \
+            else get_open_spaces_intent(mycity_request)
     elif mycity_request.intent_name == "SnowParkingIntent":
         return request_user_address_response(mycity_request) \
             if intent_constants.CURRENT_ADDRESS_KEY \

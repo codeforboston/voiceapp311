@@ -55,6 +55,16 @@
             "emergency parking"
           ]
         },
+	{
+	  "name": "OpenSpacesIntent",
+	  "samples": [
+	    "where is the nearest park",
+	    "where is the nearest open space",
+	    "find the nearest park",
+	    "open space",
+	    "find a park"
+	  ]
+	},
         {
           "name": "GetAlertsIntent",
           "samples": [

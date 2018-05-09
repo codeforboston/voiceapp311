@@ -43,9 +43,6 @@ PARKING_LOT_FEATURES = \
 ]
 
 
-
-
-
 # Trash Day intent
 
 GET_ADDRESS_API_MOCK = {'parcel_id': 31460684,
@@ -103,3 +100,15 @@ GET_ALERTS_MOCK_SOME_ALERTS = {'Tow lot': 'Tow lots destroyed!', 'Parking meters
                                'Trash and recycling': 'Pickup is on a normal schedule.', 
                                'Street Cleaning': 'Street cleaning is canceled', 
                                'Alert header': 'Godzilla inbound!'}
+
+# get_open_spaces intent
+
+OPEN_SPACES_TEST_CSV =  os.getcwd() + "/mycity/test/test_data/Open_Spaces.csv"
+
+CLOSEST_OPEN_SPACES_DRIVING_DATA = \
+    [{'Driving distance': 12682, 'Driving distance text': '7.9 mi', 'Driving time': 1130, 
+      'Driving time text': '19 mins', 'Parking Lot': '115 Harvard Ave Boston, MA'}, 
+     {'Driving distance': 14653, 'Driving distance text': '9.1 mi', 'Driving time': 1271, 
+      'Driving time text': '21 mins', 'Parking Lot': '398 Market St Boston, MA'}, 
+     {'Driving distance': 1, 'Driving distance text': '7.3 mi', 'Driving time': 1, 
+      'Driving time text': '17 mins', 'Parking Lot': '536 Commericial Str., Boston, MA'}]

@@ -12,6 +12,7 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 
 
+
 # Constants 
 PARKING_INFO_URL = ("http://bostonopendata-boston.opendata.arcgis.com/datasets/"
                     "53ebc23fcc654111b642f70e61c63852_0.csv")
@@ -21,7 +22,6 @@ def get_snow_emergency_parking_intent(mycity_request):
     Populate MyCityResponseDataModel with snow emergency parking response information.
 
     :param mycity_request: MyCityRequestModel object
-    :param mycity_response: MyCityResponseModel object
     :return: MyCityResponseModel object
     """
     print(
@@ -68,8 +68,6 @@ def get_snow_emergency_parking_intent(mycity_request):
     return mycity_response
 
 
-
-
 def get_closest_parking_location(origin_address, parking_locations):
     """
     Calculates the address, distance, and driving time for the closest snow
@@ -79,7 +77,8 @@ def get_closest_parking_location(origin_address, parking_locations):
     closest emergency parking location
     :param parking_locations: a list of Record namedtuples with attributes
     taken from Snow Parking CSV
-    :return: the Record closest to origin_address
+    :return: the Record closest to origin_address, with driving time and distance
+    recorded as strings
     """
     print(
         '[method: get_closest_parking_location]',
@@ -87,7 +86,7 @@ def get_closest_parking_location(origin_address, parking_locations):
         origin_address,
         'parking_locations (first five):',
         parking_locations[:5]
-    )
+        )
     addr_to_record = csv_utils.map_addresses_to_records(parking_locations)
     destinations = [location.Address for location in parking_locations] 
     all_parking_lots = g_maps_utils._get_driving_info(origin_address, 
@@ -149,4 +148,3 @@ def convert_csv_reader_into_namedtuples(reader):
     print("Printing first five records...")
     print(records[:5])
     return records
-        
