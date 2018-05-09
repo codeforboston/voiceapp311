@@ -33,7 +33,7 @@ def get_address_from_user_device(mycity_request):
 
     :param mycity_request: MyCityRequestDataModel
     :param mycity_response: MyCityResponseDataModel
-    :return : MyCityResponseModel object
+    :return : MyCityRequestModel object
     """
     print(
         '[module: user_address_intent]',
@@ -57,57 +57,50 @@ def get_address_from_user_device(mycity_request):
     print("request result:",
         request_result.text)
     res = request_result.json()
-    if (res['addressLine1'] is None):
-        mycity_response.output_speech = "I'm not sure what your address is. " \
-                                        "You can tell me your address by saying, " \
-                                        "\"my address is\" followed by your address."
-    else:
+    if (res['addressLine1'] is not None):
         current_address = res['addressLine1']
         mycity_request.session_attributes[
             intent_constants.CURRENT_ADDRESS_KEY] = current_address
+    return mycity_request
+
+def get_address_from_session(mycity_request):
+    """
+    Looks for a current address in the session attributes and constructs a
+    response based on whether one exists or not. If one exists, it is
+    preserved in the session.
+
+    :param mycity_request: MyCityRequestDataModel
+    :param mycity_response: MyCityResponseDataModel
+    :return : MyCityResponseModel object
+    """
+    print(
+        '[module: user_address_intent]',
+        '[method: get_address_from_session]',
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
+    )
+
+    mycity_response = MyCityResponseDataModel()
+    # print("GETTING ADDRESS FROM SESSION")
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.reprompt_text = None
+    mycity_response.should_end_session = False
+
+    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
+        current_address = mycity_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY]
         mycity_response.output_speech = "Your address is " + current_address + "."
-
-    return mycity_response
-
-
-# def get_address_from_session(mycity_request):
-#     """
-#     Looks for a current address in the session attributes and constructs a
-#     response based on whether one exists or not. If one exists, it is
-#     preserved in the session.
-
-#     :param mycity_request: MyCityRequestDataModel
-#     :param mycity_response: MyCityResponseDataModel
-#     :return : MyCityResponseModel object
-#     """
-#     print(
-#         '[module: user_address_intent]',
-#         '[method: get_address_from_session]',
-#         'MyCityRequestDataModel received:',
-#         str(mycity_request)
-#     )
-
-#     mycity_response = MyCityResponseDataModel()
-#     # print("GETTING ADDRESS FROM SESSION")
-#     mycity_response.session_attributes = mycity_request.session_attributes
-#     mycity_response.card_title = mycity_request.intent_name
-#     mycity_response.reprompt_text = None
-#     mycity_response.should_end_session = False
-
-#     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-#         current_address = mycity_request.session_attributes[
-#             intent_constants.CURRENT_ADDRESS_KEY]
-#         mycity_response.output_speech = "Your address is " + current_address + "."
-#     else:
-#         mycity_response.output_speech = "I'm not sure what your address is. " \
-#                                         "You can tell me your address by saying, " \
-#                                         "\"my address is\" followed by your address."
+    else:
+        mycity_response.output_speech = "I'm not sure what your address is. " \
+                                        "You can tell me your address by saying, " \
+                                        "\"my address is\" followed by your address."
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. They will be returned to the top level of the skill and must
     # provide input that corresponds to an intent to continue.
 
-    # return mycity_response
+    return mycity_response
 
 
 def request_user_address_response(mycity_request):
