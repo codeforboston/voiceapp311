@@ -2,7 +2,7 @@ import unittest
 import unittest.mock as mock
 
 import mycity.intents.intent_constants as intent_constants
-import mycity.mycity_controller as mcc
+import mycity.mycity_controller as my_controller
 import mycity.mycity_request_data_model as req
 import mycity.test.test_constants as test_constants
 
@@ -22,7 +22,7 @@ class IntentBaseCase(unittest.TestCase):
     returns_reprompt_text = False
 
     def setUp(self):
-        self.controller = mcc.MyCityController()
+        self.controller = my_controller
         self.request = req.MyCityRequestDataModel()
         key = intent_constants.CURRENT_ADDRESS_KEY
         self.request._session_attributes[key] = "1000 Dorchester Ave"
