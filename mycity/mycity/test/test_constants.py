@@ -103,7 +103,7 @@ GET_ALERTS_MOCK_SOME_ALERTS = {'Tow lot': 'Tow lots destroyed!', 'Parking meters
 
 # get_open_spaces intent
 
-OPEN_SPACES_TEST_CSV =  os.getcwd() + "/mycity/test/test_data/.csv"
+OPEN_SPACES_TEST_CSV =  os.getcwd() + "/mycity/test/test_data/Open_Spaces.csv"
 
 CLOSEST_OPEN_SPACES_DRIVING_DATA = \
     [{'Driving distance': 12682, 'Driving distance text': '7.9 mi', 'Driving time': 1130, 

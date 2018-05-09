@@ -19,7 +19,7 @@ class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
     intent_to_test = "OpenSpacesIntent"
     returns_reprompt_text = False
 
-    def setUp():
+    def setUp(self):
         """
         Functions to patch:
             get_open_spaces
@@ -32,18 +32,18 @@ class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
         mock_get_driving_info_return = \
             test_constants.CLOSEST_OPEN_SPACES_DRIVING_DATA
         self.get_open_spaces_patch = \
-            mock.patch(('mycity.intents.open_spaces_intent.'
-                        'get_open_spaces'),
+            mock.patch(('mycity.intents.get_open_spaces_intent.'
+                        '_get_open_spaces'),
                        return_value = mock_get_open_spaces_return)
         self.get_driving_info_patch = \
-            mock.patch(('mycity.intents.open_spaces_intent.g_maps_utils'
+            mock.patch(('mycity.intents.get_open_spaces_intent.g_maps_utils.'
                         '_get_driving_info'),
                        return_value = mock_get_driving_info_return)
         self.get_open_spaces_patch.start()
         self.get_driving_info_patch.start()
 
 
-    def tearDown():
+    def tearDown(self):
         super().tearDown()
         self.csv_file.close()
         self.get_open_spaces_patch.stop()
