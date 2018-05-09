@@ -93,6 +93,7 @@ def get_closest_parking_location(origin_address, parking_locations):
     all_parking_lots = g_maps_utils._get_driving_info(origin_address, 
                                                          "Parking Lot",
                                                          destinations)
+
     if all_parking_lots:     # if this exists, for the entry with the least
                              # driving time use the address keyed at "Parking
                              # Lot" to return the relevant record with the
