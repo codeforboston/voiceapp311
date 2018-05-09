@@ -19,8 +19,7 @@ from .intents import intent_constants
 class MyCityController:
     """
     Handles requests for the MyCity voice app.
-
-
+    
     @type mycity_request: MyCityRequestDataModel
     @param mycity_request: Request from platform as a MyCityRequestModel object
     """
