@@ -63,12 +63,12 @@ class CSVUtilitiesTestCase(base.BaseTestCase):
         for record in to_test:
             self.assertIn("Boston, MA", record.Address)
 
-    def test_map_addresses_to_record(self):
+    def test_map_attribute_to_record(self):
         Record = collections.namedtuple('Record', ['test_field', 'Address'])
         records = []
         records.append(Record('wes', '1000 Dorchester Ave'))
         records.append(Record('drew', '123 Fake St'))
-        to_test = csv_utils.map_addresses_to_records(records)
+        to_test = csv_utils.map_attribute_to_records('Address', records)
         self.assertEqual(records[0], to_test['1000 Dorchester Ave'])
 
 

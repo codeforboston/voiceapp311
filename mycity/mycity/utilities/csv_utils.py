@@ -56,7 +56,7 @@ def add_city_and_state_to_records(records, city, state):
     return [record._replace(Address = record.Address + suffix) for record in records]
 
 
-def map_addresses_to_records(records):
+def map_attribute_to_records(attribute, records):
     """
     Create and return a dictionary mapping a records address field
     to the record itself. This allows us to access the whole record
@@ -68,5 +68,5 @@ def map_addresses_to_records(records):
     :ret: dictionary mapping an string Address to namedtuple record
 
     """
-    return {record.Address : record for record in records}
+    return {getattr(record, attribute) : record for record in records}
     

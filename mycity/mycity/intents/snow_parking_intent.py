@@ -89,7 +89,7 @@ def get_closest_parking_location(origin_address, parking_locations):
         'parking_locations (first five):',
         parking_locations[:5]
     )
-    addr_to_record = csv_utils.map_addresses_to_records(parking_locations)
+    addr_to_record = csv_utils.map_attribute_to_records('Address', parking_locations)
     destinations = [location.Address for location in parking_locations] 
     all_parking_lots = g_maps_utils._get_driving_info(origin_address, 
                                                          "Parking Lot",
