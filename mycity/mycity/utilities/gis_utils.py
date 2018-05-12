@@ -80,7 +80,7 @@ def get_features_from_feature_server(url, query):
     f = FeatureLayer(url = url)
     feature_set = f.query(where = query)
     for feature in feature_set:
-        features.append(feature.as_row[0]) # [0] = data, [1] = column names
+        features.append(feature.as_dict)
     return features
 
 

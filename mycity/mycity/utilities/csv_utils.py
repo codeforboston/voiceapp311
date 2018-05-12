@@ -55,8 +55,11 @@ def add_city_and_state_to_records(records, address_key,
     :ret: a copy of records with Address fields modified
     """
     suffix = " " + city + ", " + state
-    return [record[address_key] = record[address_key] + suffix
-            for record in records]
+    ret = []
+    for record in records:
+        record[address_key] = record[address_key] + suffix
+        ret.append(record)
+    return ret
 
 
 def map_attribute_to_records(attribute, records):
@@ -72,4 +75,3 @@ def map_attribute_to_records(attribute, records):
 
     """
     return {getattr(record, attribute) : record for record in records}
-o    
