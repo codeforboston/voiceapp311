@@ -27,25 +27,26 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
 
         """
         super().setUp()
-#         self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV, encoding = 'utf-8-sig')
-#         mock_parking_locations_return = csv.reader(self.csv_file, delimiter =',')
-#         mock_get_driving_info_return = test_constants.CLOSEST_PARKING_DRIVING_DATA
-#         self.get_parking_location_patch = \
-#             mock.patch(('mycity.intents.snow_parking_intent.'
-#                         '_get_parking_locations'),
-#                        return_value = mock_parking_locations_return)
-#         self.get_driving_info_patch = \
-#             mock.patch(('mycity.intents.snow_parking_intent.g_maps_utils._get_driving_info'),
-#                        return_value = mock_get_driving_info_return)
-
-#         self.get_parking_location_patch.start()
-#         self.get_driving_info_patch.start()
+        fake_filter = lambda record : record
+        self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV, encoding = 'utf-8-sig')
+        mock_filtered_record_return = list(filter(fake_filter, 
+                                                  csv.DictReader(self.csv_file,
+                                                                 delimiter=',')))
+        self.mock_filtered_record = mock.patch(('mycity.intents.snow_parking_intent.'
+                                                'FinderCSV.file_to_filtered_records'),
+                                          return_value = mock_filtered_record_return)
+        mock_get_driving_info_return = test_constants.CLOSEST_PARKING_DRIVING_DATA
+        self.get_driving_info_patch = \
+             mock.patch(('mycity.intents.snow_parking_intent.g_maps_utils._get_driving_info'),
+                        return_value = mock_get_driving_info_return)
+        self.mock_filtered_record.start()
+        self.get_driving_info_patch.start()
 
  
     def tearDown(self):
         super().tearDown()
-#         self.csv_file.close()
-#         self.get_parking_location_patch.stop()
-#         self.get_driving_info_patch.stop()
+        self.csv_file.close()
+        self.mock_filtered_record.stop()
+        self.get_driving_info_patch.stop()
 
 
