@@ -115,7 +115,7 @@ class Finder(object):
             self.output_speech = self.output_speech.format(**format_keys)
         except KeyError:        # our formatted string asked for key we don't
                                 # have
-            self.output_speech = ERROR_MESSAGE
+            self.output_speech = Finder.ERROR_MESSAGE
 
 
     def get_all_destinations(self, records):
