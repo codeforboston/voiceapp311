@@ -1,10 +1,10 @@
 import csv
 import requests
 
-import mycity.utilities.Finder.Finder as Finder
+from mycity.utilities.finder.Finder import Finder
 
 
-class FinderCSV(Finder.Finder):
+class FinderCSV(Finder):
     """
     Finder subclass that uses csv files to find destination addresses
 
@@ -37,17 +37,15 @@ class FinderCSV(Finder.Finder):
                          output_speech_prep_func)
         self._filter = filter
 
-    
-    def start(self):
-        """
-        Fetches the csv_file, convert it to a filtered list of dictionaries,
-        then call super-class _start to build output_speech
-        """
-        print('[method: FinderCSV.start]')
-        csv_file = self.fetch_resource()
-        records = self.file_to_filtered_records(csv_file)
-        super()._start(records)
 
+    def get_records(self):
+        """
+        Subclasses must provide a get_records method. Base class will
+        handle all processing
+
+        """
+        return self.file_to_filtered_records(self.fetch_resource())
+        
         
     def fetch_resource(self):
         print('[method: FinderCSV.fetch_resource]')

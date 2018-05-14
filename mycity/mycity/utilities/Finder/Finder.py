@@ -7,7 +7,7 @@ import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.google_maps_utils as g_maps_utils
 
 
-class Finder:
+class Finder(object):
     """
     @property: resource_url ::= string that Finder subclass will fetch data from
     @property: speech_output ::= string that will be passed to request object
@@ -49,14 +49,24 @@ class Finder:
         self.origin_address = Finder.address_builder(req) # pull the origin
                                                           # address from request
                                                           # data model
-    
+
+
+    def get_records(self):
+        """
+        Raise a not implemented error if python tries to call this on the base
+        class. Subclasses should implement this themselves
+        """
+        print('[method: Finder.get_records]')
+        raise NotImplementedError
+
+
     def start(self):
         """
-        All subclasses should override this method and call the superclass's
-        _start method, since the only code that differs between different
-        Finders is how they retrieve their location records
+        All subclasses should provide a get_records for start 
         """
-        pass
+        print('[method: Finder.start]')
+        records = self.get_records()
+        self._start(records)
 
 
     def _start(self, records):
@@ -71,8 +81,12 @@ class Finder:
               records[:5])
         records = self.add_city_and_state_to_records(records)
         destinations = self.get_all_destinations(records)
-        driving_times = self.get_driving_times_to_destinations(destinations)
-        closest_dest = self.get_closest_destination(driving_times)
+        driving_info = self.get_driving_info_to_destinations(destinations)
+        closest_dest = \
+            min(driving_info, 
+                key = lambda destination : \
+                    destination[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY])
+
         closest_record = \
             self.get_closest_record_with_driving_info(closest_dest,
                                                       records)
@@ -115,7 +129,7 @@ class Finder:
         return [record[self.address_key] for record in records]
 
 
-    def get_driving_times_to_destinations(self, destinations):
+    def get_driving_info_to_destinations(self, destinations):
         """
         Return a dictionary with address, distance, and driving time from
         self.origin_address for all destinations

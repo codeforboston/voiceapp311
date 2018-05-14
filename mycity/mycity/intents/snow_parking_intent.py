@@ -3,7 +3,7 @@
 
 import mycity.intents.intent_constants as intent_constants
 import mycity.utilities.google_maps_utils as g_maps_utils
-import mycity.utilities.Finder.FinderCSV as FinderCSV
+from mycity.utilities.finder.FinderCSV import FinderCSV
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 
@@ -46,9 +46,8 @@ def get_snow_emergency_parking_intent(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        finder = FinderCSV.FinderCSV(mycity_request, PARKING_INFO_URL,
-                                     ADDRESS_KEY, OUTPUT_SPEECH_FORMAT,
-                                     format_record_fields)
+        finder = FinderCSV(mycity_request, PARKING_INFO_URL, ADDRESS_KEY, 
+                           OUTPUT_SPEECH_FORMAT, format_record_fields)
         print("Finding snow emergency parking for {}".format(finder.origin_address))
         finder.start()
         mycity_response.output_speech = finder.get_output_speech()
