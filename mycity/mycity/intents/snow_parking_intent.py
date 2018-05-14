@@ -2,8 +2,8 @@
 
 
 import mycity.intents.intent_constants as intent_constants
-import mycity.utilities.Finder.FinderCSV as FinderCSV
 import mycity.utilities.google_maps_utils as g_maps_utils
+import mycity.utilities.Finder.FinderCSV as FinderCSV
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 
@@ -13,10 +13,12 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 # Constants 
 PARKING_INFO_URL = ("http://bostonopendata-boston.opendata.arcgis.com/datasets/"
                     "53ebc23fcc654111b642f70e61c63852_0.csv")
+DRIVING_DIST = g_maps_utils.DRIVING_DISTANCE_TEXT_KEY
+DRIVING_TIME = g_maps_utils.DRIVING_TIME_TEXT_KEY
 OUTPUT_SPEECH_FORMAT = \
     ("The closest snow emergency parking location, {Name}, is at "
-     "{Address}. It is {Driving distance text} away and should take "
-     "you {Driving time text} to drive there. The parking lot has "
+     "{Address}. It is {" + DRIVING_DIST + "} away and should take "
+     "you {" + DRIVING_TIME + "} to drive there. The parking lot has "
      "{Spaces} spaces when empty. {Fee} {Comments} {Phone}")
 ADDRESS_KEY = "Address"
 
