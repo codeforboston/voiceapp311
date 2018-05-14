@@ -17,13 +17,13 @@ OUTPUT_SPEECH_FORMAT = \
     ("The closest snow emergency parking location, {Name}, is at "
      "{Address}. It is {Driving distance text} away and should take "
      "you {Driving time text} to drive there. The parking lot has "
-     "{Maxspaces} spaces when empty. {Fee} {Comments} {Phone}")
+     "{Spaces} spaces when empty. {Fee} {Comments} {Phone}")
 ADDRESS_KEY = "Address"
 
 
 def format_record_fields(record):
    record["Phone"] = "Call {} for information.".format(record["Phone"]) \
-       if record["Phone"] != "" else ""
+       if record["Phone"].strip() != "" else ""
    record["Fee"] = " There is a fee of {}. ".format(record["Fee"]) \
        if record["Fee"] != "No Charge" else " There is no fee. "
    

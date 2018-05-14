@@ -10,7 +10,6 @@ class FinderCSV(Finder.Finder):
 
     """
 
-
     default_filter = lambda record : record  # filter that filters nothing
 
 
@@ -44,12 +43,14 @@ class FinderCSV(Finder.Finder):
         Fetches the csv_file, convert it to a filtered list of dictionaries,
         then call super-class _start to build output_speech
         """
+        print('[method: FinderCSV.start]')
         csv_file = self.fetch_resource()
         records = self.file_to_filtered_records(csv_file)
         super()._start(records)
 
         
     def fetch_resource(self):
+        print('[method: FinderCSV.fetch_resource]')
         r = requests.get(self.resource_url)
         if r.status_code == 200:
             file_contents = r.content.decode(r.apparent_encoding)
@@ -66,6 +67,9 @@ class FinderCSV(Finder.Finder):
         
         :param: file_contents: contents from successful GET on resource_url
         """
+        print('[method: FinderCSV.file_to_filtered_records]',
+              'file_contents:',
+              file_contents)
         return list(filter(self._filter,
                            csv.DictReader(file_contents.splitlines(), 
                                           delimiter=',')))

@@ -18,5 +18,6 @@ class FinderGIS(Finder.Finder):
 
 
     def get_features_from_feature_server():
+        print("[method: FinderGIS.get_features_from_feature_server]")
         return gis_utils.get_features_from_feature_server(self.resource_url,
                                                           self.query)
