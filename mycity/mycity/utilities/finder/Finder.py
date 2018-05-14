@@ -71,7 +71,9 @@ class Finder(object):
 
     def _start(self, records):
         """
-        Process list of records and 
+        Process list of records and set the output_speech field. output_speech
+        will be queried by creator of a Finder object and used to 
+        construct a MyCityResponseDataModel
         :param: records - information about locations with each location's
         info stored as a dictionary
         :ret: None
