@@ -26,8 +26,8 @@ def zip_lambda_function_directory(zip_target_dir):
     where the project files have been copied. Note that this .zip file
     contains the files with no intermediate directory.
 
-    :param zip_target_dir:
-    :return:
+    :param zip_target_dir: destination directory for zip file being created
+    :return: none
     """
     # TODO: revise this to avoid changing directory
     os.chdir(zip_target_dir)
@@ -50,6 +50,11 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
 
     if pip version >= '10.0.0', we should install from script
     else, install using pip.main
+
+    :param requirements_path: path to textfile containing required libraries
+    :param requirements_path_no_deps: path to textfile containing required
+        libraries (whose dependencies won't be downloaded)
+    :return: none
     """
     version = pip.__version__
     if version >= '10.0.0':
@@ -58,13 +63,14 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
         _install_pip_dependencies(requirements_path, requirements_path_no_deps)
 
 
-
 def _install_pip_dependencies(requirements_path, requirements_path_no_deps):
     """
     Uses requirements.txt to install all external libraries used by the project
     in the temporary directory the .zip file is created from.
 
-    :param requirements_path:
+    :param requirements_path: path to textfile containing required libraries
+    :param requirements_path_no_deps: path to textfile containing required
+        libraries (whose dependencies won't be downloaded)
     :return: none
     """
     print('Installing dependencies ... ', end='')
@@ -78,10 +84,13 @@ def _install_pip_dependencies(requirements_path, requirements_path_no_deps):
     pip.main(install_args_no_deps)
     print('DONE')
 
+
 def _install_pip_dependencies_from_script():
     """
     pip.main is deprecated in the latest version of pip. If pip is version 10.0.0 
     or later, we can install our dependencies using a shell script
+
+    :return: none
     """
     print('Installing dependencies ... ', end='')
     subprocess.call(INSTALL_REQUIREMENTS_SCRIPT)
@@ -117,6 +126,12 @@ def package_lambda_function():
 
 
 def main():
+    """
+    Defines the command-line option required to initiate building the zipfile.
+    Conditionally begins the build process if the required option is present.
+
+    :return: none
+    """
     parser = argparse.ArgumentParser(description="Tools to " +
         "package and deploy the lambda function for Boston Data app")
 
