@@ -29,10 +29,10 @@ class FinderCSVTestCase(base.BaseTestCase):
 
     def test_get_output_speech_with_success(self):
         distance = g_maps_utils.DRIVING_DISTANCE_TEXT_KEY
-        self.finder.set_output_speech({'Address' : '123 Fake St',
+        self.finder.set_output_speech({'Address' : '123 Fake St Boston, MA',
                                        'name' : 'The Place',
                                        distance : '100 miles away'})
-        self.assertEqual("Trying to get The Place, 123 Fake St, 100 miles away.",
+        self.assertEqual("Trying to get The Place, 123 Fake St Boston, MA, 100 miles away.",
                          self.finder.output_speech)
 
 
