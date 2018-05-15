@@ -62,7 +62,7 @@ class FinderCSV(Finder):
         """
         we don't care to examine results one at a time, just coerce them
         into a list
-        
+         
         :param: file_contents: contents from successful GET on resource_url
         """
         print('[method: FinderCSV.file_to_filtered_records]',
@@ -71,5 +71,4 @@ class FinderCSV(Finder):
         return list(filter(self._filter,
                            csv.DictReader(file_contents.splitlines(), 
                                           delimiter=',')))
-
-
+ 
