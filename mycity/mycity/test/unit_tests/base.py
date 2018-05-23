@@ -8,7 +8,7 @@ import mycity.mycity_request_data_model as my_req
 class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.controller = my_con.MyCityController()
+        self.controller = my_con
         self.request = my_req.MyCityRequestDataModel()
         
     def tearDown(self):
