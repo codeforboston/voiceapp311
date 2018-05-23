@@ -122,6 +122,12 @@ class MyCityController:
             else:
                 return get_address_from_session(mycity_request)
 
+        if "Address" in mycity_request.intent_variables \
+                and "value" in mycity_request.intent_variables["Address"]:
+            # Some of our intents have an associated address value.
+            # Capture that into session data here
+            set_address_in_session(mycity_request)
+
         # session_attributes = session.get("attributes", {})
         if mycity_request.intent_name == "GetAddressIntent":
             return get_address_from_session(mycity_request)

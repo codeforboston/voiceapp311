@@ -89,4 +89,6 @@ def request_user_address_response(mycity_request):
                                     "\"my address is\" followed by your address."
     mycity_response.should_end_session = False
     mycity_response.reprompt_text = None
+
+    mycity_response.dialog_directive = "Delegate"
     return mycity_response
