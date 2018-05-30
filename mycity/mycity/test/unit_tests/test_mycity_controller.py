@@ -65,16 +65,6 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.request.intent_name = "SetAddressIntent"
         self.controller.on_intent(self.request)
         mock_set_address.assert_called_with(self.request)
-     
-    @mock.patch('mycity.mycity_controller.get_trash_day_info')
-    def test_set_address_intent_prompted_from_another_intent(self, mock_trash_day):
-        self.request.session_attributes[intent_constants.ADDRESS_PROMPTED_FROM_INTENT] = \
-            "TrashDayIntent"
-        self.request.intent_name = "SetAddressIntent"
-        self.request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "46 Everdean St"
-        self.controller.on_intent(self.request)
-        # should call this intent after setting address
-        mock_trash_day.assert_called_with(self.request)
    
     @mock.patch('mycity.mycity_controller.get_address_from_session')
     def test_set_address_intent_no_address_in_session_attributes(self, mock_get_addr):

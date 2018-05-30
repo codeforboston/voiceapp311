@@ -79,10 +79,15 @@ def mycity_response_to_platform(mycity_response):
         "[function: mycity_response_to_platform]",
         "MyCityResponseDataModel object received: " + str(mycity_response)
     )
-    result = {
-        'version': '1.0',
-        'sessionAttributes': mycity_response.session_attributes,
-        'response': {
+
+    if mycity_response.dialog_directive:
+        response = {
+            'directives': [
+                {'type': mycity_response.dialog_directive}
+            ]
+        }
+    else:
+        response = {
             'outputSpeech': {
                 'type': 'PlainText',
                 'text': mycity_response.output_speech
@@ -100,6 +105,11 @@ def mycity_response_to_platform(mycity_response):
             },
             'shouldEndSession': mycity_response.should_end_session
         }
+
+    result = {
+        'version': '1.0',
+        'sessionAttributes': mycity_response.session_attributes,
+        'response': response
     }
     print('Result to platform:\n', result)
     return result
