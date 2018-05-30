@@ -1,7 +1,7 @@
 import unittest
 
 import mycity.intents.intent_constants as intent_constants
-import mycity.mycity_controller as my_con
+import mycity.mycity_controller as my_controller
 import mycity.mycity_request_data_model as my_req
 
 

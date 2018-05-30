@@ -42,21 +42,27 @@ def csv_to_namedtuples(Model, csv_reader):
     return records
 
 
-def add_city_and_state_to_records(records, city, state):
+def add_city_and_state_to_records(records, address_key, 
+                                  city, state):
     """
     Append '{city}, {state}' to the Address fields of each record 
     in records.
 
-    :param: records: a list of namedtuples created from a 
-    csv file
-
+    :param: records: filtered CSV.DictReader
+    :param: address_key: key to access address field in a record
+    :param: city: string
+    :param: state: string 
     :ret: a copy of records with Address fields modified
     """
     suffix = " " + city + ", " + state
-    return [record._replace(Address = record.Address + suffix) for record in records]
+    ret = []
+    for record in records:
+        record[address_key] = record[address_key] + suffix
+        ret.append(record)
+    return ret
 
 
-def map_addresses_to_records(records):
+def map_attribute_to_records(attribute, records):
     """
     Create and return a dictionary mapping a records address field
     to the record itself. This allows us to access the whole record
@@ -68,5 +74,4 @@ def map_addresses_to_records(records):
     :ret: dictionary mapping an string Address to namedtuple record
 
     """
-    return {record.Address : record for record in records}
-    
+    return {getattr(record, attribute) : record for record in records}
