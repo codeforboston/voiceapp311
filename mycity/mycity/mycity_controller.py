@@ -69,6 +69,7 @@ def on_session_started(mycity_request):
         )
     )
 
+
 def on_launch(mycity_request):
     """
     Called when the user launches the skill without specifying what
@@ -100,24 +101,15 @@ def on_intent(mycity_request):
         mycity_request
     )
 
-    # Check if the user is setting the address. This is special cased
-    # since they may have been prompted for this info from another intent
     if mycity_request.intent_name == "SetAddressIntent":
         set_address_in_session(mycity_request)
+        return get_address_from_session(mycity_request)
 
-        if intent_constants.ADDRESS_PROMPTED_FROM_INTENT \
-                in mycity_request.session_attributes:
-            # User was prompted for address from another intent.
-            # Set our current intent to be that original intent now that
-            # we have set the address.
-            mycity_request.intent_name = mycity_request.session_attributes[intent_constants.ADDRESS_PROMPTED_FROM_INTENT]
-            print("Address set after calling another intent. Redirecting "
-                  "intent to {}".format(mycity_request.intent_name))
-            # Delete the session key indicating this intent was called
-            # from another intent.
-            del mycity_request.session_attributes[intent_constants.ADDRESS_PROMPTED_FROM_INTENT]
-        else:
-            return get_address_from_session(mycity_request)
+    if "Address" in mycity_request.intent_variables \
+            and "value" in mycity_request.intent_variables["Address"]:
+        # Some of our intents have an associated address value.
+        # Capture that into session data here
+        set_address_in_session(mycity_request)
 
     # session_attributes = session.get("attributes", {})
     if mycity_request.intent_name == "GetAddressIntent":

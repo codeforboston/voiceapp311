@@ -12,6 +12,7 @@ class MyCityResponseDataModel:
         self._reprompt_text = None
         self._should_end_session = None
         self._intent_variables = {}
+        self._dialog_directive = None
 
     def __str__(self):
         return """\
@@ -22,6 +23,7 @@ class MyCityResponseDataModel:
             reprompt_text={},
             should_end_session={},
             intent_variables={}
+            dialog_directive={}
         >
         """.format(
             self._session_attributes,
@@ -29,7 +31,8 @@ class MyCityResponseDataModel:
             self._output_speech,
             self._reprompt_text,
             self._should_end_session,
-            self._intent_variables
+            self._intent_variables,
+            self._dialog_directive
         )
 
     @property
@@ -96,3 +99,19 @@ class MyCityResponseDataModel:
     @intent_variables.setter
     def intent_variables(self, value):
         self._intent_variables = value
+
+
+    @property
+    def dialog_directive(self):
+        return self._dialog_directive
+
+    @dialog_directive.setter
+    def dialog_directive(self, value):
+        valid_directives = [
+            "Delegate"          # Delegate dialog decision to platform
+        ]
+
+        if value not in valid_directives:
+            print("Error: {} is not a valid directive".format(value))
+            return
+        self._dialog_directive = "Dialog.{}".format(value)

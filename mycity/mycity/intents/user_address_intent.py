@@ -78,15 +78,9 @@ def request_user_address_response(mycity_request):
     )
 
     mycity_response = MyCityResponseDataModel()
-    mycity_request.session_attributes[intent_constants.ADDRESS_PROMPTED_FROM_INTENT] = \
-        mycity_request.intent_name
-    
+
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
-    
-    mycity_response.output_speech = "I'm not sure what your address is. " \
-                                    "You can tell me your address by saying, " \
-                                    "\"my address is\" followed by your address."
     mycity_response.should_end_session = False
-    mycity_response.reprompt_text = None
+
+    mycity_response.dialog_directive = "Delegate"
     return mycity_response
