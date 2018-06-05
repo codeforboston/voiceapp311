@@ -9,7 +9,8 @@ def set_address_in_session(mycity_request):
     """
     Adds an address to the provided session object
 
-    :param my_city_request: MyCityRequestModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: none
     """
     print(
         '[module: user_address_intent]',
@@ -28,9 +29,8 @@ def get_address_from_session(mycity_request):
     response based on whether one exists or not. If one exists, it is
     preserved in the session.
 
-    :param mycity_request: MyCityRequestDataModel
-    :param mycity_response: MyCityResponseDataModel
-    :return : MyCityResponseModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     print(
         '[module: user_address_intent]',
@@ -66,9 +66,8 @@ def request_user_address_response(mycity_request):
     """
     Creates a response to request the user's address
 
-    :param mycity_request: MyCityRequestModel object
-    :param mycity_request: MyCityResponseModel object
-    :return: MyCityResponseModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     print(
         '[module: user_address_intent]',

@@ -23,6 +23,9 @@ def execute_request(mycity_request):
     """
     Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
+
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityRequestDataModel object corresponding to the request_type
     """
     print(
         LOG_CLASS,
@@ -54,7 +57,10 @@ def execute_request(mycity_request):
 
 def on_session_started(mycity_request):
     """
-    Called when the session starts.
+    Called when the session starts. Creates a log entry with session info.
+
+    :param mycity_request: MyCityRequestDataModel object
+    :return: none
     """
     print(
         LOG_CLASS,
@@ -74,6 +80,11 @@ def on_launch(mycity_request):
     """
     Called when the user launches the skill without specifying what
     they want.
+
+    :param mycity_request: MyCityRequestDataModel object with
+        request_type LaunchRequest
+    :return: MyCityResponseDataModel object that will initiate a welcome
+        process on the user's device
     """
     print(
         LOG_CLASS,
@@ -90,7 +101,12 @@ def on_intent(mycity_request):
     """
     If the event type is "request" and the request type is "IntentRequest",
     this function is called to execute the logic associated with the
-    provided intent and build a response.
+    provided intent and build a response. Checks for required
+    session_attributes when applicable.
+    
+    :param mycity_request: MyCityRequestDataModel object with
+        request_type IntentRequest
+    :return: MyCityRequestDataModel object corresponding to the intent_name
     """
 
     print(
@@ -141,6 +157,11 @@ def on_session_ended(mycity_request):
     """
     Called when the user ends the session.
     Is not called when the skill returns should_end_session=true
+
+    :param mycity_request: MyCityRequestDataModel object with
+        request_type SessionEndedRequest
+    :return: MyCityResponseDataModel object containing a clean instance
+        of the response datamodel
     """
     print(
         LOG_CLASS,
@@ -154,8 +175,15 @@ def on_session_ended(mycity_request):
 
 def get_welcome_response(mycity_request):
     """
+    Welcomes the user and sets initial session attributes. Is triggered on
+    initial launch and on AMAZON.HelpIntent.
+
     If we wanted to initialize the session to have some attributes we could
     add those here.
+
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object that will initiate
+        a welcome process on the user's device
     """
     print(
         LOG_CLASS,
@@ -178,6 +206,13 @@ def get_welcome_response(mycity_request):
 
 
 def handle_session_end_request(mycity_request):
+    """
+    Ends a user's session (with the Boston Data skill). Called when request
+    intent is AMAZON.StopIntent or AMAZON.CancelIntent.
+    
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object that will end a user's session
+    """
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Boston Public Services - Thanks"

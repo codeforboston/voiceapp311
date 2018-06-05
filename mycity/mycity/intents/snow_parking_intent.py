@@ -34,9 +34,8 @@ def get_snow_emergency_parking_intent(mycity_request):
     """
     Populate MyCityResponseDataModel with snow emergency parking response information.
 
-    :param mycity_request: MyCityRequestModel object
-    :param mycity_response: MyCityResponseModel object
-    :return: MyCityResponseModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     print(
         '[method: get_snow_emergency_parking_intent]',
