@@ -2,20 +2,11 @@
 Functions for Alexa responses related to food trucks
 """
 
-<<<<<<< 6ee76a858bf67c0dbed3dbe62266631aa04028dc
 import requests
-import mycity.mycity.utilities.gis_utils as gis_utils
+import mycity.utilities.gis_utils as gis_utils
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-=======
-#import requests
 from datetime import date
 from calendar import day_name
-import mycity.utilities.gis_utils as gis_utils
->>>>>>> request food truck data for same day at lunch time works
-
-"""
-from mycity.mycity.mycity_response_data_model import MyCityResponseDataModel
-"""
 
 FOOD_TRUCK_FEATURE_SERVER_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/' + \
                                 'food_trucks_schedule/FeatureServer/0'
@@ -26,9 +17,17 @@ FOOD_TRUCK_QUERY = 'Day=\'%(day)s\' AND Time=\'%(meal)s\'' % {'day': DAY_OF_WEEK
 
 food_truck_data_result = gis_utils.get_features_from_feature_server(FOOD_TRUCK_FEATURE_SERVER_URL, FOOD_TRUCK_QUERY)
 
-print(food_truck_data_result)
+# Generate unique list of food truck locations for submission to the Google Maps API
+truck_unique_locations = []
+for truck in food_truck_data_result:
+  if truck["attributes"]["Loc"] not in truck_unique_locations:
+    truck_unique_locations.append([truck["attributes"]["Loc"], truck["geometry"]])
 
+print(truck_unique_locations)
 
+# Build JSON object for Google Maps request. Submit locations to Google Maps API to get distances
+# Parse Google Maps API response to get 1 closest location.
+# Distill food truck list to provide food trucks at the 1 closest location
 
 def get_nearby_food_trucks(mycity_request):
     """
