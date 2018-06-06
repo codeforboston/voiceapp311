@@ -14,6 +14,7 @@ from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
+from .intents.food_truck_intent import get_nearby_food_trucks
 from .intents import intent_constants
 
 
@@ -157,6 +158,8 @@ def on_intent(mycity_request):
         return handle_session_end_request(mycity_request)
     elif mycity_request.intent_name == "UnhandledIntent":
         return unhandled_intent(mycity_request)
+    elif mycity_request.intent_name == "FoodTruckIntent":
+        return get_nearby_food_trucks(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
