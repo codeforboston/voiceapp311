@@ -1025,6 +1025,23 @@
                 {
                     "name": "AMAZON.CancelIntent",
                     "samples": []
+                },
+                {
+                    "name": "FoodTruckIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "My adress is {Address}",
+                                "It's {Address}",
+                                "{Address}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "Where are food trucks near {Address}"
+                    ]
                 }
             ],
             "types": []
@@ -1069,6 +1086,22 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "FoodTruckIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.56491775553.965378175756"
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -1097,6 +1130,15 @@
                     {
                         "type": "PlainText",
                         "value": "What's your address?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.56491775553.965378175756",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What is your address?"
                     }
                 ]
             }
