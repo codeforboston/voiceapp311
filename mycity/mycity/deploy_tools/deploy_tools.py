@@ -10,6 +10,7 @@ import shutil
 import zipfile
 import stat
 import errno
+import boto3
 
 # path constants
 PROJECT_ROOT = os.path.join(os.getcwd(), os.pardir, os.pardir)
@@ -20,6 +21,7 @@ MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
 INSTALL_REQUIREMENTS_SCRIPT = os.path.join(os.getcwd(), 'install_requirements.sh')
 
 ZIP_FILE_NAME = "lambda_function.zip"
+LAMBDA_FUNCTION_NAME = "MyCity"
 
 
 def zip_lambda_function_directory(zip_target_dir):
@@ -73,6 +75,7 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
         TEMP_DIR_PATH
     ]
 
+
     print('Installing dependencies ... ', end='')
     run(install_args)
     print('Installing dependencies from requirements_no_deps.txt ...', end='')
@@ -120,7 +123,22 @@ def package_lambda_function():
         ignore_errors=False,
         onerror=handle_remove_readonly
     )
-    print('DONE')
+
+def update_lambda_code():
+
+    print("\nUpdating/uploading lambda code\n")
+
+    update_lambda_code = [
+        "aws",
+        "lambda",
+        "update-function-code",
+        "--function-name",
+        LAMBDA_FUNCTION_NAME,
+        "--zip-file",
+        "fileb://" + PROJECT_ROOT + "/lambda_function.zip"
+    ]
+    run(update_lambda_code)
+    print("DONE UPLOADING...\n")
 
 
 def handle_remove_readonly(func, path, execinfo):
@@ -165,9 +183,21 @@ def main():
         action='store_true'
     )
 
+    parser.add_argument(
+        '-f',
+        '--function',
+        help="The function name that is associated with your Lambda function " +
+            "on aws"
+    )
+
     args = parser.parse_args()
 
-    if args.package:
+    if args.function:
+        global LAMBDA_FUNCTION_NAME
+        LAMBDA_FUNCTION_NAME = args.function
+        package_lambda_function()
+        update_lambda_code()
+    elif args.package:
         package_lambda_function()
     else:
         print("No known option selected")
