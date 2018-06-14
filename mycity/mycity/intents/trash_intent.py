@@ -1,6 +1,7 @@
 """
 Functions for Alexa responses related to trash day
 """
+
 from .custom_errors import InvalidAddressError, BadAPIResponse
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
@@ -68,6 +69,7 @@ def get_trash_and_recycling_days(address):
 
     :param address: String of address to find trash day for
     :return: array containing next trash and recycling days
+    :raises: InvalidAddressError, BadAPIResponse
     """
 
     api_params = get_address_api_info(address)
@@ -147,6 +149,7 @@ def get_trash_days_from_trash_data(trash_data):
 
     :param trash_data: Trash data provided from ReCollect API
     :return: An array containing days trash and recycling are picked up
+    :raises: BadAPIResponse
     """
 
     try:
@@ -166,6 +169,7 @@ def build_speech_from_list_of_days(days):
     
     :param days: String array of days
     :return: Speech representing the provided days
+    :raises: BadAPIResponse
     """
     if len(days) == 0:
         raise BadAPIResponse

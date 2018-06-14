@@ -22,6 +22,13 @@ from enum import Enum
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 class Services(Enum):
+    
+    """
+    Organizes and contains information about all possible alert types
+    that are supported in a readable format.
+    
+    """
+    
     STREET_CLEANING = 'Street Cleaning'
     TRASH = 'Trash and recycling'
     CITY_BUILDING_HOURS = 'City building hours'

@@ -1,6 +1,7 @@
 """
 Function(s) for dealing with unhandled intents
 """
+
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 def unhandled_intent(mycity_request):

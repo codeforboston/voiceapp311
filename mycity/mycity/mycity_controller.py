@@ -60,7 +60,7 @@ def on_session_started(mycity_request):
     Called when the session starts. Creates a log entry with session info.
 
     :param mycity_request: MyCityRequestDataModel object
-    :return: none
+    :return: None
     """
     print(
         LOG_CLASS,
@@ -107,6 +107,7 @@ def on_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object with
         request_type IntentRequest
     :return: MyCityRequestDataModel object corresponding to the intent_name
+    :raises: ValueError
     """
 
     print(

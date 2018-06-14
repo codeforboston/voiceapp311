@@ -28,7 +28,7 @@ def zip_lambda_function_directory(zip_target_dir):
     must contain the files with no intermediate directory.
 
     :param zip_target_dir: destination directory for zip file being created
-    :return: none
+    :return: None
     """
     zip_file = zipfile.ZipFile(os.path.join(zip_target_dir, ZIP_FILE_NAME), 'w')
     original_directory = os.getcwd()
@@ -51,7 +51,7 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     :param requirements_path: path to textfile containing required libraries
     :param requirements_path_no_deps: path to textfile containing required
         libraries (whose dependencies won't be downloaded)
-    :return: none
+    :return: None
     """
     install_args = [
         "pip",
@@ -85,7 +85,7 @@ def package_lambda_function():
     dependencies are copied before being compressed. Removes the temporary
     directory after creating the .zip file.
 
-    :return: none
+    :return: None
     """
     print('Creating temporary build directory ... ', end='')
     # remove/create the temporary directory for the zip file's contents
@@ -129,10 +129,11 @@ def handle_remove_readonly(func, path, execinfo):
     https://stackoverflow.com/a/1214935/2554154
     Handles the case where rmtree fails in Windows due to access problems.
 
-    :param func:
-    :param path:
-    :param execinfo:
-    :return: none
+    :param func: function that raised the exception, shutil.rmtree
+    :param path: path to temp folder
+    :param execinfo: the exception information returned by sys.exc_info()
+    :return: None
+    :raises: custom exception, temp folder not deleted
     """
     excvalue = execinfo[1]
     if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
@@ -149,11 +150,11 @@ def main():
     Defines the command-line option required to initiate building the zipfile.
     Conditionally begins the build process if the required option is present.
 
-    :return: none
+    :return: None
     """
     parser = argparse.ArgumentParser(
-        description="Tools to package and deploy the lambda function for the " +
-                    "MyCity app."
+        description="Tools to package and deploy the lambda function for " +
+                    "the MyCity app."
     )
 
     parser.add_argument(
