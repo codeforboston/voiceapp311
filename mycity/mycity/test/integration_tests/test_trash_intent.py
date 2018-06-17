@@ -1,10 +1,7 @@
-import json
 import unittest.mock as mock
-
 import mycity.test.test_constants as test_constants
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
-
 
 
 ###################################
@@ -15,7 +12,6 @@ class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
                        mix_ins.CardTitleTestMixIn,
                        mix_ins.CorrectSpeechOutputTestMixIn,
                        base_case.IntentBaseCase):
-
 
     intent_to_test = "TrashDayIntent"
     returns_reprompt_text = False

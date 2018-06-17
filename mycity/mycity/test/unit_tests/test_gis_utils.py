@@ -1,40 +1,53 @@
 import unittest.mock as mock
-
 import mycity.test.test_constants as test_constants
 import mycity.test.unit_tests.base as base
 import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.google_maps_utils as g_maps_utils
 
+
 class GISUtilitiesTestCase(base.BaseTestCase):
 
-    @mock.patch('mycity.utilities.google_maps_utils._get_driving_info', 
-                return_value=test_constants.GOOGLE_MAPS_JSON)
+    @mock.patch(
+        'mycity.utilities.google_maps_utils._get_driving_info',
+        return_value=test_constants.GOOGLE_MAPS_JSON
+    )
     def test_get_closest_feature(self, mock_get_driving_info):
         test_origin = "46 Everdean St Boston, MA"
-        test_features = [['close', '94 Sawyer Ave Boston, MA'],
-                         ['far', '4 Olivewood Ct Greenbelt, MD']]
+        test_features = [
+            ['close', '94 Sawyer Ave Boston, MA'],
+            ['far', '4 Olivewood Ct Greenbelt, MD']
+        ]
         feature_address_index = 1
         feature_type = "test"
         error_message = "Test error message"
-        result = gis_utils.get_closest_feature(test_origin, 
-                                                    feature_address_index,
-                                                    feature_type,
-                                                    error_message,
-                                                    test_features)
-        self.assertEqual("94 Sawyer Ave Boston, MA", result[feature_type])
-        self.assertEqual('7 mins', result[g_maps_utils.DRIVING_TIME_TEXT_KEY])
-        self.assertEqual('1.5 mi', result[g_maps_utils.DRIVING_DISTANCE_TEXT_KEY])
-
+        result = gis_utils.get_closest_feature(
+            test_origin,
+            feature_address_index,
+            feature_type,
+            error_message,
+            test_features
+        )
+        self.assertEqual(
+            "94 Sawyer Ave Boston, MA",
+            result[feature_type]
+        )
+        self.assertEqual(
+            '7 mins',
+            result[g_maps_utils.DRIVING_TIME_TEXT_KEY]
+        )
+        self.assertEqual(
+            '1.5 mi',
+            result[g_maps_utils.DRIVING_DISTANCE_TEXT_KEY]
+        )
 
     def test_get_dest_addresses_from_features(self):
         to_test = \
             gis_utils._get_dest_addresses_from_features(
-            test_constants.PARKING_LOTS_ADDR_INDEX, 
-            test_constants.PARKING_LOT_FEATURES
+                test_constants.PARKING_LOTS_ADDR_INDEX,
+                test_constants.PARKING_LOT_FEATURES
             )
         for address in to_test:
             self.assertTrue(address.find("Boston, MA"))
-
 
     ####################################################################
     # Tests that should only be run if we're connected to the Internet #
