@@ -29,8 +29,7 @@ def get_address_from_user_device(mycity_request):
     """
     checks Amazon api for device address permissions. 
     If given, the address, if present, will be stored 
-    in the session attributes, otherwise the user will 
-    be notified that no address is present.
+    in the session attributes
 
     :param mycity_request: MyCityRequestDataModel
     :param mycity_response: MyCityResponseDataModel
