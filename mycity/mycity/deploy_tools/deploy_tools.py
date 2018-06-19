@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 Tools to package and deploy the lambda function for Boston Data app.
+=======
+Tools to package and deploy the lambda function for the mycity voice app.
+>>>>>>> f7fa7976c27b855225f4ae880adcbfdbb5a7d57d
 """
 
 from __future__ import print_function
@@ -10,7 +14,10 @@ import shutil
 import zipfile
 import stat
 import errno
+<<<<<<< HEAD
 import boto3
+=======
+>>>>>>> f7fa7976c27b855225f4ae880adcbfdbb5a7d57d
 
 # path constants
 PROJECT_ROOT = os.path.join(os.getcwd(), os.pardir, os.pardir)
@@ -18,8 +25,6 @@ TEMP_DIR_PATH = os.path.join(PROJECT_ROOT, 'temp')
 LAMBDA_REL_PATH = 'platforms/amazon/lambda/custom/lambda_function.py'
 LAMBDA_FUNCTION_PATH = os.path.join(PROJECT_ROOT, LAMBDA_REL_PATH)
 MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
-INSTALL_REQUIREMENTS_SCRIPT = os.path.join(os.getcwd(), 'install_requirements.sh')
-
 ZIP_FILE_NAME = "lambda_function.zip"
 LAMBDA_FUNCTION_NAME = "MyCity"
 
@@ -28,7 +33,7 @@ def zip_lambda_function_directory(zip_target_dir):
     """
     Generates a .zip file containing the contents of the temporary directory
     where the project files have been copied. Note that this .zip file
-    contains the files with no intermediate directory.
+    must contain the files with no intermediate directory.
 
     :param zip_target_dir: destination directory for zip file being created
     :return: none
@@ -74,7 +79,6 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
         "-t",
         TEMP_DIR_PATH
     ]
-
 
     print('Installing dependencies ... ', end='')
     run(install_args)
@@ -135,10 +139,33 @@ def update_lambda_code():
         "--function-name",
         LAMBDA_FUNCTION_NAME,
         "--zip-file",
-        "fileb://" + PROJECT_ROOT + "/lambda_function.zip"
+        "fileb://" + PROJECT_ROOT + LAMBDA_FUNCTION_NAME
     ]
     run(update_lambda_code)
     print("DONE UPLOADING...\n")
+
+
+def handle_remove_readonly(func, path, execinfo):
+    """
+    Passed as the onerror parameter when calling shutil.rmtree.
+    See:
+    https://stackoverflow.com/a/1214935/2554154
+    Handles the case where rmtree fails in Windows due to access problems.
+
+    :param func:
+    :param path:
+    :param execinfo:
+    :return: none
+    """
+    excvalue = execinfo[1]
+    if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+        # if we're failing to remove files because they are readonly,
+        # update permissions
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+        func(path)
+    else:
+        raise Exception("Failed to delete temp folder.")
+    print('DONE')
 
 
 def handle_remove_readonly(func, path, execinfo):

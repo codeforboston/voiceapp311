@@ -22,7 +22,7 @@ class IntentBaseCase(unittest.TestCase):
     returns_reprompt_text = False
 
     def setUp(self):
-        self.controller = mcc
+        self.controller = my_controller
         self.request = req.MyCityRequestDataModel()
         key = intent_constants.CURRENT_ADDRESS_KEY
         self.request._session_attributes[key] = "1000 Dorchester Ave"
