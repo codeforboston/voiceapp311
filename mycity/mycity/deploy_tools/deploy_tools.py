@@ -1,9 +1,5 @@
 """
-<<<<<<< HEAD
-Tools to package and deploy the lambda function for Boston Data app.
-=======
 Tools to package and deploy the lambda function for the mycity voice app.
->>>>>>> f7fa7976c27b855225f4ae880adcbfdbb5a7d57d
 """
 
 from __future__ import print_function
@@ -14,10 +10,6 @@ import shutil
 import zipfile
 import stat
 import errno
-<<<<<<< HEAD
-import boto3
-=======
->>>>>>> f7fa7976c27b855225f4ae880adcbfdbb5a7d57d
 
 # path constants
 PROJECT_ROOT = os.path.join(os.getcwd(), os.pardir, os.pardir)
@@ -139,7 +131,7 @@ def update_lambda_code():
         "--function-name",
         LAMBDA_FUNCTION_NAME,
         "--zip-file",
-        "fileb://" + PROJECT_ROOT + LAMBDA_FUNCTION_NAME
+        "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
     ]
     run(update_lambda_code)
     print("DONE UPLOADING...\n")
