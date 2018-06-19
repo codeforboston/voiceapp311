@@ -1,97 +1,181 @@
 {
-  "interactionModel": {
-    "languageModel": {
-      "invocationName": "boston data",
-      "intents": [
-        {
-          "name": "SetAddressIntent",
-          "slots": [
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "boston data",
+            "intents": [
+                {
+                    "name": "SetAddressIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress"
+                        }
+                    ],
+                    "samples": [
+                        "my address is {Address}",
+                        "i live at {Address}",
+                        "my home address is {Address}",
+                        "set address {Address}",
+                        "set my address to {Address}",
+                        "change address to {Address}",
+                        "update address to {Address}",
+                        "new address is {Address}"
+                    ]
+                },
+                {
+                    "name": "TrashDayIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "It's {Address}",
+                                "My address is {Address}",
+                                "{Address}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "when is my trash day at {Address}",
+                        "when is garbage day at {Address}",
+                        "what day is recycling at {Address}",
+                        "what day should i put trash out at {Address}",
+                        "which day is recycling at {Address}",
+                        "when should i put out my trash at {Address}",
+                        "when is garbage pickup at {Address}",
+                        "garbage collection day at {Address}",
+                        "when is trash day at {Address}"
+                    ]
+                },
+                {
+                    "name": "SnowParkingIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "My address is {Address}",
+                                "It's {Address}",
+                                "{Address}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "where can I park during a snow emergency",
+                        "where can I park during snow",
+                        "where can I park",
+                        "snow parking",
+                        "emergency parking near"
+                    ]
+                },
+                {
+                    "name": "GetAlertsIntent",
+                    "slots": [],
+                    "samples": [
+                        "give me all alerts",
+                        "are there any alerts",
+                        "are there any emergencies",
+                        "are services running normally",
+                        "all alerts"
+                    ]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "UnhandledIntent",
+                    "slots": [],
+                    "samples": [
+                        "blah blah blah",
+                        "gofougildags",
+                        "heh",
+                        "testing",
+                        "this is dumb",
+                        "workaround to get around",
+                        "thinking about things",
+                        "what up doe",
+                        "dealing with it",
+                        "doing it",
+                        "whatever",
+                        "whatever and ever amen"
+                    ]
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                }
+            ],
+            "types": []
+        },
+        "dialog": {
+            "intents": [
+                {
+                    "name": "TrashDayIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.604703910902.353139060048"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "SnowParkingIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.621270469710.323849903546"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "prompts": [
             {
-              "name": "Address",
-              "type": "AMAZON.PostalAddress"
+                "id": "Elicit.Slot.604703910902.353139060048",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What's your address?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.76871137798.873776877081",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What is your address?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.621270469710.323849903546",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What's your address?"
+                    }
+                ]
             }
-          ],
-          "samples": [
-            "my address is {Address}",
-            "i live at {Address}",
-            "my home address is {Address}",
-            "set address {Address}",
-            "set my address to {Address}",
-            "change address to {Address}",
-            "update address to {Address}",
-            "new address is {Address}"
-          ]
-        },
-        {
-          "name": "GetAddressIntent",
-          "samples": [
-            "what is my address set to",
-            "what is my home address",
-            "where do i live",
-            "what is my current address",
-            "give me my address"
-          ]
-        },
-        {
-          "name": "TrashDayIntent",
-          "samples": [
-            "when is my trash day",
-            "when is garbage day",
-            "what day is recycling",
-            "what day should i put trash out",
-            "which day is recycling",
-            "when should i put out my trash",
-            "when is garbage pickup",
-            "garbage collection day"
-          ]
-        },
-        {
-          "name": "SnowParkingIntent",
-          "samples": [
-            "where can I park during a snow emergency",
-            "where can I park during snow",
-            "where can I park",
-            "snow parking",
-            "emergency parking"
-          ]
-        },
-        {
-          "name": "GetAlertsIntent",
-          "samples": [
-            "give me all alerts",
-            "are there any alerts",
-            "are there any emergencies",
-            "are services running normally",
-            "all alerts"
-          ]
-        },
-        {
-          "name": "AMAZON.HelpIntent"
-        },
-        {
-          "name": "UnhandledIntent",
-          "samples": [
-            "blah blah blah",
-            "gofougildags",
-            "heh",
-            "testing",
-            "this is dumb",
-            "workaround to get around",
-            "thinking about things",
-            "what up doe",
-            "dealing with it",
-            "doing it",
-            "whatever",
-            "whatever and ever amen"
-          ]
-        },
-        {
-          "name": "AMAZON.StopIntent"
-        },
-        {
-          "name": "AMAZON.CancelIntent"
-        }
-      ]
+        ]
     }
-  }
 }

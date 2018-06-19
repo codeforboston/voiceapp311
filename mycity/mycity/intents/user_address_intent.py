@@ -11,7 +11,8 @@ def set_address_in_session(mycity_request):
     """
     Adds an address to the provided session object
 
-    :param my_city_request: MyCityRequestModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: none
     """
     print(
         '[module: user_address_intent]',
@@ -69,9 +70,8 @@ def get_address_from_session(mycity_request):
     response based on whether one exists or not. If one exists, it is
     preserved in the session.
 
-    :param mycity_request: MyCityRequestDataModel
-    :param mycity_response: MyCityResponseDataModel
-    :return : MyCityResponseModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     print(
         '[module: user_address_intent]',
@@ -107,9 +107,8 @@ def request_user_address_response(mycity_request):
     """
     Creates a response to request the user's address
 
-    :param mycity_request: MyCityRequestModel object
-    :param mycity_request: MyCityResponseModel object
-    :return: MyCityResponseModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     print(
         '[module: user_address_intent]',
@@ -119,15 +118,9 @@ def request_user_address_response(mycity_request):
     )
 
     mycity_response = MyCityResponseDataModel()
-    mycity_request.session_attributes[intent_constants.ADDRESS_PROMPTED_FROM_INTENT] = \
-        mycity_request.intent_name
-    
+
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
-    
-    mycity_response.output_speech = "I'm not sure what your address is. " \
-                                    "You can tell me your address by saying, " \
-                                    "\"my address is\" followed by your address."
     mycity_response.should_end_session = False
-    mycity_response.reprompt_text = None
+
+    mycity_response.dialog_directive = "Delegate"
     return mycity_response

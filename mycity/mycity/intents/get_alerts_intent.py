@@ -44,9 +44,8 @@ def get_alerts_intent(mycity_request):
     """
     Generate response object with information about citywide alerts
 
-    :param mycity_request: MyCityRequestModel object
-    :param mycity_response: MyCityResponseModel object
-    :return: MyCityResponseModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     print(
         '[method: get_alerts_intent]',
@@ -69,8 +68,13 @@ def get_alerts_intent(mycity_request):
 
 def alerts_to_speech_output(alerts):
     """
-    Return a string that contains all alerts or a message that city services
-    are operating normally.
+    Checks whether the alert dictionary contains any entries. Returns a string
+    that contains all alerts or a message that city services are operating
+    normally.
+    
+    :param alerts: pruned alert dictionary
+    :return: a string containing all alerts, or if no alerts are
+        found, a message indicating there are no alerts at this time
     """
     all_alerts = ""
     if Services.ALERT_HEADER.value in all_alerts:
@@ -88,6 +92,11 @@ def prune_normal_responses(service_alerts):
     Remove any text scraped from Boston.gov that aren't actually alerts.
     For example, parking meters, city building hours, and trash and 
     recycling are described "as on a normal schedule"
+    
+    :param service_alerts: raw alerts dictionary, potentially with unrelated
+        non-alert data
+    :return: pruned alert dictionary containing only the current
+        alert information
     """
 
     tow_lot_normal_message = "The tow lot is open from 7 a.m. - 11 p.m. "
@@ -106,8 +115,10 @@ def prune_normal_responses(service_alerts):
 
 def get_alerts():
     """
-    Scrapes alerts from Boston.gov
-    Returns a dictionary that maps alert names to detailed alert
+    Checks Boston.gov for alerts, and if present scrapes them and returns
+    them as a dictionary
+    
+    :return: a dictionary that maps alert names to detailed alert message
     """
     # get boston.gov as an httpResponse object
     url = request.urlopen(BOSTON_GOV)

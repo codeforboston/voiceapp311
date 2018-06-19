@@ -163,6 +163,7 @@ def build_speech_from_list_of_days(days):
     """
     Converts a list of days into proper speech, such as adding the word 'and'
     before the last item.
+    
     :param days: String array of days
     :return: Speech representing the provided days
     """

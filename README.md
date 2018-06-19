@@ -28,7 +28,7 @@ however the general workflow is the same.
 
 ### Before you start
 Clone this repo and navigate to the **voiceapp311/mycity/mycity/deploy_tools**
-directory and run:
+directory and run the following command using Python 3:
 ```
 python deploy_tools.py -p
 ```
