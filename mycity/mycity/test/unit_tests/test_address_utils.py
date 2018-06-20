@@ -3,7 +3,6 @@ import mycity.test.unit_tests.base as base
 import mycity.utilities.address_utils as address_utils
 
 
-
 class AddressUtilitiesTestCase(base.BaseTestCase):
 
     def change_address(self, new_address):

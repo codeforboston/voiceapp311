@@ -1,7 +1,5 @@
 import csv
 import unittest.mock as mock
-
-import mycity.utilities.google_maps_utils as g_maps_utils
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
@@ -22,27 +20,36 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
     def setUp(self):
         """
         Set up the controller and request using superclass constructor.
-        Then, patch the two functions in the intent that use web 
-        resources
-
+        Then, patch the two functions in the intent that use web resources.
         """
         super().setUp()
-        fake_filter = lambda record : record
-        self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV, encoding = 'utf-8-sig')
+
+        def fake_filter(record):
+            return record
+
+        self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV,
+                             encoding='utf-8-sig')
         mock_filtered_record_return = list(filter(fake_filter, 
-                                                  csv.DictReader(self.csv_file,
-                                                                 delimiter=',')))
-        self.mock_filtered_record = mock.patch(('mycity.intents.snow_parking_intent.'
-                                                'FinderCSV.file_to_filtered_records'),
-                                          return_value = mock_filtered_record_return)
-        mock_get_driving_info_return = test_constants.CLOSEST_PARKING_DRIVING_DATA
+                                                  csv.DictReader(
+                                                      self.csv_file,
+                                                      delimiter=','
+                                                  )))
+        self.mock_filtered_record = mock.patch(
+            ('mycity.intents.snow_parking_intent.'
+             'FinderCSV.file_to_filtered_records'),
+            return_value=mock_filtered_record_return
+        )
+        mock_get_driving_info_return = \
+            test_constants.CLOSEST_PARKING_DRIVING_DATA
         self.get_driving_info_patch = \
-             mock.patch(('mycity.intents.snow_parking_intent.g_maps_utils._get_driving_info'),
-                        return_value = mock_get_driving_info_return)
+            mock.patch(
+                ('mycity.intents.snow_parking_intent.g_maps_utils'
+                 '._get_driving_info'),
+                return_value=mock_get_driving_info_return
+            )
         self.mock_filtered_record.start()
         self.get_driving_info_patch.start()
 
- 
     def tearDown(self):
         super().tearDown()
         self.csv_file.close()

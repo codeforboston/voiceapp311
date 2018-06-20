@@ -3,12 +3,10 @@ unit test for MyCityController
 
 """
 
-import unittest
 import unittest.mock as mock
-
-import mycity.mycity_controller as my_con
 import mycity.intents.intent_constants as intent_constants
 import mycity.test.unit_tests.base as base
+
 
 class MyCityControllerUnitTestCase(base.BaseTestCase):
     """
@@ -21,20 +19,25 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         on_session_ended
         get_welcome_response
         handle_session_end_request
-
     """
 
     def test_on_launch(self):
         self.request.is_new_session = False
         expected_session_attributes = self.request.session_attributes
-        expected_output_speech = ("Welcome to the Boston Public Services skill. "
-                                  "How can I help you? ")
-        expected_reprompt_text = ("For example, you can tell me your address by "
-                                  "saying, \"my address is\" followed by your "
-                                  "address.")
+        expected_output_speech = (
+            "Welcome to the Boston Public Services skill. "
+            "How can I help you? "
+        )
+        expected_reprompt_text = (
+            "For example, you can tell me your address by saying, "
+            "\"my address is\" followed by your address."
+        )
         expected_card_title = "Welcome"
         response = self.controller.on_launch(self.request)
-        self.assertEqual(response.session_attributes, expected_session_attributes)
+        self.assertEqual(
+            response.session_attributes,
+            expected_session_attributes
+        )
         self.assertEqual(response.output_speech, expected_output_speech)
         self.assertEqual(response.reprompt_text, expected_reprompt_text)
         self.assertFalse(response.should_end_session)
@@ -47,8 +50,10 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
 
     def test_on_intent_AMAZON_StopIntent(self):
         expected_attributes = self.request.session_attributes
-        expected_output_speech = ("Thank you for using the Boston Public "
-                                  "Services skill. See you next time!")
+        expected_output_speech = (
+            "Thank you for using the Boston Public Services skill. "
+            "See you next time!"
+        )
         expected_card_title = "Boston Public Services - Thanks"
         self.request.intent_name = "AMAZON.StopIntent"
         response = self.controller.on_intent(self.request)
@@ -67,20 +72,29 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         mock_set_address.assert_called_with(self.request)
    
     @mock.patch('mycity.mycity_controller.get_address_from_session')
-    def test_set_address_intent_no_address_in_session_attributes(self, mock_get_addr):
+    def test_set_address_intent_no_address_in_session_attributes(
+            self,
+            mock_get_addr
+    ):
         self.request.intent_name = "SetAddressIntent"
         self.controller.on_intent(self.request)
         mock_get_addr.assert_called_with(self.request)
 
     @mock.patch('mycity.mycity_controller.get_trash_day_info')
-    def test_intent_that_needs_address_with_address_in_session_attributes(self, mock_intent):
+    def test_intent_that_needs_address_with_address_in_session_attributes(
+            self,
+            mock_intent
+    ):
         self.request.intent_name = "TrashDayIntent"
         self.request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "46 Everdean St"
         self.controller.on_intent(self.request)
         mock_intent.assert_called_with(self.request)
 
     @mock.patch('mycity.mycity_controller.request_user_address_response')
-    def test_intent_that_needs_address_without_address_in_session_attributes(self, mock_intent):
+    def test_intent_that_needs_address_without_address_in_session_attributes(
+            self,
+            mock_intent
+    ):
         self.request.intent_name = "TrashDayIntent"
         self.controller.on_intent(self.request)
         mock_intent.assert_called_with(self.request)
@@ -90,7 +104,3 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = '46 Everdean St'
         with self.assertRaises(ValueError):
             self.controller.on_intent(self.request)
-        
-  
-
-
