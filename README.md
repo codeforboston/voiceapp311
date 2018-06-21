@@ -196,10 +196,6 @@ directory. The instructions note:
    >Zip the directory content, not the directory. The contents of the Zip file
    >are available as the current working directory of the Lambda function.
 
-Please note that if your pip version <10 then you might have issues building 
-the zip folder. all you need to do is issue "pip install --upgrade setuptools" and
-this should fix the issues occuring during deployment.
-
 Recall that in Part 2 of the installation instructions we set the **Handler** to
 **lambda_function.lambda_handler**. This is specifying the function that is
 executed when a voice command is issued to the Alexa device. If we compress the
