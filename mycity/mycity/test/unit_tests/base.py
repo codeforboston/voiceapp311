@@ -41,5 +41,3 @@ class BaseTestCase(unittest.TestCase):
                 return_value=json_data
             )
         return mock_resp
-
-        
