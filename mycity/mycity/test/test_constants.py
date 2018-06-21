@@ -14,6 +14,18 @@ PARKING_LOTS_ADDR_INDEX = 7
 ##################################################################
 
 
+# Alexa device address
+ALEXA_DEVICE_ADDRESS = {
+    "addressLine1": "866 Huntington ave",
+    "addressLine2": "null",
+    "addressLine3": "null",
+    "districtOrCounty": "null",
+    "stateOrRegion": "Ma",
+    "city": "Boston",
+    "countryCode": "US",
+    "postalCode": "02138"
+}
+
 # gis_utils.get_closest_feature
 
 GOOGLE_MAPS_JSON = [{'Driving distance': 2458, 'Driving distance text': '1.5 mi', 
