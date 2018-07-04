@@ -9,3 +9,8 @@ class InvalidAddressError(Exception):
 class BadAPIResponse(Exception):
     """Error for bad responses from external APIs"""
     pass
+
+
+class MultipleAddressError(Exception):
+    """Error for finding multiple addresses with the current info"""
+    pass

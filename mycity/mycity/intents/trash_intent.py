@@ -83,6 +83,24 @@ def get_trash_and_recycling_days(address):
     return trash_and_recycling_days
 
 
+def find_unique_zipcodes(address_request_json):
+    """
+    Finds unique zip codes in a provided address request json returned
+    from the ReCollect service
+    :param address_request_json: json object returned from ReCollect address
+        request service
+    :return: array of unique zip codes
+    """
+
+    found_zip_codes = []
+    for address_info in address_request_json:
+        zip_code = re.search('\d{5}', address_info["name"]).group(0)
+        if zip_code and zip_code not in found_zip_codes:
+            found_zip_codes.append(zip_code)
+
+    return found_zip_codes
+
+
 def get_address_api_info(address):
     """
     Gets the parameters required for the ReCollect API call
@@ -111,10 +129,15 @@ def get_address_api_info(address):
               .format(request_result.status_code))
         return {}
 
-    if not request_result.json():
+    result_json = request_result.json()
+    if not result_json:
         return {}
 
-    return request_result.json()[0]
+    unique_zip_codes = find_unique_zipcodes(result_json)
+    if len(unique_zip_codes) > 1:
+        raise MultipleAddressError
+
+    return result_json[0]
 
 
 def get_trash_day_data(api_parameters):
