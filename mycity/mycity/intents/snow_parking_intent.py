@@ -5,9 +5,15 @@ import mycity.intents.intent_constants as intent_constants
 import mycity.utilities.google_maps_utils as g_maps_utils
 from mycity.utilities.finder.FinderCSV import FinderCSV
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import logging
 
-
-
+logger = logging.getLogger('[method: get_snow_emergency_parking_intent]')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 # Constants 
@@ -37,9 +43,8 @@ def get_snow_emergency_parking_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[method: get_snow_emergency_parking_intent]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
 

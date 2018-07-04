@@ -1,8 +1,17 @@
 import csv
 import requests
+import logging
 
 from mycity.utilities.finder.Finder import Finder
 
+
+logger = logging.getLogger('[class: FinderCSV]')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class FinderCSV(Finder):
     """
@@ -48,7 +57,7 @@ class FinderCSV(Finder):
         
         
     def fetch_resource(self):
-        print('[method: FinderCSV.fetch_resource]')
+        logger.debug('[method: FinderCSV.fetch_resource]')
         r = requests.get(self.resource_url)
         if r.status_code == 200:
             file_contents = r.content.decode(r.apparent_encoding)
@@ -65,9 +74,7 @@ class FinderCSV(Finder):
          
         :param: file_contents: contents from successful GET on resource_url
         """
-        print('[method: FinderCSV.file_to_filtered_records]',
-              'file_contents:',
-              file_contents)
+        logger.debug('[method: FinderCSV.file_to_filtered_records]' + 'file_contents:' + str(file_contents))
         return list(filter(self._filter,
                            csv.DictReader(file_contents.splitlines(), 
                                           delimiter=',')))

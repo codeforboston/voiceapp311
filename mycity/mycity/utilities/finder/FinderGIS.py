@@ -1,4 +1,13 @@
 from mycity.utilities.finder.Finder import Finder 
+import logging
+
+logger = logging.getLogger('[class: FinderGIS]')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 class FinderGIS(Finder):
@@ -19,6 +28,6 @@ class FinderGIS(Finder):
 
 
     def get_records(self):
-        print("[method: FinderGIS.get_features_from_feature_server]")
+        logger.debug('[method: FinderGIS.get_features_from_feature_server]')
         return gis_utils.get_features_from_feature_server(self.resource_url,
                                                           self.query)
