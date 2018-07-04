@@ -2,23 +2,31 @@
 Uses ArcGIS to find location based information about Boston city services
 """
 
-from mycity.utilities.finder.Finder import Finder 
+from mycity.utilities.finder.Finder import Finder
+from mycity.utilities.gis_utils import get_features_from_feature_server
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class FinderGIS(Finder):
-    
     """
     Finder subclass to find Feature locations from ArcGIS Feature Server
-    
     @property: query ::= parameter for call to ArcGIS server
 
     """
+    # default query returns all records
+    DEFAULT_QUERY = "1=1"
 
-    default_query = "1=1"               # default query returns all records
-
-
-    def __init__(self, req, resource_url, address_key, output_speech,
-                 output_speech_prep_func, query = FinderGIS.default_query):
+    def __init__(
+            self,
+            req,
+            resource_url,
+            address_key,
+            output_speech,
+            output_speech_prep_func,
+            query=DEFAULT_QUERY
+    ):
         """
         Call super constructor and save query
 
@@ -37,10 +45,14 @@ class FinderGIS(Finder):
             formatted string
         :param query: parameter for call to ArcGIS server 
         """
-        super().__init__(req, resource_url, address_key, output_speech,
-                         output_speech_prep_func)
+        super().__init__(
+            req,
+            resource_url,
+            address_key,
+            output_speech,
+            output_speech_prep_func
+        )
         self.query = query
-
 
     def get_records(self):
         """
@@ -48,6 +60,9 @@ class FinderGIS(Finder):
         
         :return: list of features corresponding to query
         """
-        print("[method: FinderGIS.get_features_from_feature_server]")
-        return gis_utils.get_features_from_feature_server(self.resource_url,
-                                                          self.query)
+        logger.debug('')
+
+        return get_features_from_feature_server(
+            self.resource_url,
+            self.query
+        )

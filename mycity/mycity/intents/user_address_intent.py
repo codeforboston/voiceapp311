@@ -5,6 +5,9 @@ Functions for setting and getting the current user address
 from . import intent_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def set_address_in_session(mycity_request):
@@ -14,12 +17,8 @@ def set_address_in_session(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: None
     """
-    print(
-        '[module: user_address_intent]',
-        '[method: set_address_in_session]',
-        'MyCityRequestDataModel received:',
-        str(mycity_request)
-    )
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+
     if 'Address' in mycity_request.intent_variables:
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = \
             mycity_request.intent_variables['Address']['value']
@@ -53,12 +52,7 @@ def get_address_from_user_device(mycity_request):
     :param mycity_response: MyCityResponseDataModel
     :return : MyCityRequestModel object
     """
-    print(
-        '[module: user_address_intent]',
-        '[method: get_address_from_user_device]',
-        'MyCityRequestDataModel received:',
-        str(mycity_request)
-    )
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     base_url = "https://api.amazonalexa.com/v1/devices/{}" \
         "/settings/address".format(mycity_request.device_id)
@@ -84,12 +78,7 @@ def get_address_from_session(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[module: user_address_intent]',
-        '[method: get_address_from_session]',
-        'MyCityRequestDataModel received:',
-        str(mycity_request)
-    )
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
@@ -120,12 +109,7 @@ def request_user_address_response(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[module: user_address_intent]',
-        '[method: request_user_address_response]',
-        'MyCityRequestDataModel received:',
-        str(mycity_request)
-    )
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
 

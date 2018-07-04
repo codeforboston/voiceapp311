@@ -4,6 +4,9 @@ Utility functions for manipulating csv files
 """
 
 import collections
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def create_record_model(model_name, attributes):
@@ -16,28 +19,32 @@ def create_record_model(model_name, attributes):
         of this container
     :return: a constructor for this namedtuple subclass
     """
+    logger.debug(
+        'model_name: ' + model_name +
+        ', attributes: ' + str(attributes)
+    )
     Model = collections.namedtuple(model_name, attributes)
     return Model
                                    
 
-def csv_to_namedtuples(Model, csv_reader):
+def csv_to_namedtuples(model, csv_reader):
     """
     Create and return a list of namedtuples representing all records from the 
     csv.
     
-    :param Model: namedtuple subclass to convert each line in csv
+    :param model: namedtuple subclass to convert each line in csv
         file to
     :param csv_reader: csv reader object
     :return: a list of namedtuples representing all csv records
     """
+    logger.debug('model: ' + str(model) + ', csv_reader: ' + str(csv_reader))
     records = []
     for line in csv_reader:
-        records.append(Model._make(line))
+        records.append(model._make(line))
     return records
 
 
-def add_city_and_state_to_records(records, address_key, 
-                                  city, state):
+def add_city_and_state_to_records(records, address_key, city, state):
     """
     Append '{city}, {state}' to the Address fields of each record 
     in records.
@@ -48,6 +55,10 @@ def add_city_and_state_to_records(records, address_key,
     :param state: name of state stored as a string
     :return: a copy of records with Address fields modified
     """
+    logger.debug('records: ' + str(records) +
+                 ', address_key: ' + str(address_key) +
+                 ', city: ' + str(city) +
+                 ', state: ' + str(state))
     suffix = " " + city + ", " + state
     ret = []
     for record in records:

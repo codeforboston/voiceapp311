@@ -5,10 +5,13 @@ import mycity.intents.intent_constants as intent_constants
 import mycity.intents.speech_constants.snow_parking_intent as constants
 from mycity.utilities.finder.FinderCSV import FinderCSV
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import logging
 
 PARKING_INFO_URL = "http://bostonopendata-boston.opendata.arcgis.com/datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
 SNOW_PARKING_CARD_TITLE = "Snow Parking"
 ADDRESS_KEY = "Address"
+
+logger = logging.getLogger(__name__)
 
 
 def format_record_fields(record):
@@ -20,6 +23,7 @@ def format_record_fields(record):
         fields from the closest record
     :return: None
     """
+    logger.debug('record: ' + str(record))
     record["Phone"] = constants.PHONE_PREPARED_STRING.format(record["Phone"]) \
         if record["Phone"].strip() != "" else constants.NO_PHONE
     record["Fee"] = constants.FEE_PREPARED_STRING.format(record["Fee"]) \
@@ -33,11 +37,7 @@ def get_snow_emergency_parking_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[method: get_snow_emergency_parking_intent]',
-        'MyCityRequestDataModel received:',
-        str(mycity_request)
-    )
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:

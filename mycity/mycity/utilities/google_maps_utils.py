@@ -5,7 +5,9 @@ an origin address to a list of destinations
 
 import os
 import requests
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
@@ -30,16 +32,11 @@ def _get_driving_info(origin, location_type, destinations):
         destination address with address, distance, and driving time
         from origin address
     """
-    print(
-        '[method: google_maps_utils.._get_driving_info]',
-        'origin received:',
-        origin,
-        'feature_type received:',
-        location_type,
-        'destinations received (printing first five):',
-        destinations[:5],       # only print first five destinations
-        'count(destinations):',
-        len(destinations)
+    logger.debug(
+        'origin received: ' + str(origin) +
+        ', feature_type received: ' + str(location_type) +
+        ', destinations received (last five): ' + str(destinations[:5]) +
+        ', count(destinations): ' + str(len(destinations))
     )
 
     url_parameters = _setup_google_maps_query_params(origin, destinations)
@@ -49,11 +46,14 @@ def _get_driving_info(origin, location_type, destinations):
         response = session.get(driving_directions_url, params=url_parameters)
         if response.status_code == requests.codes.ok:
             all_driving_data = response.json()
-            driving_infos = combine_driving_data_with_destinations(all_driving_data, 
-                                                                   location_type, 
-                                                                   destinations)
+            driving_infos = combine_driving_data_with_destinations(
+                all_driving_data,
+                location_type,
+                destinations
+            )
         else:
-            print("Failed to get driving directions")
+            logger.warning("Failed to get driving directions")
+
     return driving_infos
 
 
@@ -65,14 +65,10 @@ def _setup_google_maps_query_params(origin, destinations):
     :param destinations: "to" addresses in query
     :return: a dictionary to use as url parameters for query
     """
-    print(                      
-        '[method: google_maps_utils._setup_google_maps_query]',
-        'origin received:',
-        origin,
-        'destinations received (printing first five):',
-        destinations[:5],       # only print first five destinations
-        'count(destinations):',
-        len(destinations)
+    logger.debug(
+        'origin received: ' + str(origin) +
+        ', destinations received (last five): ' + str(destinations[:5]) +
+        ', count(destinations): ' + str(len(destinations))
     )
     return {"origins": origin,
             "destinations": '|'.join(destinations),
@@ -80,7 +76,11 @@ def _setup_google_maps_query_params(origin, destinations):
             "units": "imperial"}
 
 
-def combine_driving_data_with_destinations(all_driving_data, location_type, destinations):
+def combine_driving_data_with_destinations(
+        all_driving_data,
+        location_type,
+        destinations
+):
     """
     Retrieve data from Google Maps query into dictionary with data stored as
     key, value pairs (our keys being the constants defined at beginning
@@ -93,23 +93,20 @@ def combine_driving_data_with_destinations(all_driving_data, location_type, dest
     :return: list of dictionaries representing driving data for
         each address
     """
-    print(
-        '[method: google_maps_utils._parse_driving_data]',
-        'all_driving_data received:',
-        all_driving_data,
-        'location_type received:',
-        location_type,
-        'destinations received (printing first five):',
-        destinations[:5],       # only print first five 
-        'count(destinations):',
-        len(destinations)
+    logger.debug(
+        'all_driving_data received: ' + str(all_driving_data) +
+        ', location_type received: ' + str(location_type) +
+        ', destinations received (last five): ' + str(destinations[:5]) +
+        ', count(destinations): ' + str(len(destinations))
     )
 
     driving_infos = []
     try:
         driving_data_row = all_driving_data["rows"][0]
-        for (driving_data, address) in zip(driving_data_row["elements"], 
-                                           destinations):
+        for (driving_data, address) in zip(
+                driving_data_row["elements"],
+                destinations
+        ):
             try:
                 driving_info = {
                     DRIVING_DISTANCE_VALUE_KEY:
@@ -123,14 +120,16 @@ def combine_driving_data_with_destinations(all_driving_data, location_type, dest
                     location_type: address}
                 driving_infos.append(driving_info)
             except KeyError:
-                print("Could not parse driving info {}".format(driving_data))
+                logger.debug(
+                    "Could not parse driving info {}".format(driving_data)
+                )
     except KeyError:
         pass
     finally:
         return driving_infos
 
 
-def _parse_closest_location_info(location_type, closest_location_info):
+def parse_closest_location_info(location_type, closest_location_info):
     """
     Return a sub-dictionary of the dictionary returned by the Google Maps
     estimated driving time call
@@ -144,13 +143,11 @@ def _parse_closest_location_info(location_type, closest_location_info):
                                              DRIVING_DISTANCE_TEXT_KEY,
                                              DRIVING_TIME_TEXT_KEY
     """
-    print(
-        '[method: google_maps_utils._parse_closest_location_info]',
-        'location_type received:',
-        location_type,
-        'closest_location_info received:',
-        closest_location_info
+    logger.debug(
+        'location_type received: ' + str(location_type) +
+        ', closest_location_info received: ' + str(closest_location_info)
     )
+    
     keys_to_keep = [location_type, DRIVING_DISTANCE_TEXT_KEY, DRIVING_TIME_TEXT_KEY]
     return {key:closest_location_info[key] for key in keys_to_keep}
 

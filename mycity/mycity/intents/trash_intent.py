@@ -10,9 +10,13 @@ import re
 import requests
 from . import intent_constants
 import mycity.intents.speech_constants.trash_intent as speech_constants
+import logging
+
+logger = logging.getLogger(__name__)
 
 DAY_CODE_REGEX = r'\d+A? - '
 CARD_TITLE = "Trash Day"
+
 
 def get_trash_day_info(mycity_request):
     """
@@ -21,13 +25,7 @@ def get_trash_day_info(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    
-    print(
-        '[module: trash_intent]',
-        '[method: get_trash_day_info]',
-        'MyCityRequestDataModel received:',
-        str(mycity_request)
-    )
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
@@ -75,7 +73,7 @@ def get_trash_day_info(mycity_request):
 
         mycity_response.should_end_session = False
     else:
-        print("Error: Called trash_day_intent with no address")
+        logger.error("Error: Called trash_day_intent with no address")
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
@@ -97,7 +95,7 @@ def get_trash_and_recycling_days(address, zip_code=None):
     :return: array containing next trash and recycling days
     :raises: InvalidAddressError, BadAPIResponse
     """
-
+    logger.debug('address: ' + str(address) + ', zip_code: ' + str(zip_code))
     api_params = get_address_api_info(address, zip_code)
     if not api_params:
         raise InvalidAddressError
@@ -123,7 +121,7 @@ def find_unique_zipcodes(address_request_json):
     :return: dictionary with zip code keys and value list of indexes with that
         zip code
     """
-
+    logger.debug('address_request_json: ' + str(address_request_json))
     found_zip_codes = {}
     for index, address_info in enumerate(address_request_json):
         zip_code = re.search('\d{5}', address_info["name"]).group(0)
@@ -146,6 +144,8 @@ def validate_found_address(found_address, user_provided_address):
     :param user_provided_address: Street number and name provided by user
     :return: boolean: True if addresses are considered a match, else False
     """
+    logger.debug('found_address: ' + str(found_address) +
+                 'user_provided_address: ' + str(user_provided_address))
     address_parser = StreetAddressParser()
     found_address = address_parser.parse(found_address)
     user_provided_address = address_parser.parse(user_provided_address)
@@ -186,15 +186,16 @@ def get_address_api_info(address, provided_zip_code):
     }
 
     """
-
+    logger.debug('address: ' + address +
+                 'provided_zip_code: ' + str(provided_zip_code))
     base_url = "https://recollect.net/api/areas/" \
                "Boston/services/310/address-suggest"
     url_params = {'q': address, 'locale': 'en-US'}
     request_result = requests.get(base_url, url_params)
 
     if request_result.status_code != requests.codes.ok:
-        print("Error getting ReCollect API info. Got response: {}"
-              .format(request_result.status_code))
+        logger.debug('Error getting ReCollect API info. Got response: {}'
+                     .format(request_result.status_code))
         return {}
 
     result_json = request_result.json()
@@ -223,7 +224,7 @@ def get_trash_day_data(api_parameters):
     :param api_parameters: Parameters for ReCollect API
     :return: JSON object containing all trash data
     """
-
+    logger.debug('api_parameters: ' + str(api_parameters))
     # Rename the default API parameter "name" to "formatted_address"
     if "name" in api_parameters:
         api_parameters["formatted_address"] = api_parameters.pop("name")
@@ -232,8 +233,8 @@ def get_trash_day_data(api_parameters):
     request_result = requests.get(base_url, api_parameters)
 
     if request_result.status_code != requests.codes.ok:
-        print("Error getting trash info from ReCollect API info. "
-              "Got response: {}".format(request_result.status_code))
+        logger.debug("Error getting trash info from ReCollect API info. " \
+                     "Got response: {}".format(request_result.status_code))
         return {}
 
     return request_result.json()
@@ -248,7 +249,7 @@ def get_trash_days_from_trash_data(trash_data):
     :return: An array containing days trash and recycling are picked up
     :raises: BadAPIResponse
     """
-
+    logger.debug('trash_data: ' + str(trash_data))
     try:
         trash_days_string = trash_data["next_event"]["zone"]["title"]
         trash_days_string = re.sub(DAY_CODE_REGEX, '', trash_days_string)
@@ -269,6 +270,7 @@ def build_speech_from_list_of_days(days):
     :return: Speech representing the provided days
     :raises: BadAPIResponse
     """
+    logger.debug('days: ' + str(days))
     if len(days) == 0:
         raise BadAPIResponse
 
