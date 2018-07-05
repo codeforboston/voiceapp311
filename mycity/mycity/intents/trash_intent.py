@@ -4,6 +4,7 @@ Functions for Alexa responses related to trash day
 from .custom_errors import InvalidAddressError, BadAPIResponse
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import re
 import requests
 from . import intent_constants
 
@@ -34,19 +35,28 @@ def get_trash_day_info(mycity_request):
         # currently assumes that trash day is the same for all units at
         # the same street address
         address = str(a['house']) + " " + str(a['street_name'])
+        zip_code = str(a["other"]) if a["other"] else None
 
         try:
-            trash_days = get_trash_and_recycling_days(address)
+            trash_days = get_trash_and_recycling_days(address, zip_code)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
 
             mycity_response.output_speech = "Trash and recycling is picked up on {}."\
                 .format(trash_days_speech)
 
         except InvalidAddressError:
+            address_string = address
+            if zip_code:
+                address_string = address_string + " with zip code {}"\
+                    .format(zip_code)
             mycity_response.output_speech = "I can't seem to find {}. Try another address"\
-               .format(address)
+               .format(address_string)
         except BadAPIResponse:
             mycity_response.output_speech = "Hmm something went wrong. Maybe try again?"
+        except MultipleAddressError:
+            mycity_response.output_speech \
+                = "I found multiple places with the address {}. Try "\
+                "specifying the zip code.".format(address)
 
         mycity_response.should_end_session = False
     else:
@@ -61,7 +71,7 @@ def get_trash_day_info(mycity_request):
     return mycity_response
 
 
-def get_trash_and_recycling_days(address):
+def get_trash_and_recycling_days(address, zip_code=None):
     """
     Determines the trash and recycling days for the provided address.
     These are on the same day, so only one array of days will be returned.
@@ -70,7 +80,7 @@ def get_trash_and_recycling_days(address):
     :return: array containing next trash and recycling days
     """
 
-    api_params = get_address_api_info(address)
+    api_params = get_address_api_info(address, zip_code)
     if not api_params:
         raise InvalidAddressError
 
@@ -89,23 +99,28 @@ def find_unique_zipcodes(address_request_json):
     from the ReCollect service
     :param address_request_json: json object returned from ReCollect address
         request service
-    :return: array of unique zip codes
+    :return: dictionary with zip code keys and value list of indexes with that
+        zip code
     """
 
-    found_zip_codes = []
-    for address_info in address_request_json:
+    found_zip_codes = {}
+    for index, address_info in enumerate(address_request_json):
         zip_code = re.search('\d{5}', address_info["name"]).group(0)
-        if zip_code and zip_code not in found_zip_codes:
-            found_zip_codes.append(zip_code)
+        if zip_code:
+            if zip_code in found_zip_codes:
+                found_zip_codes[zip_code].append(index)
+            else:
+                found_zip_codes[zip_code] = [index]
 
     return found_zip_codes
 
 
-def get_address_api_info(address):
+def get_address_api_info(address, provided_zip_code=None):
     """
     Gets the parameters required for the ReCollect API call
 
     :param address: Address to get parameters for
+    :param zip_code: Optional zip code used if we find multiple addresses
     :return: JSON object containing API parameters with format:
 
     {
@@ -135,6 +150,14 @@ def get_address_api_info(address):
 
     unique_zip_codes = find_unique_zipcodes(result_json)
     if len(unique_zip_codes) > 1:
+        # If we have a provided zip code, see if it is in the request results
+        if provided_zip_code:
+            if provided_zip_code in unique_zip_codes:
+                return result_json[unique_zip_codes[provided_zip_code][0]]
+
+            else:
+                return {}
+
         raise MultipleAddressError
 
     return result_json[0]
