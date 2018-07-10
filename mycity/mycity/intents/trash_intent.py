@@ -49,10 +49,12 @@ def get_trash_day_info(mycity_request):
             if zip_code:
                 address_string = address_string + " with zip code {}"\
                     .format(zip_code)
-            mycity_response.output_speech = "I can't seem to find {}. Try another address"\
-               .format(address_string)
+            mycity_response.output_speech =\
+                "I can't seem to find {}. Try another address"\
+                .format(address_string)
         except BadAPIResponse:
-            mycity_response.output_speech = "Hmm something went wrong. Maybe try again?"
+            mycity_response.output_speech =\
+                "Hmm something went wrong. Maybe try again?"
         except MultipleAddressError:
             mycity_response.output_speech \
                 = "I found multiple places with the address {}. Try "\
@@ -77,6 +79,7 @@ def get_trash_and_recycling_days(address, zip_code=None):
     These are on the same day, so only one array of days will be returned.
 
     :param address: String of address to find trash day for
+    :param zip_code: Optional zip code to resolve multiple addresses
     :return: array containing next trash and recycling days
     """
 
@@ -120,7 +123,8 @@ def get_address_api_info(address, provided_zip_code=None):
     Gets the parameters required for the ReCollect API call
 
     :param address: Address to get parameters for
-    :param zip_code: Optional zip code used if we find multiple addresses
+    :param provided_zip_code: Optional zip code used if we find multiple
+        addresses
     :return: JSON object containing API parameters with format:
 
     {
