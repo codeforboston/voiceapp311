@@ -46,11 +46,12 @@ def get_trash_day_info(mycity_request):
             mycity_response.output_speech = "I can't seem to find {}. Try another address"\
                .format(address)
         except BadAPIResponse:
-            mycity_response.output_speech = "Hmm something went wrong. Maybe try again?"
+            mycity_response.output_speech = "Hmm something went wrong. Please try again"
 
         mycity_response.should_end_session = False
     else:
         print("Error: Called trash_day_intent with no address")
+        mycity_response.output_speech = "I didn't understand that address, please try again"
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
