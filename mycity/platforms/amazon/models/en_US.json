@@ -35,7 +35,7 @@
         {
           "name": "TrashDayIntent",
           "samples": [
-            "when is my trash day",
+            "when is my trash days",
             "when is garbage day",
             "what day is recycling",
             "what day should i put trash out",
