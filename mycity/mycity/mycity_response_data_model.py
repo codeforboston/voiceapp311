@@ -13,6 +13,7 @@ class MyCityResponseDataModel:
         self._should_end_session = None
         self._intent_variables = {}
         self._dialog_directive = None
+        self._slot_to_elicit = None
 
     def __str__(self):
         return """\
@@ -24,6 +25,7 @@ class MyCityResponseDataModel:
             should_end_session={},
             intent_variables={}
             dialog_directive={}
+            slot_to_elicit={}
         >
         """.format(
             self._session_attributes,
@@ -32,7 +34,8 @@ class MyCityResponseDataModel:
             self._reprompt_text,
             self._should_end_session,
             self._intent_variables,
-            self._dialog_directive
+            self._dialog_directive,
+            self._slot_to_elicit
         )
 
     @property
@@ -100,7 +103,6 @@ class MyCityResponseDataModel:
     def intent_variables(self, value):
         self._intent_variables = value
 
-
     @property
     def dialog_directive(self):
         return self._dialog_directive
@@ -108,10 +110,28 @@ class MyCityResponseDataModel:
     @dialog_directive.setter
     def dialog_directive(self, value):
         valid_directives = [
-            "Delegate"          # Delegate dialog decision to platform
+            "Delegate",          # Delegate dialog decision to platform
+            "ElicitSlot"
         ]
 
         if value not in valid_directives:
             print("Error: {} is not a valid directive".format(value))
             return
         self._dialog_directive = "Dialog.{}".format(value)
+
+    @property
+    def slot_to_elicit(self):
+        return self._slot_to_elicit
+
+    @slot_to_elicit.setter
+    def slot_to_elicit(self, value):
+        self._slot_to_elicit = value
+
+    def elicit_slot(self, slot_name):
+        """
+        Helper function for eliciting a particular slot
+
+        :param slot_name: Name of slot to elicits
+        """
+        self._dialog_directive = "Dialog.ElicitSlot"
+        self._slot_to_elicit = slot_name

@@ -8,7 +8,8 @@ from __future__ import print_function
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import set_address_in_session, \
-    get_address_from_session, request_user_address_response
+    get_address_from_session, request_user_address_response, \
+    set_zipcode_in_session
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
@@ -126,6 +127,10 @@ def on_intent(mycity_request):
         # Some of our intents have an associated address value.
         # Capture that into session data here
         set_address_in_session(mycity_request)
+
+    if "Zipcode" in mycity_request.intent_variables \
+        and "value" in mycity_request.intent_variables["Zipcode"]:
+        set_zipcode_in_session(mycity_request)
 
     # session_attributes = session.get("attributes", {})
     if mycity_request.intent_name == "GetAddressIntent":

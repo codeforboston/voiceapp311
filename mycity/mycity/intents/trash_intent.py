@@ -36,7 +36,12 @@ def get_trash_day_info(mycity_request):
         # currently assumes that trash day is the same for all units at
         # the same street address
         address = str(a['house']) + " " + str(a['street_name'])
-        zip_code = str(a["other"]) if a["other"] else None
+        zip_code = str(a["other"]).zfill(5) if a["other"] else None
+
+        zip_code_key = intent_constants.ZIP_CODE_KEY
+        if zip_code is None and zip_code_key in \
+                mycity_request.session_attributes:
+            zip_code = mycity_request.session_attributes[zip_code_key]
 
         try:
             trash_days = get_trash_and_recycling_days(address, zip_code)
@@ -58,8 +63,9 @@ def get_trash_day_info(mycity_request):
                 "Hmm something went wrong. Maybe try again?"
         except MultipleAddressError:
             mycity_response.output_speech \
-                = "I found multiple places with the address {}. Try "\
-                "specifying the zip code.".format(address)
+                = "I found multiple places with the address {}. " \
+                  "What's the zip code?".format(address)
+            mycity_response.elicit_slot("Zipcode")
 
         mycity_response.should_end_session = False
     else:
@@ -230,3 +236,8 @@ def build_speech_from_list_of_days(days):
         output_speech += ", and {}".format(days[-1])
 
     return output_speech
+
+from mycity.mycity_request_data_model import MyCityRequestDataModel
+mcr = MyCityRequestDataModel()
+mcr.session_attributes = {intent_constants.CURRENT_ADDRESS_KEY: "50 Washington Street"}
+print(get_trash_day_info(mcr))

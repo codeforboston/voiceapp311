@@ -23,6 +23,17 @@ def set_address_in_session(mycity_request):
             mycity_request.intent_variables['Address']['value']
 
 
+def set_zipcode_in_session(mycity_request):
+    """
+    Adds a zip code to the provided request object.
+
+    :param mycity_request: MyCityRequestsDataModel object
+    :return: none
+    """
+    if 'Zipcode' in mycity_request.intent_variables:
+        mycity_request.session_attributes[intent_constants.ZIP_CODE_KEY] = \
+            mycity_request.intent_variables['Zipcode']['value'].zfill(5)
+
 def get_address_from_session(mycity_request):
     """
     Looks for a current address in the session attributes and constructs a
