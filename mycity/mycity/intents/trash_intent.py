@@ -236,8 +236,3 @@ def build_speech_from_list_of_days(days):
         output_speech += ", and {}".format(days[-1])
 
     return output_speech
-
-from mycity.mycity_request_data_model import MyCityRequestDataModel
-mcr = MyCityRequestDataModel()
-mcr.session_attributes = {intent_constants.CURRENT_ADDRESS_KEY: "50 Washington Street"}
-print(get_trash_day_info(mcr))
