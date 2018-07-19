@@ -40,7 +40,7 @@ def get_permit_locations():
     moving_permit_unique_locations = []
     for location in moving_permit_data_result:
         if location['attributes']['PermitNumb'] not in moving_permit_unique_locations:
-            # this try block is necessary because some permit don't have geometry!
+            # this try block is necessary because some permits don't have geometry!
             try:
                 moving_permit_unique_locations.append([location['attributes']['PermitNumb'], \
                                                        location['geometry']])
