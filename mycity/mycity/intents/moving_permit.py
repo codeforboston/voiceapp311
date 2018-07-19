@@ -14,12 +14,10 @@
 import mycity.utilities.gis_utils as gis_utils
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-
 from datetime import datetime
 
 PERMIT_INFO_URL = ('https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/' + \
                    'rest/services/Moving_Truck_Permits/FeatureServer/0')                   
-DAY_OF_WEEK = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 STATUS = 'OPEN'
 
 moving_permit_data_result = {}
@@ -28,28 +26,63 @@ def get_permit_locations():
     """
     Queries arcgis data and returns a list of moving permit locations
 
-    :return: list of lists containing location name, dict ofGPS coordinates in value
-      for example: [['Sumner Street', {'x': -7908107.9125, 'y': 5216395.7579}],
-      ['Boylston/Clarendon by Trinity Church', {'x': -7912059.823100001, 'y': 5213652.076399997}]]
+    :return: list of lists containing the permit number and a dict of 
+             GPS coordinates in value.
+      for example: [['OCCU-752664', {'x': -71.10079000035819, 'y': 42.32857000010546}], 
+                    ['OCCU-752685', {'x': -71.11067100006659, 'y': 42.32055099992874}]]
     """
-    MOVING_PERMIT_QUERY = 'Status=\'%(status)s\'' % {"status": STATUS}
-    print('Querying... ' + str(MOVING_PERMIT_QUERY) + '\n')
+    MOVING_PERMIT_QUERY = 'Status=\'%(status)s\'' % {'status': STATUS}
     
-    # Result is a dictionary of moving truck permit locations
+    # Result is a dictionary of moving truck permit
     moving_permit_data_result = gis_utils.get_features_from_feature_server(PERMIT_INFO_URL, MOVING_PERMIT_QUERY)
 
-    # Generate unique list of food truck locations for submission to the Google Maps API
+    # Generate unique list of moving truck locations for submission to the Google Maps API
     moving_permit_unique_locations = []
     for location in moving_permit_data_result:
-        print(location)
-        if location["attributes"]["Loc"] not in moving_permit_unique_locations:
-            moving_permit_unique_locations.append([location["attributes"]["Loc"], location["geometry"]])
-	
-	
+        if location['attributes']['PermitNumb'] not in moving_permit_unique_locations:
+            # this try block is necessary because some permit don't have geometry!
+            try:
+                moving_permit_unique_locations.append([location['attributes']['PermitNumb'], \
+                                                       location['geometry']])
+            except:
+                print('PermitNumb: ' + str(location['attributes']['PermitNumb']) + ' has no geometry')
+                
     return moving_permit_unique_locations
     
 
-def get_nearby_moving_permits():
-    pass
+def get_nearby_moving_permits(mycity_request):
+    """
+    Gets moving truck info near an address
 
-get_permit_locations()
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseObject
+    """
+
+    # Get current address location
+    # TODO: this block is copy/pasted from trash_intent.py, should refactor
+    if CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
+        current_address = \
+            mycity_request.session_attributes[CURRENT_ADDRESS_KEY]
+
+        address_parser = StreetAddressParser()
+        a = address_parser.parse(current_address)
+        address = str(a['house']) + " " + str(a['street_name'])
+
+        moving_permit_unique_locations = get_permit_locations()
+
+        try:
+            #TODO: currently just gets distance to first location given (??). 
+            #Should loop through or modify get_closest_feature to return closest location in list
+            closest_trucks = gis_utils.get_closest_feature(origin=address,
+                                                           feature_address_index=1,
+                                                           feature_type='Moving truck list',
+                                                           error_message='Unable to find moving trucks closest to you',
+                                                           features=moving_permit_unique_locations)
+            print(closest_trucks)
+
+        except:
+            print('ERROR: unable to find nearby moving trucks')
+
+    mycity_response = MyCityResponseDataModel()
+    mycity_response.output_speech = ""
+    return mycity_response
