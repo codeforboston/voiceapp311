@@ -66,7 +66,7 @@ def on_session_started(mycity_request):
     """
     logger.debug('[method: on_session_started]' +
                  '[requestId: ' + str(mycity_request.request_id) + ']'
-                 '[sessionId: ' + str(mycity_request.session_id) + ']',
+                 '[sessionId: ' + str(mycity_request.session_id) + ']' +
                  (
                      '[request object: ' + str(mycity_request) + ']' if
                      isinstance(mycity_request, MyCityRequestDataModel) else
