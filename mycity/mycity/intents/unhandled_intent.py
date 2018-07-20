@@ -2,6 +2,15 @@
 Function(s) for dealing with unhandled intents
 """
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import logging
+
+logger = logging.getLogger('[module: unhandled_intent]')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 def unhandled_intent(mycity_request):
     """
@@ -10,12 +19,12 @@ def unhandled_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[module: unhandled_intent]',
-        '[method: unhandled_intent]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        '[method: unhandled_intent]' +
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
+    
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "UnhandledIntent"

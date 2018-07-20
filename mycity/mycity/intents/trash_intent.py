@@ -6,6 +6,15 @@ from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import requests
 from . import intent_constants
+import logging
+
+logger = logging.getLogger('[module: trash_intent]')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 def get_trash_day_info(mycity_request):
@@ -15,11 +24,9 @@ def get_trash_day_info(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    
-    print(
-        '[module: trash_intent]',
-        '[method: get_trash_day_info]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        '[method: get_trash_day_info]' +
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
 
