@@ -47,12 +47,12 @@ def get_snow_emergency_parking_intent(mycity_request):
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
         finder = FinderCSV(mycity_request, PARKING_INFO_URL, ADDRESS_KEY, 
                            OUTPUT_SPEECH_FORMAT, format_record_fields)
-        print("Finding snow emergency parking for {}".format(finder.origin_address))
+        logger.debug("Finding snow emergency parking for {}".format(finder.origin_address))
         finder.start()
         mycity_response.output_speech = finder.get_output_speech()
 
     else:
-        print("Error: Called snow_parking_intent with no address")
+        logger.error("Error: Called snow_parking_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not

@@ -53,7 +53,7 @@ def get_trash_day_info(mycity_request):
 
         mycity_response.should_end_session = False
     else:
-        print("Error: Called trash_day_intent with no address")
+        logger.error("Error: Called trash_day_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
@@ -110,7 +110,7 @@ def get_address_api_info(address):
     request_result = requests.get(base_url, url_params)
 
     if request_result.status_code != requests.codes.ok:
-        print("Error getting ReCollect API info. Got response: {}"
+        logger.error("Error getting ReCollect API info. Got response: {}"
               .format(request_result.status_code))
         return {}
 
@@ -136,7 +136,7 @@ def get_trash_day_data(api_parameters):
     request_result = requests.get(base_url, api_parameters)
 
     if request_result.status_code != requests.codes.ok:
-        print("Error getting trash info from ReCollect API info. "
+        logger.error("Error getting trash info from ReCollect API info. "
               "Got response: {}".format(request_result.status_code))
         return {}
 

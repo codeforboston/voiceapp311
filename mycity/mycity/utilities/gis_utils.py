@@ -10,7 +10,11 @@ kill any computation that takes longer than 3 secs.
 from arcgis.features import FeatureLayer
 
 import mycity.utilities.google_maps_utils as g_maps_utils
+import mycity.logger
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 def get_closest_feature(origin, feature_address_index, 
                         feature_type, error_message, features):
@@ -28,7 +32,7 @@ def get_closest_feature(origin, feature_address_index,
     :return: dictionary with address, distance, and
         driving time for closest feature
     """
-    print(
+    logger.debug(
         '[method: location_utils.get_closest_feature]',
         'origin received:',
         origin,
@@ -51,7 +55,7 @@ def get_closest_feature(origin, feature_address_index,
         closest_location_info = min(location_driving_info,
                                     key= lambda x: x[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY])
     else:
-        print(error_message)
+        logger.debug('Location driving info empty!')
         closest_location_info = { feature_type: False,
                                   g_maps_utils.DRIVING_DISTANCE_TEXT_KEY: False,
                                   g_maps_utils.DRIVING_TIME_TEXT_KEY: False }
@@ -70,7 +74,7 @@ def get_features_from_feature_server(url, query):
     :return: list of all features returned from the query
     """
 
-    print(
+    logger.debug(
         '[method: gis_utils.get_features_from_feature_server]',
         'url received:',
         url,
@@ -95,7 +99,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     :param features: list of features retrieved from FeatureServer
     :return: list of destination addresses
     """
-    print(
+    logger.debug(
         '[method: gis_utils._get_dest_addresses]',
         'feature_address_index received;',
         feature_address_index,

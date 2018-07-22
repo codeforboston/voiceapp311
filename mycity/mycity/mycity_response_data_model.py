@@ -1,3 +1,6 @@
+import mycity.logger
+import logging
+
 class MyCityResponseDataModel:
     """
     Represents a request from a voice platform.
@@ -112,6 +115,6 @@ class MyCityResponseDataModel:
         ]
 
         if value not in valid_directives:
-            print("Error: {} is not a valid directive".format(value))
+            logging.error("Error: {} is not a valid directive".format(value))
             return
         self._dialog_directive = "Dialog.{}".format(value)

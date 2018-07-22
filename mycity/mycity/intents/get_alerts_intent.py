@@ -59,9 +59,9 @@ def get_alerts_intent(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
     alerts = get_alerts()
-    print("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
+    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
     alerts = prune_normal_responses(alerts)
-    print("[dictionary after pruning]:\n" + str(alerts))
+    logger.debug("[dictionary after pruning]:\n" + str(alerts))
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = mycity_request.intent_name
     mycity_response.reprompt_text = None
