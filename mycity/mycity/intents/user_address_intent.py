@@ -4,15 +4,11 @@ Functions for setting and getting the current user address
 
 from . import intent_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.logger
 import logging
 
-logger = logging.getLogger('[module: user_address_intent]')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+
+logger = logging.getLogger(__name__)
 
 def set_address_in_session(mycity_request):
     """

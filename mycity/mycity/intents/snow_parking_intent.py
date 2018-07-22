@@ -5,15 +5,8 @@ import mycity.intents.intent_constants as intent_constants
 import mycity.utilities.google_maps_utils as g_maps_utils
 from mycity.utilities.finder.FinderCSV import FinderCSV
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.logger
 import logging
-
-logger = logging.getLogger('[method: get_snow_emergency_parking_intent]')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
 
 # Constants 
@@ -27,6 +20,8 @@ OUTPUT_SPEECH_FORMAT = \
      "you {" + DRIVING_TIME + "} to drive there. The parking lot has "
      "{Spaces} spaces when empty. {Fee} {Comments} {Phone}")
 ADDRESS_KEY = "Address"
+
+logger = logging.getLogger(__name__)
 
 
 def format_record_fields(record):

@@ -20,15 +20,11 @@ from bs4 import BeautifulSoup
 from urllib import request
 from enum import Enum
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.logger
 import logging
 
-logger = logging.getLogger('[method: get_alerts_intent]')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+
+logger = logging.getLogger(__name__)
 
 class Services(Enum):
     STREET_CLEANING = 'Street Cleaning'

@@ -6,15 +6,11 @@ import mycity.utilities.address_utils as address_utils
 import mycity.utilities.csv_utils as csv_utils
 import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.google_maps_utils as g_maps_utils
+import mycity.logger
+import logging
 
-logger = logging.getLogger('[class: Finder]')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
+logger = logging.getLogger(__name__)
 
 class Finder(object):
     """

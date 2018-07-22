@@ -3,15 +3,12 @@ import requests
 import logging
 
 from mycity.utilities.finder.Finder import Finder
+import mycity.logger
+import logging
 
 
-logger = logging.getLogger('[class: FinderCSV]')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+logger = logging.getLogger(__name__)
+
 
 class FinderCSV(Finder):
     """
