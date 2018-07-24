@@ -47,14 +47,15 @@ def get_address_from_user_device(mycity_request):
         "/settings/address".format(mycity_request.device_id)
     head_info = {'Accept': 'application/json',
                 'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
-    request_result = requests.get(base_url, headers=head_info)
+    responseObject = requests.get(base_url, headers=head_info)
     print("request result:",
-        request_result.text)
-    res = request_result.json()
-    if (res['addressLine1'] is not None):
-        current_address = res['addressLine1']
-        mycity_request.session_attributes[
-            intent_constants.CURRENT_ADDRESS_KEY] = current_address
+        responseObject)
+    if (responseObject.ok):
+        res = responseObject.json()
+        if (res['addressLine1'] is not None):
+            current_address = res['addressLine1']
+            mycity_request.session_attributes[
+                intent_constants.CURRENT_ADDRESS_KEY] = current_address
     return mycity_request
 
 def get_address_from_session(mycity_request):
@@ -105,7 +106,7 @@ def request_user_address_response(mycity_request):
     """
     print(
         '[module: user_address_intent]',
-        '[method: set_address_in_session]',
+        '[method: request_user_address_response]',
         'MyCityRequestDataModel received:',
         str(mycity_request)
     )
