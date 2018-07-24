@@ -47,11 +47,11 @@ def get_address_from_user_device(mycity_request):
         "/settings/address".format(mycity_request.device_id)
     head_info = {'Accept': 'application/json',
                 'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
-    responseObject = requests.get(base_url, headers=head_info)
+    response_object = requests.get(base_url, headers=head_info)
     print("request result:",
-        responseObject)
-    if (responseObject.ok):
-        res = responseObject.json()
+        response_object)
+    if (response_object.ok):
+        res = response_object.json()
         if (res['addressLine1'] is not None):
             current_address = res['addressLine1']
             mycity_request.session_attributes[
