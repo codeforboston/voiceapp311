@@ -42,7 +42,7 @@ def get_address_from_session(mycity_request):
     mycity_response = MyCityResponseDataModel()
     # print("GETTING ADDRESS FROM SESSION")
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.card_title = "Address"
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
 

@@ -101,8 +101,8 @@ def mycity_response_to_platform(mycity_response):
             },
             'card': {
                 'type': 'Simple',
-                'title': 'SessionSpeechlet - ' + str(mycity_response.card_title),
-                'content': 'SessionSpeechlet - ' + str(mycity_response.output_speech)
+                'title': str(mycity_response.card_title),
+                'content': str(mycity_response.output_speech)
             },
             'reprompt': {
                 'outputSpeech': {

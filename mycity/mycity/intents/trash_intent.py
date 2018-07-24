@@ -57,8 +57,8 @@ def get_trash_day_info(mycity_request):
     # understood, the session will end.
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
-    return mycity_response
+    mycity_response.card_title = "Trash Day"
+    return mycity_response 
 
 
 def get_trash_and_recycling_days(address):

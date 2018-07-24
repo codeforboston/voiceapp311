@@ -59,7 +59,7 @@ def get_alerts_intent(mycity_request):
     alerts = prune_normal_responses(alerts)
     print("[dictionary after pruning]:\n" + str(alerts))
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.card_title = "City Alerts"
     mycity_response.reprompt_text = None
     mycity_response.output_speech = alerts_to_speech_output(alerts)
     mycity_response.should_end_session = True   # leave this as True for right now
