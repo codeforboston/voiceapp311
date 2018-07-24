@@ -20,14 +20,14 @@ def _get_driving_info(origin, location_type, destinations):
     """
     Gets the driving info from the provided origin address to each destination
     address
+    
     :param origin: string containing driving starting address
-    :param destinations: array of address to calculate driving info from origin
-    address
-    :param feature_name: string representing name of this feature
-    :param feature_key: string that identifies type of feature we're getting 
-    directions to 
-    :return driving_infos: dictionary with address, distance, and driving time from origin
-    address
+    :param location_type: string that identifies type of location we're getting 
+        directions to
+    :param destinations: array of addresses to calculate driving info from
+        origin address
+    :return: dictionary with address, distance, and driving time from
+        origin address
     """
     print(
         '[method: google_maps_utils.._get_driving_info]',
@@ -59,8 +59,9 @@ def _get_driving_info(origin, location_type, destinations):
 def _setup_google_maps_query_params(origin, destinations):
     """
     Builds a dictionary for querying Google Maps 
-    :param: origin: "from" address in query
-    :param: destinations: "to" addresses in query
+    
+    :param origin: "from" address in query
+    :param destinations: "to" addresses in query
     :return: a dictionary to use as url parameters for query
     """
     print(                      
@@ -87,9 +88,8 @@ def combine_driving_data_with_destinations(all_driving_data, location_type, dest
     :param all_driving_data: JSON blob returned from Google Maps query
     :param destinations: list of destination addresses
     :param location_type: string that identifies type of location we're driving to
-    :return driving_infos: list of dictionaries representing driving data for
-    each address
-    
+    :return: list of dictionaries representing driving data for
+        each address
     """
     print(
         '[method: google_maps_utils._parse_driving_data]',
@@ -132,12 +132,13 @@ def _parse_closest_location_info(location_type, closest_location_info):
     """
     Return a sub-dictionary of the dictionary returned by the Google Maps
     estimated driving time call
-    :param: location_type: string that describes the type of location we
-    are finding the closest instance of
-    :param: closest_location_info: a dictionary with keys
-    'Driving distance', 'Driving distance text', 'Driving time', 
-    'Driving time text', feature_type.
-    :return pruned: a dictionary with keys feature_type,
+    
+    :param location_type: string that describes the type of location we
+        are finding the closest instance of
+    :param closest_location_info: a dictionary with keys
+        'Driving distance', 'Driving distance text', 'Driving time', 
+        'Driving time text', feature_type.
+    :return: a trimmed dictionary with keys feature_type,
                                   DRIVING_DISTANCE_TEXT_KEY,
                                   DRIVING_TIME_TEXT_KEY
     """

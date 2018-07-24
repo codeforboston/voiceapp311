@@ -16,16 +16,17 @@ def get_closest_feature(origin, feature_address_index,
                         feature_type, error_message, features):
     """
     Calculates the nearest feature given an origin
+    
     :param origin: String containing starting address we calculate
-    shortest distance from
+        shortest distance from
     :param feature_address_index: index where address in features
-    is stored
-    :param feature_type: string describing the type of feature we are calculating
-    the shortest distance to
+        is stored
+    :param feature_type: string describing the type of feature we are
+        calculating the shortest distance to
     :param error_message: string to print if we fail to find a closest feature
     :param features: list of features fetched from FeatureServer
-    :return: dictionary with address, distance, and driving time for
-    closest feature
+    :return: dictionary with address, distance, and
+        driving time for closest feature
     """
     print(
         '[method: location_utils.get_closest_feature]',
@@ -63,9 +64,10 @@ def get_features_from_feature_server(url, query):
     """
     Given a url to a City of Boston Feature Server, return a list
     of Features (for example, parking lots that are not full)
+    
     :param url: url for Feature Server
     :param query: query to select features (example: "Spaces > 0")
-    :return features: list of all features
+    :return: list of all features returned from the query
     """
 
     print(
@@ -80,15 +82,18 @@ def get_features_from_feature_server(url, query):
     f = FeatureLayer(url = url)
     feature_set = f.query(where = query)
     for feature in feature_set:
-        features.append(feature.as_row[0]) # [0] = data, [1] = column names
+        features.append(feature.as_dict)
     return features
 
 
 def _get_dest_addresses_from_features(feature_address_index, features):
     """
+    Generate and return a list of destination addresses (as strings)
+    given a list of features
+    
     :param feature_address_index: to retrieve address string in feature
     :param features: list of features retrieved from FeatureServer
-    :return dest_address: list of destination addresses
+    :return: list of destination addresses
     """
     print(
         '[method: gis_utils._get_dest_addresses]',

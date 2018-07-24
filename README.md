@@ -28,7 +28,7 @@ however the general workflow is the same.
 
 ### Before you start
 Clone this repo and navigate to the **voiceapp311/mycity/mycity/deploy_tools**
-directory and run:
+directory and run the following command using Python 3:
 ```
 python deploy_tools.py -p
 ```
@@ -205,6 +205,17 @@ containing directory instead of its contents, this code is not available.
 
 
 ## Notes on open data sources for Boston
+ 
+### https://recollect.net
+
+This is the new (third party) source for Boston's trash day address information.  
+Boston's trash day schedule here: https://www.boston.gov/trash-day-schedule
+labelled 'Powered by ReCollect'.
+
+trash_intent.py accesses the information at recollect.net
+
+jmartini noted on 02/13/2018 in issue #39: "The Boston digital team stated that the trash day info at data.boston.gov is often out of date. They are currently using a 3rd party called ReCollect to manage the newest trash day info."
+
 
 ### https://data.boston.gov
 This is the new portal for Boston's open data efforts. This site uses a tool

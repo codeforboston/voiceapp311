@@ -1,5 +1,4 @@
 import unittest.mock as mock
-
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
@@ -39,7 +38,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
 
     # these tests required patches to pass tests...not sure why    
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
-                return_value = no_alerts.copy())
+                return_value=no_alerts.copy())
     def test_response_with_no_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
         expected_response = ("There are no alerts. City services are "
@@ -47,7 +46,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.assertEqual(response.output_speech, expected_response)
         
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
-                return_value = some_alerts.copy())
+                return_value=some_alerts.copy())
     def test_response_with_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
         self.assertIn('Godzilla inbound!', response.output_speech)

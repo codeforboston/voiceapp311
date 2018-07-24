@@ -1,4 +1,7 @@
-import unittest
+"""
+Mixins to be used with classes extending integration base case.
+"""
+
 
 class RepromptTextTestMixIn:
 

@@ -1,3 +1,7 @@
+"""
+Utility function for building an address string from a mycity request
+
+"""
 from streetaddress import StreetAddressParser
 
 import mycity.intents.intent_constants as intent_constants
@@ -7,6 +11,7 @@ def build_origin_address(req):
     """
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
+    
     :param req: MyCityRequestDataModel object
     :return: String containing full address
     """

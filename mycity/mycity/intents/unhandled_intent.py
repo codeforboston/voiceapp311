@@ -6,6 +6,9 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 def unhandled_intent(mycity_request):
     """
     Deals with unhandled intents by prompting the user again
+    
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object
     """
     print(
         '[module: unhandled_intent]',
