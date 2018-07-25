@@ -82,7 +82,7 @@ def alerts_to_speech_output(alerts):
     for alert in alerts.values():
         all_alerts += alert + ' '
     if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug 
-        return "I see no alerts. City services are running on their normal schedules."       
+        return "There are no alerts. City services are running on normal schedules."       
     else:
         return all_alerts
         

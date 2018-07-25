@@ -18,7 +18,7 @@ DRIVING_TIME = g_maps_utils.DRIVING_TIME_TEXT_KEY
 OUTPUT_SPEECH_FORMAT = \
     ("The closest snow emergency parking lot, {Name}, is at "
      "{Address}. It is {" + DRIVING_DIST + "} away and should take "
-     "you {" + DRIVING_TIME + "} to drive there from home. The lot has "
+     "you {" + DRIVING_TIME + "} to drive there. The lot has "
      "{Spaces} spaces when empty. {Fee} {Comments} {Phone}")
 ADDRESS_KEY = "Address"
 
