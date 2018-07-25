@@ -111,6 +111,15 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.assertEquals(expected_output_text, 
             result.session_attributes[intent_constants.CURRENT_ADDRESS_KEY])
 
+    @mock.patch('requests.get')
+    def test_get_address_from_user_device_failure(self, mock_get):
+        mock_resp = self._mock_response(status=403)
+        mock_get.return_value = mock_resp
+        expected_output = {}
+        result = self.controller.get_address_from_user_device(self.request)
+        self.assertEquals(expected_output, 
+            result.session_attributes)
+
     def test_unknown_intent(self):
         self.request.intent_name = "MadeUpIntent"
         self.request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = '46 Everdean St'

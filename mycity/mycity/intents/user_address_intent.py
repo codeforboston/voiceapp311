@@ -48,7 +48,7 @@ def get_address_from_user_device(mycity_request):
                 'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
     response_object = requests.get(base_url, headers=head_info)
 
-    if response_object.ok:
+    if response_object.status_code == 200:
         res = response_object.json()
         if res['addressLine1'] is not None:
             current_address = res['addressLine1']
