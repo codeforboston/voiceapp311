@@ -15,6 +15,7 @@ import mycity.utilities.gis_utils as gis_utils
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from datetime import datetime
+from streetaddress import StreetAddressParser
 
 PERMIT_INFO_URL = ('https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/' + \
                    'rest/services/Moving_Truck_Permits/FeatureServer/0')                   
@@ -46,7 +47,8 @@ def get_permit_locations():
                                                        location['geometry']])
             except:
                 print('PermitNumb: ' + str(location['attributes']['PermitNumb']) + ' has no geometry')
-                
+    
+    print(moving_permit_unique_locations)
     return moving_permit_unique_locations
     
 
@@ -86,3 +88,7 @@ def get_nearby_moving_permits(mycity_request):
     mycity_response = MyCityResponseDataModel()
     mycity_response.output_speech = ""
     return mycity_response
+
+
+
+get_permit_locations()
