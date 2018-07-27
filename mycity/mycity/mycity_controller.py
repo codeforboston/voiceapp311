@@ -14,6 +14,7 @@ from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
+from .intents.moving_permit import get_nearby_moving_permits
 from .intents import intent_constants
 
 
@@ -150,6 +151,8 @@ def on_intent(mycity_request):
             else get_snow_emergency_parking_intent(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
+    elif mycity_request.intent_name == "MovingPermitsIntent":
+        return get_nearby_moving_permits(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":
         return get_help_response(mycity_request)
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
