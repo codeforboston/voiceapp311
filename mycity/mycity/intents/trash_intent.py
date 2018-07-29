@@ -33,7 +33,7 @@ def get_trash_day_info(mycity_request):
         a = address_parser.parse(current_address)
         # currently assumes that trash day is the same for all units at
         # the same street address
-        address = str(a['house']) + " " + str(a['street_name'])
+        address = str(a['house']) + " " + str(a['street_full'])
 
         try:
             trash_days = get_trash_and_recycling_days(address)
@@ -74,6 +74,9 @@ def get_trash_and_recycling_days(address):
     if not api_params:
         raise InvalidAddressError
 
+    if not validate_found_address(api_params["name"], address):
+        raise InvalidAddressError
+
     trash_data = get_trash_day_data(api_params)
     if not trash_data:
         raise BadAPIResponse
@@ -81,6 +84,37 @@ def get_trash_and_recycling_days(address):
     trash_and_recycling_days = get_trash_days_from_trash_data(trash_data)
 
     return trash_and_recycling_days
+
+
+def validate_found_address(found_address, user_provided_address):
+    """
+    Validates that the street name and number found in trash collection
+    database matches the provided values. We do not treat partial matches
+    as valid.
+
+    :param found_address: Full address found in trash collection database
+    :param user_provided_address: Street number and name provided by user
+    :return: boolean: True if addresses are considered a match, else False
+    """
+    address_parser = StreetAddressParser()
+    found_address = address_parser.parse(found_address)
+    user_provided_address = address_parser.parse(user_provided_address)
+
+    if found_address["house"] != user_provided_address["house"]:
+        return False
+
+    if found_address["street_name"].lower() != \
+            user_provided_address["street_name"].lower():
+        return False
+
+    # Allow fuzzy match on street type to allow "ave" to match "avenue"
+    if found_address["street_type"].lower() not in \
+        user_provided_address["street_type"].lower() and \
+        user_provided_address["street_type"].lower() not in \
+            found_address["street_type"].lower():
+                return False
+
+    return True
 
 
 def get_address_api_info(address):
