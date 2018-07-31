@@ -36,7 +36,7 @@
                         }
                     ],
                     "samples": [
-                        "when is my trash day at {Address}",
+                        "when is my trash days at {Address}",
                         "when is garbage day at {Address}",
                         "what day is recycling at {Address}",
                         "what day should i put trash out at {Address}",
