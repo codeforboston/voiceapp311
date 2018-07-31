@@ -191,12 +191,12 @@ def get_help_response(mycity_request):
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Help"
     mycity_response.output_speech = \
-        "You can request information on trash and recycling pickup by saying " \
-        "When is my trash day at 'say your address here'?. This is currently " \
-        "only avialable for Boston residents. We're working on adding more cities." \
-        "You can also request the closest location for snow emergency parking by saying " \
+        "You can request information on trash and recycling pickup by saying, " \
+        "When is my trash day at 'say your address here'. This is currently " \
+        "only available for Boston residents. We're working on adding more cities. " \
+        "You can also request the closest location for snow emergency parking by saying, " \
         "where can I park during a snow emergency? You can also request all Boston city alerts " \
-        "by saying Get my all alerts. We will add more functionality soon."
+        "by saying, 'are there any alerts?'."
 
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
