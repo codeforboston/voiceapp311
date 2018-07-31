@@ -4,6 +4,8 @@ unit test for MyCityController
 """
 
 import unittest.mock as mock
+import mycity.test.test_constants as test_constants
+import mycity.mycity_controller as my_con
 import mycity.intents.intent_constants as intent_constants
 import mycity.test.unit_tests.base as base
 
@@ -98,6 +100,25 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.request.intent_name = "TrashDayIntent"
         self.controller.on_intent(self.request)
         mock_intent.assert_called_with(self.request)
+
+    @mock.patch('requests.get')
+    def test_get_address_from_user_device(self, mock_get):
+        mock_resp = self._mock_response(status=200, 
+            json_data=test_constants.ALEXA_DEVICE_ADDRESS)
+        mock_get.return_value = mock_resp
+        expected_output_text = "866 Huntington ave"
+        result = self.controller.get_address_from_user_device(self.request)
+        self.assertEquals(expected_output_text, 
+            result.session_attributes[intent_constants.CURRENT_ADDRESS_KEY])
+
+    @mock.patch('requests.get')
+    def test_get_address_from_user_device_failure(self, mock_get):
+        mock_resp = self._mock_response(status=403)
+        mock_get.return_value = mock_resp
+        expected_output = {}
+        result = self.controller.get_address_from_user_device(self.request)
+        self.assertEquals(expected_output, 
+            result.session_attributes)
 
     def test_unknown_intent(self):
         self.request.intent_name = "MadeUpIntent"

@@ -4,6 +4,8 @@ Functions for setting and getting the current user address
 
 from . import intent_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import requests
+
 
 def set_address_in_session(mycity_request):
     """
@@ -23,6 +25,37 @@ def set_address_in_session(mycity_request):
             mycity_request.intent_variables['Address']['value']
 
 
+def get_address_from_user_device(mycity_request):
+    """
+    checks Amazon api for device address permissions. 
+    If given, the address, if present, will be stored 
+    in the session attributes
+
+    :param mycity_request: MyCityRequestDataModel
+    :param mycity_response: MyCityResponseDataModel
+    :return : MyCityRequestModel object
+    """
+    print(
+        '[module: user_address_intent]',
+        '[method: get_address_from_user_device]',
+        'MyCityRequestDataModel received:',
+        str(mycity_request)
+    )
+
+    base_url = "https://api.amazonalexa.com/v1/devices/{}" \
+        "/settings/address".format(mycity_request.device_id)
+    head_info = {'Accept': 'application/json',
+                'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
+    response_object = requests.get(base_url, headers=head_info)
+
+    if response_object.status_code == 200:
+        res = response_object.json()
+        if res['addressLine1'] is not None:
+            current_address = res['addressLine1']
+            mycity_request.session_attributes[
+                intent_constants.CURRENT_ADDRESS_KEY] = current_address
+    return mycity_request
+
 def get_address_from_session(mycity_request):
     """
     Looks for a current address in the session attributes and constructs a
@@ -40,7 +73,6 @@ def get_address_from_session(mycity_request):
     )
 
     mycity_response = MyCityResponseDataModel()
-    # print("GETTING ADDRESS FROM SESSION")
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = mycity_request.intent_name
     mycity_response.reprompt_text = None
@@ -71,7 +103,7 @@ def request_user_address_response(mycity_request):
     """
     print(
         '[module: user_address_intent]',
-        '[method: set_address_in_session]',
+        '[method: request_user_address_response]',
         'MyCityRequestDataModel received:',
         str(mycity_request)
     )

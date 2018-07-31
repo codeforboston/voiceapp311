@@ -8,7 +8,7 @@ from __future__ import print_function
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import set_address_in_session, \
-    get_address_from_session, request_user_address_response
+    get_address_from_session, get_address_from_user_device, request_user_address_response
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
@@ -45,7 +45,7 @@ def execute_request(mycity_request):
     #     raise ValueError("Invalid Application ID")
 
     if mycity_request.is_new_session:
-        on_session_started(mycity_request)
+        mycity_request = on_session_started(mycity_request)
 
     if mycity_request.request_type == "LaunchRequest":
         return on_launch(mycity_request)
@@ -74,6 +74,7 @@ def on_session_started(mycity_request):
             'ERROR - request should be a MyCityRequestDataModel.]'
         )
     )
+    return get_address_from_user_device(mycity_request)
 
 
 def on_launch(mycity_request):
