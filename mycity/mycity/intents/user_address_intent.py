@@ -42,19 +42,18 @@ def get_address_from_user_device(mycity_request):
         str(mycity_request)
     )
 
-    print("GETTING ADDRESS FROM USER DEVICE")
     base_url = "https://api.amazonalexa.com/v1/devices/{}" \
         "/settings/address".format(mycity_request.device_id)
     head_info = {'Accept': 'application/json',
                 'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
-    request_result = requests.get(base_url, headers=head_info)
-    print("request result:",
-        request_result.text)
-    res = request_result.json()
-    if (res['addressLine1'] is not None):
-        current_address = res['addressLine1']
-        mycity_request.session_attributes[
-            intent_constants.CURRENT_ADDRESS_KEY] = current_address
+    response_object = requests.get(base_url, headers=head_info)
+
+    if response_object.status_code == 200:
+        res = response_object.json()
+        if res['addressLine1'] is not None:
+            current_address = res['addressLine1']
+            mycity_request.session_attributes[
+                intent_constants.CURRENT_ADDRESS_KEY] = current_address
     return mycity_request
 
 def get_address_from_session(mycity_request):
@@ -74,7 +73,6 @@ def get_address_from_session(mycity_request):
     )
 
     mycity_response = MyCityResponseDataModel()
-    # print("GETTING ADDRESS FROM SESSION")
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = mycity_request.intent_name
     mycity_response.reprompt_text = None
@@ -105,7 +103,7 @@ def request_user_address_response(mycity_request):
     """
     print(
         '[module: user_address_intent]',
-        '[method: set_address_in_session]',
+        '[method: request_user_address_response]',
         'MyCityRequestDataModel received:',
         str(mycity_request)
     )
