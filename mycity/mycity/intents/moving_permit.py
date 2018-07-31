@@ -68,6 +68,7 @@ def get_nearby_moving_permits(mycity_request):
         'MyCityRequestDataModel received: ',
         str(mycity_request)
     )
+    mycity_response = MyCityResponseDataModel()
     
     # TODO: this block is copy/pasted from trash_intent.py, should refactor
     
@@ -83,22 +84,27 @@ def get_nearby_moving_permits(mycity_request):
         # Get moving permit locations
         moving_permit_unique_locations = get_permit_locations()
         
+        # TODO: vary feature_address_index
         try:
-            closest_trucks = gis_utils.get_closest_feature(origin=address,
+            '''closest_trucks = gis_utils.get_closest_feature(origin=address,
                                                            feature_address_index=1,
                                                            feature_type='Moving truck list',
                                                            error_message='Unable to find moving trucks closest to you',
                                                            features=moving_permit_unique_locations)
             print(closest_trucks)
+            '''
+            print(gis_utils.get_closest_feature(origin=address,
+                                                feature_address_index=1,
+                                                feature_type='Moving truck list',
+                                                error_message='Unable to find moving trucks closest to you',
+                                                features=moving_permit_unique_locations))#[0][1].items()))
 
         except:
             mycity_response.output_speech = "There was an issue retrieving the data"
             print('ERROR: unable to find nearby moving trucks')
             
-
-    mycity_response = MyCityResponseDataModel()
-    mycity_response.output_speech = "I found {} moving permits within a mile from your address."\
-                                    .format(len(closest_trucks))
+    #mycity_response.output_speech = "I found {} moving permits within a mile from your address."\
+    #                                .format(len(closest_trucks))
     print(
         '[module: MovingPermitsIntent]',
         '[method: get_permit_locations]',
