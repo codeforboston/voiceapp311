@@ -80,6 +80,7 @@ def request_user_address_response(mycity_request):
 
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.should_end_session = False
-
+    mycity_response.output_speech = "What's your address?"
+    mycity_response.card_title = "Address"
     mycity_response.dialog_directive = "Delegate"
     return mycity_response
