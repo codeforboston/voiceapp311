@@ -194,7 +194,7 @@ def get_welcome_response(mycity_request):
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Welcome"
     mycity_response.output_speech = \
-        "Welcome to the Boston Public Services skill. How can I help you? "
+        "Welcome to the Boston Info skill. How can I help you? "
 
     # If the user either does not reply to the welcome message or says
     # something that is not understood, they will be prompted again with
@@ -208,7 +208,7 @@ def get_welcome_response(mycity_request):
 
 def handle_session_end_request(mycity_request):
     """
-    Ends a user's session (with the Boston Data skill). Called when request
+    Ends a user's session (with the Boston Info skill). Called when request
     intent is AMAZON.StopIntent or AMAZON.CancelIntent.
     
     :param mycity_request: MyCityRequestDataModel object
@@ -216,9 +216,9 @@ def handle_session_end_request(mycity_request):
     """
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = "Boston Public Services - Thanks"
+    mycity_response.card_title = "Boston Info - Thanks"
     mycity_response.output_speech = \
-        "Thank you for using the Boston Public Services skill. " \
+        "Thank you for using the Boston Info skill. " \
         "See you next time!"
     mycity_response.should_end_session = True
     return mycity_response
