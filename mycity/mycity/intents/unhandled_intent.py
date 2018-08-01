@@ -19,7 +19,7 @@ def unhandled_intent(mycity_request):
     )
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = "UnhandledIntent"
+    mycity_response.card_title = "Unhandled"
     mycity_response.reprompt_text = "So, what can I help you with today?"
     mycity_response.output_speech = "I'm not sure what you're asking me. " \
                         "Please ask again."

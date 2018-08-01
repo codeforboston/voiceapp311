@@ -74,7 +74,7 @@ def get_address_from_session(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.card_title = "Address"
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
 
@@ -112,6 +112,7 @@ def request_user_address_response(mycity_request):
 
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.should_end_session = False
-
+    mycity_response.output_speech = "What's your address?"
+    mycity_response.card_title = "Address"
     mycity_response.dialog_directive = "Delegate"
     return mycity_response
