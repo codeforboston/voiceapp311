@@ -193,8 +193,8 @@ def get_help_response(mycity_request):
     mycity_response.card_title = "Help"
     mycity_response.output_speech = \
         "You can request information on trash and recycling pickup by saying, " \
-        "When is my trash day at 'say your address here'. This is currently " \
-        "only available for Boston residents. We're working on adding more cities. " \
+        "When is trash pick up at 123 example st. This is currently " \
+        "only available for Boston residents. " \
         "You can also request the closest location for snow emergency parking by saying, " \
         "where can I park during a snow emergency? You can also request all Boston city alerts " \
         "by saying, 'are there any alerts?'."
