@@ -128,10 +128,18 @@ class MyCityResponseDataModel:
     @dialog_directive.setter
     def dialog_directive(self, value):
         valid_directives = [
-            "Delegate"          # Delegate dialog decision to platform
+            "Delegate", # Delegate dialog decision to platform
+            "ElicitSlotTrash" # Ask for address for trash
         ]
 
         if value not in valid_directives:
             print("Error: {} is not a valid directive".format(value))
             return
-        self._dialog_directive = "Dialog.{}".format(value)
+        if value == "Delegate":
+            self._dialog_directive = {'type' : 'Dialog.Delegate' }
+        elif value == "ElicitSlotTrash":
+            self._dialog_directive = { 
+                    'type' : 'Dialog.ElicitSlot',
+                    'slotToElicit' : 'Address'
+                    }
+                        
