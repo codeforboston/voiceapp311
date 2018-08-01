@@ -57,7 +57,8 @@ def execute_request(mycity_request):
 
 def on_session_started(mycity_request):
     """
-    Called when the session starts. Creates a log entry with session info.
+    Called when the session starts. Creates a log entry with session info 
+    and inserts device address into session attributes if available.
 
     :param mycity_request: MyCityRequestDataModel object
     :return: none
