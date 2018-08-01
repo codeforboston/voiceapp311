@@ -12,7 +12,7 @@ def set_address_in_session(mycity_request):
     Adds an address to the provided session object
 
     :param mycity_request: MyCityRequestDataModel object
-    :return: none
+    :return: None
     """
     print(
         '[module: user_address_intent]',

@@ -1,8 +1,18 @@
-class MyCityResponseDataModel:
-    """
-    Represents a request from a voice platform.
+"""
+Data Model for structuring responses from the skill implementation
+"""
 
+class MyCityResponseDataModel:
+    
+    """
+    Represents a response to a voice platform.
+
+    Standard way of structuring responses from the skill implementation.
+    
     @todo: Consistent comment format that contains platform-specific terminology
+
+    Note:
+        The property methods below get and set attribute values.
     """
 
     def __init__(self):
@@ -103,6 +113,16 @@ class MyCityResponseDataModel:
 
     @property
     def dialog_directive(self):
+        """
+        String indicating the voice platform should modify the course of the
+        dialog with the user in some way.
+        
+        In the case of "Dialog.Delegate", this signals that the Alexa platform
+        should "take charge" of this response to the user according to the
+        intent's dialog model.(usually involves prompting the user to
+        confirm / provide a required slot filling value with a valid utterance,
+        which is needed to fulfill the intent)
+        """
         return self._dialog_directive
 
     @dialog_directive.setter

@@ -2,6 +2,7 @@
 Utility function for building an address string from a mycity request
 
 """
+
 from streetaddress import StreetAddressParser
 
 import mycity.intents.intent_constants as intent_constants

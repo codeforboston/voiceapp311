@@ -60,7 +60,7 @@ def on_session_started(mycity_request):
     Called when the session starts. Creates a log entry with session info.
 
     :param mycity_request: MyCityRequestDataModel object
-    :return: none
+    :return: None
     """
     print(
         LOG_CLASS,
@@ -108,6 +108,7 @@ def on_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object with
         request_type IntentRequest
     :return: MyCityRequestDataModel object corresponding to the intent_name
+    :raises: ValueError
     """
 
     print(
@@ -200,8 +201,8 @@ def get_welcome_response(mycity_request):
     # something that is not understood, they will be prompted again with
     # this text.
     mycity_response.reprompt_text = \
-        "For example, you can tell me your address by saying, " \
-        "\"my address is\" followed by your address."
+        "You can tell me your address by saying, " \
+        "\"my address is\", and then your address."
     mycity_response.should_end_session = False
     return mycity_response
 

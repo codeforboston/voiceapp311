@@ -22,6 +22,13 @@ from enum import Enum
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 class Services(Enum):
+    
+    """
+    Organizes and contains information about all possible alert types
+    that are supported in a readable format.
+    
+    """
+    
     STREET_CLEANING = 'Street Cleaning'
     TRASH = 'Trash and recycling'
     CITY_BUILDING_HOURS = 'City building hours'
@@ -82,7 +89,7 @@ def alerts_to_speech_output(alerts):
     for alert in alerts.values():
         all_alerts += alert + ' '
     if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug 
-        return "There are no alerts. City services are operating on their normal schedule."       
+        return "There are no alerts. City services are running on normal schedules."       
     else:
         return all_alerts
         

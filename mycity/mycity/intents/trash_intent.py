@@ -1,6 +1,7 @@
 """
 Functions for Alexa responses related to trash day
 """
+
 from .custom_errors import InvalidAddressError, BadAPIResponse
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
@@ -46,11 +47,12 @@ def get_trash_day_info(mycity_request):
             mycity_response.output_speech = "I can't seem to find {}. Try another address"\
                .format(address)
         except BadAPIResponse:
-            mycity_response.output_speech = "Hmm something went wrong. Maybe try again?"
+            mycity_response.output_speech = "Hmm something went wrong. Please try again"
 
         mycity_response.should_end_session = False
     else:
         print("Error: Called trash_day_intent with no address")
+        mycity_response.output_speech = "I didn't understand that address, please try again"
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
@@ -68,6 +70,7 @@ def get_trash_and_recycling_days(address):
 
     :param address: String of address to find trash day for
     :return: array containing next trash and recycling days
+    :raises: InvalidAddressError, BadAPIResponse
     """
 
     api_params = get_address_api_info(address)
@@ -181,6 +184,7 @@ def get_trash_days_from_trash_data(trash_data):
 
     :param trash_data: Trash data provided from ReCollect API
     :return: An array containing days trash and recycling are picked up
+    :raises: BadAPIResponse
     """
 
     try:
@@ -200,6 +204,7 @@ def build_speech_from_list_of_days(days):
     
     :param days: String array of days
     :return: Speech representing the provided days
+    :raises: BadAPIResponse
     """
     if len(days) == 0:
         raise BadAPIResponse
