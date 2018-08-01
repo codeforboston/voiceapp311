@@ -2,13 +2,13 @@
 Utility functions for manipulating csv files
 
 """
+
 import collections
 
 
 def create_record_model(model_name, attributes):
     """
-    Spin up a namedtuple class to represent a record from a csv 
-    file
+    Spin up a namedtuple class to represent a record from a csv file
 
     :param model_name: a string representing whatever we want to call
         this class
@@ -61,6 +61,10 @@ def map_attribute_to_records(attribute, records):
     Create and return a dictionary mapping a records address field
     to the record itself. This allows us to access the whole record
     once we know the closest address to some origin
+
+    # TODO: review for deletion - function not used. This logic appears
+    to be implemented in "get_closest_record_with_driving_info"
+    function in Finder.py on Line 193
 
     :param records: a list of namedtuples representing records 
         from a csv file

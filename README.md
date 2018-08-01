@@ -230,7 +230,6 @@ jmartini noted on 02/13/2018 in issue #39: "The Boston digital team stated that 
 ### https://data.boston.gov
 
 **DEPRECATED** 
-
 ReCollect is now used as the (third party) source for trash day schedules.
 No intent currently accesses data.boston.gov.
 
