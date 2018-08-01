@@ -84,6 +84,9 @@ def get_nearby_moving_permits(mycity_request):
         # Get moving permit locations
         moving_permit_unique_locations = get_permit_locations()
         
+        print('Printing first item...')
+        print(moving_permit_unique_locations[0])
+        
         # TODO: vary feature_address_index
         try:
             '''closest_trucks = gis_utils.get_closest_feature(origin=address,
@@ -97,7 +100,7 @@ def get_nearby_moving_permits(mycity_request):
                                                 feature_address_index=1,
                                                 feature_type='Moving truck list',
                                                 error_message='Unable to find moving trucks closest to you',
-                                                features=moving_permit_unique_locations))#[0][1].items()))
+                                                features=moving_permit_unique_locations))
 
         except:
             mycity_response.output_speech = "There was an issue retrieving the data"
@@ -113,3 +116,6 @@ def get_nearby_moving_permits(mycity_request):
     )
     
     return mycity_response
+
+
+#print(get_permit_locations())
