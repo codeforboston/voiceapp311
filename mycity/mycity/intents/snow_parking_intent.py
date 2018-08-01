@@ -24,6 +24,14 @@ ADDRESS_KEY = "Address"
 
 
 def format_record_fields(record):
+    """
+    Updates the record fields by replacing the raw information with a sentence
+    that provides context and will be more easily understood by users.
+    
+    :param record: a dictionary with driving time, driving_distance and all 
+        fields from the closest record
+    :return: None
+    """
    record["Phone"] = "Call {} for information.".format(record["Phone"]) \
        if record["Phone"].strip() != "" else ""
    record["Fee"] = " The fee is {}. ".format(record["Fee"]) \

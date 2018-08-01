@@ -24,10 +24,11 @@ def _get_driving_info(origin, location_type, destinations):
     :param origin: string containing driving starting address
     :param location_type: string that identifies type of location we're getting 
         directions to
-    :param destinations: array of addresses to calculate driving info from
-        origin address
-    :return: dictionary with address, distance, and driving time from
-        origin address
+    :param destinations: list of destination address strings (to calculate
+        driving info from origin address)
+    :return: list of dictionaries representing driving data for each
+        destination address with address, distance, and driving time
+        from origin address
     """
     print(
         '[method: google_maps_utils.._get_driving_info]',
@@ -82,12 +83,13 @@ def _setup_google_maps_query_params(origin, destinations):
 def combine_driving_data_with_destinations(all_driving_data, location_type, destinations):
     """
     Retrieve data from Google Maps query into dictionary with data stored as
-    key, value pairs (our keys being the constants defined at beginning of file)
-    and append
+    key, value pairs (our keys being the constants defined at beginning
+    of file) and append
     
     :param all_driving_data: JSON blob returned from Google Maps query
-    :param destinations: list of destination addresses
-    :param location_type: string that identifies type of location we're driving to
+    :param location_type: string that identifies type of location
+        we're driving to
+    :param destinations: list of strings representing destination addresses
     :return: list of dictionaries representing driving data for
         each address
     """
@@ -138,9 +140,9 @@ def _parse_closest_location_info(location_type, closest_location_info):
     :param closest_location_info: a dictionary with keys
         'Driving distance', 'Driving distance text', 'Driving time', 
         'Driving time text', feature_type.
-    :return: a trimmed dictionary with keys feature_type,
-                                  DRIVING_DISTANCE_TEXT_KEY,
-                                  DRIVING_TIME_TEXT_KEY
+    :return: a trimmed dictionary with keys: feature_type,
+                                             DRIVING_DISTANCE_TEXT_KEY,
+                                             DRIVING_TIME_TEXT_KEY
     """
     print(
         '[method: google_maps_utils._parse_closest_location_info]',
