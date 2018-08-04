@@ -48,6 +48,9 @@ def platform_to_mycity_request(event):
     mycity_request.request_id = event['request']['requestId']
     mycity_request.is_new_session = event['session']['new']
     mycity_request.session_id = event['session']['sessionId']
+    mycity_request.device_id = event['context']['System']['device']['deviceId']
+    mycity_request.api_access_token = event['context']['System']['apiAccessToken']
+    
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
     else:
@@ -91,7 +94,12 @@ def mycity_response_to_platform(mycity_response):
         response = {
             'directives': [
                 {'type': mycity_response.dialog_directive}
-            ]
+            ],
+            'card': {
+                'type': 'Simple',
+                'title': str(mycity_response.card_title),
+                'content': str(mycity_response.output_speech)
+             }
         }
     else:
         response = {
@@ -101,8 +109,8 @@ def mycity_response_to_platform(mycity_response):
             },
             'card': {
                 'type': 'Simple',
-                'title': 'SessionSpeechlet - ' + str(mycity_response.card_title),
-                'content': 'SessionSpeechlet - ' + str(mycity_response.output_speech)
+                'title': str(mycity_response.card_title),
+                'content': str(mycity_response.output_speech)
             },
             'reprompt': {
                 'outputSpeech': {

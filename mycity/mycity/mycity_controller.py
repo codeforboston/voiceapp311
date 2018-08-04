@@ -8,7 +8,7 @@ from __future__ import print_function
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import set_address_in_session, \
-    get_address_from_session, request_user_address_response
+    get_address_from_session, get_address_from_user_device, request_user_address_response
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
@@ -42,7 +42,7 @@ def execute_request(mycity_request):
     #     raise ValueError("Invalid Application ID")
 
     if mycity_request.is_new_session:
-        on_session_started(mycity_request)
+        mycity_request = on_session_started(mycity_request)
 
     if mycity_request.request_type == "LaunchRequest":
         return on_launch(mycity_request)
@@ -54,10 +54,11 @@ def execute_request(mycity_request):
 
 def on_session_started(mycity_request):
     """
-    Called when the session starts. Creates a log entry with session info.
+    Called when the session starts. Creates a log entry with session info 
+    and inserts device address into session attributes if available.
 
     :param mycity_request: MyCityRequestDataModel object
-    :return: none
+    :return: None
     """
     logger.debug('[method: on_session_started]' +
                  '[requestId: ' + str(mycity_request.request_id) + ']'
@@ -69,6 +70,7 @@ def on_session_started(mycity_request):
                      'ERROR - request should be a MyCityRequestDataModel.]'
                  )
     )
+    return get_address_from_user_device(mycity_request)
 
 
 def on_launch(mycity_request):
@@ -99,6 +101,7 @@ def on_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object with
         request_type IntentRequest
     :return: MyCityRequestDataModel object corresponding to the intent_name
+    :raises: ValueError
     """
 
     logger.debug('[method: on_intent]' +
@@ -133,7 +136,7 @@ def on_intent(mycity_request):
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":
-        return get_welcome_response(mycity_request)
+        return get_help_response(mycity_request)
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
             mycity_request.intent_name == "AMAZON.CancelIntent":
         return handle_session_end_request(mycity_request)
@@ -162,6 +165,37 @@ def on_session_ended(mycity_request):
     # add cleanup logic here
 
 
+def get_help_response(mycity_request):
+    """
+    Informs the user of currently functionality. This is triggered on
+    AMAZON.HelpIntent.
+
+    :param mycity_request: MyCityRequestDataModel object
+    :return: MyCityResponseDataModel object that will initiate
+        a help process on the user's device
+    """
+    print(
+        LOG_CLASS,
+        '[method: get_help_response]'
+    )
+    mycity_response = MyCityResponseDataModel()
+    mycity_response.session_attributes = mycity_request.session_attributes
+    mycity_response.card_title = "Help"
+    mycity_response.output_speech = \
+        "You can request information on trash and recycling pickup by saying, " \
+        "When is trash pick up at 123 example st. This is currently " \
+        "only available for Boston residents. " \
+        "You can also request the closest location for snow emergency parking by saying, " \
+        "where can I park during a snow emergency? You can also request all Boston city alerts " \
+        "by saying, 'are there any alerts?'."
+
+    mycity_response.reprompt_text = None
+    mycity_response.should_end_session = False
+    return mycity_response
+
+
+
+
 def get_welcome_response(mycity_request):
     """
     Welcomes the user and sets initial session attributes. Is triggered on
@@ -180,14 +214,14 @@ def get_welcome_response(mycity_request):
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Welcome"
     mycity_response.output_speech = \
-        "Welcome to the Boston Public Services skill. How can I help you? "
+        "Welcome to the Boston Public Services skill. How may I help you? "
 
     # If the user either does not reply to the welcome message or says
     # something that is not understood, they will be prompted again with
     # this text.
     mycity_response.reprompt_text = \
-        "For example, you can tell me your address by saying, " \
-        "\"my address is\" followed by your address."
+        "You can tell me your address by saying, " \
+        "\"my address is\", and then your address."
     mycity_response.should_end_session = False
     return mycity_response
 

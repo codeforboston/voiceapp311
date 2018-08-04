@@ -1,3 +1,9 @@
+"""
+Abstract parent class upon which subclasses are built that find location
+based information about city services
+
+"""
+
 import csv
 import requests
 import logging
@@ -9,18 +15,21 @@ import mycity.utilities.google_maps_utils as g_maps_utils
 import mycity.logger
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 class Finder(object):
+    
     """
+    Abstracts the logic for finding the closest location to the origin address.
+    
     @property: resource_url ::= string that Finder subclass will fetch data from
-    @property: speech_output ::= string that will be passed to request object
-    that instantiated the Finder object
-    @property: location_type ::= string that represents the name of the location
-    type Finder is searching for
+    @property: address_key ::= string that names the type of location we are finding
+    @property: output_speech ::= string that will be passed to request object
+        that instantiated the Finder object
+    @property: field_formatter ::= function that will access and modify
+        fields in the returned record for output_speech formatted string
     @property: origin_address ::= string that represents the address we will
-    calculated driving distances from
+        calculated driving distances from
 
     """
 
@@ -33,19 +42,19 @@ class Finder(object):
     def __init__(self, req, resource_url, address_key, output_speech, 
                  output_speech_prep_func):
         """
-        :param: req: MyCityRequestDataModel
-        :param: resource_url : String that Finder classes will 
-        use to GET or query from
-        :param: address_key: string that names the type of 
-        location we are finding
-        :param: output_speech: String that will be formatted later
-        with closest location to origin address. NOTE: this should
-        be formatted using keywords as they are expected to appear
-        as field in the CSV file or Feature fetched from ArcGIS
-        FeatureServer
-        :param: output_speech_prep_func: function that will access
-        and modify fields in the returned record for output_speech
-        formatted string
+        :param req: MyCityRequestDataModel
+        :param resource_url : String that Finder classes will 
+            use to GET or query from
+        :param address_key: string that names the type of 
+            location we are finding
+        :param output_speech: String that will be formatted later
+            with closest location to origin address. NOTE: this should
+            be formatted using keywords as they are expected to appear
+            as field in the CSV file or Feature fetched from ArcGIS
+            FeatureServer
+        :param output_speech_prep_func: function that will access
+            and modify fields in the returned record for output_speech
+            formatted string
         """
         self.resource_url = resource_url
         self.address_key = address_key
@@ -60,6 +69,9 @@ class Finder(object):
         """
         Raise a not implemented error if python tries to call this on the base
         class. Subclasses should implement this themselves
+        
+        :return: None
+        :raises: NotImplementedError
         """
         logger.debug('[method: Finder.get_records]')
         raise NotImplementedError
@@ -67,7 +79,11 @@ class Finder(object):
 
     def start(self):
         """
-        All subclasses should provide a get_records for start 
+        Begins process of retrieving records
+        
+        All subclasses should provide a get_records for start
+        
+        :return: None
         """
         logger.debug('[method: Finder.start]')
         records = self.get_records()
@@ -79,9 +95,10 @@ class Finder(object):
         Process list of records and set the output_speech field. output_speech
         will be queried by creator of a Finder object and used to 
         construct a MyCityResponseDataModel
-        :param: records - information about locations with each location's
-        info stored as a dictionary
-        :ret: None
+        
+        :param records: a list of all location records, records are stored as 
+            dictionaries
+        :return: None
         """
         logger.debug('[method: Finder._start]' +
               'records[:5]' +
@@ -106,6 +123,7 @@ class Finder(object):
         """
         Return formatted speech output or the standard error message
 
+        :return: string with speech output or error message
         """
         logger.debug('[method: Finder.get_output_speech]')
         return self.output_speech
@@ -115,6 +133,8 @@ class Finder(object):
         """
         Format speech output with values from dictionary format_keys
         
+        :param format_keys: dictionary representing the closest record
+        :return: None
         """
         logger.debug('[method: Finder.set_output_speech]' +
               'format_keys:' +
@@ -132,6 +152,9 @@ class Finder(object):
         """
         Return a list of all destinations to pass to Google Maps API
         
+        :param records: a list of all location records, records are stored as 
+            dictionaries
+        :return: list of destination address strings
         """
         logger.debug('[method: Finder.get_all_destinations]' +
               'records[:5]:' +
@@ -146,6 +169,9 @@ class Finder(object):
         Return a dictionary with address, distance, and driving time from
         self.origin_address for all destinations
         
+        :param destinations: list of destination address strings
+        :return: list of dictionaries representing driving data for
+            each address
         """
         logger.debug('[method: Finder.get_driving_times_to_destinations]' +
               'destinations' +
@@ -160,6 +186,12 @@ class Finder(object):
     def get_closest_destination(self, destination_dictionaries):
         """
         Return the dictionary with least driving distance value 
+        
+        # TODO: review for deletion - function appears not to be used, and
+        its logic is implemented in line 102 of this file (Finder.py)
+        
+        :param destination_dictionaries: 
+        :return: 
         """
         logger.debug('[method: Finder.get_closest_destination]' +
               'destination_dictionaries:' +
@@ -173,13 +205,18 @@ class Finder(object):
 
     def get_closest_record_with_driving_info(self, driving_info, records):
         """
-        :param: driving_info: dictionary with address, time to drive to
-        address, and distance to the address
-        :param: records_address_key: key to get the address stored in record
-        :param: records: a list of all records, records are stored as 
-        dictionaries.
-        :return: a dictionary with driving time, driving_distance and all 
-        fields from the closest record
+        Find the record corresponding to the destination address
+        (driving_info) - which was found to be closest to the origin address.
+        Merge the record and destination dictionaries and return the
+        resulting dictionary.
+        
+        :param driving_info: dictionary with address, time to drive to
+            address, and distance to the address (representing the closest
+            destination to the origin)
+        :param records: a list of all location records, records are stored as 
+            dictionaries
+        :return: a merged dictionary with driving time, driving_distance and all 
+            fields from the closest record
         """
         logger.debug('[method: Finder.get_closest_record_with_driving_info]' +
               'driving_info:' +
@@ -196,10 +233,18 @@ class Finder(object):
 
 
     def add_city_and_state_to_records(self, records):
+        """
+        Appends a city and state to the address value of each record
+        
+        :param records: a list of all location records, records are stored as 
+            dictionaries
+        :return: list of location dictionaries with updated address values
+        """
         logger.debug('[method: Finder.add_city_and_state_to_records]' + 
               'records:' +
               str(records)
         )
+
         return csv_utils.add_city_and_state_to_records(records,
                                                        self.address_key,
                                                        city=Finder.CITY,

@@ -1,6 +1,7 @@
 """
 Functions for Alexa responses related to trash day
 """
+
 from .custom_errors import InvalidAddressError, BadAPIResponse
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
@@ -36,7 +37,7 @@ def get_trash_day_info(mycity_request):
         a = address_parser.parse(current_address)
         # currently assumes that trash day is the same for all units at
         # the same street address
-        address = str(a['house']) + " " + str(a['street_name'])
+        address = str(a['house']) + " " + str(a['street_full'])
 
         try:
             trash_days = get_trash_and_recycling_days(address)
@@ -49,19 +50,20 @@ def get_trash_day_info(mycity_request):
             mycity_response.output_speech = "I can't seem to find {}. Try another address"\
                .format(address)
         except BadAPIResponse:
-            mycity_response.output_speech = "Hmm something went wrong. Maybe try again?"
+            mycity_response.output_speech = "Hmm something went wrong. Please try again"
 
         mycity_response.should_end_session = False
     else:
         logger.error("Error: Called trash_day_intent with no address")
+        mycity_response.output_speech = "I didn't understand that address, please try again"
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
-    return mycity_response
+    mycity_response.card_title = "Trash Day"
+    return mycity_response 
 
 
 def get_trash_and_recycling_days(address):
@@ -71,10 +73,14 @@ def get_trash_and_recycling_days(address):
 
     :param address: String of address to find trash day for
     :return: array containing next trash and recycling days
+    :raises: InvalidAddressError, BadAPIResponse
     """
 
     api_params = get_address_api_info(address)
     if not api_params:
+        raise InvalidAddressError
+
+    if not validate_found_address(api_params["name"], address):
         raise InvalidAddressError
 
     trash_data = get_trash_day_data(api_params)
@@ -84,6 +90,37 @@ def get_trash_and_recycling_days(address):
     trash_and_recycling_days = get_trash_days_from_trash_data(trash_data)
 
     return trash_and_recycling_days
+
+
+def validate_found_address(found_address, user_provided_address):
+    """
+    Validates that the street name and number found in trash collection
+    database matches the provided values. We do not treat partial matches
+    as valid.
+
+    :param found_address: Full address found in trash collection database
+    :param user_provided_address: Street number and name provided by user
+    :return: boolean: True if addresses are considered a match, else False
+    """
+    address_parser = StreetAddressParser()
+    found_address = address_parser.parse(found_address)
+    user_provided_address = address_parser.parse(user_provided_address)
+
+    if found_address["house"] != user_provided_address["house"]:
+        return False
+
+    if found_address["street_name"].lower() != \
+            user_provided_address["street_name"].lower():
+        return False
+
+    # Allow fuzzy match on street type to allow "ave" to match "avenue"
+    if found_address["street_type"].lower() not in \
+        user_provided_address["street_type"].lower() and \
+        user_provided_address["street_type"].lower() not in \
+            found_address["street_type"].lower():
+                return False
+
+    return True
 
 
 def get_address_api_info(address):
@@ -150,6 +187,7 @@ def get_trash_days_from_trash_data(trash_data):
 
     :param trash_data: Trash data provided from ReCollect API
     :return: An array containing days trash and recycling are picked up
+    :raises: BadAPIResponse
     """
 
     try:
@@ -169,6 +207,7 @@ def build_speech_from_list_of_days(days):
     
     :param days: String array of days
     :return: Speech representing the provided days
+    :raises: BadAPIResponse
     """
     if len(days) == 0:
         raise BadAPIResponse

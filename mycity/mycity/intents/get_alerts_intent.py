@@ -27,6 +27,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Services(Enum):
+    
+    """
+    Organizes and contains information about all possible alert types
+    that are supported in a readable format.
+    
+    """
+    
     STREET_CLEANING = 'Street Cleaning'
     TRASH = 'Trash and recycling'
     CITY_BUILDING_HOURS = 'City building hours'
@@ -63,7 +70,7 @@ def get_alerts_intent(mycity_request):
     alerts = prune_normal_responses(alerts)
     logger.debug("[dictionary after pruning]:\n" + str(alerts))
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.card_title = "City Alerts"
     mycity_response.reprompt_text = None
     mycity_response.output_speech = alerts_to_speech_output(alerts)
     mycity_response.should_end_session = True   # leave this as True for right now
@@ -86,7 +93,7 @@ def alerts_to_speech_output(alerts):
     for alert in alerts.values():
         all_alerts += alert + ' '
     if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug 
-        return "There are no alerts. City services are operating on their normal schedule."       
+        return "There are no alerts. City services are running on normal schedules."       
     else:
         return all_alerts
         
