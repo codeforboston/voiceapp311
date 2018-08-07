@@ -32,16 +32,13 @@ directory and run the following command using Python 3:
 ```
 python deploy_tools.py -p -f <LAMBDA FUNCTION NAME HERE>
 ```
-This will generate the lambda_function.zip archive (two levels up in the
-directory) and upload the code to your lambda function listed after the -f flag. 
-Please replace everything after -f with your actual lambda function name (remove <> as well). 
-Make sure you have aws command line installed prior to running the above command. If this command 
-doesn't work then you can run the command
+This will generate the lambda_function.zip archive and upload the code to your lambda function listed after the -f flag. Please replace everything after -f with your actual lambda function name (remove <> as well). Make sure you have aws command line installed prior to running the above command. If this command doesn't work then you can run the command
 ```
 python deploy_tools.py -p
 ```
 
-This will zip the folder in the root folder and you can manually upload it yourself.
+This will zip the folder in the root folder (two levels up in the
+directory) and you can manually upload it yourself.
 
 ### Part 1: Amazon Developer
 1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
