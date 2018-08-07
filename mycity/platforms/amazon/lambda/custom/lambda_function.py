@@ -95,7 +95,12 @@ def mycity_response_to_platform(mycity_response):
             response = {
                 'directives': [
                     mycity_response.dialog_directive
-                ]
+                ],
+                'card' : {
+                    'type': 'Simple',
+                    'title': str(mycity_response.card_title),
+                    'content': str(mycity_repsonse.output_speech)
+                    }
             }
         else: 
             response = {
