@@ -1,12 +1,15 @@
 # emacs copy files
 *~
 
+
+
 # virtualenv files/dirs
 
 bin/*
 lib/*
 include/*
 .Python
+*/.idea
 
 pip-selfcheck.json
 
