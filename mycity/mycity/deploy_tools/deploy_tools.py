@@ -124,8 +124,11 @@ def update_lambda_code():
 
     print("\nUpdating/uploading lambda code\n")
 
+    aws_path = shutil.which("aws")
+    # print("path:" + aws_path)
+
     update_lambda_code = [
-        "aws",
+        aws_path,
         "lambda",
         "update-function-code",
         "--function-name",
