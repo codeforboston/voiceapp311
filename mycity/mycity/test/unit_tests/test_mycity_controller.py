@@ -27,7 +27,7 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.request.is_new_session = False
         expected_session_attributes = self.request.session_attributes
         expected_output_speech = (
-            "Welcome to the Boston Public Services skill. "
+            "Welcome to the Boston Info skill. "
             "How can I help you? "
         )
         expected_reprompt_text = (
@@ -53,10 +53,10 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
     def test_on_intent_AMAZON_StopIntent(self):
         expected_attributes = self.request.session_attributes
         expected_output_speech = (
-            "Thank you for using the Boston Public Services skill. "
+            "Thank you for using the Boston Info skill. "
             "See you next time!"
         )
-        expected_card_title = "Boston Public Services - Thanks"
+        expected_card_title = "Boston Info - Thanks"
         self.request.intent_name = "AMAZON.StopIntent"
         response = self.controller.on_intent(self.request)
         self.assertEqual(response.session_attributes, expected_attributes)

@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "boston data",
+            "invocationName": "boston info",
             "intents": [
                 {
                     "name": "SetAddressIntent",

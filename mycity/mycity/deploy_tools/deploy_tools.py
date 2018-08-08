@@ -17,8 +17,8 @@ TEMP_DIR_PATH = os.path.join(PROJECT_ROOT, 'temp')
 LAMBDA_REL_PATH = 'platforms/amazon/lambda/custom/lambda_function.py'
 LAMBDA_FUNCTION_PATH = os.path.join(PROJECT_ROOT, LAMBDA_REL_PATH)
 MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
-
 ZIP_FILE_NAME = "lambda_function.zip"
+LAMBDA_FUNCTION_NAME = "MyCity"
 
 
 def zip_lambda_function_directory(zip_target_dir):
@@ -119,6 +119,47 @@ def package_lambda_function():
         ignore_errors=False,
         onerror=handle_remove_readonly
     )
+
+def update_lambda_code():
+
+    print("\nUpdating/uploading lambda code\n")
+
+    aws_path = shutil.which("aws")
+    # print("path:" + aws_path)
+
+    update_lambda_code = [
+        aws_path,
+        "lambda",
+        "update-function-code",
+        "--function-name",
+        LAMBDA_FUNCTION_NAME,
+        "--zip-file",
+        "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
+    ]
+    run(update_lambda_code)
+    print("DONE UPLOADING...\n")
+
+
+def handle_remove_readonly(func, path, execinfo):
+    """
+    Passed as the onerror parameter when calling shutil.rmtree.
+    See:
+    https://stackoverflow.com/a/1214935/2554154
+    Handles the case where rmtree fails in Windows due to access problems.
+
+    :param func:
+    :param path:
+    :param execinfo:
+    :return: none
+    """
+    excvalue = execinfo[1]
+    if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+        # if we're failing to remove files because they are readonly,
+        # update permissions
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+        func(path)
+    else:
+        raise Exception("Failed to delete temp folder.")
     print('DONE')
 
 
@@ -165,9 +206,21 @@ def main():
         action='store_true'
     )
 
+    parser.add_argument(
+        '-f',
+        '--function',
+        help="The function name that is associated with your Lambda function " +
+            "on aws"
+    )
+
     args = parser.parse_args()
 
-    if args.package:
+    if args.function:
+        global LAMBDA_FUNCTION_NAME
+        LAMBDA_FUNCTION_NAME = args.function
+        package_lambda_function()
+        update_lambda_code()
+    elif args.package:
         package_lambda_function()
     else:
         print("No known option selected")
