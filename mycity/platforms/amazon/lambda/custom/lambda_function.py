@@ -91,16 +91,39 @@ def mycity_response_to_platform(mycity_response):
     )
 
     if mycity_response.dialog_directive:
-        response = {
-            'directives': [
-                {'type': mycity_response.dialog_directive}
-            ],
-            'card': {
-                'type': 'Simple',
-                'title': str(mycity_response.card_title),
-                'content': str(mycity_response.output_speech)
-             }
-        }
+        if mycity_response.dialog_directive['type'] == "Dialog.Delegate":
+            response = {
+                'directives': [
+                    mycity_response.dialog_directive
+                ],
+                'card' : {
+                    'type': 'Simple',
+                    'title': str(mycity_response.card_title),
+                    'content': str(mycity_response.output_speech)
+                    }
+            }
+        else: 
+            response = {
+                'outputSpeech': {
+                    'type': 'PlainText',
+                    'text': mycity_response.output_speech
+             },
+                'card': {
+                 'type': 'Simple',
+                    'title': 'SessionSpeechlet - ' + str(mycity_response.card_title),
+                    'content': 'SessionSpeechlet - ' + str(mycity_response.output_speech)
+                },
+                'reprompt': {
+                 'outputSpeech': {
+                        'type': 'PlainText',
+                        'text': mycity_response.reprompt_text
+                 }
+             },
+                'shouldEndSession': mycity_response.should_end_session,
+                'directives' : [
+                    mycity_response.dialog_directive
+                    ]
+            }
     else:
         response = {
             'outputSpeech': {
