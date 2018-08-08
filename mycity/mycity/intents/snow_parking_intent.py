@@ -32,9 +32,9 @@ def format_record_fields(record):
         fields from the closest record
     :return: None
     """
-   record["Phone"] = "Call {} for information.".format(record["Phone"]) \
+    record["Phone"] = "Call {} for information.".format(record["Phone"]) \
        if record["Phone"].strip() != "" else ""
-   record["Fee"] = " The fee is {}. ".format(record["Fee"]) \
+    record["Fee"] = " The fee is {}. ".format(record["Fee"]) \
        if record["Fee"] != "No Charge" else " There is no fee. "
    
 
