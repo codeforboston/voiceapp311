@@ -5,6 +5,7 @@ from .custom_errors import \
     InvalidAddressError, BadAPIResponse, MultipleAddressError
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.intents.user_address_intent import clear_address_from_mycity_object
 import re
 import requests
 from . import intent_constants
@@ -58,6 +59,9 @@ def get_trash_day_info(mycity_request):
             mycity_response.output_speech =\
                 "I can't seem to find {}. Try another address"\
                 .format(address_string)
+            mycity_request = clear_address_from_mycity_object(mycity_request)
+            mycity_response = clear_address_from_mycity_object(mycity_response)
+
         except BadAPIResponse:
             mycity_response.output_speech =\
                 "Hmm something went wrong. Maybe try again?"

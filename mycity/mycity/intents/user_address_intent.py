@@ -94,3 +94,21 @@ def request_user_address_response(mycity_request):
 
     mycity_response.dialog_directive = "Delegate"
     return mycity_response
+
+
+def clear_address_from_mycity_object(mycity_object):
+    """
+    Removes any address info from a mycity object session attribute
+
+    :param mycity_object: Either a MyCityResponseDataModel or
+        MyCityRequestDataModel
+    :return: MyCity object with attributes removed
+    """
+    if intent_constants.ZIP_CODE_KEY in mycity_object.session_attributes:
+        del(mycity_object.session_attributes[intent_constants.ZIP_CODE_KEY])
+
+    if intent_constants.CURRENT_ADDRESS_KEY in mycity_object.session_attributes:
+        del(mycity_object.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY])
+
+    return mycity_object
