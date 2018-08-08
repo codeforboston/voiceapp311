@@ -1,5 +1,5 @@
 """
-Boston Data Alexa skill.
+Boston Info Alexa skill.
 
 This module is the entry point for processing voice data from an Alexa device.
 """
