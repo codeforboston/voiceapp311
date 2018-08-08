@@ -17,7 +17,7 @@ class CardTitleTestMixIn:
 
     def test_returns_correct_title_card(self):
         response = self.controller.on_intent(self.request)
-        self.assertEqual(response.card_title, self.intent_to_test)
+        self.assertEqual(response.card_title, self.expected_title)
 
 
 # there are some intents where it makes sense to write custom tests for error

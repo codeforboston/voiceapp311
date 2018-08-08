@@ -28,11 +28,11 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         expected_session_attributes = self.request.session_attributes
         expected_output_speech = (
             "Welcome to the Boston Public Services skill. "
-            "How can I help you? "
+            "How may I help you? "
         )
         expected_reprompt_text = (
-            "For example, you can tell me your address by saying, "
-            "\"my address is\" followed by your address."
+            "You can tell me your address by saying, "
+            "\"my address is\", and then your address."
         )
         expected_card_title = "Welcome"
         response = self.controller.on_launch(self.request)

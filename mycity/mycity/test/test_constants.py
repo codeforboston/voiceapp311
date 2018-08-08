@@ -850,6 +850,8 @@ GET_ALERTS_MOCK_SOME_ALERTS = {
     'Alert header': 'Godzilla inbound!'
 }
 
+GET_ALERTS_EXPECTED_RESPONSE = "There are no alerts. City services are running on normal schedules."
+
 # get_open_spaces intent
 
 OPEN_SPACES_TEST_CSV =  os.getcwd() + "/mycity/test/test_data/.csv"
