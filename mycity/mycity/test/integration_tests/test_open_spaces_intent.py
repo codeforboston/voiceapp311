@@ -1,4 +1,5 @@
 import csv
+import unittest
 import unittest.mock as mock
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
@@ -9,6 +10,7 @@ import mycity.test.test_constants as test_constants
 # TestCase class for get_open_spaces_intent #
 #############################################
 
+@unittest.skip('development on open spaces intent stalled!')
 class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
                          mix_ins.CardTitleTestMixIn,
                          mix_ins.CorrectSpeechOutputTestMixIn,

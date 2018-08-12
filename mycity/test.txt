@@ -1,3 +1,0 @@
-Test to see if travis builds
-
-FOO FOO FOO
