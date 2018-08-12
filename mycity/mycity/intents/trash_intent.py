@@ -46,6 +46,12 @@ def get_trash_day_info(mycity_request):
         except InvalidAddressError:
             mycity_response.output_speech = "I can't seem to find {}. Try another address"\
                .format(address)
+            mycity_response.dialog_directive = "ElicitSlotTrash"
+            mycity_response.reprompt_text = None
+            mycity_response.session_attributes = mycity_request.session_attributes
+            mycity_response.card_title = mycity_request.intent_name
+            return mycity_response
+
         except BadAPIResponse:
             mycity_response.output_speech = "Hmm something went wrong. Please try again"
 
