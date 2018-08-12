@@ -4,7 +4,7 @@ python:
 install:
   - pip install -r mycity/mycity/deploy_tools/requirements.txt
   - pip install --no-deps -r mycity/mycity/deploy_tools/requirements_no_deps.txt
-script: python mycity/run_tests.py
+script: sh mycity/run_tests.sh
 branches:
   only:
     - gh-pages
