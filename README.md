@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/wesdrew/voiceapp311.svg?branch=master)](https://travis-ci.org/wesdrew/voiceapp311)
 
+[![Coverage Status](https://coveralls.io/repos/github/wesdrew/voiceapp311/badge.svg?branch=master)](https://coveralls.io/github/wesdrew/voiceapp311?branch=master)
+
 # Boston Info Alexa Skill
 
 An Alexa skill to answer questions about municipal services in Boston.
