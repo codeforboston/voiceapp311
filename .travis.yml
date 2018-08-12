@@ -2,9 +2,9 @@ language: python
 python:
   - "3.6"
 install:
-  - pip install -r mycity/deploy_tools/requirements.txt
-  - pip install --no-deps -r mycity/deploys/requirements_no_deps.txt
-script: python run_tests.py
+  - pip install -r mycity/mycity/deploy_tools/requirements.txt
+  - pip install --no-deps -r mycity/mycity/deploys/requirements_no_deps.txt
+script: python mycity/run_tests.py
 branches:
   only:
     - gh-pages
