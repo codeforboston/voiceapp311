@@ -1,11 +1,18 @@
 language: python
+
 python:
   - "3.6"
+
 install:
   - pip install -r mycity/mycity/deploy_tools/requirements.txt
   - pip install --no-deps -r mycity/mycity/deploy_tools/requirements_no_deps.txt
+
 script: sh mycity/run_tests.sh
+
 branches:
   only:
     - gh-pages
     - /.*/ # test all branches
+
+after_success:
+  - codecov
