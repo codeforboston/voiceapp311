@@ -1,6 +1,11 @@
 # emacs copy files
 *~
 
+# coverage.py folders
+
+*/.coverage/*
+*/htmlcov/*
+
 # vs code folder
 .vscode
 
