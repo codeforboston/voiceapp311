@@ -14,6 +14,7 @@ from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
+from .intents.feedback_intent import submit_feedback
 from .intents import intent_constants
 
 
@@ -155,6 +156,8 @@ def on_intent(mycity_request):
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
             mycity_request.intent_name == "AMAZON.CancelIntent":
         return handle_session_end_request(mycity_request)
+    elif mycity_request.intent_name == "FeedbackIntent":
+        return submit_feedback(mycity_request)
     elif mycity_request.intent_name == "UnhandledIntent":
         return unhandled_intent(mycity_request)
     else:
@@ -183,8 +186,7 @@ def on_session_ended(mycity_request):
 
 def get_help_response(mycity_request):
     """
-    Informs the user of currently functionality. This is triggered on
-    AMAZON.HelpIntent.
+    Provides an overview of the skill. This is triggered by AMAZON.HelpIntent.
 
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object that will initiate
@@ -197,14 +199,13 @@ def get_help_response(mycity_request):
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Help"
-    mycity_response.output_speech = \
-        "You can request information on trash and recycling pickup by saying, " \
-        "When is trash pick up at 123 example st. This is currently " \
-        "only available for Boston residents. " \
-        "You can also request the closest location for snow emergency parking by saying, " \
-        "where can I park during a snow emergency? You can also request all Boston city alerts " \
-        "by saying, 'are there any alerts?'."
-
+    mycity_response.output_speech = (
+        "You are using Boston Info, a skill that provides general information "
+        "about Boston. You can currently ask about your trash and recycling "
+        "pickup schedule, the location of the nearest snow emergency parking,"
+        "and current alerts from Boston.gov. If you have feedback for the "
+        "skill, say, 'I have a suggestion.'"
+     )
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
     return mycity_response
