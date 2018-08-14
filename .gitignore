@@ -1,6 +1,9 @@
 # emacs copy files
 *~
 
+# vs code folder
+.vscode
+
 # virtualenv files/dirs
 
 bin/*

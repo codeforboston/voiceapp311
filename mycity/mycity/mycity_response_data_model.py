@@ -1,8 +1,18 @@
-class MyCityResponseDataModel:
-    """
-    Represents a request from a voice platform.
+"""
+Data Model for structuring responses from the skill implementation
+"""
 
+class MyCityResponseDataModel:
+    
+    """
+    Represents a response to a voice platform.
+
+    Standard way of structuring responses from the skill implementation.
+    
     @todo: Consistent comment format that contains platform-specific terminology
+
+    Note:
+        The property methods below get and set attribute values.
     """
 
     def __init__(self):
@@ -105,33 +115,39 @@ class MyCityResponseDataModel:
 
     @property
     def dialog_directive(self):
+        """
+        String indicating the voice platform should modify the course of the
+        dialog with the user in some way.
+        
+        In the case of "Dialog.Delegate", this signals that the Alexa platform
+        should "take charge" of this response to the user according to the
+        intent's dialog model.(usually involves prompting the user to
+        confirm / provide a required slot filling value with a valid utterance,
+        which is needed to fulfill the intent)
+        """
         return self._dialog_directive
 
     @dialog_directive.setter
     def dialog_directive(self, value):
         valid_directives = [
-            "Delegate",          # Delegate dialog decision to platform
-            "ElicitSlot"
+            "Delegate",  # Delegate dialog decision to platform
+            "ElicitSlotTrash",  # Ask for address for trash
+            "ElicitSlotZipCode"  # Ask for users zip code
         ]
 
         if value not in valid_directives:
             print("Error: {} is not a valid directive".format(value))
             return
-        self._dialog_directive = "Dialog.{}".format(value)
 
-    @property
-    def slot_to_elicit(self):
-        return self._slot_to_elicit
-
-    @slot_to_elicit.setter
-    def slot_to_elicit(self, value):
-        self._slot_to_elicit = value
-
-    def elicit_slot(self, slot_name):
-        """
-        Helper function for eliciting a particular slot
-
-        :param slot_name: Name of slot to elicits
-        """
-        self._dialog_directive = "Dialog.ElicitSlot"
-        self._slot_to_elicit = slot_name
+        if value == "Delegate":
+            self._dialog_directive = {'type': 'Dialog.Delegate'}
+        elif value == "ElicitSlotTrash":
+            self._dialog_directive = { 
+                    'type': 'Dialog.ElicitSlot',
+                    'slotToElicit': 'Address'
+                    }
+        elif value == "ElicitSlotZipCode":
+            self._dialog_directive = {
+                'type': 'Dialog.ElicitSlot',
+                'slotToElicit': 'Zipcode'
+            }

@@ -1,5 +1,5 @@
 """
-Boston Data Alexa skill.
+Boston Info Alexa skill.
 
 This module is the entry point for processing voice data from an Alexa device.
 """
@@ -48,6 +48,9 @@ def platform_to_mycity_request(event):
     mycity_request.request_id = event['request']['requestId']
     mycity_request.is_new_session = event['session']['new']
     mycity_request.session_id = event['session']['sessionId']
+    mycity_request.device_id = event['context']['System']['device']['deviceId']
+    mycity_request.api_access_token = event['context']['System']['apiAccessToken']
+    
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
     else:
@@ -87,12 +90,40 @@ def mycity_response_to_platform(mycity_response):
         "MyCityResponseDataModel object received: " + str(mycity_response)
     )
 
-    if mycity_response.dialog_directive == "Dialog.Delegate":
-        response = {
-            'directives': [
-                {'type': mycity_response.dialog_directive}
-            ]
-        }
+    if mycity_response.dialog_directive:
+        if mycity_response.dialog_directive['type'] == "Dialog.Delegate":
+            response = {
+                'directives': [
+                    mycity_response.dialog_directive
+                ],
+                'card' : {
+                    'type': 'Simple',
+                    'title': str(mycity_response.card_title),
+                    'content': str(mycity_response.output_speech)
+                    }
+            }
+        else: 
+            response = {
+                'outputSpeech': {
+                    'type': 'PlainText',
+                    'text': mycity_response.output_speech
+             },
+                'card': {
+                    'type': 'Simple',
+                    'title': str(mycity_response.card_title),
+                    'content': str(mycity_response.output_speech)
+                },
+                'reprompt': {
+                 'outputSpeech': {
+                        'type': 'PlainText',
+                        'text': mycity_response.reprompt_text
+                 }
+             },
+                'shouldEndSession': mycity_response.should_end_session,
+                'directives' : [
+                    mycity_response.dialog_directive
+                    ]
+            }
     else:
         response = {
             'outputSpeech': {
@@ -101,8 +132,8 @@ def mycity_response_to_platform(mycity_response):
             },
             'card': {
                 'type': 'Simple',
-                'title': 'SessionSpeechlet - ' + str(mycity_response.card_title),
-                'content': 'SessionSpeechlet - ' + str(mycity_response.output_speech)
+                'title': str(mycity_response.card_title),
+                'content': str(mycity_response.output_speech)
             },
             'reprompt': {
                 'outputSpeech': {

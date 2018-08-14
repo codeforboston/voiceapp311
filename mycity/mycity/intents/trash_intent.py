@@ -36,7 +36,7 @@ def get_trash_day_info(mycity_request):
         a = address_parser.parse(current_address)
         # currently assumes that trash day is the same for all units at
         # the same street address
-        address = str(a['house']) + " " + str(a['street_name'])
+        address = str(a['house']) + " " + str(a['street_full'])
         zip_code = str(a["other"]).zfill(5) if a["other"] else None
 
         zip_code_key = intent_constants.ZIP_CODE_KEY
@@ -59,8 +59,13 @@ def get_trash_day_info(mycity_request):
             mycity_response.output_speech =\
                 "I can't seem to find {}. Try another address"\
                 .format(address_string)
+            mycity_response.dialog_directive = "ElicitSlotTrash"
+            mycity_response.reprompt_text = None
+            mycity_response.session_attributes = mycity_request.session_attributes
+            mycity_response.card_title = "Trash Day"
             mycity_request = clear_address_from_mycity_object(mycity_request)
             mycity_response = clear_address_from_mycity_object(mycity_response)
+            return mycity_response
 
         except BadAPIResponse:
             mycity_response.output_speech =\
@@ -69,19 +74,20 @@ def get_trash_day_info(mycity_request):
             mycity_response.output_speech \
                 = "I found multiple places with the address {}. " \
                   "What's the zip code?".format(address)
-            mycity_response.elicit_slot("Zipcode")
+            mycity_response.dialog_directive = "ElicitSlotZipCode"
 
         mycity_response.should_end_session = False
     else:
         print("Error: Called trash_day_intent with no address")
+        mycity_response.output_speech = "I didn't understand that address, please try again"
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
-    return mycity_response
+    mycity_response.card_title = "Trash Day"
+    return mycity_response 
 
 
 def get_trash_and_recycling_days(address, zip_code=None):
@@ -92,10 +98,14 @@ def get_trash_and_recycling_days(address, zip_code=None):
     :param address: String of address to find trash day for
     :param zip_code: Optional zip code to resolve multiple addresses
     :return: array containing next trash and recycling days
+    :raises: InvalidAddressError, BadAPIResponse
     """
 
     api_params = get_address_api_info(address, zip_code)
     if not api_params:
+        raise InvalidAddressError
+
+    if not validate_found_address(api_params["name"], address):
         raise InvalidAddressError
 
     trash_data = get_trash_day_data(api_params)
@@ -129,7 +139,38 @@ def find_unique_zipcodes(address_request_json):
     return found_zip_codes
 
 
-def get_address_api_info(address, provided_zip_code=None):
+def validate_found_address(found_address, user_provided_address):
+    """
+    Validates that the street name and number found in trash collection
+    database matches the provided values. We do not treat partial matches
+    as valid.
+
+    :param found_address: Full address found in trash collection database
+    :param user_provided_address: Street number and name provided by user
+    :return: boolean: True if addresses are considered a match, else False
+    """
+    address_parser = StreetAddressParser()
+    found_address = address_parser.parse(found_address)
+    user_provided_address = address_parser.parse(user_provided_address)
+
+    if found_address["house"] != user_provided_address["house"]:
+        return False
+
+    if found_address["street_name"].lower() != \
+            user_provided_address["street_name"].lower():
+        return False
+
+    # Allow fuzzy match on street type to allow "ave" to match "avenue"
+    if found_address["street_type"].lower() not in \
+        user_provided_address["street_type"].lower() and \
+        user_provided_address["street_type"].lower() not in \
+            found_address["street_type"].lower():
+                return False
+
+    return True
+
+
+def get_address_api_info(address, provided_zip_code):
     """
     Gets the parameters required for the ReCollect API call
 
@@ -208,6 +249,7 @@ def get_trash_days_from_trash_data(trash_data):
 
     :param trash_data: Trash data provided from ReCollect API
     :return: An array containing days trash and recycling are picked up
+    :raises: BadAPIResponse
     """
 
     try:
@@ -227,6 +269,7 @@ def build_speech_from_list_of_days(days):
     
     :param days: String array of days
     :return: Speech representing the provided days
+    :raises: BadAPIResponse
     """
     if len(days) == 0:
         raise BadAPIResponse

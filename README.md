@@ -1,4 +1,4 @@
-# Boston Data Alexa Skill
+# Boston Info Alexa Skill
 
 An Alexa skill to answer questions about municipal services in Boston.
 Currently supports providing an address and asking for trash/recycling pick up
@@ -19,8 +19,8 @@ In order to create an Alexa skill we need to configure two main components:
 Finally, we need to connect the Alexa skill to run our lambda function when it 
 is activated.
 
-The following instructions will walk you through creating the Boston Data Alexa 
-skill, a new lambda function containing the Boston Data application, and then 
+The following instructions will walk you through creating the Boston Info Alexa
+skill, a new lambda function containing the Boston Info application, and then
 connecting the two together.
 
 **NOTE:** The UIs for some of the consoles used below change frequently, 
@@ -37,11 +37,11 @@ directory), which you will need later.
 
 ### Part 1: Amazon Developer
 1. Go to the Amazon developers page (https://developer.amazon.com) and log in.
-2. Create a new **Alexa Skill** and name it Boston Data.
+2. Create a new **Alexa Skill** and name it Boston Info.
 3. In the **Choose a model** section, choose **Custom** and choose **Create skill**.
    Leave everything else as is, click **Save** at the bottom, then **Next**.
 4. In the **Interaction Model** section of the skill:
-   * In **Invocation name** section, put **boston data**.
+   * In **Invocation name** section, put **boston info**.
    * In the **JSON editor** input box, paste the contents of 
      [en_US.json](mycity/platforms/amazon/models/en_US.json).
    * Leave the **Slot Types** section blank.
@@ -134,10 +134,10 @@ interacts with our skill.
    a skill name and an intent. The intent may have parameters.
 
    In this case, something like:
-   *"Alexa, ask Boston Data when is trash day?"*
+   *"Alexa, ask Boston Info when is trash day?"*
 
    ```
-   skill name : Boston Data
+   skill name : Boston Info
    intent     : find trash days
    parameters : 1 Main Street apartment 2
    ```
@@ -150,7 +150,7 @@ interacts with our skill.
    This handles the speech recognition and translates the above voice
    command to a JSON document containing the intent and any parameters.
 
-   This JSON is sent to the skill (Boston Data in this example).
+   This JSON is sent to the skill (Boston Info in this example).
 
    ```
    intent    : trashday
@@ -179,7 +179,7 @@ interacts with our skill.
 
 ## Python-specific Notes
 
-Because the python code in Boston Data's Lambda function uses external 
+Because the python code in Boston Info's Lambda function uses external
 libraries, it must be uploaded as a .zip file.
 
 To generate this .zip file, we must install all of the required Python packages
@@ -217,7 +217,22 @@ trash_intent.py accesses the information at recollect.net
 jmartini noted on 02/13/2018 in issue #39: "The Boston digital team stated that the trash day info at data.boston.gov is often out of date. They are currently using a 3rd party called ReCollect to manage the newest trash day info."
 
 
+### https://recollect.net
+
+This is the new (third party) source for Boston's trash day address information.  
+Boston's trash day schedule here: https://www.boston.gov/trash-day-schedule
+labelled 'Powered by ReCollect'.
+
+trash_intent.py accesses the information at recollect.net
+
+jmartini noted on 02/13/2018 in issue #39: "The Boston digital team stated that the trash day info at data.boston.gov is often out of date. They are currently using a 3rd party called ReCollect to manage the newest trash day info."
+
 ### https://data.boston.gov
+
+**DEPRECATED** 
+ReCollect is now used as the (third party) source for trash day schedules.
+No intent currently accesses data.boston.gov.
+
 This is the new portal for Boston's open data efforts. This site uses a tool
 called CKAN, which describes itself as follows:
    >CKAN is a tool for making open data websites. (Think of a content management

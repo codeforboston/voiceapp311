@@ -17,8 +17,8 @@ TEMP_DIR_PATH = os.path.join(PROJECT_ROOT, 'temp')
 LAMBDA_REL_PATH = 'platforms/amazon/lambda/custom/lambda_function.py'
 LAMBDA_FUNCTION_PATH = os.path.join(PROJECT_ROOT, LAMBDA_REL_PATH)
 MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
-
 ZIP_FILE_NAME = "lambda_function.zip"
+LAMBDA_FUNCTION_NAME = "MyCity"
 
 
 def zip_lambda_function_directory(zip_target_dir):
@@ -28,7 +28,7 @@ def zip_lambda_function_directory(zip_target_dir):
     must contain the files with no intermediate directory.
 
     :param zip_target_dir: destination directory for zip file being created
-    :return: none
+    :return: None
     """
     zip_file = zipfile.ZipFile(os.path.join(zip_target_dir, ZIP_FILE_NAME), 'w')
     original_directory = os.getcwd()
@@ -51,7 +51,7 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     :param requirements_path: path to textfile containing required libraries
     :param requirements_path_no_deps: path to textfile containing required
         libraries (whose dependencies won't be downloaded)
-    :return: none
+    :return: None
     """
     install_args = [
         "pip",
@@ -85,7 +85,7 @@ def package_lambda_function():
     dependencies are copied before being compressed. Removes the temporary
     directory after creating the .zip file.
 
-    :return: none
+    :return: None
     """
     print('Creating temporary build directory ... ', end='')
     # remove/create the temporary directory for the zip file's contents
@@ -119,7 +119,25 @@ def package_lambda_function():
         ignore_errors=False,
         onerror=handle_remove_readonly
     )
-    print('DONE')
+
+def update_lambda_code():
+
+    print("\nUpdating/uploading lambda code\n")
+
+    aws_path = shutil.which("aws")
+    # print("path:" + aws_path)
+
+    update_lambda_code = [
+        aws_path,
+        "lambda",
+        "update-function-code",
+        "--function-name",
+        LAMBDA_FUNCTION_NAME,
+        "--zip-file",
+        "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
+    ]
+    run(update_lambda_code)
+    print("DONE UPLOADING...\n")
 
 
 def handle_remove_readonly(func, path, execinfo):
@@ -142,6 +160,30 @@ def handle_remove_readonly(func, path, execinfo):
         func(path)
     else:
         raise Exception("Failed to delete temp folder.")
+    print('DONE')
+
+
+def handle_remove_readonly(func, path, execinfo):
+    """
+    Passed as the onerror parameter when calling shutil.rmtree.
+    See:
+    https://stackoverflow.com/a/1214935/2554154
+    Handles the case where rmtree fails in Windows due to access problems.
+
+    :param func: function that raised the exception, shutil.rmtree
+    :param path: path to temp folder
+    :param execinfo: the exception information returned by sys.exc_info()
+    :return: None
+    :raises: custom exception, temp folder not deleted
+    """
+    excvalue = execinfo[1]
+    if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+        # if we're failing to remove files because they are readonly,
+        # update permissions
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+        func(path)
+    else:
+        raise Exception("Failed to delete temp folder.")
 
 
 def main():
@@ -149,11 +191,11 @@ def main():
     Defines the command-line option required to initiate building the zipfile.
     Conditionally begins the build process if the required option is present.
 
-    :return: none
+    :return: None
     """
     parser = argparse.ArgumentParser(
-        description="Tools to package and deploy the lambda function for the " +
-                    "MyCity app."
+        description="Tools to package and deploy the lambda function for " +
+                    "the MyCity app."
     )
 
     parser.add_argument(
@@ -164,9 +206,21 @@ def main():
         action='store_true'
     )
 
+    parser.add_argument(
+        '-f',
+        '--function',
+        help="The function name that is associated with your Lambda function " +
+            "on aws"
+    )
+
     args = parser.parse_args()
 
-    if args.package:
+    if args.function:
+        global LAMBDA_FUNCTION_NAME
+        LAMBDA_FUNCTION_NAME = args.function
+        package_lambda_function()
+        update_lambda_code()
+    elif args.package:
         package_lambda_function()
     else:
         print("No known option selected")

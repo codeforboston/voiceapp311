@@ -19,6 +19,31 @@ PARKING_LOTS_ADDR_INDEX = 7
 # Mocked returns for patched functions that access web resources #
 ##################################################################
 
+
+# Alexa device address
+ALEXA_DEVICE_ADDRESS = {
+    "addressLine1": "866 Huntington ave",
+    "addressLine2": "null",
+    "addressLine3": "null",
+    "districtOrCounty": "null",
+    "stateOrRegion": "Ma",
+    "city": "Boston",
+    "countryCode": "US",
+    "postalCode": "02138"
+}
+
+# Failing Alexa device address
+ALEXA_DEVICE_ADDRESS_FAILURE = {
+    "addressLine1": "null",
+    "addressLine2": "null",
+    "addressLine3": "null",
+    "districtOrCounty": "null",
+    "stateOrRegion": "Ma",
+    "city": "Boston",
+    "countryCode": "US",
+    "postalCode": "02138"
+}
+
 # gis_utils.get_closest_feature
 GOOGLE_MAPS_JSON = [
     {

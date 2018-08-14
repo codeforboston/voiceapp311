@@ -16,19 +16,26 @@ PARKING_INFO_URL = ("http://bostonopendata-boston.opendata.arcgis.com/datasets/"
 DRIVING_DIST = g_maps_utils.DRIVING_DISTANCE_TEXT_KEY
 DRIVING_TIME = g_maps_utils.DRIVING_TIME_TEXT_KEY
 OUTPUT_SPEECH_FORMAT = \
-    ("The closest snow emergency parking location, {Name}, is at "
+    ("The closest snow emergency parking lot, {Name}, is at "
      "{Address}. It is {" + DRIVING_DIST + "} away and should take "
-     "you {" + DRIVING_TIME + "} to drive there. The parking lot has "
+     "you {" + DRIVING_TIME + "} to drive there. The lot has "
      "{Spaces} spaces when empty. {Fee} {Comments} {Phone}")
 ADDRESS_KEY = "Address"
 
 
 def format_record_fields(record):
-   record["Phone"] = "Call {} for information.".format(record["Phone"]) \
-       if record["Phone"].strip() != "" else ""
-   record["Fee"] = " There is a fee of {}. ".format(record["Fee"]) \
-       if record["Fee"] != "No Charge" else " There is no fee. "
-   
+    """
+    Updates the record fields by replacing the raw information with a sentence
+    that provides context and will be more easily understood by users.
+    
+    :param record: a dictionary with driving time, driving_distance and all 
+        fields from the closest record
+    :return: None
+    """
+    record["Phone"] = "Call {} for information.".format(record["Phone"]) \
+        if record["Phone"].strip() != "" else ""
+    record["Fee"] = " The fee is {}. ".format(record["Fee"]) \
+        if record["Fee"] != "No Charge" else " There is no fee. "   
 
 def get_snow_emergency_parking_intent(mycity_request):
     """
@@ -53,13 +60,14 @@ def get_snow_emergency_parking_intent(mycity_request):
 
     else:
         print("Error: Called snow_parking_intent with no address")
+        mycity_response.output_speech = "I need a valid address to find the closest parking"
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = mycity_request.intent_name
+    mycity_response.card_title = "Snow Parking"
     
     return mycity_response
 
