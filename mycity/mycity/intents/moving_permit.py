@@ -1,4 +1,4 @@
-'''
+"""
   Moving permit Intent
   --------------------
   This intent is responsible for asking for the user's address, fetching
@@ -9,7 +9,7 @@
   
   which will tell the interpreter that the mycity packacge is located
   two levels above.
-'''
+"""
 
 import mycity.utilities.gis_utils as gis_utils
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
@@ -18,11 +18,39 @@ from datetime import datetime
 from streetaddress import StreetAddressParser
 
 
-PERMIT_INFO_URL = ('https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/' + \
+PERMIT_INFO_URL = ('https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/' +
                    'rest/services/Moving_Truck_Permits/FeatureServer/0')                   
 STATUS = 'OPEN'
-
 moving_permit_data_result = {}
+
+
+def convert_xy_to_address(my_xy):
+    """
+    :param my_xy: address in the form of X and Y
+    :return: address in the form of street name
+    """
+    
+    pass
+
+
+def convert_address_to_xy(my_address):
+    """
+    :param my_address: address of interest in X and Y coordinates
+    :return: address in street form
+    """
+
+    pass
+
+
+def calculate_distance(first, second):
+    """
+    :param first: first address of interest
+    :param second: second address of interest
+    :return: the distance between these two addresses using the Haversine formula
+    """
+
+    pass
+
 
 def get_permit_locations():
     """
@@ -45,7 +73,7 @@ def get_permit_locations():
         if location['attributes']['PermitNumb'] not in moving_permit_unique_locations:
             # this try block is necessary because some permits don't have geometry!
             try:
-                moving_permit_unique_locations.append([location['attributes']['PermitNumb'], \
+                moving_permit_unique_locations.append([location['attributes']['PermitNumb'],
                                                        location['geometry']])
             except:
                 #print('PermitNumb: ' + str(location['attributes']['PermitNumb']) + ' has no geometry')
@@ -69,8 +97,6 @@ def get_nearby_moving_permits(mycity_request):
         str(mycity_request)
     )
     mycity_response = MyCityResponseDataModel()
-    
-    # TODO: this block is copy/pasted from trash_intent.py, should refactor
     
     # Get user's address
     if CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
@@ -117,5 +143,3 @@ def get_nearby_moving_permits(mycity_request):
     
     return mycity_response
 
-
-#print(get_permit_locations())
