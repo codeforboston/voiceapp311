@@ -4,8 +4,14 @@ Uses csv files to find location based information about Boston city services
 
 import csv
 import requests
+import logging
 
 from mycity.utilities.finder.Finder import Finder
+import mycity.logger
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class FinderCSV(Finder):
@@ -66,7 +72,8 @@ class FinderCSV(Finder):
         
         :return: a string representation of the csv file
         """
-        print('[method: FinderCSV.fetch_resource]')
+        logger.debug('[method: FinderCSV.fetch_resource]')
+        
         r = requests.get(self.resource_url)
         if r.status_code == 200:
             file_contents = r.content.decode(r.apparent_encoding)
@@ -86,9 +93,7 @@ class FinderCSV(Finder):
         :return: a list of dictionaries (OrderedDict) each representing one
             row from the csv
         """
-        print('[method: FinderCSV.file_to_filtered_records]',
-              'file_contents:',
-              file_contents)
+        logger.debug('[method: FinderCSV.file_to_filtered_records]' + 'file_contents:' + str(file_contents))
         return list(filter(self._filter,
                            csv.DictReader(file_contents.splitlines(), 
                                           delimiter=',')))

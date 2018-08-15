@@ -852,7 +852,7 @@ GET_ALERTS_MOCK_SOME_ALERTS = {
 
 # get_open_spaces intent
 
-OPEN_SPACES_TEST_CSV =  os.getcwd() + "/mycity/test/test_data/.csv"
+OPEN_SPACES_TEST_CSV =  os.getcwd() + "/mycity/test/test_data/Open_space.csv"
 
 CLOSEST_OPEN_SPACES_DRIVING_DATA = \
     [

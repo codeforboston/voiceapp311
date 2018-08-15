@@ -20,6 +20,11 @@ from bs4 import BeautifulSoup
 from urllib import request
 from enum import Enum
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.logger
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class Services(Enum):
     
@@ -54,17 +59,16 @@ def get_alerts_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[method: get_alerts_intent]',
-        'MyCityRequestDataModel received:\n',
-        str(mycity_request)
+    logger.debug(
+                 'MyCityRequestDataModel received:\n' +
+                 str(mycity_request)
     )
 
     mycity_response = MyCityResponseDataModel()
     alerts = get_alerts()
-    print("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
+    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
     alerts = prune_normal_responses(alerts)
-    print("[dictionary after pruning]:\n" + str(alerts))
+    logger.debug("[dictionary after pruning]:\n" + str(alerts))
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "City Alerts"
     mycity_response.reprompt_text = None

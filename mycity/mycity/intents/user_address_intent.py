@@ -4,8 +4,11 @@ Functions for setting and getting the current user address
 
 from . import intent_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.logger
+import logging
 import requests
 
+logger = logging.getLogger(__name__)
 
 def set_address_in_session(mycity_request):
     """
@@ -14,12 +17,12 @@ def set_address_in_session(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: None
     """
-    print(
-        '[module: user_address_intent]',
-        '[method: set_address_in_session]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        '[method: set_address_in_session]' +
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
+    
     if 'Address' in mycity_request.intent_variables:
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = \
             mycity_request.intent_variables['Address']['value']
@@ -84,14 +87,16 @@ def get_address_from_session(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[module: user_address_intent]',
-        '[method: get_address_from_session]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        '[method: get_address_from_session]' +
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
 
     mycity_response = MyCityResponseDataModel()
+
+    logger.debug("GETTING ADDRESS FROM SESSION")
+
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Address"
     mycity_response.reprompt_text = None
@@ -120,10 +125,9 @@ def request_user_address_response(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[module: user_address_intent]',
-        '[method: request_user_address_response]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        '[method: set_address_in_session]' +
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
 

@@ -5,6 +5,9 @@ an origin address to a list of destinations
 
 import os
 import requests
+import logging
+
+import mycity.logger
 
 
 
@@ -15,6 +18,8 @@ DRIVING_DISTANCE_TEXT_KEY = "Driving distance text"
 DRIVING_TIME_VALUE_KEY = "Driving time"
 DRIVING_TIME_TEXT_KEY = "Driving time text"
 
+
+logger = logging.getLogger(__name__)
 
 def _get_driving_info(origin, location_type, destinations):
     """
@@ -30,14 +35,14 @@ def _get_driving_info(origin, location_type, destinations):
         destination address with address, distance, and driving time
         from origin address
     """
-    print(
+    logger.debug(
         '[method: google_maps_utils.._get_driving_info]',
         'origin received:',
         origin,
         'feature_type received:',
         location_type,
-        'destinations received (printing first five):',
-        destinations[:5],       # only print first five destinations
+        'destinations received (logging first five):',
+        destinations[:5],       # only log first five destinations
         'count(destinations):',
         len(destinations)
     )
@@ -53,7 +58,7 @@ def _get_driving_info(origin, location_type, destinations):
                                                                    location_type, 
                                                                    destinations)
         else:
-            print("Failed to get driving directions")
+            logger.debug("Failed to get driving directions")
     return driving_infos
 
 
@@ -65,12 +70,12 @@ def _setup_google_maps_query_params(origin, destinations):
     :param destinations: "to" addresses in query
     :return: a dictionary to use as url parameters for query
     """
-    print(                      
+    logger.debug(                      
         '[method: google_maps_utils._setup_google_maps_query]',
         'origin received:',
         origin,
-        'destinations received (printing first five):',
-        destinations[:5],       # only print first five destinations
+        'destinations received (logging first five):',
+        destinations[:5],       # only log first five destinations
         'count(destinations):',
         len(destinations)
     )
@@ -93,14 +98,14 @@ def combine_driving_data_with_destinations(all_driving_data, location_type, dest
     :return: list of dictionaries representing driving data for
         each address
     """
-    print(
+    logger.debug(
         '[method: google_maps_utils._parse_driving_data]',
         'all_driving_data received:',
         all_driving_data,
         'location_type received:',
         location_type,
-        'destinations received (printing first five):',
-        destinations[:5],       # only print first five 
+        'destinations received (logging first five):',
+        destinations[:5],       # only log first five 
         'count(destinations):',
         len(destinations)
     )
@@ -123,7 +128,7 @@ def combine_driving_data_with_destinations(all_driving_data, location_type, dest
                     location_type: address}
                 driving_infos.append(driving_info)
             except KeyError:
-                print("Could not parse driving info {}".format(driving_data))
+                logging.error("Could not parse driving info {}".format(driving_data))
     except KeyError:
         pass
     finally:
@@ -144,7 +149,7 @@ def _parse_closest_location_info(location_type, closest_location_info):
                                              DRIVING_DISTANCE_TEXT_KEY,
                                              DRIVING_TIME_TEXT_KEY
     """
-    print(
+    logger.debug(
         '[method: google_maps_utils._parse_closest_location_info]',
         'location_type received:',
         location_type,

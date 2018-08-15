@@ -3,6 +3,11 @@ Function(s) for dealing with unhandled intents
 """
 
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.logger
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 def unhandled_intent(mycity_request):
     """
@@ -11,12 +16,12 @@ def unhandled_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    print(
-        '[module: unhandled_intent]',
-        '[method: unhandled_intent]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        '[method: unhandled_intent]' +
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
+    
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Unhandled"

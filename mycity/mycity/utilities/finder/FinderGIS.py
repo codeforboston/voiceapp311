@@ -3,7 +3,10 @@ Uses ArcGIS to find location based information about Boston city services
 """
 
 from mycity.utilities.finder.Finder import Finder 
+import mycity.logger
+import logging
 
+logger = logging.getLogger(__name__)
 
 class FinderGIS(Finder):
     
@@ -48,6 +51,7 @@ class FinderGIS(Finder):
         
         :return: list of features corresponding to query
         """
-        print("[method: FinderGIS.get_features_from_feature_server]")
+        logger.debug('[method: FinderGIS.get_features_from_feature_server]')
+        
         return gis_utils.get_features_from_feature_server(self.resource_url,
                                                           self.query)

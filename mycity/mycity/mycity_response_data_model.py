@@ -2,6 +2,7 @@
 Data Model for structuring responses from the skill implementation
 """
 
+
 class MyCityResponseDataModel:
     
     """
@@ -136,7 +137,7 @@ class MyCityResponseDataModel:
         ]
 
         if value not in valid_directives:
-            print("Error: {} is not a valid directive".format(value))
+            logging.error("Error: {} is not a valid directive".format(value))
             return
 
         if value == "Delegate":

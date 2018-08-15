@@ -9,6 +9,11 @@ from mycity.intents.user_address_intent import clear_address_from_mycity_object
 import re
 import requests
 from . import intent_constants
+import mycity.logger
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_trash_day_info(mycity_request):
@@ -18,11 +23,9 @@ def get_trash_day_info(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    
-    print(
-        '[module: trash_intent]',
-        '[method: get_trash_day_info]',
-        'MyCityRequestDataModel received:',
+    logger.debug(
+        '[method: get_trash_day_info]' +
+        'MyCityRequestDataModel received:' +
         str(mycity_request)
     )
 
@@ -78,7 +81,7 @@ def get_trash_day_info(mycity_request):
 
         mycity_response.should_end_session = False
     else:
-        print("Error: Called trash_day_intent with no address")
+        logger.error("Error: Called trash_day_intent with no address")
         mycity_response.output_speech = "I didn't understand that address, please try again"
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
@@ -196,7 +199,7 @@ def get_address_api_info(address, provided_zip_code):
     request_result = requests.get(base_url, url_params)
 
     if request_result.status_code != requests.codes.ok:
-        print("Error getting ReCollect API info. Got response: {}"
+        logger.error("Error getting ReCollect API info. Got response: {}"
               .format(request_result.status_code))
         return {}
 
@@ -235,7 +238,7 @@ def get_trash_day_data(api_parameters):
     request_result = requests.get(base_url, api_parameters)
 
     if request_result.status_code != requests.codes.ok:
-        print("Error getting trash info from ReCollect API info. "
+        logger.error("Error getting trash info from ReCollect API info. "
               "Got response: {}".format(request_result.status_code))
         return {}
 
