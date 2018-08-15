@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/wesdrew/voiceapp311.svg?branch=BRANCH)](https://travis-ci.org/wesdrew/voiceapp311)
-
-[![Coverage Status](https://coveralls.io/repos/github/wesdrew/voiceapp311/badge.svg?branch=BRANCH)](https://coveralls.io/github/wesdrew/voiceapp311?branch=master)
+[![Build Status](https://travis-ci.org/codeforboston/voiceapp311.svg?branch=master)](https://travis-ci.org/codeforboston/voiceapp311)
 
 # Boston Info Alexa Skill
 
