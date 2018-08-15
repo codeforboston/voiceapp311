@@ -16,6 +16,7 @@ class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
     intent_to_test = "TrashDayIntent"
     expected_title = "Trash Day"
     returns_reprompt_text = False
+    expected_card_title = "Trash Day"
 
     def setUp(self):
         """
