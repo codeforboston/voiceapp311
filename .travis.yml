@@ -7,7 +7,10 @@ install:
   - pip install -r mycity/mycity/deploy_tools/requirements.txt
   - pip install --no-deps -r mycity/mycity/deploy_tools/requirements_no_deps.txt
 
-script: sh mycity/run_tests.sh
+script:
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
+  - cd mycity && sh run_tests.sh
 
 branches:
   only:
