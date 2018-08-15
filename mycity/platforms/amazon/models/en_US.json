@@ -175,16 +175,7 @@
                         "value": "What's your address?"
                     }
                 ]
-            },
-	    {			// testing whether we can return a response with more information
-		"id": "Elicit.Slot.621270469710.323849903547", // + 1 to Elict.Slot.id above
-		"variations": [
-		    {
-			"type": "PlainText",
-			"value": "Would you like more information?"
-		    }
-		]
-	    }
+            }
         ]
     }
 }
