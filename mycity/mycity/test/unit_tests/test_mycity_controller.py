@@ -31,8 +31,8 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
             "How can I help you? "
         )
         expected_reprompt_text = (
-            "For example, you can tell me your address by saying, "
-            "\"my address is\" followed by your address."
+            "You can tell me your address by saying, "
+            "\"my address is\", and then your address."
         )
         expected_card_title = "Welcome"
         response = self.controller.on_launch(self.request)

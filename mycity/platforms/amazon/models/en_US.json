@@ -33,6 +33,10 @@
                                 "My address is {Address}",
                                 "{Address}"
                             ]
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER"
                         }
                     ],
                     "samples": [
@@ -127,6 +131,13 @@
                             "prompts": {
                                 "elicitation": "Elicit.Slot.604703910902.353139060048"
                             }
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
                         }
                     ]
                 },

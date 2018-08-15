@@ -23,6 +23,7 @@ class MyCityResponseDataModel:
         self._should_end_session = None
         self._intent_variables = {}
         self._dialog_directive = None
+        self._slot_to_elicit = None
 
     def __str__(self):
         return """\
@@ -34,6 +35,7 @@ class MyCityResponseDataModel:
             should_end_session={},
             intent_variables={}
             dialog_directive={}
+            slot_to_elicit={}
         >
         """.format(
             self._session_attributes,
@@ -42,7 +44,8 @@ class MyCityResponseDataModel:
             self._reprompt_text,
             self._should_end_session,
             self._intent_variables,
-            self._dialog_directive
+            self._dialog_directive,
+            self._slot_to_elicit
         )
 
     @property
@@ -110,7 +113,6 @@ class MyCityResponseDataModel:
     def intent_variables(self, value):
         self._intent_variables = value
 
-
     @property
     def dialog_directive(self):
         """
@@ -128,18 +130,24 @@ class MyCityResponseDataModel:
     @dialog_directive.setter
     def dialog_directive(self, value):
         valid_directives = [
-            "Delegate", # Delegate dialog decision to platform
-            "ElicitSlotTrash" # Ask for address for trash
+            "Delegate",  # Delegate dialog decision to platform
+            "ElicitSlotTrash",  # Ask for address for trash
+            "ElicitSlotZipCode"  # Ask for users zip code
         ]
 
         if value not in valid_directives:
             print("Error: {} is not a valid directive".format(value))
             return
+
         if value == "Delegate":
-            self._dialog_directive = {'type' : 'Dialog.Delegate' }
+            self._dialog_directive = {'type': 'Dialog.Delegate'}
         elif value == "ElicitSlotTrash":
             self._dialog_directive = { 
-                    'type' : 'Dialog.ElicitSlot',
-                    'slotToElicit' : 'Address'
+                    'type': 'Dialog.ElicitSlot',
+                    'slotToElicit': 'Address'
                     }
-                        
+        elif value == "ElicitSlotZipCode":
+            self._dialog_directive = {
+                'type': 'Dialog.ElicitSlot',
+                'slotToElicit': 'Zipcode'
+            }

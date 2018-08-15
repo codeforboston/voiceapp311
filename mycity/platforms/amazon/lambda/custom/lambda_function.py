@@ -109,9 +109,9 @@ def mycity_response_to_platform(mycity_response):
                     'text': mycity_response.output_speech
              },
                 'card': {
-                 'type': 'Simple',
-                    'title': 'SessionSpeechlet - ' + str(mycity_response.card_title),
-                    'content': 'SessionSpeechlet - ' + str(mycity_response.output_speech)
+                    'type': 'Simple',
+                    'title': str(mycity_response.card_title),
+                    'content': str(mycity_response.output_speech)
                 },
                 'reprompt': {
                  'outputSpeech': {
@@ -143,6 +143,16 @@ def mycity_response_to_platform(mycity_response):
             },
             'shouldEndSession': mycity_response.should_end_session
         }
+
+    if mycity_response.dialog_directive == "Dialog.ElicitSlot":
+        #Add the slot we want to elicit on top of the normal output.
+        print("Setting elicit slot options")
+        response["directives"] = [
+            {
+                "type": mycity_response.dialog_directive,
+                "slotToElicit": mycity_response.slot_to_elicit
+            }]
+
 
     result = {
         'version': '1.0',

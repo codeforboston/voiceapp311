@@ -24,6 +24,24 @@ def set_address_in_session(mycity_request):
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = \
             mycity_request.intent_variables['Address']['value']
 
+        if intent_constants.ZIP_CODE_KEY in mycity_request.session_attributes:
+            # We clear out any zip code saved if the user has
+            # changed the address
+            del(mycity_request.session_attributes
+                [intent_constants.ZIP_CODE_KEY])
+
+
+def set_zipcode_in_session(mycity_request):
+    """
+    Adds a zip code to the provided request object.
+
+    :param mycity_request: MyCityRequestsDataModel object
+    :return: none
+    """
+    if 'Zipcode' in mycity_request.intent_variables:
+        mycity_request.session_attributes[intent_constants.ZIP_CODE_KEY] = \
+            mycity_request.intent_variables['Zipcode']['value'].zfill(5)
+
 
 def get_address_from_user_device(mycity_request):
     """
@@ -55,6 +73,7 @@ def get_address_from_user_device(mycity_request):
             mycity_request.session_attributes[
                 intent_constants.CURRENT_ADDRESS_KEY] = current_address
     return mycity_request
+
 
 def get_address_from_session(mycity_request):
     """
@@ -116,3 +135,21 @@ def request_user_address_response(mycity_request):
     mycity_response.card_title = "Address"
     mycity_response.dialog_directive = "Delegate"
     return mycity_response
+
+
+def clear_address_from_mycity_object(mycity_object):
+    """
+    Removes any address info from a mycity object session attribute
+
+    :param mycity_object: Either a MyCityResponseDataModel or
+        MyCityRequestDataModel
+    :return: MyCity object with attributes removed
+    """
+    if intent_constants.ZIP_CODE_KEY in mycity_object.session_attributes:
+        del(mycity_object.session_attributes[intent_constants.ZIP_CODE_KEY])
+
+    if intent_constants.CURRENT_ADDRESS_KEY in mycity_object.session_attributes:
+        del(mycity_object.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY])
+
+    return mycity_object

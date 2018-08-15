@@ -1,10 +1,12 @@
 """
 Functions for Alexa responses related to trash day
 """
-
-from .custom_errors import InvalidAddressError, BadAPIResponse
+from .custom_errors import \
+    InvalidAddressError, BadAPIResponse, MultipleAddressError
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.intents.user_address_intent import clear_address_from_mycity_object
+import re
 import requests
 from . import intent_constants
 
@@ -35,25 +37,44 @@ def get_trash_day_info(mycity_request):
         # currently assumes that trash day is the same for all units at
         # the same street address
         address = str(a['house']) + " " + str(a['street_full'])
+        zip_code = str(a["other"]).zfill(5) if a["other"] else None
+
+        zip_code_key = intent_constants.ZIP_CODE_KEY
+        if zip_code is None and zip_code_key in \
+                mycity_request.session_attributes:
+            zip_code = mycity_request.session_attributes[zip_code_key]
 
         try:
-            trash_days = get_trash_and_recycling_days(address)
+            trash_days = get_trash_and_recycling_days(address, zip_code)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
 
             mycity_response.output_speech = "Trash and recycling is picked up on {}."\
                 .format(trash_days_speech)
 
         except InvalidAddressError:
-            mycity_response.output_speech = "I can't seem to find {}. Try another address"\
-               .format(address)
+            address_string = address
+            if zip_code:
+                address_string = address_string + " with zip code {}"\
+                    .format(zip_code)
+            mycity_response.output_speech =\
+                "I can't seem to find {}. Try another address"\
+                .format(address_string)
             mycity_response.dialog_directive = "ElicitSlotTrash"
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = mycity_request.session_attributes
-            mycity_response.card_title = mycity_request.intent_name
+            mycity_response.card_title = "Trash Day"
+            mycity_request = clear_address_from_mycity_object(mycity_request)
+            mycity_response = clear_address_from_mycity_object(mycity_response)
             return mycity_response
 
         except BadAPIResponse:
-            mycity_response.output_speech = "Hmm something went wrong. Please try again"
+            mycity_response.output_speech =\
+                "Hmm something went wrong. Maybe try again?"
+        except MultipleAddressError:
+            mycity_response.output_speech \
+                = "I found multiple places with the address {}. " \
+                  "What's the zip code?".format(address)
+            mycity_response.dialog_directive = "ElicitSlotZipCode"
 
         mycity_response.should_end_session = False
     else:
@@ -69,17 +90,18 @@ def get_trash_day_info(mycity_request):
     return mycity_response 
 
 
-def get_trash_and_recycling_days(address):
+def get_trash_and_recycling_days(address, zip_code=None):
     """
     Determines the trash and recycling days for the provided address.
     These are on the same day, so only one array of days will be returned.
 
     :param address: String of address to find trash day for
+    :param zip_code: Optional zip code to resolve multiple addresses
     :return: array containing next trash and recycling days
     :raises: InvalidAddressError, BadAPIResponse
     """
 
-    api_params = get_address_api_info(address)
+    api_params = get_address_api_info(address, zip_code)
     if not api_params:
         raise InvalidAddressError
 
@@ -93,6 +115,28 @@ def get_trash_and_recycling_days(address):
     trash_and_recycling_days = get_trash_days_from_trash_data(trash_data)
 
     return trash_and_recycling_days
+
+
+def find_unique_zipcodes(address_request_json):
+    """
+    Finds unique zip codes in a provided address request json returned
+    from the ReCollect service
+    :param address_request_json: json object returned from ReCollect address
+        request service
+    :return: dictionary with zip code keys and value list of indexes with that
+        zip code
+    """
+
+    found_zip_codes = {}
+    for index, address_info in enumerate(address_request_json):
+        zip_code = re.search('\d{5}', address_info["name"]).group(0)
+        if zip_code:
+            if zip_code in found_zip_codes:
+                found_zip_codes[zip_code].append(index)
+            else:
+                found_zip_codes[zip_code] = [index]
+
+    return found_zip_codes
 
 
 def validate_found_address(found_address, user_provided_address):
@@ -126,11 +170,13 @@ def validate_found_address(found_address, user_provided_address):
     return True
 
 
-def get_address_api_info(address):
+def get_address_api_info(address, provided_zip_code):
     """
     Gets the parameters required for the ReCollect API call
 
     :param address: Address to get parameters for
+    :param provided_zip_code: Optional zip code used if we find multiple
+        addresses
     :return: JSON object containing API parameters with format:
 
     {
@@ -154,10 +200,23 @@ def get_address_api_info(address):
               .format(request_result.status_code))
         return {}
 
-    if not request_result.json():
+    result_json = request_result.json()
+    if not result_json:
         return {}
 
-    return request_result.json()[0]
+    unique_zip_codes = find_unique_zipcodes(result_json)
+    if len(unique_zip_codes) > 1:
+        # If we have a provided zip code, see if it is in the request results
+        if provided_zip_code:
+            if provided_zip_code in unique_zip_codes:
+                return result_json[unique_zip_codes[provided_zip_code][0]]
+
+            else:
+                return {}
+
+        raise MultipleAddressError
+
+    return result_json[0]
 
 
 def get_trash_day_data(api_parameters):
