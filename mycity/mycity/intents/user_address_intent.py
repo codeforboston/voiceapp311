@@ -24,6 +24,12 @@ def set_address_in_session(mycity_request):
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = \
             mycity_request.intent_variables['Address']['value']
 
+        if intent_constants.ZIP_CODE_KEY in mycity_request.session_attributes:
+            # We clear out any zip code saved if the user has
+            # changed the address
+            del(mycity_request.session_attributes
+                [intent_constants.ZIP_CODE_KEY])
+
 
 def set_zipcode_in_session(mycity_request):
     """
