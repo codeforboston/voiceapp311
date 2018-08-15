@@ -1,7 +1,7 @@
 Running all tests for project:
 
     from PROJECT_ROOT:
-    	 (PROJECT_ROOT)$ python run_tests.py
+    	 (PROJECT_ROOT)$ sh run_tests.sh
 
 
 
@@ -63,7 +63,3 @@ class SomeIntentTestCase(mix_ins.RepromptTextTestMixIn,
     def test_that_is_unique_to_this_intent(self): 
         ...do whatever you need to! Mixed-in tests will rely on your setUp 
 	and tearDown for any needed patching tho
-
-4. make sure you add your testCase to TEST_CASES in run_tests.py!
-
-
