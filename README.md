@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/codeforboston/voiceapp311.svg?branch=master)](https://travis-ci.org/codeforboston/voiceapp311)
+[![Build Status](https://travis-ci.org/codeforboston/voiceapp311.svg?branch=$BRANCH)](https://travis-ci.org/codeforboston/voiceapp311)
 
 # Boston Info Alexa Skill
 
