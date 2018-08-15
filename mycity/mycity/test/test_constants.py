@@ -407,8 +407,6 @@ GET_TRASH_DAY_MOCK = {
 }
 
 
-
-
 # Snow Emergency Parking Intent
 
 
