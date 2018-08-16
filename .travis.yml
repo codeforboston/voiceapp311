@@ -11,6 +11,7 @@ script:
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
   - cd mycity && sh run_tests.sh
+  - cd mycity/deploy_tools && python deploy_tools.py -p
 
 branches:
   only:
