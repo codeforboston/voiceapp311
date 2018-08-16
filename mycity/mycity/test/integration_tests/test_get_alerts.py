@@ -13,7 +13,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
                         base_case.IntentBaseCase):
 
     intent_to_test = "GetAlertsIntent"
-    expected_card_title = "City Alerts"
+    expected_title = 'City Alerts'
     returns_reprompt_text = False
     # if we don't create copies of these dictionaries we'll create empty
     # dictionary errors after successive setUps and tearDowns
@@ -42,8 +42,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
                 return_value=no_alerts.copy())
     def test_response_with_no_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
-        expected_response = ("There are no alerts. City services are "
-                             "running on normal schedules.")
+        expected_response = test_constants.GET_ALERTS_EXPECTED_RESPONSE
         self.assertEqual(response.output_speech, expected_response)
         
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',

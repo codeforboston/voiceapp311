@@ -1,9 +1,11 @@
+import unittest
 import mycity.test.unit_tests.base as base
 import mycity.utilities.google_maps_utils as g_maps_utils
 
 
 class TestGoogleMapsUtilities(base.BaseTestCase):
 
+    @unittest.skip('need a mocked JSON for this function')
     def test_combine_driving_data_with_destinations(self):
         location_type = 'Fake location'
         closest_location_info = {

@@ -13,5 +13,6 @@ class UnhandledIntentTestCase(mix_ins.RepromptTextTestMixIn,
                               base_case.IntentBaseCase):
 
     intent_to_test = "UnhandledIntent"
+    expected_title = "Unhandled"
     returns_reprompt_text = True
     expected_card_title = "Unhandled"

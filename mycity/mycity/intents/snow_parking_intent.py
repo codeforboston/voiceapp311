@@ -37,6 +37,7 @@ def format_record_fields(record):
     record["Fee"] = " The fee is {}. ".format(record["Fee"]) \
         if record["Fee"] != "No Charge" else " There is no fee. "   
 
+
 def get_snow_emergency_parking_intent(mycity_request):
     """
     Populate MyCityResponseDataModel with snow emergency parking response information.

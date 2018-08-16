@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/codeforboston/voiceapp311.svg?branch=master)](https://travis-ci.org/codeforboston/voiceapp311)
+
 # Boston Info Alexa Skill
 
 An Alexa skill to answer questions about municipal services in Boston.

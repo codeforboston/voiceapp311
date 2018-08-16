@@ -14,6 +14,7 @@ class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
                        base_case.IntentBaseCase):
 
     intent_to_test = "TrashDayIntent"
+    expected_title = "Trash Day"
     returns_reprompt_text = False
     expected_card_title = "Trash Day"
 

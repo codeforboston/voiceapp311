@@ -1,6 +1,13 @@
 # emacs copy files
 *~
 
+# coverage.py folders
+
+*.coverage
+*/.coverage/*
+*/htmlcov/*
+
+
 # vs code folder
 .vscode
 
@@ -10,6 +17,7 @@ bin/*
 lib/*
 include/*
 .Python
+*/.idea
 
 pip-selfcheck.json
 
