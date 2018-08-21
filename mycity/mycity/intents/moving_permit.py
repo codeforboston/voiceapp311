@@ -14,42 +14,15 @@
 import mycity.utilities.gis_utils as gis_utils
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-from datetime import datetime
 from streetaddress import StreetAddressParser
+import mycity.logger
+import logging
 
-
+logger = logging.getLogger(__name__)
 PERMIT_INFO_URL = ('https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/' +
                    'rest/services/Moving_Truck_Permits/FeatureServer/0')                   
 STATUS = 'OPEN'
 moving_permit_data_result = {}
-
-
-def convert_xy_to_address(my_xy):
-    """
-    :param my_xy: address in the form of X and Y
-    :return: address in the form of street name
-    """
-    
-    pass
-
-
-def convert_address_to_xy(my_address):
-    """
-    :param my_address: address of interest in X and Y coordinates
-    :return: address in street form
-    """
-
-    pass
-
-
-def calculate_distance(first, second):
-    """
-    :param first: first address of interest
-    :param second: second address of interest
-    :return: the distance between these two addresses using the Haversine formula
-    """
-
-    pass
 
 
 def get_permit_locations():
@@ -76,7 +49,7 @@ def get_permit_locations():
                 moving_permit_unique_locations.append([location['attributes']['PermitNumb'],
                                                        location['geometry']])
             except:
-                #print('PermitNumb: ' + str(location['attributes']['PermitNumb']) + ' has no geometry')
+                #print('Permit has no geometry')
                 pass
     
     return moving_permit_unique_locations
@@ -89,13 +62,11 @@ def get_nearby_moving_permits(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseObject
     """
-    
-    print(
-        '[module: MovingPermitsIntent]',
-        '[method: get_permit_locations]',
-        'MyCityRequestDataModel received: ',
-        str(mycity_request)
-    )
+    logger.debug('[module: MovingPermitsIntent]' +
+                 '[method: get_permit_locations]' +
+                 'MyCityRequestDataModel received: ' +
+                 str(mycity_request))
+
     mycity_response = MyCityResponseDataModel()
     
     # Get user's address
@@ -105,41 +76,26 @@ def get_nearby_moving_permits(mycity_request):
 
         address_parser = StreetAddressParser()
         a = address_parser.parse(current_address)
-        address = str(a['house']) + " " + str(a['street_name'])
+        address = str(a['house']) + " " + str(a['street_name']) + " " + str(a['street_type'])
+
+        # Convert address to X, Y
+        usr_addr_xy = gis_utils.geocode_address(address)
         
-        # Get moving permit locations
+        # Get list of lists of moving permit ID and locations
         moving_permit_unique_locations = get_permit_locations()
-        
-        print('Printing first item...')
-        print(moving_permit_unique_locations[0])
-        
-        # TODO: vary feature_address_index
+
+        count = 0
         try:
-            '''closest_trucks = gis_utils.get_closest_feature(origin=address,
-                                                           feature_address_index=1,
-                                                           feature_type='Moving truck list',
-                                                           error_message='Unable to find moving trucks closest to you',
-                                                           features=moving_permit_unique_locations)
-            print(closest_trucks)
-            '''
-            print(gis_utils.get_closest_feature(origin=address,
-                                                feature_address_index=1,
-                                                feature_type='Moving truck list',
-                                                error_message='Unable to find moving trucks closest to you',
-                                                features=moving_permit_unique_locations))
+            for i in range(len(moving_permit_unique_locations)):
+                permit_xy = list(moving_permit_unique_locations[i][1].values())
+                dist = gis_utils.calculate_distance(usr_addr_xy, permit_xy)
+                if dist <= 0.8:
+                    count += 1
+            mycity_response.output_speech = "I found {} active moving permits within half a mile from your \
+                                             address.".format(count)
 
         except:
-            mycity_response.output_speech = "There was an issue retrieving the data"
-            print('ERROR: unable to find nearby moving trucks')
-            
-    #mycity_response.output_speech = "I found {} moving permits within a mile from your address."\
-    #                                .format(len(closest_trucks))
-    print(
-        '[module: MovingPermitsIntent]',
-        '[method: get_permit_locations]',
-        'MyCityResponseDataModel: ',
-        str(mycity_request)
-    )
+            mycity_response.output_speech = "There was an issue processing the data"
+            logger.error('ERROR: unable to find nearby moving trucks')
     
     return mycity_response
-
