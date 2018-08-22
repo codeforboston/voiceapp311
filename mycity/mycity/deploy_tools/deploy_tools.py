@@ -3,22 +3,24 @@ Tools to package and deploy the lambda function for the mycity voice app.
 """
 
 from __future__ import print_function
-from subprocess import run
+from subprocess import run, PIPE
 import argparse
 import os
 import shutil
 import zipfile
 import stat
 import errno
+import time
 
 # path constants
-PROJECT_ROOT = os.path.join(os.getcwd(), os.pardir, os.pardir)
+PROJECT_ROOT = os.path.join(os.getcwd(), os.path.pardir, os.path.pardir)
 TEMP_DIR_PATH = os.path.join(PROJECT_ROOT, 'temp')
 LAMBDA_REL_PATH = 'platforms/amazon/lambda/custom/lambda_function.py'
 LAMBDA_FUNCTION_PATH = os.path.join(PROJECT_ROOT, LAMBDA_REL_PATH)
+INTERACTION_MODEL_REL_PATH = 'platforms/amazon/models/en_US.json'
+INTERACTION_MODEL_PATH = os.path.join(PROJECT_ROOT, INTERACTION_MODEL_REL_PATH)
 MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
 ZIP_FILE_NAME = "lambda_function.zip"
-LAMBDA_FUNCTION_NAME = "MyCity"
 
 
 def zip_lambda_function_directory(zip_target_dir):
@@ -119,48 +121,103 @@ def package_lambda_function():
         ignore_errors=False,
         onerror=handle_remove_readonly
     )
-
-def update_lambda_code():
-
-    print("\nUpdating/uploading lambda code\n")
-
-    aws_path = shutil.which("aws")
-    # print("path:" + aws_path)
-
-    update_lambda_code = [
-        aws_path,
-        "lambda",
-        "update-function-code",
-        "--function-name",
-        LAMBDA_FUNCTION_NAME,
-        "--zip-file",
-        "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
-    ]
-    run(update_lambda_code)
-    print("DONE UPLOADING...\n")
+    print('DONE', end='\n')
 
 
-def handle_remove_readonly(func, path, execinfo):
+def update_lambda_code(lambda_function_name):
     """
-    Passed as the onerror parameter when calling shutil.rmtree.
-    See:
-    https://stackoverflow.com/a/1214935/2554154
-    Handles the case where rmtree fails in Windows due to access problems.
+    Uploads the archive containing our lambda function and dependencies to the
+    specified lambda. Requires that the user has configured AWS CLI and that
+    the archive exists.
 
-    :param func:
-    :param path:
-    :param execinfo:
-    :return: none
+    :param lambda_function_name:
+    :return:
     """
-    excvalue = execinfo[1]
-    if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
-        # if we're failing to remove files because they are readonly,
-        # update permissions
-        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
-        func(path)
+
+    # We only want to attempt to upload if we have a zip file.
+    if os.path.isfile(os.path.join(PROJECT_ROOT, ZIP_FILE_NAME)):
+        print("\nUploading to Lambda via AWS CLI...\n")
+
+        # If the upload fails, catch the exception and alert user.
+        try:
+            update_command_array = [
+                shutil.which("aws"), # path to user's AWS CLI installation
+                "lambda",
+                "update-function-code",
+                "--function-name",
+                lambda_function_name,
+                "--zip-file",
+                "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
+            ]
+            run(update_command_array)
+            print("DONE UPLOADING\n")
+        except OSError as e:
+            print(
+                "There was a problem uploading to lambda.\n"
+                "Make sure you have configured AWS CLI.\n"
+                "Error output:\n" +
+                str(e) + "\n"
+            )
     else:
-        raise Exception("Failed to delete temp folder.")
-    print('DONE')
+        print("Unable to upload to Lambda: zip file does not exist.\n")
+
+
+def update_interaction_model():
+    """
+    Upload the interaction model JSON file stored in
+      mycity/platforms/amazon/models/
+    to your skill and rebuild the interaction model.
+
+    This is done using the Amazon Skills Kit CLI (ASK CLI), and requires
+    setting up the following environment variable in your OS:
+      BOSTON_INFO_SKILL_ID
+    which contains the skill ID found in the Alexa skills console.
+
+    :return:
+    """
+    print("\nUpdating and rebuilding interaction model via ASK CLI...\n")
+
+    # Run the ASK CLI command to update the model.
+    try:
+        update_command_array = [
+            shutil.which("ask"),  # path to user's ASK CLI installation,
+            "api",
+            "update-model",
+            "-s",
+            os.environ["BOSTON_INFO_SKILL_ID"],
+            "-f",
+            INTERACTION_MODEL_PATH,
+            "-l",
+            "en-US"
+        ]
+        result = run(update_command_array, stdout=PIPE)
+        if "Model for en-US submitted" in result.stdout.decode('utf-8'):
+            print("Model for en-US submitted. Building...\n")
+    except OSError as e:
+        print(
+            "There was a problem updating the interaction model.\n"
+            "Error output:\n" +
+            str(e) + "\n"
+        )
+
+    # If the update command was successful, ASK-CLI will immediately kick off
+    # a build of the interaction model.
+    # We can use ASK-CLI to report on the build's progress.
+    build_status_command_array = [
+        shutil.which("ask"),  # path to user's ASK CLI installation,
+        "api",
+        "get-model-status",
+        "-s",
+        os.environ["BOSTON_INFO_SKILL_ID"],
+        "-l",
+        "en-US"
+    ]
+    result = run(build_status_command_array, stdout=PIPE)
+    while "SUCCESS" not in result.stdout.decode('utf-8'):
+        print(".", end='', flush=True)
+        time.sleep(1)
+        result = run(build_status_command_array, stdout=PIPE)
+    print("\nDONE UPLOADING AND BUILDING INTERACTION MODEL\n")
 
 
 def handle_remove_readonly(func, path, execinfo):
@@ -184,6 +241,7 @@ def handle_remove_readonly(func, path, execinfo):
         func(path)
     else:
         raise Exception("Failed to delete temp folder.")
+    print('DONE')
 
 
 def main():
@@ -202,28 +260,44 @@ def main():
         '-p',
         '--package',
         help="Creates a zip file that can be uploaded as an Amazon lambda " +
-             "function",
+             "function.",
         action='store_true'
     )
 
     parser.add_argument(
         '-f',
         '--function',
-        help="The function name that is associated with your Lambda function " +
-            "on aws"
+        help="Provide the function name of your lambda with this option to " +
+             "upload the zip file via ASK CLI."
+    )
+
+    parser.add_argument(
+        '-i',
+        '--interaction',
+        help="Signals deploy tools to update the interaction model via ASK CLI.",
+        action='store_true'
     )
 
     args = parser.parse_args()
 
+    is_interaction_model_updated = False
+
     if args.function:
-        global LAMBDA_FUNCTION_NAME
-        LAMBDA_FUNCTION_NAME = args.function
         package_lambda_function()
-        update_lambda_code()
+        update_lambda_code(args.function)
     elif args.package:
         package_lambda_function()
+    elif args.interaction:
+        # Handles the case that we want to update the interaction model without
+        # uploading a new lambda zip.
+        update_interaction_model()
+        is_interaction_model_updated = True
     else:
         print("No known option selected")
+
+    # Handle the interaction model option when we are uploading a zip file.
+    if args.interaction and not is_interaction_model_updated:
+        update_interaction_model()
 
 
 if __name__ == "__main__":
