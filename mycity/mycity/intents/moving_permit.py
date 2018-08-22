@@ -94,8 +94,25 @@ def get_nearby_moving_permits(mycity_request):
             mycity_response.output_speech = "I found {} active moving permits within half a mile from your \
                                              address.".format(count)
 
-        except:
-            mycity_response.output_speech = "There was an issue processing the data"
-            logger.error('ERROR: unable to find nearby moving trucks')
-    
+        except InvalidAddressError:
+            address_string = address
+            mycity_response.output_speech = "I can't seem to find {}. Try another address".format(address_string)
+            mycity_response.reprompt_text = None
+            mycity_response.session_attributes = mycity_request.session_attributes
+            mycity_response.card_title = "Moving Permit"
+            mycity_request = clear_address_from_mycity_object(mycity_request)
+            mycity_response = clear_address_from_mycity_object(mycity_response)
+            return mycity_response
+
+        except BadAPIResponse:
+            mycity_response.output_speech = \
+                "Hmm something went wrong. Maybe try again?"
+
+        mycity_response.should_end_session = False
+
+    else:
+        print("Error: Called moving permit intent with no address")
+        mycity_response.output_speech = "I didn't understand that address, please try again"
+
+
     return mycity_response
