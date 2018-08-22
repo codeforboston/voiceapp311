@@ -6,11 +6,15 @@ kill any computation that takes longer than 3 secs.
 
 """
 from arcgis.features import FeatureLayer
-
 import mycity.utilities.google_maps_utils as g_maps_utils
+from arcgis.gis import *
+from arcgis.geocoding import geocode, reverse_geocode
+from math import sin, cos, sqrt, atan2, radians
+
+dev_gis = GIS()  # this is needed to use geocoding
 
 
-def get_closest_feature(origin, feature_address_index, 
+def get_closest_feature(origin, feature_address_index,
                         feature_type, error_message, features):
     """
     Calculates the nearest feature given an origin
@@ -37,24 +41,24 @@ def get_closest_feature(origin, feature_address_index,
         'error_message received:',
         error_message,
         'features received (printing first five):',
-        features[:5],            # only return first 5 features
+        features[:5],  # only return first 5 features
         '...count(features):',
         len(features)
     )
 
     dest_addresses = _get_dest_addresses_from_features(feature_address_index, features)
-    location_driving_info = g_maps_utils._get_driving_info(origin, feature_type, 
-                                              dest_addresses)
+    location_driving_info = g_maps_utils._get_driving_info(origin, feature_type,
+                                                           dest_addresses)
     if len(location_driving_info) > 0:
         closest_location_info = min(location_driving_info,
-                                    key= lambda x: x[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY])
+                                    key=lambda x: x[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY])
     else:
         print(error_message)
-        closest_location_info = { feature_type: False,
-                                  g_maps_utils.DRIVING_DISTANCE_TEXT_KEY: False,
-                                  g_maps_utils.DRIVING_TIME_TEXT_KEY: False }
+        closest_location_info = {feature_type: False,
+                                 g_maps_utils.DRIVING_DISTANCE_TEXT_KEY: False,
+                                 g_maps_utils.DRIVING_TIME_TEXT_KEY: False}
     closest_location_info = \
-       g_maps_utils._parse_closest_location_info(feature_type, closest_location_info)
+        g_maps_utils._parse_closest_location_info(feature_type, closest_location_info)
     return closest_location_info
 
 
@@ -77,8 +81,8 @@ def get_features_from_feature_server(url, query):
     )
 
     features = []
-    f = FeatureLayer(url = url)
-    feature_set = f.query(where = query)
+    f = FeatureLayer(url=url)
+    feature_set = f.query(where=query)
     for feature in feature_set:
         features.append(feature.as_dict)
     return features
@@ -107,7 +111,45 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     # build array of each feature location
     for feature in features:
         if feature[feature_address_index]:
-            dest_address = feature[feature_address_index].rstrip() # to strip \r\n 
+            dest_address = feature[feature_address_index].rstrip()  # to strip \r\n
             dest_address += " Boston, MA"
             dest_addresses.append(dest_address)
     return dest_addresses
+
+
+def reverse_geocode_address(location):
+    """
+    :param location: address in the form of X and Y
+    :return: address in the form of street name
+    """
+    m_location = reverse_geocode(location)
+    return m_location['address']['Match_addr']
+
+
+def geocode_address(m_address):
+    """
+    :param m_address: address of interest in street form
+    :return: address in coordinate (X and Y) form
+    """
+    m_address = m_address + ", City: Boston, State: MA"
+    m_location = geocode(address=m_address)[0]
+    adict = (m_location['location'])
+    return list(adict.values())
+
+
+def calculate_distance(m_first, m_second):
+    """
+    :param m_first: first address of interest
+    :param m_second: second address of interest
+    :return: the distance (in km) between these two addresses using the Haversine formula
+    """
+    R = 6371  # radius of the earth
+    lat1 = radians(m_first[0])
+    lon1 = radians(m_first[1])
+    lat2 = radians(m_second[0])
+    lon2 = radians(m_second[1])
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    return R * c
