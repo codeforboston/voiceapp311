@@ -6,8 +6,12 @@ import requests
 import mycity.utilities.gis_utils as gis_utils
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+from streetaddress import StreetAddressParser
 from datetime import date
 from calendar import day_name
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Note: food truck data result is queried twice, for unique locations, then for all trucks at nearest location,
 #   so it needs to be accessed outside of get_truck_locations()
@@ -36,6 +40,8 @@ def get_truck_locations():
     truck_unique_locations = []
     for truck in food_truck_data_result:
         if truck["attributes"]["Loc"] not in truck_unique_locations:
+            print(truck)
+            print('\n')
             truck_unique_locations.append([truck["attributes"]["Loc"], truck["geometry"]])
 
     return truck_unique_locations
@@ -48,6 +54,8 @@ def get_nearby_food_trucks(mycity_request):
     :return: MyCityResponseObject
     """
 
+    mycity_response = MyCityResponseDataModel()
+
     # Get current address location
     # TODO: this block is copy/pasted from trash_intent.py, should refactor
     if CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
@@ -56,23 +64,30 @@ def get_nearby_food_trucks(mycity_request):
 
         address_parser = StreetAddressParser()
         a = address_parser.parse(current_address)
-        address = str(a['house']) + " " + str(a['street_name'])
+        address = str(a['house']) + " " + str(a['street_name']) + " " + str(a['street_type'])
+
+        # Convert address to X, Y
+        usr_addr_xy = gis_utils.geocode_address(address)
+        print('User\'s address: ' + str(usr_addr_xy))
 
         truck_unique_locations = get_truck_locations()
 
+        count = 0
         try:
-            #TODO: currently just gets distance to first location given (??). Should loop through or modify get_closest_feature to return closest location in list
-            closest_truck = gis_utils.get_closest_feature(origin=address,
-                                                          feature_address_index=1,
-                                                          feature_type='Food truck list',
-                                                          error_message='Unable to find food trucks closest to you',
-                                                          features=truck_unique_locations)
-            print(closest_truck_location)
+            for i in range(len(truck_unique_locations)):
+                permit_xy = list(truck_unique_locations[i][1].values())
+                print('Permit location: ' + str(permit_xy))
 
-            #TODO: take this location and get all food trucks at this location
+                dist = gis_utils.calculate_distance(usr_addr_xy, permit_xy)
+                print('Distance to fod truck: ' + str(dist))
+                if dist <= 1.6:  # in km
+                    count += 1
+            mycity_response.output_speech = "I found {} food trucks within a mile from your \
+                                                     address.".format(count)
         except:
-            print('ERROR: unable to find closest food truck location to you')
+            mycity_response.output_speech = "There was an issue processing the data"
+            logger.error('ERROR: unable to find nearby moving trucks')
 
-    mycity_response = MyCityResponseDataModel()
-    mycity_response.output_speech = "Chicken and rice guys!!!"
     return mycity_response
+
+print(get_truck_locations())
