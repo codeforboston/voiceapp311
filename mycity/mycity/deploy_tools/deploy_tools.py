@@ -11,6 +11,8 @@ import zipfile
 import stat
 import errno
 import time
+import re
+import json
 
 # path constants
 PROJECT_ROOT = os.path.join(os.getcwd(), os.path.pardir, os.path.pardir)
@@ -21,6 +23,7 @@ INTERACTION_MODEL_REL_PATH = 'platforms/amazon/models/en_US.json'
 INTERACTION_MODEL_PATH = os.path.join(PROJECT_ROOT, INTERACTION_MODEL_REL_PATH)
 MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
 ZIP_FILE_NAME = "lambda_function.zip"
+HORIZONTAL_RULE = '* ---------------------------------------'
 
 
 def zip_lambda_function_directory(zip_target_dir):
@@ -35,12 +38,14 @@ def zip_lambda_function_directory(zip_target_dir):
     zip_file = zipfile.ZipFile(os.path.join(zip_target_dir, ZIP_FILE_NAME), 'w')
     original_directory = os.getcwd()
     os.chdir(TEMP_DIR_PATH)
-    print('Compressing ', end='')
+    print('* Compressing\n* ', end='')
     for root, dirs, files in os.walk('.'):
         for f in files:
             zip_file.write(os.path.join(root, f))
-            print('.', end='')
-    print('DONE')
+        for d in dirs:
+            print('.', end='', flush=True)
+    print('\n* DONE')
+    print(HORIZONTAL_RULE)
     zip_file.close()
     os.chdir(original_directory)
 
@@ -74,11 +79,24 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
         TEMP_DIR_PATH
     ]
 
-    print('Installing dependencies ... ', end='')
-    run(install_args)
-    print('Installing dependencies from requirements_no_deps.txt ...', end='')
-    run(install_args_no_deps)
-    print('DONE')
+    print('* Installing dependencies ...')
+    result = run(install_args, stdout=PIPE, stderr=PIPE)
+    print_package_names(result.stdout)
+    print('* DONE')
+    print(HORIZONTAL_RULE)
+    print('* Installing dependencies from requirements_no_deps.txt ...')
+    result = run(install_args_no_deps, stdout=PIPE, stderr=PIPE)
+    print_package_names(result.stdout)
+    print('* DONE')
+    print(HORIZONTAL_RULE)
+
+
+def print_package_names(install_output):
+    pattern = "Collecting [\w]+=="
+    dependencies = re.findall(pattern, install_output.decode('utf-8'))
+    for dependency in dependencies:
+        name = dependency[11:len(dependency) - 2]
+        print('*   ' + name, end='\n')
 
 
 def package_lambda_function():
@@ -89,7 +107,8 @@ def package_lambda_function():
 
     :return: None
     """
-    print('Creating temporary build directory ... ', end='')
+    print(HORIZONTAL_RULE)
+    print('* Creating temporary build directory ... ')
     # remove/create the temporary directory for the zip file's contents
     if os.path.exists(TEMP_DIR_PATH):
         shutil.rmtree(
@@ -103,7 +122,8 @@ def package_lambda_function():
     shutil.copy(LAMBDA_FUNCTION_PATH, TEMP_DIR_PATH)
     shutil.copytree(MYCITY_PATH, os.path.join(TEMP_DIR_PATH, 'mycity'))
 
-    print('DONE')
+    print('* DONE')
+    print(HORIZONTAL_RULE)
 
     # install dependencies
     install_pip_dependencies(
@@ -115,13 +135,14 @@ def package_lambda_function():
     zip_lambda_function_directory(PROJECT_ROOT)
 
     # delete temp directory
-    print('Cleaning up ... ', end='')
+    print('* Cleaning up ...')
     shutil.rmtree(
         TEMP_DIR_PATH,
         ignore_errors=False,
         onerror=handle_remove_readonly
     )
-    print('DONE', end='\n')
+    print('* DONE')
+    print(HORIZONTAL_RULE)
 
 
 def update_lambda_code(lambda_function_name):
@@ -136,12 +157,13 @@ def update_lambda_code(lambda_function_name):
 
     # We only want to attempt to upload if we have a zip file.
     if os.path.isfile(os.path.join(PROJECT_ROOT, ZIP_FILE_NAME)):
-        print("\nUploading to Lambda via AWS CLI...\n")
+        print("* Uploading to Lambda via AWS CLI ...")
+        print("*   (please wait, this may take a while)")
 
         # If the upload fails, catch the exception and alert user.
         try:
             update_command_array = [
-                shutil.which("aws"), # path to user's AWS CLI installation
+                shutil.which("aws"),  # path to user's AWS CLI installation
                 "lambda",
                 "update-function-code",
                 "--function-name",
@@ -149,20 +171,21 @@ def update_lambda_code(lambda_function_name):
                 "--zip-file",
                 "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
             ]
-            run(update_command_array)
-            print("DONE UPLOADING\n")
+            run(update_command_array, stdout=PIPE)
+            print("* DONE UPLOADING")
+            print(HORIZONTAL_RULE)
         except OSError as e:
             print(
-                "There was a problem uploading to lambda.\n"
-                "Make sure you have configured AWS CLI.\n"
-                "Error output:\n" +
+                "! There was a problem uploading to lambda.\n"
+                "! Make sure you have configured AWS CLI.\n"
+                "! Error output:\n" +
                 str(e) + "\n"
             )
     else:
-        print("Unable to upload to Lambda: zip file does not exist.\n")
+        print("! Unable to upload to Lambda: zip file does not exist.\n")
 
 
-def update_interaction_model():
+def update_interaction_model(provided_skill_id):
     """
     Upload the interaction model JSON file stored in
       mycity/platforms/amazon/models/
@@ -173,10 +196,24 @@ def update_interaction_model():
       BOSTON_INFO_SKILL_ID
     which contains the skill ID found in the Alexa skills console.
 
+    :param provided_skill_id: The ID of the skill whose interaction model
+                              to update.
     :return:
     """
-    print("\nUpdating and rebuilding interaction model via ASK CLI...\n")
-
+    # Confirm we have a skill ID.
+    # Assign the value passed at command line to skill_id
+    skill_id = provided_skill_id
+    # If no skill ID passed at command line, look for it in environment.
+    if skill_id == 'Env_Var':
+        if 'BOSTON_INFO_SKILL_ID' in os.environ:
+            skill_id = os.environ['BOSTON_INFO_SKILL_ID']
+        else:
+            print('! Error: Unable to update interaction model.\n'
+                  '! Please provide a skill ID with -i or define a\n'
+                  '! BOSTON_INFO_SKILL_ID environment variable.')
+            print(HORIZONTAL_RULE)
+            return
+    print("* Updating and rebuilding interaction model via ASK CLI ...")
     # Run the ASK CLI command to update the model.
     try:
         update_command_array = [
@@ -184,7 +221,7 @@ def update_interaction_model():
             "api",
             "update-model",
             "-s",
-            os.environ["BOSTON_INFO_SKILL_ID"],
+            skill_id,
             "-f",
             INTERACTION_MODEL_PATH,
             "-l",
@@ -192,32 +229,38 @@ def update_interaction_model():
         ]
         result = run(update_command_array, stdout=PIPE)
         if "Model for en-US submitted" in result.stdout.decode('utf-8'):
-            print("Model for en-US submitted. Building...\n")
+            print("* Model for en-US submitted. Building...")
     except OSError as e:
         print(
-            "There was a problem updating the interaction model.\n"
-            "Error output:\n" +
+            "! There was a problem updating the interaction model.\n"
+            "! Error output:\n" +
             str(e) + "\n"
         )
 
-    # If the update command was successful, ASK-CLI will immediately kick off
-    # a build of the interaction model.
+    # If the update command was successful, ASK-CLI will immediately kick
+    # off a build of the interaction model.
     # We can use ASK-CLI to report on the build's progress.
     build_status_command_array = [
         shutil.which("ask"),  # path to user's ASK CLI installation,
         "api",
-        "get-model-status",
+        "get-skill-status",
         "-s",
-        os.environ["BOSTON_INFO_SKILL_ID"],
-        "-l",
-        "en-US"
+        skill_id
     ]
     result = run(build_status_command_array, stdout=PIPE)
-    while "SUCCESS" not in result.stdout.decode('utf-8'):
+    print("* ", end='', flush=True)
+    status = \
+        json.loads(result.stdout)['interactionModel']['en-US'][
+            'lastUpdateRequest'][
+            'status']
+    while status != "SUCCEEDED":
         print(".", end='', flush=True)
         time.sleep(1)
         result = run(build_status_command_array, stdout=PIPE)
-    print("\nDONE UPLOADING AND BUILDING INTERACTION MODEL\n")
+        status = json.loads(result.stdout)['interactionModel']['en-US'][
+            'lastUpdateRequest']['status']
+    print("\n* DONE UPLOADING AND BUILDING INTERACTION MODEL")
+    print(HORIZONTAL_RULE)
 
 
 def handle_remove_readonly(func, path, execinfo):
@@ -240,8 +283,9 @@ def handle_remove_readonly(func, path, execinfo):
         os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
         func(path)
     else:
-        raise Exception("Failed to delete temp folder.")
-    print('DONE')
+        raise Exception("! Failed to delete temp folder.")
+    print('* DONE')
+    print(HORIZONTAL_RULE)
 
 
 def main():
@@ -274,8 +318,11 @@ def main():
     parser.add_argument(
         '-i',
         '--interaction',
-        help="Signals deploy tools to update the interaction model via ASK CLI.",
-        action='store_true'
+        nargs='?',
+        const='Env_Var',
+        help="Pass skill id with this flag to upload/build interaction model. " +
+             "If no skill ID is provided, attempts to fall back to " +
+             "BOSTON_INFO_SKILL_ID environment variable."
     )
 
     args = parser.parse_args()
@@ -290,14 +337,14 @@ def main():
     elif args.interaction:
         # Handles the case that we want to update the interaction model without
         # uploading a new lambda zip.
-        update_interaction_model()
+        update_interaction_model(args.interaction)
         is_interaction_model_updated = True
     else:
         print("No known option selected")
 
     # Handle the interaction model option when we are uploading a zip file.
     if args.interaction and not is_interaction_model_updated:
-        update_interaction_model()
+        update_interaction_model(args.interaction)
 
 
 if __name__ == "__main__":
