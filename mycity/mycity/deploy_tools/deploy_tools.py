@@ -28,6 +28,7 @@ def zip_lambda_function_directory(zip_target_dir):
     Generates a .zip file containing the contents of the temporary directory
     where the project files have been copied. Note that this .zip file
     must contain the files with no intermediate directory.
+
     :param zip_target_dir: destination directory for zip file being created
     :return: None
     """
@@ -48,6 +49,7 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     """
     Installs all the dependencies for the project's entry point to a
     temporary directory the .zip file is later created from.
+
     :param requirements_path: path to textfile containing required libraries
     :param requirements_path_no_deps: path to textfile containing required
         libraries (whose dependencies won't be downloaded)
@@ -84,6 +86,7 @@ def package_lambda_function():
     Creates a temporary directory where the lambda file and all of its
     dependencies are copied before being compressed. Removes the temporary
     directory after creating the .zip file.
+
     :return: None
     """
     print('Creating temporary build directory ... ', end='')
@@ -223,6 +226,7 @@ def handle_remove_readonly(func, path, execinfo):
     See:
     https://stackoverflow.com/a/1214935/2554154
     Handles the case where rmtree fails in Windows due to access problems.
+
     :param func: function that raised the exception, shutil.rmtree
     :param path: path to temp folder
     :param execinfo: the exception information returned by sys.exc_info()
@@ -244,6 +248,7 @@ def main():
     """
     Defines the command-line option required to initiate building the zipfile.
     Conditionally begins the build process if the required option is present.
+
     :return: None
     """
     parser = argparse.ArgumentParser(
