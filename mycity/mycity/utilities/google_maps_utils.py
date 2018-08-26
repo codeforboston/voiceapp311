@@ -6,6 +6,8 @@ an origin address to a list of destinations
 import os
 import requests
 
+
+
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 GOOGLE_MAPS_URL = "https://maps.googleapis.com/maps/api/distancematrix/json"
 DRIVING_DISTANCE_VALUE_KEY = "Driving distance"
