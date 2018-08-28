@@ -1025,9 +1025,72 @@
                 {
                     "name": "AMAZON.CancelIntent",
                     "samples": []
+                },
+                {
+                    "name": "FeedbackIntent",
+                    "slots": [
+                        {
+                            "name": "FeedbackType",
+                            "type": "FeedbackType",
+                            "samples": [
+                                "Suggesting a new {FeedbackType} ",
+                                "Reporting a {FeedbackType} ",
+                                "I have an {FeedbackType}  for this app",
+                                "Report a {FeedbackType} ",
+                                "{FeedbackType} ",
+                                "I'd like to make a {FeedbackType} ",
+                                "This skill has a {FeedbackType} ",
+                                "There is a {FeedbackType} in the skill",
+                                "There is a {FeedbackType} on the skill",
+                                "I have an {FeedbackType} ",
+                                "I have a {FeedbackType} ",
+                                "I'd like to report a {FeedbackType} "
+                            ]
+                        },
+                        {
+                            "name": "Feedback",
+                            "type": "AMAZON.SearchQuery",
+                            "samples": [
+                                "{Feedback}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "I'd like to suggest something this skill could do",
+                        "I have an idea for this skill",
+                        "I have an idea for this app",
+                        "I have an idea for your app",
+                        "I'd like to report a bug",
+                        "I have a suggestion"
+                    ]
                 }
             ],
-            "types": []
+            "types": [
+                {
+                    "name": "FeedbackType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Bug",
+                                "synonyms": [
+                                    "error",
+                                    "Problem"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Idea",
+                                "synonyms": [
+                                    "functionality",
+                                    "feature",
+                                    "Suggestion"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         },
         "dialog": {
             "intents": [
@@ -1069,6 +1132,32 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "FeedbackIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "FeedbackType",
+                            "type": "FeedbackType",
+                            "confirmationRequired": true,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "confirmation": "Confirm.Slot.583949240758.172473885615",
+                                "elicitation": "Elicit.Slot.583949240758.172473885615"
+                            }
+                        },
+                        {
+                            "name": "Feedback",
+                            "type": "AMAZON.SearchQuery",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.583949240758.1214821999168"
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -1097,6 +1186,33 @@
                     {
                         "type": "PlainText",
                         "value": "What's your address?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.583949240758.172473885615",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Are you reporting a bug or suggesting a new feature?"
+                    }
+                ]
+            },
+            {
+                "id": "Confirm.Slot.583949240758.172473885615",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "I heard {FeedbackType} , is that correct?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.583949240758.1214821999168",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "In a few sentences or less, please describe the {FeedbackType}"
                     }
                 ]
             }
