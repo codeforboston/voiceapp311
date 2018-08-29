@@ -11,28 +11,30 @@ from datetime import date
 from calendar import day_name
 import logging
 from pyproj import Proj, transform
+from .custom_errors import \
+    InvalidAddressError, BadAPIResponse
 
 logger = logging.getLogger(__name__)
+MERCATOR = 'epsg:3857'  # defines pseudo-mercator coordinate system, i.e., it uses X,Y instead of lat,long
+                        # (ref.: https://epsg.io/3857)
+GEODETIC = 'epsg:4326'  # defines geodetic coordinate system, i.e., lat, long. (ref.: https://epsg.io/4326)
+MILE_IN_KILOMETERS = 1.6
+
 
 # Note: food truck data result is queried twice, for unique locations, then for all trucks at nearest location,
 #   so it needs to be accessed outside of get_truck_locations()
 food_truck_data_result = {}
 
 
-
 def convert_xy_to_lat_long(coordinates):
     """
-    Some datasets use Point X, Y as coordinates. This method converts it to lat and long
+    Some datasets use (x,y) coordinates to form map projection. This method converts it to lat and long
     :param coordinates: a list with X and Y
     :return: a list of Lat and Long
     """
-    latlong = []
-    inProj = Proj(init='epsg:3857')
-    outProj = Proj(init='epsg:4326')
-    x1, y1 = coordinates[0], coordinates[1]
-    x2, y2 = transform(inProj, outProj, x1, y1)
-    latlong.extend((x2, y2))
-    return latlong
+    inProj = Proj(init=MERCATOR)
+    outProj = Proj(init=GEODETIC)
+    return [coordinate for coordinate in transform(inProj, outProj, coordinates[0], coordinates[1])]
 
 
 def get_truck_locations():
@@ -58,7 +60,6 @@ def get_truck_locations():
     truck_unique_locations = []
     for truck in food_truck_data_result:
         if truck["attributes"]["Loc"] not in truck_unique_locations:
-            #print(truck)
             truck_unique_locations.append([truck["attributes"]["Loc"], truck["geometry"]])
 
     return truck_unique_locations
@@ -84,21 +85,18 @@ def get_nearby_food_trucks(mycity_request):
 
         # Convert address to X, Y
         usr_addr_xy = gis_utils.geocode_address(address)
-        #print('User\'s address: ' + str(usr_addr_xy))
 
         truck_unique_locations = get_truck_locations()
 
         count = 0
         try:
-            for i in range(len(truck_unique_locations)):
-                permit_xy = list(truck_unique_locations[i][1].values())
+            for location in truck_unique_locations:
+                permit_xy = list(location[1].values())
                 permit_xy = convert_xy_to_lat_long(permit_xy)
-                #print('Permit location: ' + str(permit_xy))
-
                 dist = gis_utils.calculate_distance(usr_addr_xy, permit_xy)
-                #print('Distance to fod truck: ' + str(dist))
-                if dist <= 1.6:  # in km
+                if dist <= MILE_IN_KILOMETERS:
                     count += 1
+
             mycity_response.output_speech = "I found {} food trucks within a mile from your \
                                                      address.".format(count)
         except InvalidAddressError:
@@ -117,7 +115,6 @@ def get_nearby_food_trucks(mycity_request):
         except BadAPIResponse:
             mycity_response.output_speech = \
                 "Hmm something went wrong. Maybe try again?"
-
 
     else:
         logger.error("Error: Called trash_day_intent with no address")
