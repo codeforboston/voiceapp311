@@ -2,6 +2,7 @@ import unittest.mock as mock
 import mycity.test.test_constants as test_constants
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
+import mycity.intents.trash_intent as trash_intent
 
 
 ###################################
@@ -14,9 +15,9 @@ class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
                        base_case.IntentBaseCase):
 
     intent_to_test = "TrashDayIntent"
-    expected_title = "Trash Day"
+    expected_title = trash_intent.CARD_TITLE
     returns_reprompt_text = False
-    expected_card_title = "Trash Day"
+    expected_card_title = trash_intent.CARD_TITLE
 
     def setUp(self):
         """

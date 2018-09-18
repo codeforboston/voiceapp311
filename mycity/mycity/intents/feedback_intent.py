@@ -4,12 +4,13 @@ including bug reports and suggestions for new intents.
 """
 
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.intents.speech_constants.feedback_intent as speech_constants
 import requests
 import json
 import os
 
 SLACK_WEBHOOKS_URL = os.environ['SLACK_WEBHOOKS_URL']
-
+CARD_TITLE = "Feedback"
 
 def submit_feedback(mycity_request):
     """
@@ -49,13 +50,12 @@ def submit_feedback(mycity_request):
             build_slack_message(feedback_type, feedback_text)
         )
         if status == 200:
-            mycity_response.output_speech = 'Thanks for your feedback.'
+            mycity_response.output_speech = speech_constants.BIG_THANKS
         else:
-            mycity_response.output_speech = \
-                'There was a problem with your feedback. Please try again.'
+            mycity_response.output_speech = speech_constants.PROBLEM_SAVING_FEEDBACK
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
-        mycity_response.card_title = "Feedback"
+        mycity_response.card_title = CARD_TITLE
     return mycity_response
 
 
