@@ -2,6 +2,8 @@ import unittest.mock as mock
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
+import mycity.intents.get_alerts_intent as get_alerts
+import mycity.intents.speech_constants.get_alerts_intent as get_alerts_speech_constants
 
 
 ########################################
@@ -13,7 +15,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
                         base_case.IntentBaseCase):
 
     intent_to_test = "GetAlertsIntent"
-    expected_title = 'City Alerts'
+    expected_title = get_alerts.ALERTS_INTENT_CARD_TITLE
     returns_reprompt_text = False
     # if we don't create copies of these dictionaries we'll create empty
     # dictionary errors after successive setUps and tearDowns
@@ -42,7 +44,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
                 return_value=no_alerts.copy())
     def test_response_with_no_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
-        expected_response = test_constants.GET_ALERTS_EXPECTED_RESPONSE
+        expected_response = get_alerts_speech_constants.NO_ALERTS
         self.assertEqual(response.output_speech, expected_response)
         
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',

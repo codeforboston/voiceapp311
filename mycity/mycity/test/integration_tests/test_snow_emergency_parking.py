@@ -3,6 +3,7 @@ import unittest.mock as mock
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
+import mycity.intents.snow_parking_intent as snow_parking
 
 
 ##########################################
@@ -15,9 +16,9 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                             base_case.IntentBaseCase):
 
     intent_to_test = "SnowParkingIntent"
-    expected_title  = "Snow Parking"
+    expected_title = snow_parking.SNOW_PARKING_CARD_TITLE
     returns_reprompt_text = False
-    expected_card_title = "Snow Parking"
+    expected_card_title = snow_parking.SNOW_PARKING_CARD_TITLE
 
     def setUp(self):
         """
@@ -45,8 +46,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
             test_constants.CLOSEST_PARKING_DRIVING_DATA
         self.get_driving_info_patch = \
             mock.patch(
-                ('mycity.intents.snow_parking_intent.g_maps_utils'
-                 '._get_driving_info'),
+                'mycity.utilities.finder.Finder.g_maps_utils._get_driving_info',
                 return_value=mock_get_driving_info_return
             )
         self.mock_filtered_record.start()
