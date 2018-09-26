@@ -1,5 +1,6 @@
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.intents.unhandled_intent as unhandled_intent
 
 
 ########################################
@@ -13,6 +14,6 @@ class UnhandledIntentTestCase(mix_ins.RepromptTextTestMixIn,
                               base_case.IntentBaseCase):
 
     intent_to_test = "UnhandledIntent"
-    expected_title = "Unhandled"
+    expected_title = unhandled_intent.CARD_TITLE
     returns_reprompt_text = True
-    expected_card_title = "Unhandled"
+    expected_card_title = unhandled_intent.CARD_TITLE

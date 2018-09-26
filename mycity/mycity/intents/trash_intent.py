@@ -9,7 +9,9 @@ from mycity.intents.user_address_intent import clear_address_from_mycity_object
 import re
 import requests
 from . import intent_constants
+import mycity.intents.speech_constants.trash_intent as speech_constants
 
+CARD_TITLE = "Trash Day"
 
 def get_trash_day_info(mycity_request):
     """
@@ -48,45 +50,39 @@ def get_trash_day_info(mycity_request):
             trash_days = get_trash_and_recycling_days(address, zip_code)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
 
-            mycity_response.output_speech = "Trash and recycling is picked up on {}."\
-                .format(trash_days_speech)
+            mycity_response.output_speech = speech_constants.PICK_UP_DAY.format(trash_days_speech)
 
         except InvalidAddressError:
             address_string = address
             if zip_code:
                 address_string = address_string + " with zip code {}"\
                     .format(zip_code)
-            mycity_response.output_speech =\
-                "I can't seem to find {}. Try another address"\
-                .format(address_string)
+            mycity_response.output_speech = speech_constants.ADDRESS_NOT_FOUND.format(address_string)
             mycity_response.dialog_directive = "ElicitSlotTrash"
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = mycity_request.session_attributes
-            mycity_response.card_title = "Trash Day"
+            mycity_response.card_title = CARD_TITLE
             mycity_request = clear_address_from_mycity_object(mycity_request)
             mycity_response = clear_address_from_mycity_object(mycity_response)
             return mycity_response
 
         except BadAPIResponse:
-            mycity_response.output_speech =\
-                "Hmm something went wrong. Maybe try again?"
+            mycity_response.output_speech = speech_constants.BAD_API_RESPONSE
         except MultipleAddressError:
-            mycity_response.output_speech \
-                = "I found multiple places with the address {}. " \
-                  "What's the zip code?".format(address)
+            mycity_response.output_speech = speech_constants.MULTIPLE_ADDRESS_ERROR.format(address)
             mycity_response.dialog_directive = "ElicitSlotZipCode"
 
         mycity_response.should_end_session = False
     else:
         print("Error: Called trash_day_intent with no address")
-        mycity_response.output_speech = "I didn't understand that address, please try again"
+        mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = "Trash Day"
+    mycity_response.card_title = CARD_TITLE
     return mycity_response 
 
 
