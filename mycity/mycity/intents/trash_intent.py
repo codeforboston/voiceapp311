@@ -11,6 +11,7 @@ import requests
 from . import intent_constants
 import mycity.intents.speech_constants.trash_intent as speech_constants
 
+DAY_CODE_REGEX = r'\d+A? - '
 CARD_TITLE = "Trash Day"
 
 def get_trash_day_info(mycity_request):
@@ -250,6 +251,7 @@ def get_trash_days_from_trash_data(trash_data):
 
     try:
         trash_days_string = trash_data["next_event"]["zone"]["title"]
+        trash_days_string = re.sub(DAY_CODE_REGEX, '', trash_days_string)
         trash_days = trash_days_string.replace('&', '').split()
     except KeyError:
         # ReCollect API returned an unexpected JSON format
