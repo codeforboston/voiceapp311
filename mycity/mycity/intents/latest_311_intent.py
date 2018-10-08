@@ -1,9 +1,9 @@
 import requests
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.intents.custom_errors import BadAPIResponse
-from intents.speech_constants.latest_311_constants import *
+from mycity.intents.speech_constants.latest_311_constants import *
 
-DEFAULT_NUMBER_OF_REQUESTS = 3
+DEFAULT_NUMBER_OF_REPORTS = 3
 
 
 def get_311_requests(mycity_request):
@@ -15,16 +15,12 @@ def get_311_requests(mycity_request):
     mycity_response = MyCityResponseDataModel()
 
     try:
-        number_requests = DEFAULT_NUMBER_OF_REQUESTS
-        if REQUEST_311_NUMBER_REPORTS_SLOT_NAME in \
-                mycity_request.intent_variables:
-            number_requests = \
-                mycity_request.intent_variables[REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]
+        number_reports = number_of_reports(mycity_request)
 
         request_entries = \
-            get_311_requests_from_server(number_requests)
+            get_311_requests_from_server(number_reports)
         mycity_response.output_speech = \
-            REQUEST_311_INTRO_SCRIPT.format(number_requests)
+            REQUEST_311_INTRO_SCRIPT.format(number_reports)
         for request_entry in request_entries:
             mycity_response.output_speech += \
                 build_speech_from_311_report(request_entry)
@@ -35,6 +31,22 @@ def get_311_requests(mycity_request):
         mycity_response.output_speech = BAD_API_RESPONSE
 
     return mycity_response
+
+
+def number_of_reports(mycity_request):
+    """
+    Returns number of reports from the request if available or a default value
+    :param mycity_request: MyCityRequestDataModel object
+    :return: Number of 311 requests to return from this intent
+    """
+    if REQUEST_311_NUMBER_REPORTS_SLOT_NAME in \
+            mycity_request.intent_variables and \
+            "value" in mycity_request.intent_variables[
+                REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
+        return mycity_request.intent_variables[
+                REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]
+
+    return DEFAULT_NUMBER_OF_REPORTS
 
 
 def get_311_requests_from_server(number_entries):
