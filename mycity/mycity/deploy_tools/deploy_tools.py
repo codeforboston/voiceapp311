@@ -250,10 +250,8 @@ def update_interaction_model(provided_skill_id):
     result = run(build_status_command_array, stdout=PIPE)
     print("* ", end='', flush=True)
     status = \
-        json.loads(result.stdout)['interactionModel']['en-US'][
-            'lastUpdateRequest'][
-            'status']
-    while status != "SUCCEEDED":
+        json.loads(result.stdout)['status']
+    while status != "SUCCESSFUL":
         print(".", end='', flush=True)
         time.sleep(1)
         result = run(build_status_command_array, stdout=PIPE)
