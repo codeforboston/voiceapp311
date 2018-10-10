@@ -1,9 +1,10 @@
 """
 Data Model for structuring requests to the skill implementation
 """
+import json
+
 
 class MyCityRequestDataModel:
-    
     """
     Represents a request from a voice platform.
     
@@ -54,6 +55,15 @@ class MyCityRequestDataModel:
             self._device_id,
             self._api_access_token
         )
+
+    def get_logger_string(self):
+        """
+        Cloudwatch will group multiline log strings if they use return
+        character instead of the newline character.
+
+        :return: The string representation of this object with \r instead of \n
+        """
+        return self.__str__().replace('\n', '\r')
 
     @property
     def request_type(self):

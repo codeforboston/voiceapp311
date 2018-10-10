@@ -4,8 +4,10 @@ Utility function for building an address string from a mycity request
 """
 
 from streetaddress import StreetAddressParser
-
 import mycity.intents.intent_constants as intent_constants
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def build_origin_address(req):
@@ -16,12 +18,7 @@ def build_origin_address(req):
     :param req: MyCityRequestDataModel object
     :return: String containing full address
     """
-    print(
-        '[method: address_utils.build_origin_address]',
-        'MyCityRequestDataModel received:',
-        str(req)
-    )
-
+    logger.debug('MyCityRequestDataModel received:' + req.get_logger_string())
     address_parser = StreetAddressParser()
     current_address = \
         req.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]

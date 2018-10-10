@@ -1,16 +1,14 @@
 """
 Abstract parent class upon which subclasses are built that find location
 based information about city services
-
 """
-
-import csv
-import requests
 
 import mycity.utilities.address_utils as address_utils
 import mycity.utilities.csv_utils as csv_utils
-import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.google_maps_utils as g_maps_utils
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Finder(object):
@@ -34,9 +32,14 @@ class Finder(object):
     STATE = "MA"
     ERROR_MESSAGE = "Uh oh. Something went wrong!"
 
-
-    def __init__(self, req, resource_url, address_key, output_speech, 
-                 output_speech_prep_func):
+    def __init__(
+            self,
+            req,
+            resource_url,
+            address_key,
+            output_speech,
+            output_speech_prep_func
+    ):
         """
         :param req: MyCityRequestDataModel
         :param resource_url : String that Finder classes will 
@@ -56,10 +59,8 @@ class Finder(object):
         self.address_key = address_key
         self.output_speech = output_speech
         self.field_formatter = output_speech_prep_func
-        self.origin_address = Finder.address_builder(req) # pull the origin
-                                                          # address from request
-                                                          # data model
-
+        # pull the origin address from request data model
+        self.origin_address = Finder.address_builder(req)
 
     def get_records(self):
         """
@@ -69,9 +70,8 @@ class Finder(object):
         :return: None
         :raises: NotImplementedError
         """
-        print('[method: Finder.get_records]')
+        logger.error('Not implemented.')
         raise NotImplementedError
-
 
     def start(self):
         """
@@ -81,10 +81,9 @@ class Finder(object):
         
         :return: None
         """
-        print('[method: Finder.start]')
+        logger.debug('')
         records = self.get_records()
         self._start(records)
-
 
     def _start(self, records):
         """
@@ -96,23 +95,21 @@ class Finder(object):
             dictionaries
         :return: None
         """
-        print('[method: Finder._start]',
-              'records[:5]',
-              records[:5])
+        logger.debug('Last 5 records: ' + str(records[:5]))
         records = self.add_city_and_state_to_records(records)
         destinations = self.get_all_destinations(records)
         driving_info = self.get_driving_info_to_destinations(destinations)
         closest_dest = \
             min(driving_info, 
-                key = lambda destination : \
-                    destination[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY])
+                key=lambda destination: destination[g_maps_utils.
+                                                    DRIVING_DISTANCE_VALUE_KEY])
 
         closest_record = \
             self.get_closest_record_with_driving_info(closest_dest,
                                                       records)
         formatted_record = self.field_formatter(closest_record)
-        self.set_output_speech(closest_record)    
-
+        # TODO: Should this be called with formatted_record?
+        self.set_output_speech(closest_record)
         
     def get_output_speech(self):
         """
@@ -120,9 +117,8 @@ class Finder(object):
 
         :return: string with speech output or error message
         """
-        print('[method: Finder.get_output_speech]')
+        logger.debug('output_speech: ' + str(self.output_speech))
         return self.output_speech
-
 
     def set_output_speech(self, format_keys):
         """
@@ -131,15 +127,13 @@ class Finder(object):
         :param format_keys: dictionary representing the closest record
         :return: None
         """
-        print('[method: Finder.set_output_speech]',
-              'format_keys:',
-              format_keys)
+        logger.debug('format_keys' + str(format_keys))
+        
         try:
             self.output_speech = self.output_speech.format(**format_keys)
         except KeyError:        # our formatted string asked for key we don't
                                 # have
             self.output_speech = Finder.ERROR_MESSAGE
-
 
     def get_all_destinations(self, records):
         """
@@ -149,11 +143,9 @@ class Finder(object):
             dictionaries
         :return: list of destination address strings
         """
-        print('[method: Finder.get_all_destinations]',
-              'records[:5]:',
-              records[:5])
+        logger.debug('Last 5 records: ' + str(records[:5]))
+        
         return [record[self.address_key] for record in records]
-
 
     def get_driving_info_to_destinations(self, destinations):
         """
@@ -164,31 +156,11 @@ class Finder(object):
         :return: list of dictionaries representing driving data for
             each address
         """
-        print('[method: Finder.get_driving_times_to_destinations]',
-              'destinations',
-              destinations)
+        logger.debug('destinations: ' + str(destinations))
+        
         return g_maps_utils._get_driving_info(self.origin_address,
-                                              self.address_key,
-                                              destinations)
-
-
-    def get_closest_destination(self, destination_dictionaries):
-        """
-        Return the dictionary with least driving distance value 
-        
-        # TODO: review for deletion - function appears not to be used, and
-        its logic is implemented in line 102 of this file (Finder.py)
-        
-        :param destination_dictionaries: 
-        :return: 
-        """
-        print('[method: Finder.get_closest_destination]',
-              'destination_dictionaries:',
-              destination_dictionaries)
-        return min(destination_dictionaries, 
-                   key = lambda destination : \
-                       destination[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY])
-
+                                             self.address_key,
+                                             destinations)
 
     def get_closest_record_with_driving_info(self, driving_info, records):
         """
@@ -205,18 +177,13 @@ class Finder(object):
         :return: a merged dictionary with driving time, driving_distance and all 
             fields from the closest record
         """
-        print('[method: Finder.get_closest_record_with_driving_info]',
-              'driving_info:',
-              driving_info,
-              'records:',
-              records)
+        logger.debug('driving_info:' + str(driving_info) +
+                     'records:' + str(records))
         for record in records:
             if driving_info[self.address_key] == record[self.address_key]:
-                return {**record, **driving_info} # NOTE: this will overwrite any
-                                                  # common fields (however
-                                                  # unlikely) between the two
-                                                  # dictionaries             
-
+                # NOTE: This will overwrite any common fields (however
+                #       unlikely) between the two dictionaries.
+                return {**record, **driving_info}
 
     def add_city_and_state_to_records(self, records):
         """
@@ -226,12 +193,8 @@ class Finder(object):
             dictionaries
         :return: list of location dictionaries with updated address values
         """
-        print('[method: Finder.add_city_and_state_to_records]',
-              'records:',
-              records)
+        logger.debug('records:' + str(records))
         return csv_utils.add_city_and_state_to_records(records,
                                                        self.address_key,
                                                        city=Finder.CITY,
                                                        state=Finder.STATE)
-
-

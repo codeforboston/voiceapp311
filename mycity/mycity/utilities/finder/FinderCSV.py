@@ -4,8 +4,10 @@ Uses csv files to find location based information about Boston city services
 
 import csv
 import requests
-
 from mycity.utilities.finder.Finder import Finder
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class FinderCSV(Finder):
@@ -16,12 +18,17 @@ class FinderCSV(Finder):
     @property: filter ::= filter function to conditionally remove records
     
     """
-
     default_filter = lambda record : record  # filter that filters nothing
 
-
-    def __init__(self, req, resource_url, address_key, output_speech,
-                 output_speech_prep_func, filter = default_filter):
+    def __init__(
+            self,
+            req,
+            resource_url,
+            address_key,
+            output_speech,
+            output_speech_prep_func,
+            filter = default_filter
+    ):
         """
         Call super constructor and save filter
 
@@ -43,10 +50,14 @@ class FinderCSV(Finder):
             driving_times
         """
 
-        super().__init__(req, resource_url, address_key, output_speech,
-                         output_speech_prep_func)
+        super().__init__(
+            req,
+            resource_url,
+            address_key,
+            output_speech,
+            output_speech_prep_func
+        )
         self._filter = filter
-
 
     def get_records(self):
         """
@@ -57,16 +68,17 @@ class FinderCSV(Finder):
 
         :return: list of dictionaries representing the resource csv file
         """
+        logger.debug('')
         return self.file_to_filtered_records(self.fetch_resource())
-        
-        
+
     def fetch_resource(self):
         """
         Make api call to get csv resource and return it as a string
         
         :return: a string representation of the csv file
         """
-        print('[method: FinderCSV.fetch_resource]')
+        logger.debug('')
+
         r = requests.get(self.resource_url)
         if r.status_code == 200:
             file_contents = r.content.decode(r.apparent_encoding)
@@ -74,7 +86,6 @@ class FinderCSV(Finder):
             file_contents = None
         r.close()
         return file_contents
-
 
     def file_to_filtered_records(self, file_contents):
         """
@@ -86,10 +97,13 @@ class FinderCSV(Finder):
         :return: a list of dictionaries (OrderedDict) each representing one
             row from the csv
         """
-        print('[method: FinderCSV.file_to_filtered_records]',
-              'file_contents:',
-              file_contents)
-        return list(filter(self._filter,
-                           csv.DictReader(file_contents.splitlines(), 
-                                          delimiter=',')))
- 
+        logger.debug('file_contents:' + str(file_contents).replace('\n', '\r'))
+        return list(
+            filter(
+                self._filter,
+                csv.DictReader(
+                   file_contents.splitlines(),
+                   delimiter=','
+                )
+            )
+        )

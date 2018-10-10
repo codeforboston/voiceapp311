@@ -1,6 +1,10 @@
 """
 Data Model for structuring responses from the skill implementation
 """
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class MyCityResponseDataModel:
     
@@ -47,6 +51,15 @@ class MyCityResponseDataModel:
             self._dialog_directive,
             self._slot_to_elicit
         )
+
+    def get_logger_string(self):
+        """
+        Cloudwatch will group multiline log strings if they use return
+        character instead of the newline character.
+
+        :return: The string representation of this object with \r instead of \n
+        """
+        return self.__str__().replace('\n', '\r')
 
     @property
     def session_attributes(self):
@@ -136,7 +149,7 @@ class MyCityResponseDataModel:
         ]
 
         if value not in valid_directives:
-            print("Error: {} is not a valid directive".format(value))
+            logging.error("Error: {} is not a valid directive".format(value))
             return
 
         if value == "Delegate":

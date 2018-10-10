@@ -4,8 +4,11 @@ Boston Info Alexa skill.
 This module is the entry point for processing voice data from an Alexa device.
 """
 
+import logging
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_controller import execute_request
+
+logger = logging.getLogger(__name__)
 
 
 def lambda_handler(event, context):
@@ -17,12 +20,14 @@ def lambda_handler(event, context):
     :param context: a LambdaContext object containing runtime info
     :return: JSON response object to be sent to the Alexa service platform 
     """
-    print(
-        "[module: lambda_function]",
-        "[function: lambda_handler]",
-        "Amazon request received:\n",
-        str(event)
+    # Handle logger configuration here at the first use of the logger
+    while len(logging.root.handlers) > 0:
+        logging.root.removeHandler(logging.root.handlers[-1])
+    logging.basicConfig(
+        format='%(levelname)-8s %(name)-20s %(funcName)-12s: %(message)s',
+        level=logging.DEBUG
     )
+    logger.debug('Amazon request received: ' + str(event))
 
     model = platform_to_mycity_request(event)
     return mycity_response_to_platform(execute_request(model))
@@ -37,12 +42,7 @@ def platform_to_mycity_request(event):
     :return: MyCityRequestDataModel object (formatted to be understood and
         acted on by mycity_controller)
     """
-    print(
-        "\n\n[module: lambda_function]",
-        "[function: platform_to_mycity_request]",
-        "Amazon request received:\n",
-        str(event)
-    )
+    logger.debug('Amazon request received: ' + str(event))
     mycity_request = MyCityRequestDataModel()
     mycity_request.request_type = event['request']['type']
     mycity_request.request_id = event['request']['requestId']
@@ -84,11 +84,8 @@ def mycity_response_to_platform(mycity_response):
     :return: JSON response object that will be sent to the Alexa
         service platform
     """
-    print(
-        "\n\n[module: lambda_function]",
-        "[function: mycity_response_to_platform]",
-        "MyCityResponseDataModel object received: " + str(mycity_response)
-    )
+    logger.debug('MyCityResponseDataModel object received: ' +
+                 mycity_response.get_logger_string())
 
     if mycity_response.dialog_directive:
         if mycity_response.dialog_directive['type'] == "Dialog.Delegate":
@@ -145,19 +142,18 @@ def mycity_response_to_platform(mycity_response):
         }
 
     if mycity_response.dialog_directive == "Dialog.ElicitSlot":
-        #Add the slot we want to elicit on top of the normal output.
-        print("Setting elicit slot options")
+        # Add the slot we want to elicit on top of the normal output.
+        logger.debug('Setting elicit slot options.')
         response["directives"] = [
             {
                 "type": mycity_response.dialog_directive,
                 "slotToElicit": mycity_response.slot_to_elicit
             }]
 
-
     result = {
         'version': '1.0',
         'sessionAttributes': mycity_response.session_attributes,
         'response': response
     }
-    print('Result to platform:\n', result)
+    logger.debug('Result to platform:' + str(result))
     return result

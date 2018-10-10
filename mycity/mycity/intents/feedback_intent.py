@@ -23,7 +23,7 @@ def submit_feedback(mycity_request):
         '[module: feedback_intent]',
         '[method: submit_feedback]',
         'MyCityRequestDataModel received:',
-        str(mycity_request)
+        mycity_request.get_logger_string()
     )
     # get the intent_variables object from the request
     intent_variables = mycity_request.intent_variables
