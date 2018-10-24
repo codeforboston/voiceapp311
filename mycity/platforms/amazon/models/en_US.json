@@ -986,6 +986,35 @@
                     ]
                 },
                 {
+                    "name": "CrimeIncidentsIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "My address is {Address}",
+                                "It's {Address}",
+                                "{Address}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "what's the crime activity in my area",
+                        "what is the crime activity in my area",
+                        "what crime incidents occurred in my area",
+                        "crime incidents happened near me",
+                        "what is the crime in my area",
+                        "what is the crime near me",
+                        "criminal activity near me",
+                        "criminal activity in my area",
+                        "crime in my area",
+                        "crime near me",
+                        "crime activity in my area",
+                        "crime activity",
+                        "crime report"
+                    ]
+                },
+                {
                     "name": "GetAlertsIntent",
                     "slots": [],
                     "samples": [
@@ -1155,6 +1184,22 @@
                             "elicitationRequired": true,
                             "prompts": {
                                 "elicitation": "Elicit.Slot.583949240758.1214821999168"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "CrimeIncidentsIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.621270469710.323849903546"
                             }
                         }
                     ]

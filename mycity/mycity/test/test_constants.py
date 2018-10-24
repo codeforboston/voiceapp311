@@ -878,3 +878,26 @@ CLOSEST_OPEN_SPACES_DRIVING_DATA = \
             'Parking Lot': '536 Commericial Str., Boston, MA'
         }
     ]
+
+# Crime Incidents API
+GET_CRIME_INCIDENTS_API_MOCK = {
+    'success': True,
+    'result': {
+        'records': [
+            {
+                'STREET': '1000 Dorchester Ave',
+                'OFFENSE_DESCRIPTION': 'VERBAL DISPUTE',
+                'OFFENSE_CODE_GROUP': 'Verbal Disputes',
+                'OCCURRED_ON_DATE': '2018-10-08T19:27:00'
+            },
+            {
+                'STREET': '1001 Dorchester Ave',
+                'OFFENSE_DESCRIPTION': 'LARCENY THEFT OF BICYCLE',
+                'OFFENSE_CODE_GROUP': 'Larceny',
+                'OCCURRED_ON_DATE': '2018-10-08T15:00:00'
+            }
+        ]
+    }
+}
+
+GEOCODE_ADDRESS_MOCK = [42.35351814, -71.13117064]
