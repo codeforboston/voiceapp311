@@ -160,7 +160,8 @@ def validate_found_address(found_address, user_provided_address):
 
     
     # Allow for mismatched "Road" street_type between user input and ReCollect API
-    if "rd" in found_address["street_type"].lower() and "road" in user_provided_address["street_type"].lower():
+    if "rd" in found_address["street_type"].lower() and \
+        "road" in user_provided_address["street_type"].lower():
         return True
 
     # Allow fuzzy match on street type to allow "ave" to match "avenue"
