@@ -124,7 +124,7 @@ Supports three custom intents right now.
 
 
 ## List of Current voiceapp311 Intents
-1. SetAddressIntent - This is used set and get current addresses in the current session..
+1. SetAddressIntent - This is used set and get current addresses in the current session.
 2. TrashDayIntent - This is used to find trash and recycling pickup and collection days.
 3. SnowParkingIntent - This is used to find snow emergency parking.
 4. FeedbackIntent - This is used to provide feedback about the skill, including bug reports and suggestions for new intents.
