@@ -84,7 +84,7 @@ def _build_text_from_record(incident):
     """
     dt = parse(incident[DATE_FIELD])
     return """
-        on {} an incident with description {} categorized as {} occurred
+        {} an incident with description {} categorized as {} occurred
     """.format(dt.strftime("On %A %d of %B %Y at %I:%M%p"),
                incident[STREET_FIELD], incident[OFFENSE_FIELD],
                incident[OFFENSE_GROUP_FIELD])
