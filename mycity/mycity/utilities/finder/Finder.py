@@ -6,6 +6,7 @@ based information about city services
 import mycity.utilities.address_utils as address_utils
 import mycity.utilities.csv_utils as csv_utils
 import mycity.utilities.google_maps_utils as g_maps_utils
+import mycity.utilities.arcgis.arcgis_utils as arcgis_utils
 import logging
 
 logger = logging.getLogger(__name__)
@@ -97,7 +98,14 @@ class Finder(object):
         """
         logger.debug('Last 5 records: ' + str(records[:5]))
         records = self.add_city_and_state_to_records(records)
-        destinations = self.get_all_destinations(records)
+        
+        geocoded_origin_address = self.geocode_origin_address()
+        destination_coordinate_dictionary = self.records_to_coordinate_dict(records)
+        api_access_token = arcgis_utils.generate_access_token()
+        arcgis_utils.find_closest_route(api_access_token,geocoded_origin_address, destination_coordinate_dictionary)
+
+
+
         driving_info = self.get_driving_info_to_destinations(destinations)
         closest_dest = \
             min(driving_info, 
@@ -198,3 +206,39 @@ class Finder(object):
                                                        self.address_key,
                                                        city=Finder.CITY,
                                                        state=Finder.STATE)
+
+    def records_to_coordinate_dict(self, records):
+        """
+        Takes a set of Records and returns a 
+            (X, Y) Coordinate -> address dictionary
+
+        :param records: a list of all location records, records are stored
+            as dictionaries
+        :return: dictionary with (X, Y) coordinates as keys and address
+            strings as values
+        """
+        logger.debug("Transforming records into (X, Y) Coordinate dict")
+
+        coordinate_dict = {}
+        for record in records:
+            x = record['X']
+            y = record['Y']
+            address_string = record['Address']
+            coordinate_dict[(x, y)] = address_string
+
+        return coordinate_dict
+
+
+
+    def geocode_origin_address(self):
+        """
+        Utilizes ArcGIS to geocode the origin address,
+        which means to assign (X, Y) coordinates to the address
+
+        :return: Dict containing address string and geocode coordinates
+        """
+        geocoded_origin_address_candidates = arcgis_utils.geocode_address_candidates(self.origin_address)
+        geocoded_origin_address = arcgis_utils.select_top_address_candidate(geocoded_origin_address_candidates)
+        return geocoded_origin_address
+
+
