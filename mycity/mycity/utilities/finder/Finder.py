@@ -5,8 +5,7 @@ based information about city services
 
 import mycity.utilities.address_utils as address_utils
 import mycity.utilities.csv_utils as csv_utils
-import mycity.utilities.google_maps_utils as g_maps_utils
-import mycity.utilities.arcgis.arcgis_utils as arcgis_utils
+import mycity.utilities.arcgis_utils as arcgis_utils
 import logging
 
 logger = logging.getLogger(__name__)
@@ -102,15 +101,7 @@ class Finder(object):
         geocoded_origin_address = self.geocode_origin_address()
         destination_coordinate_dictionary = self.records_to_coordinate_dict(records)
         api_access_token = arcgis_utils.generate_access_token()
-        arcgis_utils.find_closest_route(api_access_token,geocoded_origin_address, destination_coordinate_dictionary)
-
-
-
-        driving_info = self.get_driving_info_to_destinations(destinations)
-        closest_dest = \
-            min(driving_info, 
-                key=lambda destination: destination[g_maps_utils.
-                                                    DRIVING_DISTANCE_VALUE_KEY])
+        closest_dest = arcgis_utils.find_closest_route(api_access_token, geocoded_origin_address, destination_coordinate_dictionary)
 
         closest_record = \
             self.get_closest_record_with_driving_info(closest_dest,
@@ -155,20 +146,6 @@ class Finder(object):
         
         return [record[self.address_key] for record in records]
 
-    def get_driving_info_to_destinations(self, destinations):
-        """
-        Return a dictionary with address, distance, and driving time from
-        self.origin_address for all destinations
-        
-        :param destinations: list of destination address strings
-        :return: list of dictionaries representing driving data for
-            each address
-        """
-        logger.debug('destinations: ' + str(destinations))
-        
-        return g_maps_utils._get_driving_info(self.origin_address,
-                                             self.address_key,
-                                             destinations)
 
     def get_closest_record_with_driving_info(self, driving_info, records):
         """
