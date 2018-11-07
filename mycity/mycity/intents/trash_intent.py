@@ -101,6 +101,7 @@ def get_trash_and_recycling_days(address, zip_code=None):
         raise InvalidAddressError
 
     if not validate_found_address(api_params["name"], address):
+        logger.debug("InvalidAddressError")
         raise InvalidAddressError
 
     trash_data = get_trash_day_data(api_params)
@@ -157,12 +158,19 @@ def validate_found_address(found_address, user_provided_address):
             user_provided_address["street_name"].lower():
         return False
 
+    
+    # Allow for mismatched "Road" street_type between user input and ReCollect API
+    if "rd" in found_address["street_type"].lower() and \
+        "road" in user_provided_address["street_type"].lower():
+        return True
+
     # Allow fuzzy match on street type to allow "ave" to match "avenue"
     if found_address["street_type"].lower() not in \
         user_provided_address["street_type"].lower() and \
         user_provided_address["street_type"].lower() not in \
             found_address["street_type"].lower():
                 return False
+
 
     return True
 
