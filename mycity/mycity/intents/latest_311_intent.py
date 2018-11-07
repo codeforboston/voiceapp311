@@ -8,10 +8,12 @@ DEFAULT_NUMBER_OF_REPORTS = 3
 BOSTON_311_URL = "https://data.boston.gov/api/3/action/datastore_search"
 BOSTON_RESOURCE_ID = "https://data.boston.gov/api/3/action/datastore_search"
 
+
 def get_311_requests(mycity_request):
     """
     Generates response object for a 311 request inquiry.
 
+    :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
     mycity_response = MyCityResponseDataModel()
