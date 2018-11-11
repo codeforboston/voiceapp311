@@ -1063,6 +1063,32 @@
                         "I'd like to report a bug",
                         "I have a suggestion"
                     ]
+                },
+                {
+                    "name": "LatestThreeOneOne",
+                    "slots": [
+                        {
+                            "name": "number_requests",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "What are the {number_requests} latest problems",
+                        "Give me {number_requests} three one one",
+                        "{number_requests} three one one reports",
+                        "{number_requests} three one one",
+                        "What are the latest {number_requests} from three one one",
+                        "Read me {number_requests} three one one requets",
+                        "Read me three one one requests",
+                        "What are some problems in the city",
+                        "What issues have been reported",
+                        "What has been reported to the city",
+                        "Whats has been reported",
+                        "Three one one requests",
+                        "Three one one reports",
+                        "What are the latest from three one one",
+                        "Give me the three one one"
+                    ]
                 }
             ],
             "types": [
