@@ -30,20 +30,18 @@ def generate_access_token():
         return None
 
     payload = {
-            'client_id': client_id,
-            'client_secret' : client_secret, 
-            'grant_type' : 'client_credentials'
-            }
-
+        'client_id': client_id,
+        'client_secret' : client_secret, 
+        'grant_type' : 'client_credentials'
+        }
 
     headers = {
-    'content-type': "application/x-www-form-urlencoded",
-    'accept': "application/json",
-    'cache-control': "no-cache"
-    }
+        'content-type': "application/x-www-form-urlencoded",
+        'accept': "application/json",
+        'cache-control': "no-cache"
+        }
 
     base_url = "https://www.arcgis.com/sharing/rest/oauth2/token"
-    #response = requests.post(base_url, data=payload, headers=headers)
     response = _post_request(base_url, payload, headers)
     if response.status_code != 200:
         logger.debug("Response Error: {}, Response: {}".format(str(response.status_code), response.text))
@@ -88,42 +86,18 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
     
     # Separate destination coordinates with ";"
     facilities = ";".join(facility_list)
-
-    # Payload dictionary with values as 2-tuples,
-    # with the first value None and the second value
-    # the actual value. This is accomodate requests
-    # module limitations with multipart/form-data
-    payload = {
-            'f': (None,'json'),
-            'token': (None,api_access_token),
-            'returnDirections': (None,'false'),
-            'returnCFRoutes': (None,'true'),
-            'incidents': (None, str(incidents)),
-            'facilities': (None,str(facilities))
+    params = {
+            'f': 'json',
+            'token': api_access_token,
+            'returnDirections': 'false',
+            'returnCFRoutes': 'true',
+            'incidents': incidents,
+            'facilities': facilities
             }
-    # Allow requests module to prepare request, using
-    # "files=payload" instead of "data=payload" so requests
-    # module properly formats multipart/form-data
-    req = requests.Request('POST',base_url, files=payload)
-    prepared = req.prepare()
 
-    # Manipulate values in header dictionary
-    updated_header = prepared.headers
-    updated_header.pop('Content-Length')
-    updated_header['cache-control'] = "no-cache"
-
-    # Change body from byte string to string
-    body_as_bytes = prepared.body
-    body_as_string = body_as_bytes.decode('utf-8')
-
-    # Re-prepare the request, with manuipulated headers and body
-    #req2 = requests.Request("POST", base_url, data=body_as_string, headers=updated_header)
-    #prepared2 = req2.prepare()
-    
-    # POST request
-    #session = requests.Session()
-    #response = session.send(prepared2)
-
+    formatted_tuple = format_multipart_form_request(base_url, params)
+    body_as_string = formatted_tuple[0]
+    updated_header = formatted_tuple[1]
     # POST request over network
     response = _post_request(base_url, body_as_string, updated_header)
 
@@ -159,6 +133,54 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
 
         logger.debug("Returning closest destination: {}".format(str(destination_dict)))
         return destination_dict
+
+
+def format_multipart_form_request(url, params):
+    """
+    Formats a multipart/form POST request
+    for requests module properly for
+    ESRI ARCGis API
+
+    :param url: String containg URL of API
+    :param params: Dictionary of paramters
+    :return Two-Tuple containing 1) String representing
+        params to be passed as data to POST request
+        and 2) Dictionary with modified headers
+    """
+    logger.debug("URL: {}, Params: {}".format(url, str(params)))
+
+    updated_params = _modify_multipart_form_params(params)
+    req = requests.Request('POST', url, files=updated_params)
+    prepared_request = req.prepare()
+
+    updated_header = prepared_request.headers
+    updated_header.pop('Content-Length')
+    updated_header['cache-control'] = "no-cache"
+
+    # Change body from byte string to string
+    body_as_bytes = prepared_request.body
+    body_as_string = body_as_bytes.decode('utf-8')
+
+    return (body_as_string, updated_header)
+
+
+
+
+def _modify_multipart_form_params(params):
+    """
+    Helper function for _format_multipart_form_request
+    that properly formats param dictionary
+
+    :param params: Dictionary of request body paramters
+    :return Dictionary of updated request body parameters
+    """
+    updated_params = {}
+    for key in params:
+        value = params[key]
+        updated_params[key] = (None, str(value))
+    logger.debug("Updated Parameters: {}".format(str(updated_params)))
+    return updated_params
+
 
 
 
@@ -203,17 +225,19 @@ def geocode_address_candidates(input_address):
     :param input_address: String of address to be geocoded
     :return: JSON object containing geocoded address candidates
     """
-
     logger.debug("Input Address: {}".format(input_address))
 
-    base_url = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?"
-    params_without_address = "f=json&outFields=Match_addr%2CAddr_type&singleLine=" 
-    encoded_address = urllib.parse.quote(input_address)
-    params_with_address = params_without_address + encoded_address
+    base_url = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates"
+    params = {
+            "f": "json",
+            "singleLine": input_address,
+            "outFields":"Match_addr,Addr_type"
+            }
+    headers = {
+            'cache-control': "no-cache"
+            }
 
-    request_url = base_url + params_with_address
-    response = requests.get(request_url)
-
+    response = requests.request("GET", base_url, params=params, headers=headers)
     if response.status_code != 200:
         return None
     else:
