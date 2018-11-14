@@ -281,3 +281,24 @@ def select_top_address_candidate(geocode_candidate_response_json):
                 }
         return coordinate_dict
 
+def get_ward_precinct_info(coordinates):
+    
+    base_url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services/Precincts_2017/FeatureServer/0/query"
+
+    params = {
+        "f": "json",
+        "geometry": coordinates['x'] + "," + coordinates['y'],
+        "geometryType": "esriGeometryPoint",
+        "inSR": "4326",
+        "returnGeometry": "false",
+        "outFields": "WARD_PRECINCT"
+    }
+
+    response = requests.request("GET", base_url, params=params)
+    if response.status_code != 200:
+        return "None"
+    else:
+        res_data = json.loads(response.text)
+        print(res_data)
+        return res_data['features'][0]['attributes']['WARD_PRECINCT']
+
