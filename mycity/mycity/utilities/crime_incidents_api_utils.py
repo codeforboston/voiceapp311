@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 
 def get_crime_incident_response(address):
     """
-    Executes the crime incident request and builds a text response
+    Executes and returns the crime incident request response
 
     :param address: address to query
-    :return: a response object
+    :return: the raw json response
 
     """
     url_parameters = {"sql": _build_query_string(address)}
