@@ -6,7 +6,7 @@ from mycity.intents.speech_constants.latest_311_constants import *
 DEFAULT_NUMBER_OF_REPORTS = 3
 
 BOSTON_311_URL = "https://data.boston.gov/api/3/action/datastore_search"
-BOSTON_RESOURCE_ID = "https://data.boston.gov/api/3/action/datastore_search"
+BOSTON_RESOURCE_ID = "2968e2c0-d479-49ba-a884-4ef523ada3c0"
 
 
 def get_311_requests(mycity_request):
