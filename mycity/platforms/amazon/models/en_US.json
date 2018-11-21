@@ -1234,6 +1234,15 @@
                     ]
                 },
                 {
+                    "name": "FoodTruckIntent",
+                    "slots": [],
+                    "samples": [
+                        "food trucks",
+                        "foodtrucks",
+                        "Nearby foodtrucks"
+                    ]
+                },
+                {
                     "name": "FeedbackIntent",
                     "confirmationRequired": false,
                     "prompts": {},

@@ -7,7 +7,6 @@ To remediate this issue, extend the timeout on your lambda to a
 longer period
 
 """
-
 from arcgis.features import FeatureLayer
 from arcgis.gis import *
 from arcgis.geocoding import geocode, reverse_geocode

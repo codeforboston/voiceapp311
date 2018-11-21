@@ -1,8 +1,6 @@
 """
 Functions for Alexa responses related to food trucks
 """
-
-import requests
 import mycity.utilities.gis_utils as gis_utils
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.mycity_response_data_model import MyCityResponseDataModel
@@ -19,11 +17,6 @@ MERCATOR = 'epsg:3857'  # defines pseudo-mercator coordinate system, i.e., it us
                         # (ref.: https://epsg.io/3857)
 GEODETIC = 'epsg:4326'  # defines geodetic coordinate system, i.e., lat, long. (ref.: https://epsg.io/4326)
 MILE_IN_KILOMETERS = 1.6
-
-
-# Note: food truck data result is queried twice, for unique locations, then for all trucks at nearest location,
-#   so it needs to be accessed outside of get_truck_locations()
-food_truck_data_result = {}
 
 
 def convert_xy_to_lat_long(coordinates):
@@ -64,6 +57,7 @@ def get_truck_locations():
 
     return truck_unique_locations
 
+
 def get_nearby_food_trucks(mycity_request):
     """
     Gets food truck info near an address
@@ -71,7 +65,6 @@ def get_nearby_food_trucks(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseObject
     """
-
     mycity_response = MyCityResponseDataModel()
 
     # Get current address location
@@ -82,11 +75,9 @@ def get_nearby_food_trucks(mycity_request):
         address_parser = StreetAddressParser()
         a = address_parser.parse(current_address)
         address = str(a['house']) + " " + str(a['street_name']) + " " + str(a['street_type'])
-        print(address)
 
         # Convert address to X, Y
         usr_addr_xy = gis_utils.geocode_address(address)
-        print(usr_addr_xy)
 
         truck_unique_locations = get_truck_locations()
 
@@ -99,8 +90,16 @@ def get_nearby_food_trucks(mycity_request):
                 if dist <= MILE_IN_KILOMETERS:
                     count += 1
 
-            mycity_response.output_speech = "I found {} food trucks within a mile from your \
-                                                     address.".format(count)
+            if count == 1:
+                mycity_response.output_speech = "I found {} food truck within a mile \
+                                                from your address.".format(count)
+            elif count == 2:
+                mycity_response.output_speech = "I found {} food trucks within a mile \
+                                                from your address.".format(count)
+            else:
+                mycity_response.output_speech = "I found {} food trucks within a mile \
+                                                 from your address. Would you like to hear" \
+                                                " the first three?".format(count)
         except InvalidAddressError:
             address_string = address
 
