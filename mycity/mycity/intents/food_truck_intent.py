@@ -118,7 +118,7 @@ def get_nearby_food_trucks(mycity_request):
                 "Hmm something went wrong. Maybe try again?"
 
     else:
-        logger.error("Error: Called trash_day_intent with no address")
+        logger.error("Error: Called food_truck_intent with no address")
         mycity_response.output_speech = "I didn't understand that address, please try again"
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
