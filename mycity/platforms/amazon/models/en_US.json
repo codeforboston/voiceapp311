@@ -1065,6 +1065,24 @@
                     ]
                 },
                 {
+                    "name": "FoodTruckIntent",
+                    "slots": [
+
+                    ],
+                    "samples": [
+                        "where are the nearest food trucks",
+                        "is there any food truck around",
+                        "is there any food truck around me",
+                        "is there any food truck around my office",
+                        "is there any food truck around my house",
+                        "what kinda of food trucks are around me",
+                        "what kinda of food trucks are near me",
+                        "what kinda of food trucks are nearby",
+                        "food trucks",
+                        "Nearby food trucks"
+                        ]
+                },
+                {
                     "name": "LatestThreeOneOne",
                     "slots": [
                         {

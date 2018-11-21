@@ -15,6 +15,7 @@ from .intents.get_alerts_intent import get_alerts_intent
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
 from .intents import intent_constants
+from .intents.food_truck_intent import get_nearby_food_trucks
 import logging
 
 logger = logging.getLogger(__name__)
@@ -136,6 +137,8 @@ def on_intent(mycity_request):
         return unhandled_intent(mycity_request)
     elif mycity_request.intent_name == "LatestThreeOneOne":
         return get_311_requests(mycity_request)
+    elif mycity_request.intent_name == "FoodTruckIntent":
+        return get_nearby_food_trucks(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
