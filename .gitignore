@@ -10,6 +10,7 @@
 
 # vs code folder
 .vscode
+*.code-workspace
 
 # virtualenv files/dirs
 
