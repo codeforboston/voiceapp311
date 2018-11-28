@@ -9,6 +9,12 @@ logger = logging.getLogger(__name__)
 
 DRIVING_DISTANCE_TEXT_KEY = "Driving_distance"
 DRIVING_TIME_TEXT_KEY = "Driving_time"
+ARCGIS_CLIENT_ID_STR = "ARCGIS_CLIENT_ID"
+ARCGIS_CLIENT_SECRET_STR = "ARCGIS_CLIENT_SECRET"
+EMPTY_RECORD = ""
+ARCGIS_AUTH_URL = "https://www.arcgis.com/sharing/rest/oauth2/token"
+ARCGIS_CLOSEST_FACILITY_URL = "https://route.arcgis.com/arcgis/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World/solveClosestFacility"
+ARCGIS_GEOCODE_URL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates"
 
 def generate_access_token():
     """
@@ -16,43 +22,51 @@ def generate_access_token():
 
     :return: String containing temporary access token
     """
-
     try:
-        client_id = os.getenv('ARCGIS_CLIENT_ID')
-    except:
-        logger.debug("ARCGIS_CLIENT_ID environment variable not set")
+        client_id = get_client_id()
+        client_secret = get_client_secret()
+        payload = {
+                'client_id': client_id,
+                'client_secret' : client_secret, 
+                'grant_type' : 'client_credentials'
+                }
+        headers = {}
+        response = _post_request(ARCGIS_AUTH_URL, payload , headers)
+        if response.status_code == 200:
+            response_json = response.json()
+            access_token = response_json['access_token']
+            return access_token
+        else:
+            logger.debug("Response Error: {}, Response: {}".format(str(response.status_code), response.text))
+            return None
+
+    except Exception as e:
+        logger.debug(e.message)
         return None
 
-    try:
-        client_secret = os.getenv('ARCGIS_CLIENT_SECRET')
-    except:
-        logger.debug("ARCGIS_CLIENT_SECRET environment variable not set")
-        return None
+def get_client_id():
+    """
+    Returns Client ID environment variable
 
-    payload = {
-        'client_id': client_id,
-        'client_secret' : client_secret, 
-        'grant_type' : 'client_credentials'
-        }
-
-    headers = {
-        'content-type': "application/x-www-form-urlencoded",
-        'accept': "application/json",
-        'cache-control': "no-cache"
-        }
-
-    base_url = "https://www.arcgis.com/sharing/rest/oauth2/token"
-    response = _post_request(base_url, payload, headers)
-    if response.status_code != 200:
-        logger.debug("Response Error: {}, Response: {}".format(str(response.status_code), response.text))
-        return None
+    :return: String containing ArcGIS client ID
+    """
+    client_id = os.getenv(ARCGIS_CLIENT_ID_STR)
+    if not client_id:
+        raise Exception('ARCGIS_CLIENT_ID Environment variable not set')
     else:
-        response_json = response.json()
-        access_token = response_json['access_token']
-        return access_token
-    
+        return client_id
 
+def get_client_secret():
+    """
+    Returns Client Secret environment variable
 
+    :return: String containing ArcGIS client ID
+    """
+    client_secret = os.getenv(ARCGIS_CLIENT_SECRET_STR)
+    if not client_secret:
+        raise Exception('ARCGIS_CLIENT_SECRET Environment variable not set')
+    else:
+        return client_secret 
 
 def find_closest_route(api_access_token, origin_address, destination_addresses):
     """
@@ -70,20 +84,17 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
                 + "destination_addresses: {}".format(str(destination_addresses))
             )
 
-    base_url = "https://route.arcgis.com/arcgis/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World/solveClosestFacility"
-    
     # (x, y) coordinates of origin address
-    incidents = "{},{}".format(origin_address['x'], origin_address['y'])
+    try:
+        incidents = "{},{}".format(origin_address['x'], origin_address['y'])
+    except KeyError as e:
+        logger.debug("Missing coordinate in orgin_address - {}".format(str(e)))
+        return None
 
     # List of (x, y) coordinates of possible destinations
     facility_list = []
-    facility_key_list = []
-    for k in destination_addresses.keys():
-        if k[0] != "" and k[1] != "":
-            temp_str = "{},{}".format(k[0], k[1])
-            facility_list.append(temp_str)
-            facility_key_list.append(k)
-    
+    facility_key_list = list(filter(lambda k: k[0] != EMPTY_RECORD and k[1] != EMPTY_RECORD, destination_addresses.keys()))
+    facility_list = map(lambda k : "{},{}".format(k[0], k[1]), facility_key_list)
     # Separate destination coordinates with ";"
     facilities = ";".join(facility_list)
     params = {
@@ -95,25 +106,23 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
             'facilities': facilities
             }
 
-    formatted_tuple = format_multipart_form_request(base_url, params)
-    body_as_string = formatted_tuple[0]
-    updated_header = formatted_tuple[1]
+    body_as_string, updated_header = format_multipart_form_request(ARCGIS_CLOSEST_FACILITY_URL, params)
     # POST request over network
-    response = _post_request(base_url, body_as_string, updated_header)
+    response = _post_request(ARCGIS_CLOSEST_FACILITY_URL, body_as_string, updated_header)
 
-    if response.status_code != 200:
-        logger.debug("Response Error: {}".format(str(response.status_code)))
-        return None
-    else:
+    if response.status_code == 200:
         response_json = response.json()
         logger.debug("Response JSON: {}".format(str(response_json)))
-
-        routes = response_json['routes']
-        features = routes['features']
-        attributes = features[0]['attributes']
-        facility_id = attributes['FacilityID']
-        travel_time_in_minutes = attributes['Total_TravelTime']
-        travel_distance_in_miles = attributes['Total_Miles']
+        try:
+            routes = response_json['routes']
+            features = routes['features']
+            attributes = features[0]['attributes']
+            facility_id = attributes['FacilityID']
+            travel_time_in_minutes = attributes['Total_TravelTime']
+            travel_distance_in_miles = attributes['Total_Miles']
+        except KeyError as e:
+            logger.debug(str(e))
+            return None
 
         formatted_travel_time_in_minutes = _format_float(float(travel_time_in_minutes))
         formatted_travel_distance_in_miles = _format_float(float(travel_distance_in_miles))
@@ -133,13 +142,16 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
 
         logger.debug("Returning closest destination: {}".format(str(destination_dict)))
         return destination_dict
+    else:
+        logger.debug("Response Error: {}".format(str(response.status_code)))
+        return None
 
 
 def format_multipart_form_request(url, params):
     """
     Formats a multipart/form POST request
     for requests module properly for
-    ESRI ARCGis API
+    ESRI ArcGIS API
 
     :param url: String containg URL of API
     :param params: Dictionary of paramters
@@ -175,8 +187,7 @@ def _modify_multipart_form_params(params):
     :return Dictionary of updated request body parameters
     """
     updated_params = {}
-    for key in params:
-        value = params[key]
+    for key, value in params.items():
         updated_params[key] = (None, str(value))
     logger.debug("Updated Parameters: {}".format(str(updated_params)))
     return updated_params
@@ -227,21 +238,16 @@ def geocode_address_candidates(input_address):
     """
     logger.debug("Input Address: {}".format(input_address))
 
-    base_url = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates"
     params = {
             "f": "json",
             "singleLine": input_address,
             "outFields":"Match_addr,Addr_type"
             }
-    headers = {
-            'cache-control': "no-cache"
-            }
-
-    response = requests.request("GET", base_url, params=params, headers=headers)
-    if response.status_code != 200:
-        return None
-    else:
+    response = requests.request("GET", ARCGIS_GEOCODE_URL, params=params)
+    if response.status_code == 200:
         return response.json()
+    else:
+        return None
 
 
 def select_top_address_candidate(geocode_candidate_response_json):
@@ -255,24 +261,14 @@ def select_top_address_candidate(geocode_candidate_response_json):
     """
 
     candidates = geocode_candidate_response_json['candidates']
-    logger.debug("Geocode Candidates: " + str(candidates))
 
-    if len(candidates) == 0:
-        return None
+    if not candidates:
+        return -1
     else:
-        top_score = -1.0
-        top_candidate = None
-        for candidate in candidates:
-            if candidate['score'] > top_score:
-                top_candidate = candidate
-                top_score = candidate['score']
-
+        top_candidate = max(candidates, key=lambda candidate : candidate['score'])
         address_string = top_candidate['address']
         x_coordinate = top_candidate['location']['x']
         y_coordinate = top_candidate['location']['y']
-
-        logger.debug("Top Candidate: {} ".format(address_string) \
-                + "Candidate Score: {}".format(str(top_score)))
 
         coordinate_dict = {
                 'address': address_string,

@@ -101,7 +101,9 @@ class Finder(object):
         geocoded_origin_address = self.geocode_origin_address()
         destination_coordinate_dictionary = self.records_to_coordinate_dict(records)
         api_access_token = arcgis_utils.generate_access_token()
-        closest_dest = arcgis_utils.find_closest_route(api_access_token, geocoded_origin_address, destination_coordinate_dictionary)
+        closest_dest = arcgis_utils.find_closest_route(api_access_token,
+                                                        geocoded_origin_address,
+                                                        destination_coordinate_dictionary)
 
         closest_record = \
             self.get_closest_record_with_driving_info(closest_dest,
