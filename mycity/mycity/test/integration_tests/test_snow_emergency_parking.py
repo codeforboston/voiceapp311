@@ -56,15 +56,6 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                 return_value=mock_geocoded_address_candidates
             )
 
-        mock_top_candidate = \
-                test_constants.TOP_ADDRESS_CANDIDATE
-
-        self.mock_top_candidate = \
-                mock.patch(
-                    'mycity.utilities.finder.Finder.arcgis_utils.select_top_address_candidate',
-                    return_value=mock_top_candidate
-                )
-
         mock_api_access_token = \
                 test_constants.ARCGIS_API_ACCESS_TOKEN
 
