@@ -1,9 +1,12 @@
 import csv
+import sys
+sys.path.append("/Users/creich/chrislreich/voiceapp311/mycity")
 import unittest.mock as mock
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
 import mycity.intents.snow_parking_intent as snow_parking
+
 
 
 ##########################################
@@ -42,20 +45,56 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
              'FinderCSV.file_to_filtered_records'),
             return_value=mock_filtered_record_return
         )
-        mock_get_driving_info_return = \
-            test_constants.CLOSEST_PARKING_DRIVING_DATA
-        self.get_driving_info_patch = \
+
+        mock_geocoded_address_candidates = \
+                test_constants.GEOCODE_ADDRESS_CANDIDATES
+
+
+        self.mock_address_candidates = \
             mock.patch(
-                'mycity.utilities.finder.Finder.g_maps_utils._get_driving_info',
-                return_value=mock_get_driving_info_return
+                'mycity.utilities.finder.Finder.arcgis_utils.geocode_address_candidates',
+                return_value=mock_geocoded_address_candidates
             )
+
+        mock_top_candidate = \
+                test_constants.TOP_ADDRESS_CANDIDATE
+
+        self.mock_top_candidate = \
+                mock.patch(
+                    'mycity.utilities.finder.Finder.arcgis_utils.select_top_address_candidate',
+                    return_value=mock_top_candidate
+                )
+
+        mock_api_access_token = \
+                test_constants.ARCGIS_API_ACCESS_TOKEN
+
+        self.mock_api_access_token = \
+                mock.patch(
+                    'mycity.utilities.finder.Finder.arcgis_utils.generate_access_token',
+                    return_value=mock_api_access_token
+                )
+
+        mock_closest_destination = \
+                test_constants.ARCGIS_CLOSEST_DESTINATION
+        self.mock_closest_destination = \
+                mock.patch(
+                        'mycity.utilities.finder.Finder.arcgis_utils.find_closest_route',
+                        return_value=mock_closest_destination
+                    )
+
+        
+    
         self.mock_filtered_record.start()
-        self.get_driving_info_patch.start()
+        self.mock_address_candidates.start()
+        self.mock_api_access_token.start()
+        self.mock_closest_destination.start()
 
     def tearDown(self):
         super().tearDown()
         self.csv_file.close()
         self.mock_filtered_record.stop()
-        self.get_driving_info_patch.stop()
+        self.mock_address_candidates.stop()
+        self.mock_api_access_token.stop()
+        self.mock_closest_destination.stop()
 
 

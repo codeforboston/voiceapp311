@@ -41,7 +41,7 @@ def generate_access_token():
             return None
 
     except Exception as e:
-        logger.debug(e.message)
+        logger.debug(e)
         return None
 
 def get_client_id():

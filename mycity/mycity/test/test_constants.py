@@ -878,3 +878,19 @@ CLOSEST_OPEN_SPACES_DRIVING_DATA = \
             'Parking Lot': '536 Commericial Str., Boston, MA'
         }
     ]
+
+
+# ArcGIS test data
+
+GEOCODE_ADDRESS_CANDIDATES = {
+        'spatialReference': {'wkid': 4399, 'latestWkid': 4326}, 'candidates': [{'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125', 'location': {'x': -71.05664413015762, 'y': 42.31649037829649}, 'score': 100, 'attributes': {'Match_addr': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125', 'Addr_type': 'PointAddress'}, 'extent': {'xmin': -71.05752100000001, 'ymin': 42.315497, 'xmax': -71.055521, 'ymax': 42.317496999999996}}]}
+
+
+TOP_ADDRESS_CANDIDATE = {
+        'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
+        'x': -71.05664413015762, 
+        'y': 42.31649037829649}
+
+ARCGIS_CLOSEST_DESTINATION = {'Address': '8-20 Belden St Boston, MA', 'Driving_time': '3.65 minutes', 'Driving_distance': '0.73 miles'}
+
+ARCGIS_API_ACCESS_TOKEN="FAKE-ABCD"
