@@ -281,13 +281,41 @@ def select_top_address_candidate(geocode_candidate_response_json):
                 }
         return coordinate_dict
 
+def get_polling_location(ward_precinct):
+
+    ward = ward_precinct["ward"].lstrip()
+    precinct = ward_precinct["precinct"].lstrip()
+
+    base_url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/polling_locations_2017/FeatureServer/0/query"
+
+    params = {
+        "f": "json",
+        "returnGeometry": "false",
+        "where": "Ward = " + ward + "AND Precinct = " + precinct,
+        "outFields": "Location2, Location3"
+    }
+    response = requests.request("GET", base_url, params=params)
+    if response.status_code != 200:
+        return "None"
+    else:
+        res_data = json.loads(response.text)
+        location_name = res_data['features'][0]['attributes']['Location2']
+        location_address = res_data['features'][0]['attributes']['Location3']
+        poll_location = {
+            "Location Name": location_name,
+            "Location Address": location_address
+        }
+        return poll_location
+
+
+
 def get_ward_precinct_info(coordinates):
     
     base_url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services/Precincts_2017/FeatureServer/0/query"
 
     params = {
         "f": "json",
-        "geometry": coordinates['x'] + "," + coordinates['y'],
+        "geometry": str(coordinates['x']) + "," + str(coordinates['y']),
         "geometryType": "esriGeometryPoint",
         "inSR": "4326",
         "returnGeometry": "false",
@@ -299,6 +327,10 @@ def get_ward_precinct_info(coordinates):
         return "None"
     else:
         res_data = json.loads(response.text)
-        print(res_data)
-        return res_data['features'][0]['attributes']['WARD_PRECINCT']
+        precinct_data = res_data['features'][0]['attributes']['WARD_PRECINCT']
+        ward_precinct = {
+            'ward': precinct_data[:2],
+            'precinct': precinct_data[2:4]
+        }
+        return ward_precinct
 
