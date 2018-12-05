@@ -92,7 +92,7 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
 
 
 def print_package_names(install_output):
-    pattern = "Collecting [\w]+=="
+    pattern = "Collecting [\w-]+=="
     dependencies = re.findall(pattern, install_output.decode('utf-8'))
     for dependency in dependencies:
         name = dependency[11:len(dependency) - 2]

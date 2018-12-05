@@ -6,12 +6,15 @@ kill any computation that takes longer than 3 secs.
 
 """
 
+from arcgis.gis import *
 from arcgis.features import FeatureLayer
+from arcgis.geocoding import geocode
 import mycity.utilities.google_maps_utils as g_maps_utils
 import logging
 
 logger = logging.getLogger(__name__)
 
+dev_gis = GIS()  # this is needed to use geocoding
 
 def get_closest_feature(origin, feature_address_index, 
                         feature_type, error_message, features):
@@ -110,3 +113,14 @@ def _get_dest_addresses_from_features(feature_address_index, features):
             dest_address += " Boston, MA"
             dest_addresses.append(dest_address)
     return dest_addresses
+
+
+def geocode_address(m_address):
+    """
+    :param m_address: address of interest in street form
+    :return: address in coordinate (X and Y) form
+    """
+    m_address = m_address + ", City: Boston, State: MA"
+    m_location = geocode(address=m_address)[0]
+    adict = (m_location['location'])
+    return list(adict.values())
