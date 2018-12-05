@@ -1,6 +1,4 @@
 import csv
-import sys
-sys.path.append("/Users/creich/chrislreich/voiceapp311/mycity")
 import unittest.mock as mock
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
