@@ -8,6 +8,7 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response, \
     set_zipcode_in_session, get_address_from_user_device
+from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
@@ -139,6 +140,8 @@ def on_intent(mycity_request):
         return submit_feedback(mycity_request)
     elif mycity_request.intent_name == "UnhandledIntent":
         return unhandled_intent(mycity_request)
+    elif mycity_request.intent_name == "LatestThreeOneOne":
+        return get_311_requests(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
