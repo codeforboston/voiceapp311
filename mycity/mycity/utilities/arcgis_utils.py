@@ -282,6 +282,13 @@ def select_top_address_candidate(geocode_candidate_response_json):
         return coordinate_dict
 
 def get_polling_location(ward_precinct):
+    """
+    Returns dictionary containing location name and address from the provided ward and precinct
+
+    :param ward_precinct: dictionary object containing the ward and precinct
+    :return: Dict containing location address string and
+        location name string
+    """
 
     ward = ward_precinct["ward"].lstrip()
     precinct = ward_precinct["precinct"].lstrip()
@@ -310,6 +317,13 @@ def get_polling_location(ward_precinct):
 
 
 def get_ward_precinct_info(coordinates):
+    """
+    Returns dictionary containing location ward and precinct from the provided x, y coordinates
+
+    :param coordinates: dictionary object containing the address string and floating point
+        values for x and y that represent longitude and latitude
+    :return: Dict containing ward string and precinct string
+    """
     
     base_url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services/Precincts_2017/FeatureServer/0/query"
 
