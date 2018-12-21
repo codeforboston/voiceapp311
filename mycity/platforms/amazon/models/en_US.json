@@ -4,6 +4,24 @@
             "invocationName": "boston info",
             "intents": [
                 {
+                    "name": "VotingIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "It's {Address}",
+                                "My address is {Address}",
+                                "{Address}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "where can I vote",
+                        "where is my polling location"
+                    ]
+                },
+                {
                     "name": "SetAddressIntent",
                     "slots": [
                         {
@@ -1063,6 +1081,10 @@
                         "I'd like to report a bug",
                         "I have a suggestion"
                     ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
                 }
             ],
             "types": [
@@ -1158,6 +1180,22 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "VotingIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1096834840884.281360406464"
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -1213,6 +1251,15 @@
                     {
                         "type": "PlainText",
                         "value": "In a few sentences or less, please describe the {FeedbackType}"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1096834840884.281360406464",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What is your address?"
                     }
                 ]
             }
