@@ -40,6 +40,18 @@
                         }
                     ],
                     "samples": [
+                        "trash day",
+                        "trash pickup",
+                        "garbage day",
+                        "garbage pickup",
+                        "recycling day",
+                        "recycling pickup",
+                        "refuse day",
+                        "refuse pickup",
+                        "rubbish day",
+                        "rubbish pickup",
+                        "find the garbage collection",
+                        "find the garbage collection days",
                         "find the garbage collection days at {Address}",
                         "find the garbage collection days for {Address}",
                         "find the garbage day at {Address}",
