@@ -7,8 +7,8 @@ To remediate this issue, extend the timeout on your lambda to a
 longer period
 
 """
-from arcgis.features import FeatureLayer
 from arcgis.gis import *
+from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode, reverse_geocode
 from math import sin, cos, sqrt, atan2, radians
 import mycity.utilities.google_maps_utils as g_maps_utils
@@ -17,6 +17,7 @@ import logging
 logger = logging.getLogger(__name__)
 dev_gis = GIS()  # this is needed to use geocoding
 
+dev_gis = GIS()  # this is needed to use geocoding
 
 def get_closest_feature(origin, feature_address_index, 
                         feature_type, error_message, features):

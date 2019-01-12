@@ -158,7 +158,6 @@ def validate_found_address(found_address, user_provided_address):
             user_provided_address["street_name"].lower():
         return False
 
-    
     # Allow for mismatched "Road" street_type between user input and ReCollect API
     if "rd" in found_address["street_type"].lower() and \
         "road" in user_provided_address["street_type"].lower():
