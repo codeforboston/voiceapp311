@@ -142,30 +142,21 @@ def get_nearby_food_trucks(mycity_request):
                     continue
 
             count = len(nearby_food_trucks)
-            print(count)
-            if count == 1:
-                mycity_response.output_speech = \
-                    f"I found {count} food truck within a mile from " \
-                    f"your address.! {nearby_food_trucks[0][1]} is " \
-                    f"located at {nearby_food_trucks[0][2]} and " \
-                    f"{nearby_food_trucks[0][3]}, from " \
-                    f"{nearby_food_trucks[0][4]} to " \
-                    f"{nearby_food_trucks[0][5]}"
-            elif count == 2:
+            if count == 0:
+                mycity_response.output_speech = "I didn't find any food trucks!"
+
+            if 0 < count <= 3:
                 response = f"I found {count} food trucks within a mile " \
                     "from your address! "
-
                 for i in range(count):
-                    print(response)
-                    response += f"{nearby_food_trucks[i][1]} is located at " \
+                    response += f"{nearby_food_trucks[0][1]} is located at " \
                         f"{nearby_food_trucks[i][2]} and " \
                         f"{nearby_food_trucks[i][3]}, from " \
                         f"{nearby_food_trucks[i][4]} to " \
                         f"{nearby_food_trucks[i][5]}, "
-                print(response)
                 mycity_response.output_speech = response
 
-            elif count > 2:
+            elif count > 3:
                 response = f"I found {count} food trucks within a mile " \
                     "from your address! Here are the first three: "
                 for i in range(3):
@@ -175,10 +166,7 @@ def get_nearby_food_trucks(mycity_request):
                         f"{nearby_food_trucks[i][4]} to " \
                         f"{nearby_food_trucks[i][5]}, "
                 response += "Would you like to hear more?"
-                print(response)
                 mycity_response.output_speech = response
-            else:
-                mycity_response.output_speech = "I didn't find any trucks!"
 
         except InvalidAddressError:
             address_string = address
