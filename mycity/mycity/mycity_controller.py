@@ -144,7 +144,10 @@ def on_intent(mycity_request):
     elif mycity_request.intent_name == "LatestThreeOneOne":
         return get_311_requests(mycity_request)
     elif mycity_request.intent_name == "FoodTruckIntent":
-        return get_nearby_food_trucks(mycity_request)
+        return request_user_address_response(mycity_request) \
+            if intent_constants.CURRENT_ADDRESS_KEY \
+            not in mycity_request.session_attributes \
+            else get_nearby_food_trucks(mycity_request)
     else:
         raise ValueError("Invalid intent")
 

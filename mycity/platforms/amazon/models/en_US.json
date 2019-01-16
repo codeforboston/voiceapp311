@@ -1096,7 +1096,20 @@
                 {
                     "name": "FoodTruckIntent",
                     "slots": [
-
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "It's {Address}",
+                                "My address is {Address}",
+                                "I live at {Address}",
+                                "{Address}"
+                            ]
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER"
+                        }
                     ],
                     "samples": [
                         "where are the nearest food trucks",
@@ -1115,7 +1128,7 @@
                         "food trucks",
                         "Nearby food trucks",
                         "what's for lunch"
-                        ]
+                    ]
                 },
                 {
                     "name": "LatestThreeOneOne",
@@ -1198,6 +1211,10 @@
                         "What are the latest from three one one",
                         "Give me the three one one"
                     ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
                 }
             ],
             "types": [
@@ -1309,8 +1326,25 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "FoodTruckIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1478934588421.914733191093"
+                            }
+                        }
+                    ]
                 }
-            ]
+            ],
+            "delegationStrategy": "SKILL_RESPONSE"
         },
         "prompts": [
             {
@@ -1364,6 +1398,15 @@
                     {
                         "type": "PlainText",
                         "value": "In a few sentences or less, please describe the {FeedbackType}"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1478934588421.914733191093",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What is your address?"
                     }
                 ]
             }

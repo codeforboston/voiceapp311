@@ -32,15 +32,19 @@ We filter the data in `get_truck_locations()` and put it on a list.
 
 """
 import mycity.utilities.gis_utils as gis_utils
+import mycity.intents.speech_constants.food_truck_intent as speech_constants
+import logging
+
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
+from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from streetaddress import StreetAddressParser
 from datetime import date
 from calendar import day_name
-import logging
 from pyproj import Proj, transform
 from .custom_errors import \
-    InvalidAddressError, BadAPIResponse
+    InvalidAddressError, BadAPIResponse, MultipleAddressError
+from . import intent_constants
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +128,12 @@ def get_nearby_food_trucks(mycity_request):
         a = address_parser.parse(current_address)
         address = str(a['house']) + " " + str(a['street_name']) + " " \
                   + str(a['street_type'])
+        zip_code = str(a["other"]).zfill(5) if a["other"] else None
+
+        zip_code_key = intent_constants.ZIP_CODE_KEY
+        if zip_code is None and zip_code_key in \
+                mycity_request.session_attributes:
+            zip_code = mycity_request.session_attributes[zip_code_key]
 
         # Convert address to X, Y
         usr_addr_xy = gis_utils.geocode_address(address)
@@ -170,9 +180,12 @@ def get_nearby_food_trucks(mycity_request):
 
         except InvalidAddressError:
             address_string = address
-
+            if zip_code:
+                address_string = address_string + " with zip code {}"\
+                    .format(zip_code)
             mycity_response.output_speech = \
-                "I can't seem to find {address_string}. Try another address"
+                speech_constants.ADDRESS_NOT_FOUND.format(address_string)
+            mycity_response.dialog_directive = "ElicitSlotFoodTruck"
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = \
                 mycity_request.session_attributes
@@ -184,6 +197,11 @@ def get_nearby_food_trucks(mycity_request):
         except BadAPIResponse:
             mycity_response.output_speech = \
                 "Hmm something went wrong. Maybe try again?"
+
+        except MultipleAddressError:
+            mycity_response.output_speech = \
+                speech_constants.MULTIPLE_ADDRESS_ERROR.format(address)
+            mycity_response.dialog_directive = "ElicitSlotZipCode"
 
     else:
         logger.error("Error: Called food_truck_intent with no address")
