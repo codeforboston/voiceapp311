@@ -58,6 +58,9 @@ TOW_LOT_NORMAL_MESSAGE = "The tow lot is open from 7 a.m. - 11 p.m. "
 TOW_LOT_NORMAL_MESSAGE += "Automated kiosks are available 24 hours a day, "
 TOW_LOT_NORMAL_MESSAGE += "seven days a week for vehicle releases."
 
+# Strings we use to determine if there is snow related alert
+SNOW_ALERT_QUERRY = ["snow", "winter weather", "inclement weather"]
+
 
 def get_alerts_intent(
         mycity_request: MyCityRequestDataModel,
@@ -76,8 +79,6 @@ def get_alerts_intent(
     """
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
-    mycity_response = MyCityResponseDataModel()
-
     alerts = get_alerts() if get_alerts_function_for_test is None else get_alerts_function_for_test()
     logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
 
@@ -85,11 +86,49 @@ def get_alerts_intent(
         if prune_normal_responses_function_for_test is None else prune_normal_responses_function_for_test(alerts)
     logger.debug("[dictionary after pruning]:\n" + str(alerts))
 
-    mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = ALERTS_INTENT_CARD_TITLE
-    mycity_response.reprompt_text = None
+    mycity_response = _create_response_object()
     mycity_response.output_speech = alerts_to_speech_output(pruned_alerts) \
         if alerts_to_speech_output_function_for_test is None else alerts_to_speech_output_function_for_test(pruned_alerts)
+    return mycity_response
+
+
+def get_inclement_weather_alert(
+    mycity_request: MyCityRequestDataModel,
+    get_alerts_function_for_test: typing.Callable[[], typing.Dict] = None,
+) -> MyCityResponseDataModel:
+    """
+    Generates a response with information about any inclement weather alerts.
+
+    :param mycity_request:                            MyCityRequestDataModel object
+    :param get_alerts_function_for_test:              Injectable function for unit tests
+    :return:                                          MyCityResponseDataModel object
+    """
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+
+    alerts = get_alerts() if get_alerts_function_for_test is None else get_alerts_function_for_test()
+    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
+
+    logger.debug("filtering for inclement weather alerts")
+    output_speech = constants.NO_INCLEMENT_WEATHER_ALERTS
+    if Services.ALERT_HEADER.value in alerts:
+        if any(querry in alerts[Services.ALERT_HEADER.value].lower() for querry in SNOW_ALERT_QUERRY):
+            logger.debug("incluement weather alert found")
+            output_speech = alerts[Services.ALERT_HEADER.value]
+
+    mycity_response = _create_response_object()
+    mycity_response.output_speech = output_speech
+    return mycity_response
+
+
+def _create_response_object() -> MyCityResponseDataModel:
+    """
+    Creates a MyCityResponseDataModel populated with fields common to all city alerts
+
+    :return: MyCityResponseDataModel
+    """
+    mycity_response = MyCityResponseDataModel()
+    mycity_response.card_title = ALERTS_INTENT_CARD_TITLE
+    mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
     return mycity_response
 
@@ -172,3 +211,4 @@ def get_alerts():
     if header != '':
         alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
+
