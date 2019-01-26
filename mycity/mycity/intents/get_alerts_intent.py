@@ -112,7 +112,7 @@ def get_inclement_weather_alert(
     output_speech = constants.NO_INCLEMENT_WEATHER_ALERTS
     if Services.ALERT_HEADER.value in alerts:
         if any(querry in alerts[Services.ALERT_HEADER.value].lower() for querry in SNOW_ALERT_QUERRY):
-            logger.debug("incluement weather alert found")
+            logger.debug("inclement weather alert found")
             output_speech = alerts[Services.ALERT_HEADER.value]
 
     mycity_response = _create_response_object()
