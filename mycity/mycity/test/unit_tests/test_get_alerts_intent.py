@@ -92,3 +92,13 @@ class GetAlertsIntentTestCase(base.BaseTestCase):
             self.request,
             self.stub_get_alerts)
         self.assertEqual(snow_emergency_alert, response.output_speech)
+
+    def test_inclement_weather_alert_returns_normal_when_other_notice_in_alert_banner(self):
+        snow_emergency_alert = "Patriots win the super bowl!"
+        self.get_alerts_stub_return_dictionary = {
+            get_alerts_intent.Services.ALERT_HEADER.value: snow_emergency_alert
+        }
+        response = get_alerts_intent.get_inclement_weather_alert(
+            self.request,
+            self.stub_get_alerts)
+        self.assertEqual(constants.NO_INCLEMENT_WEATHER_ALERTS, response.output_speech)
