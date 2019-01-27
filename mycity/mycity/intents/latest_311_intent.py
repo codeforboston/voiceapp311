@@ -99,9 +99,9 @@ def build_speech_from_311_report(report):
     """
 
     try:
-        subject = report["SUBJECT"]
-        report_type = report["TYPE"]
-        location = report["LOCATION_STREET_NAME"]
+        subject = report["subject"]
+        report_type = report["type"]
+        location = report["location_street_name"]
     except KeyError:
         raise BadAPIResponse
 
