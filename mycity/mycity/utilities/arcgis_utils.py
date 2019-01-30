@@ -4,6 +4,7 @@ import os
 import sys
 import urllib
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -308,9 +309,11 @@ def get_polling_location(ward_precinct):
         res_data = json.loads(response.text)
         location_name = res_data['features'][0]['attributes']['Location2']
         location_address = res_data['features'][0]['attributes']['Location3']
+        stripped_address = re.sub('[-]', '', location_address)
+        stripped_name = re.sub('[-]', '', location_name)
         poll_location = {
-            "Location Name": location_name,
-            "Location Address": location_address
+            "Location Name": stripped_name,
+            "Location Address": stripped_address
         }
         return poll_location
 
@@ -340,7 +343,8 @@ def get_ward_precinct_info(coordinates):
     if response.status_code != 200:
         return "None"
     else:
-        res_data = json.loads(response.text)
+        # res_data = json.loads(response.text)
+        res_data = response.json()
         precinct_data = res_data['features'][0]['attributes']['WARD_PRECINCT']
         ward_precinct = {
             'ward': precinct_data[:2],
