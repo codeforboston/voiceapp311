@@ -4,6 +4,8 @@ import os
 import sys
 import urllib
 import logging
+import re
+
 
 logger = logging.getLogger(__name__)
 
