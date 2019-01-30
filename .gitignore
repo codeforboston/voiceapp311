@@ -23,6 +23,8 @@ pip-selfcheck.json
 
 selenium/*
 
+venv/
+
 # Logs
 logs
 *.log
