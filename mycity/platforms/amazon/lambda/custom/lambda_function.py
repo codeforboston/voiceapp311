@@ -49,18 +49,10 @@ def platform_to_mycity_request(event):
     mycity_request.is_new_session = event['session']['new']
     mycity_request.session_id = event['session']['sessionId']
 
-    try:
-        mycity_request.device_id = event['context']['System']['device']['deviceId']
-    except KeyError:
-        # Amazon's automated tests do not provide a device ID
-        mycity_request.device_id = "unknown"
+    system_context = event['context']['System']
+    mycity_request.device_id = system_context.get('device', {}).get('deviceId', "unknown")
+    mycity_request.api_access_token = system_context.get('apiAccessToken', "none")
 
-    try:
-        mycity_request.api_access_token = event['context']['System']['apiAccessToken']
-    except KeyError:
-        # Amazon's automated tests do not provide an API access token
-        mycity_request.api_access_token = "none"
-    
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
     else:
