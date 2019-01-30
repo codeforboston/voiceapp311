@@ -16,3 +16,12 @@ class ArcgisUtilitiesTestCase(base.BaseTestCase):
         expected_output_text = test_constants.WARD_PRECINCT
         result = arcgis_utils.get_ward_precinct_info(test_constants.COORDS)
         self.assertEquals(expected_output_text, result)
+
+    @mock.patch('requests.request')
+    def test_get_polling_location(self, mock_get):
+        mock_resp = self._mock_response(status=200, 
+            json_data=test_constants.MOCK_POLL_RESP)
+        mock_get.return_value = mock_resp
+        expected_output_text = test_constants.POLL_DATA
+        result = arcgis_utils.get_polling_location(test_constants.WARD_PRECINCT)
+        self.assertEquals(expected_output_text, result)

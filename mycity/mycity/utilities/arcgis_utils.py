@@ -306,7 +306,8 @@ def get_polling_location(ward_precinct):
     if response.status_code != 200:
         return "None"
     else:
-        res_data = json.loads(response.text)
+        res_data = response.json()
+        print(res_data)
         location_name = res_data['features'][0]['attributes']['Location2']
         location_address = res_data['features'][0]['attributes']['Location3']
         stripped_address = re.sub('[-]', '', location_address)
