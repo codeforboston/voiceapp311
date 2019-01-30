@@ -38,7 +38,7 @@ def zip_lambda_function_directory(zip_target_dir):
     zip_file = zipfile.ZipFile(os.path.join(zip_target_dir, ZIP_FILE_NAME), 'w')
     original_directory = os.getcwd()
     os.chdir(TEMP_DIR_PATH)
-    print('* Compressing\n* ', end='')
+    print('* Compressing lambda_function\n* ', end='')
     for root, dirs, files in os.walk('.'):
         for f in files:
             zip_file.write(os.path.join(root, f))
@@ -92,7 +92,7 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
 
 
 def print_package_names(install_output):
-    pattern = "Collecting [\w]+=="
+    pattern = "Collecting [\w-]+=="
     dependencies = re.findall(pattern, install_output.decode('utf-8'))
     for dependency in dependencies:
         name = dependency[11:len(dependency) - 2]
@@ -145,13 +145,17 @@ def package_lambda_function():
     print(HORIZONTAL_RULE)
 
 
-def update_lambda_code(lambda_function_name):
+def update_lambda_code(lambda_function_name, s3_bucket=None):
     """
     Uploads the archive containing our lambda function and dependencies to the
     specified lambda. Requires that the user has configured AWS CLI and that
     the archive exists.
 
+    If the s3_bucket argument is provided, the archive is uploaded to the
+    specified s3 bucket and then to the lambda from there.
+
     :param lambda_function_name:
+    :param s3_bucket:
     :return:
     """
 
@@ -162,15 +166,43 @@ def update_lambda_code(lambda_function_name):
 
         # If the upload fails, catch the exception and alert user.
         try:
-            update_command_array = [
-                shutil.which("aws"),  # path to user's AWS CLI installation
-                "lambda",
-                "update-function-code",
-                "--function-name",
-                lambda_function_name,
-                "--zip-file",
-                "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
-            ]
+            if s3_bucket:
+                # The S3 flag was provided, we'll upload to S3 first.
+                print("*   UPLOADING TO S3 BUCKET: " + s3_bucket + " ...")
+                s3_command_array = [
+                    shutil.which("aws"),  # path to user's AWS CLI installation
+                    "s3",
+                    "cp",
+                    PROJECT_ROOT + "/" + ZIP_FILE_NAME,
+                    's3://' + s3_bucket + '/' + ZIP_FILE_NAME
+                ]
+                run(s3_command_array, stdout=PIPE)
+                print("*   ...DONE UPLOADING TO S3 BUCKET: " + s3_bucket)
+                print("*   UPLOADING TO LAMBDA FROM S3...")
+
+                # modified command array to upload from s3
+                update_command_array = [
+                    shutil.which("aws"),  # path to user's AWS CLI installation
+                    "lambda",
+                    "update-function-code",
+                    "--function-name",
+                    lambda_function_name,
+                    "--s3-bucket",
+                    s3_bucket,
+                    "--s3-key",
+                    ZIP_FILE_NAME
+                ]
+            else:
+                # we are uploading to lambda directly
+                update_command_array = [
+                    shutil.which("aws"),  # path to user's AWS CLI installation
+                    "lambda",
+                    "update-function-code",
+                    "--function-name",
+                    lambda_function_name,
+                    "--zip-file",
+                    "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
+                ]
             run(update_command_array, stdout=PIPE)
             print("* DONE UPLOADING")
             print(HORIZONTAL_RULE)
@@ -325,13 +357,21 @@ def main():
              "BOSTON_INFO_SKILL_ID environment variable."
     )
 
+    parser.add_argument(
+        '-s',
+        '--s3bucket',
+        help="To upload the Lambda .zip file via an S3 bucket, provide this " +
+             "flag followed by the name of your S3 bucket. Recommended for " +
+             "slow connections that time out uploading directly to Lambda."
+    )
+
     args = parser.parse_args()
 
     is_interaction_model_updated = False
 
     if args.function:
         package_lambda_function()
-        update_lambda_code(args.function)
+        update_lambda_code(args.function, args.s3bucket)
     elif args.package:
         package_lambda_function()
     elif args.interaction:

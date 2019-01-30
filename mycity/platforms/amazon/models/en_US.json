@@ -1004,6 +1004,35 @@
                     ]
                 },
                 {
+                    "name": "CrimeIncidentsIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "My address is {Address}",
+                                "It's {Address}",
+                                "{Address}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "what's the crime activity in my area",
+                        "what is the crime activity in my area",
+                        "what crime incidents occurred in my area",
+                        "crime incidents happened near me",
+                        "what is the crime in my area",
+                        "what is the crime near me",
+                        "criminal activity near me",
+                        "criminal activity in my area",
+                        "crime in my area",
+                        "crime near me",
+                        "crime activity in my area",
+                        "crime activity",
+                        "crime report"
+                    ]
+                },
+                {
                     "name": "GetAlertsIntent",
                     "slots": [],
                     "samples": [
@@ -1083,8 +1112,86 @@
                     ]
                 },
                 {
-                    "name": "AMAZON.NavigateHomeIntent",
-                    "samples": []
+                    "name": "LatestThreeOneOne",
+                    "slots": [
+                        {
+                            "name": "number_requests",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "Top three one one",
+                        "Ask for the {number_requests} most recent three one one",
+                        "Ask for the most recent three one one",
+                        "Ask for the {number_requests} latest three one one",
+                        "Ask for the three one one",
+                        "Say the {number_requests} most recent three one one",
+                        "Say the most recent three one one",
+                        "Say the latest {number_requests} three one one",
+                        "Say the latest three one one",
+                        "Say the three one one",
+                        "Tell me the {number_requests} most recent three one one",
+                        "Tell me the most recent three one one",
+                        "Tell me the latest three one one",
+                        "Tell me {number_requests} three one one",
+                        "Tell me the three one one",
+                        "Request most recent three one one",
+                        "Request {number_requests} latest three one one",
+                        "Request latest three one one",
+                        "Request the three one one",
+                        "report {number_requests} most recent three one one",
+                        "report most recent three one one",
+                        "report latest {number_requests} three one one",
+                        "report latest three one one",
+                        "report the three one one",
+                        "I need the {number_requests} most recent three one one",
+                        "I need the most recent three one one",
+                        " I need the {number_requests} latest three one one",
+                        " need the latest three one one",
+                        "I need the three one one",
+                        "I want the most recent three one one",
+                        "I want three one one",
+                        "I want latest three one ones",
+                        "I want the {number_requests} latest three one one",
+                        "I want the latest three one one",
+                        "I want the three one one",
+                        "Give the {number_requests} most recent three one one",
+                        "Give the most recent three one one",
+                        "Give the three one one",
+                        "Give me the {number_requests} most recent three one one",
+                        "Give me the latest {number_requests} three one one",
+                        "Give me the latest three one one",
+                        "Get me the {number_requests} most recent three one one",
+                        "Get me the most recent three one one",
+                        "Get {number_requests} recent three one one",
+                        "Get recent three one one",
+                        "Get the latest three one one",
+                        "Get me the latest {number_requests} three one one",
+                        "Get me the latest three one one",
+                        "Get me the three one one",
+                        "What are three one one",
+                        "What's the {number_requests} recent three one one",
+                        "What's the most recent three one one",
+                        "What's the latest {number_requests} three one ones",
+                        "What's the latest three one ones",
+                        "What three one one",
+                        "What's the three one one",
+                        "What are the {number_requests} latest problems",
+                        "Give me {number_requests} three one one",
+                        "{number_requests} three one one reports",
+                        "{number_requests} three one one",
+                        "What are the latest {number_requests} from three one one",
+                        "Read me {number_requests} three one one requets",
+                        "Read me three one one requests",
+                        "What are some problems in the city",
+                        "What issues have been reported",
+                        "What has been reported to the city",
+                        "Whats has been reported",
+                        "Three one one requests",
+                        "Three one one reports",
+                        "What are the latest from three one one",
+                        "Give me the three one one"
+                    ]
                 }
             ],
             "types": [
@@ -1193,6 +1300,22 @@
                             "elicitationRequired": true,
                             "prompts": {
                                 "elicitation": "Elicit.Slot.1096834840884.281360406464"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "CrimeIncidentsIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.621270469710.323849903546"
                             }
                         }
                     ]

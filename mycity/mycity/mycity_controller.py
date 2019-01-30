@@ -8,12 +8,14 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response, \
     set_zipcode_in_session, get_address_from_user_device
+from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
 from .intents.get_alerts_intent import get_alerts_intent
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.voting_intent import get_polling_location
 from .intents.feedback_intent import submit_feedback
+from .intents.crime_activity_intent import get_crime_incidents_intent
 from .intents import intent_constants
 import logging
 
@@ -123,6 +125,11 @@ def on_intent(mycity_request):
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_snow_emergency_parking_intent(mycity_request)
+    elif mycity_request.intent_name == "CrimeIncidentsIntent":
+        return request_user_address_response(mycity_request) \
+            if intent_constants.CURRENT_ADDRESS_KEY \
+            not in mycity_request.session_attributes \
+            else get_crime_incidents_intent(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "VotingIntent":
@@ -139,6 +146,8 @@ def on_intent(mycity_request):
         return submit_feedback(mycity_request)
     elif mycity_request.intent_name == "UnhandledIntent":
         return unhandled_intent(mycity_request)
+    elif mycity_request.intent_name == "LatestThreeOneOne":
+        return get_311_requests(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
