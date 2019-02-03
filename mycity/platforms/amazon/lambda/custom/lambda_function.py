@@ -48,9 +48,11 @@ def platform_to_mycity_request(event):
     mycity_request.request_id = event['request']['requestId']
     mycity_request.is_new_session = event['session']['new']
     mycity_request.session_id = event['session']['sessionId']
-    mycity_request.device_id = event['context']['System']['device']['deviceId']
-    mycity_request.api_access_token = event['context']['System']['apiAccessToken']
-    
+
+    system_context = event['context']['System']
+    mycity_request.device_id = system_context.get('device', {}).get('deviceId', "unknown")
+    mycity_request.api_access_token = system_context.get('apiAccessToken', "none")
+
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
     else:
