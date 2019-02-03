@@ -19,9 +19,11 @@ and street cleaning is running on a normal schedule."
 from bs4 import BeautifulSoup
 from urllib import request
 from enum import Enum
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import mycity.intents.speech_constants.get_alerts_intent as constants
 import logging
+import typing
 
 logger = logging.getLogger(__name__)
 
@@ -52,31 +54,47 @@ HEADER_3 = "t--sans t--cb lh--000 m-b500"
 
 ALERTS_INTENT_CARD_TITLE = "City Alerts"
 
-def get_alerts_intent(mycity_request):
+TOW_LOT_NORMAL_MESSAGE = "The tow lot is open from 7 a.m. - 11 p.m. "
+TOW_LOT_NORMAL_MESSAGE += "Automated kiosks are available 24 hours a day, "
+TOW_LOT_NORMAL_MESSAGE += "seven days a week for vehicle releases."
+
+
+def get_alerts_intent(
+        mycity_request: MyCityRequestDataModel,
+        get_alerts_function_for_test: typing.Callable[[], typing.Dict] = None,
+        prune_normal_responses_function_for_test: typing.Callable[[], typing.Dict] = None,
+        alerts_to_speech_output_function_for_test: typing.Callable[[], typing.AnyStr] = None
+) -> MyCityResponseDataModel:
     """
     Generate response object with information about citywide alerts
 
-    :param mycity_request: MyCityRequestDataModel object
-    :return: MyCityResponseDataModel object
+    :param mycity_request:                            MyCityRequestDataModel object
+    :param get_alerts_function_for_test:              Injectable function for unit tests
+    :param prune_normal_responses_function_for_test:  Injectable function for unit tests
+    :param alerts_to_speech_output_function_for_test: Injectable function for unit tests
+    :return:                                          MyCityResponseDataModel object
     """
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
-    alerts = get_alerts()
+
+    alerts = get_alerts() if get_alerts_function_for_test is None else get_alerts_function_for_test()
     logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
 
-    alerts = prune_normal_responses(alerts)
+    pruned_alerts = prune_normal_responses(alerts) \
+        if prune_normal_responses_function_for_test is None else prune_normal_responses_function_for_test(alerts)
     logger.debug("[dictionary after pruning]:\n" + str(alerts))
 
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = ALERTS_INTENT_CARD_TITLE
     mycity_response.reprompt_text = None
-    mycity_response.output_speech = alerts_to_speech_output(alerts)
-    mycity_response.should_end_session = True   # leave this as True for right now
+    mycity_response.output_speech = alerts_to_speech_output(pruned_alerts) \
+        if alerts_to_speech_output_function_for_test is None else alerts_to_speech_output_function_for_test(pruned_alerts)
+    mycity_response.should_end_session = False
     return mycity_response
 
 
-def alerts_to_speech_output(alerts):
+def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
     """
     Checks whether the alert dictionary contains any entries. Returns a string
     that contains all alerts or a message that city services are operating
@@ -95,10 +113,10 @@ def alerts_to_speech_output(alerts):
     if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug
         return constants.NO_ALERTS
     else:
-        return all_alerts
+        return all_alerts.rstrip()
         
 
-def prune_normal_responses(service_alerts):
+def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     """
     Remove any text scraped from Boston.gov that aren't actually alerts.
     For example, parking meters, city building hours, and trash and 
@@ -110,16 +128,14 @@ def prune_normal_responses(service_alerts):
         alert information
     """
     logger.debug('service_alerts: ' + str(service_alerts))
-    tow_lot_normal_message = "The tow lot is open from 7 a.m. - 11 p.m. "
-    tow_lot_normal_message += "Automated kiosks are available 24 hours a day, "
-    tow_lot_normal_message += "seven days a week for vehicle releases."
+
 
     # for any defined service, if its alert is that it's running normally, 
     # remove it from the dictionary
     for service in Services:
         if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
             service_alerts.pop(service.value)                       # remove
-    if service_alerts[Services.TOW_LOT.value] == tow_lot_normal_message:
+    if service_alerts[Services.TOW_LOT.value] == TOW_LOT_NORMAL_MESSAGE:
         service_alerts.pop(Services.TOW_LOT.value)
     return service_alerts
 
