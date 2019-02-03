@@ -59,7 +59,7 @@ TOW_LOT_NORMAL_MESSAGE += "Automated kiosks are available 24 hours a day, "
 TOW_LOT_NORMAL_MESSAGE += "seven days a week for vehicle releases."
 
 # Strings we use to determine if there is snow related alert
-SNOW_ALERT_QUERRY = ["snow", "winter weather", "inclement weather"]
+SNOW_ALERT_QUERY = ["snow", "winter weather", "inclement weather"]
 
 
 def get_alerts_intent(
@@ -111,7 +111,7 @@ def get_inclement_weather_alert(
     logger.debug("filtering for inclement weather alerts")
     output_speech = constants.NO_INCLEMENT_WEATHER_ALERTS
     if Services.ALERT_HEADER.value in alerts:
-        if any(querry in alerts[Services.ALERT_HEADER.value].lower() for querry in SNOW_ALERT_QUERRY):
+        if any(query in alerts[Services.ALERT_HEADER.value].lower() for query in SNOW_ALERT_QUERY):
             logger.debug("inclement weather alert found")
             output_speech = alerts[Services.ALERT_HEADER.value]
 
