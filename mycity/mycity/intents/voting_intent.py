@@ -31,8 +31,8 @@ def get_polling_location(mycity_request):
     top_candidates = arcgis_utils.select_top_address_candidate(candidates)
     ward_precinct = arcgis_utils.get_ward_precinct_info(top_candidates)
     poll_location = arcgis_utils.get_polling_location(ward_precinct)
-    poll_speech = "Your polling location is {}, {}".format(poll_location["Location Name"], poll_location["Location Address"])
-    mycity_response.output_speech = poll_speech
+    output_speech = "Your polling location is {}, {}".format(poll_location["Location Name"], poll_location["Location Address"])
+    mycity_response.output_speech = output_speech
     mycity_response.reprompt_text = None
     mycity_response.reprompt_text = CARD_TITLE
     return mycity_response
