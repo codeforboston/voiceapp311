@@ -11,7 +11,7 @@ from .intents.user_address_intent import set_address_in_session, \
 from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.unhandled_intent import unhandled_intent
-from .intents.get_alerts_intent import get_alerts_intent
+from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.voting_intent import get_polling_location
 from .intents.feedback_intent import submit_feedback
@@ -148,6 +148,8 @@ def on_intent(mycity_request):
         return unhandled_intent(mycity_request)
     elif mycity_request.intent_name == "LatestThreeOneOne":
         return get_311_requests(mycity_request)
+    elif mycity_request.intent_name == "InclementWeatherIntent":
+        return get_inclement_weather_alert(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
