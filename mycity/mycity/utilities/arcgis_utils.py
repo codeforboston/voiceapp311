@@ -341,7 +341,6 @@ def get_ward_precinct_info(coordinates):
     if response.status_code != 200:
         return "None"
     else:
-        # res_data = json.loads(response.text)
         res_data = response.json()
         precinct_data = res_data['features'][0]['attributes']['WARD_PRECINCT']
         ward_precinct = {
