@@ -11,7 +11,7 @@ import requests
 import logging
 
 logger = logging.getLogger(__name__)
-CARD_TITLE = "Polling Location"
+CARD_TITLE = "Voting Intent"
 
 
 def get_polling_location(mycity_request):
