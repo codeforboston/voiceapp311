@@ -10,7 +10,8 @@ from .intents.user_address_intent import set_address_in_session, \
     set_zipcode_in_session, get_address_from_user_device
 from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
-from .intents.unhandled_intent import unhandled_intent
+from .intents.fallback_intent import fallback_intent
+from .intents.get_alerts_intent import get_alerts_intent
 from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
@@ -138,8 +139,8 @@ def on_intent(mycity_request):
         return handle_session_end_request(mycity_request)
     elif mycity_request.intent_name == "FeedbackIntent":
         return submit_feedback(mycity_request)
-    elif mycity_request.intent_name == "UnhandledIntent":
-        return unhandled_intent(mycity_request)
+    elif mycity_request.intent_name == "AMAZON.FallbackIntent":
+        return fallback_intent(mycity_request)
     elif mycity_request.intent_name == "LatestThreeOneOne":
         return get_311_requests(mycity_request)
     elif mycity_request.intent_name == "InclementWeatherIntent":
@@ -213,8 +214,8 @@ def get_welcome_response(mycity_request):
     # something that is not understood, they will be prompted again with
     # this text.
     mycity_response.reprompt_text = \
-        "You can tell me your address by saying, " \
-        "\"my address is\", and then your address."
+        "You can ask me about Boston city services, "\
+        "such as \"are there any city alerts\"?"
     mycity_response.should_end_session = False
     return mycity_response
 

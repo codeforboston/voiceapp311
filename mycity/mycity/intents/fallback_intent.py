@@ -1,16 +1,16 @@
 """
-Function(s) for dealing with unhandled intents
+Function(s) for dealing with fallback intents
 """
 
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.intents.speech_constants.unhandled_intent as speech_constants
+import mycity.intents.speech_constants.fallback_intent as speech_constants
 import logging
 
-CARD_TITLE = "Unhandled"
+CARD_TITLE = "Boston Info"
 logger = logging.getLogger(__name__)
 
 
-def unhandled_intent(mycity_request):
+def fallback_intent(mycity_request):
     """
     Deals with unhandled intents by prompting the user again
     

@@ -40,6 +40,18 @@
                         }
                     ],
                     "samples": [
+                        "trash day",
+                        "trash pickup",
+                        "garbage day",
+                        "garbage pickup",
+                        "recycling day",
+                        "recycling pickup",
+                        "refuse day",
+                        "refuse pickup",
+                        "rubbish day",
+                        "rubbish pickup",
+                        "find the garbage collection",
+                        "find the garbage collection days",
                         "find the garbage collection days at {Address}",
                         "find the garbage collection days for {Address}",
                         "find the garbage day at {Address}",
@@ -1030,24 +1042,6 @@
                     "samples": []
                 },
                 {
-                    "name": "UnhandledIntent",
-                    "slots": [],
-                    "samples": [
-                        "blah blah blah",
-                        "gofougildags",
-                        "heh",
-                        "testing",
-                        "this is dumb",
-                        "workaround to get around",
-                        "thinking about things",
-                        "what up doe",
-                        "dealing with it",
-                        "doing it",
-                        "whatever",
-                        "whatever and ever amen"
-                    ]
-                },
-                {
                     "name": "AMAZON.StopIntent",
                     "samples": []
                 },
@@ -1174,6 +1168,10 @@
                         "What are the latest from three one one",
                         "Give me the three one one"
                     ]
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
                 },
                 {
                     "name": "AMAZON.NavigateHomeIntent",
