@@ -16,7 +16,8 @@ CARD_TITLE = "Voting Intent"
 
 def get_polling_location(mycity_request):
     """
-    Generates response object for a polling location inquiry
+    Generates response object for a polling location inquiry which includes
+    a user's location to vote.
 
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
