@@ -37,5 +37,5 @@ def get_polling_location(mycity_request):
     mycity_response.output_speech = output_speech
     mycity_response.reprompt_text = None
     mycity_response.reprompt_text = CARD_TITLE
-    mycity_response.should_end_session = False
+    mycity_response.should_end_session = True
     return mycity_response
