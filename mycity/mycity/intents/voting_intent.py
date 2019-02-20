@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 CARD_TITLE = "Voting Intent"
 
 
-def get_polling_location(mycity_request):
+def get_polling_location(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Generates response object for a polling location inquiry which includes
     a user's location to vote.
