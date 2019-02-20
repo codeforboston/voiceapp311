@@ -1,34 +1,5 @@
 """
-Functions for Alexa responses related to food trucks.
-The data comes back from the ARCGIS server in the following format:
-
-{'geometry':
-    {'x': -7910683.074890779, 'y': 5214470.286921388},
-'attributes':
-    {'FID': 396,
-    'Time': 'Lunch',
-    'Day': 'Wednesday',
-    'Truck': 'Cookie Monstah',
-    'Loc': 'Brewer Fountain Plaza (near Park Street Station)',
-    'Hours': '11 a.m. - 3 p.m.',
-    'Title': 'Boston Common',
-    'Site_num': 0,
-    'Management': 'Friends of the Public Garden',
-    'Notes': None,
-    'POINT_X': -7910683.075,
-    'POINT_Y': 5214470.287,
-    'Link': 'http://www.thecookiemonstah.com/',
-    'Start_time': '3:00:00 PM',
-    'End_time': '7:00:00 PM',
-    'GlobalID': '4148e021-6153-45d9-9af3-0754b15746db',
-    'CreationDate': 1523998053973,
-    'Creator': '143525_boston',
-    'EditDate': 1523998053973,
-    'Editor': '143525_boston'
-    }
-}
-
-We filter the data in `get_truck_locations()` and put it on a list.
+Food Truck Intent
 
 """
 import mycity.utilities.gis_utils as gis_utils
@@ -41,8 +12,6 @@ from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from streetaddress import StreetAddressParser
 import datetime
-from calendar import day_name
-from pyproj import Proj, transform
 from .custom_errors import \
     InvalidAddressError, BadAPIResponse, MultipleAddressError
 from . import intent_constants
@@ -83,8 +52,7 @@ def get_truck_locations():
     """
     base_url = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
                'services/food_trucks_schedule/FeatureServer/0/query'
-    day_of_week = "Day='" + datetime.datetime.today().strftime('%A') \
-                  + "' AND Time='Lunch'"
+    day_of_week = "Day='" + datetime.datetime.today().strftime('%A') + "' "
     url_params = {
         "f": "json",
         "outFields": "*",
@@ -92,12 +60,21 @@ def get_truck_locations():
         "returnGeometry": "true",
         "where": day_of_week
     }
+    logger.debug("Requesting data from ArcGIS server!")
     food_truck_data_result = requests.get(base_url, url_params)
+    response_code = food_truck_data_result.status_code
+    logger.debug("Got response code: " + str(response_code))
+    if response_code != requests.codes.ok:
+        logger.debug('HTTP Error: '.format(response_code))
+        return {}
+
+    print(food_truck_data_result)
 
     # Generate unique list of food truck locations
     # to send to the Google Maps API
+    trucks = food_truck_data_result.json()['features']
     truck_unique_locations = []
-    for truck in food_truck_data_result:
+    for truck in trucks:
         if truck["attributes"]["Loc"] not in truck_unique_locations:
             truck_unique_locations.append([truck["geometry"],
                                            truck["attributes"]["Truck"],
@@ -105,7 +82,6 @@ def get_truck_locations():
                                            truck["attributes"]["Title"],
                                            truck["attributes"]["Start_time"],
                                            truck["attributes"]["End_time"]])
-
     return truck_unique_locations
 
 
@@ -134,12 +110,13 @@ def get_nearby_food_trucks(mycity_request):
                 mycity_request.session_attributes:
             zip_code = mycity_request.session_attributes[zip_code_key]
 
+        usr_addr = gis_utils.geocode_address(address)
         truck_unique_locations = get_truck_locations()
         nearby_food_trucks = []
         try:
             for location in truck_unique_locations:
                 truck_lat_lon = list(location[0].values())
-                dist = gis_utils.calculate_distance(usr_addr_xy, truck_lat_lon)
+                dist = gis_utils.calculate_distance(usr_addr, truck_lat_lon)
 
                 if dist <= MILE_IN_KILOMETERS:
                     nearby_food_trucks.append(location)
