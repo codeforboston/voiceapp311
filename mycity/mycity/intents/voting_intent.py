@@ -32,7 +32,7 @@ def get_polling_location(mycity_request):
     current_address += ", Boston, MA"
     candidates = arcgis_utils.geocode_address_candidates(current_address)
     top_candidate = arcgis_utils.select_top_address_candidate(candidates)
-    ward_precinct = vote_utils.get_ward_precinct_info(top_candidates)
+    ward_precinct = vote_utils.get_ward_precinct_info(top_candidate)
     poll_location = vote_utils.get_polling_location(ward_precinct)
     output_speech = speech_constants.LOCATION_SPEECH.format(poll_location["Location Name"], poll_location["Location Address"])
     mycity_response.output_speech = output_speech
