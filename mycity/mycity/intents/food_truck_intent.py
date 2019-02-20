@@ -34,12 +34,13 @@ We filter the data in `get_truck_locations()` and put it on a list.
 import mycity.utilities.gis_utils as gis_utils
 import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
+import requests
 
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from streetaddress import StreetAddressParser
-from datetime import date
+import datetime
 from calendar import day_name
 from pyproj import Proj, transform
 from .custom_errors import \
@@ -48,52 +49,50 @@ from . import intent_constants
 
 logger = logging.getLogger(__name__)
 
-'''
-The variables below define a pseudo-mercator coordination system,
-i.e., it uses X,Y instead of lat,long (ref.: https://epsg.io/3857)
-and the geodetic coordinate system i.e., lat, long. (ref.: https://epsg.io/4326)
-'''
-MERCATOR = 'epsg:3857'
-GEODETIC = 'epsg:4326'
 MILE_IN_KILOMETERS = 1.6
-
-
-def convert_xy_to_lat_long(coordinates):
-    """
-    Some datasets use (x,y) coordinates to form map projection.
-    This method converts it to lat and long
-    :param coordinates: a list with X and Y
-    :return: a list of Lat and Long
-    """
-    inProj = Proj(init=MERCATOR)
-    outProj = Proj(init=GEODETIC)
-    return [coordinate for coordinate
-            in transform(inProj, outProj, coordinates[0], coordinates[1])]
 
 
 def get_truck_locations():
     """
-    Queries arcgis data and returns a list of food truck locations in Boston
+    Get the location of the food trucks in Boston
 
-    :return: list of lists containing location name, dict ofGPS coordinates
-    in value for example:
-    [['Sumner Street', {'x': -7908107.9125, 'y': 5216395.7579}],
-    ['Boylston/Clarendon by Trinity Church', {'x': -7912059.823100001,
-    'y': 5213652.076399997}]]
+    :return: JSON object containing API parameters in the folllwing format:
+    {
+        'attributes': {'CreationDate': 1520268574231,
+                       'Creator': '143525_boston',
+                       'Day': 'Wednesday',
+                       'EditDate': 1520268574231,
+                       'Editor': '143525_boston',
+                       'End_time': '3:00:00 PM',
+                       'FID': 10,
+                       'GlobalID': 'd4a84cb9-8685-461a-ab5e-a19260656933',
+                       'Hours': '11 a.m. - 3 p.m.',
+                       'Link': 'http://www.morockinfusion.com/',
+                       'Loc': 'Chinatown Park',
+                       'Management': 'Rose Kennedy Greenway Conservancy',
+                       'Notes': ' ',
+                       'POINT_X': -7910324.35486,
+                       'POINT_Y': 5213745.7545,
+                       'Site_num': 0,
+                       'Start_time': '11:00:00 AM',
+                       'Time': 'Lunch',
+                       'Title': 'Greenway',
+                       'Truck': "Mo'Rockin Fusion"},
+       'geometry': {'x': -71.05965270349564, 'y': 42.351281064296}
+    }
     """
-    food_truck_feature_server_url = \
-        'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/' \
-        + 'food_trucks_schedule/FeatureServer/0'
-    day_of_week = day_name[date.today().weekday()]
-
-    # Note: as currently written, only fetch Lunch food trucks on that day
-    food_truck_query = 'Day=\'%(day)s\' AND Time=\'%(meal)s\'' \
-                       % {'day': day_of_week, "meal": "Lunch"}
-
-    # Result is a dictionary of food truck locations
-    food_truck_data_result = \
-        gis_utils.get_features_from_feature_server(
-            food_truck_feature_server_url, food_truck_query)
+    base_url = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
+               'services/food_trucks_schedule/FeatureServer/0/query'
+    day_of_week = "Day='" + datetime.datetime.today().strftime('%A') \
+                  + "' AND Time='Lunch'"
+    url_params = {
+        "f": "json",
+        "outFields": "*",
+        "outSR": "4326",
+        "returnGeometry": "true",
+        "where": day_of_week
+    }
+    food_truck_data_result = requests.get(base_url, url_params)
 
     # Generate unique list of food truck locations
     # to send to the Google Maps API
@@ -135,16 +134,12 @@ def get_nearby_food_trucks(mycity_request):
                 mycity_request.session_attributes:
             zip_code = mycity_request.session_attributes[zip_code_key]
 
-        # Convert address to X, Y
-        usr_addr_xy = gis_utils.geocode_address(address)
         truck_unique_locations = get_truck_locations()
-
         nearby_food_trucks = []
         try:
             for location in truck_unique_locations:
-                permit_xy = list(location[0].values())
-                permit_xy = convert_xy_to_lat_long(permit_xy)
-                dist = gis_utils.calculate_distance(usr_addr_xy, permit_xy)
+                truck_lat_lon = list(location[0].values())
+                dist = gis_utils.calculate_distance(usr_addr_xy, truck_lat_lon)
 
                 if dist <= MILE_IN_KILOMETERS:
                     nearby_food_trucks.append(location)
