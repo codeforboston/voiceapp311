@@ -14,7 +14,7 @@ import mycity.mycity_request_data_model as req
 class IntentBaseCase(unittest.TestCase):
 
     intent_to_test = None
-    expected_title = 'Unhandled'
+    expected_title = 'Boston Info'
     returns_reprompt_text = False
 
     def setUp(self):
