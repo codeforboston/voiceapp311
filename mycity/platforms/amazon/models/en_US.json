@@ -1172,6 +1172,25 @@
                 {
                     "name": "AMAZON.FallbackIntent",
                     "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "InclementWeatherIntent",
+                    "slots": [],
+                    "samples": [
+                        "bad weather",
+                        "snow emergency",
+                        "it there a bad weather emergency",
+                        "is there a bad weather alert",
+                        "do i have to move my car",
+                        "in there an inclement weather alert",
+                        "it there a snow alert",
+                        "is there an inclement weather emergency ",
+                        "Is there a snow emergency"
+                    ]
                 }
             ],
             "types": [
@@ -1284,7 +1303,8 @@
                         }
                     ]
                 }
-            ]
+            ],
+            "delegationStrategy": "SKILL_RESPONSE"
         },
         "prompts": [
             {
