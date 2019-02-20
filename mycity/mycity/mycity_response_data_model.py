@@ -145,7 +145,7 @@ class MyCityResponseDataModel:
         valid_directives = [
             "Delegate",  # Delegate dialog decision to platform
             "ElicitSlotTrash",  # Ask for address for trash
-            "ElicitSlotZipCode",  # Ask for users zip code
+            "ElicitSlotZipCode"  # Ask for users zip code
         ]
 
         if value not in valid_directives:
