@@ -46,7 +46,7 @@ class FinderCSV(Finder):
             and modify fields in the returned record for output_speech
             formatted string
         :param filter: filter that we can use to remove records from csv
-            file before using google_maps to find distances and 
+            file before using a service to find distances and 
             driving_times
         """
 

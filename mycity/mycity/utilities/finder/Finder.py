@@ -138,7 +138,7 @@ class Finder(object):
 
     def get_all_destinations(self, records):
         """
-        Return a list of all destinations to pass to Google Maps API
+        Return a list of all destinations in the records
         
         :param records: a list of all location records, records are stored as 
             dictionaries

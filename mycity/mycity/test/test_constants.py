@@ -44,25 +44,6 @@ ALEXA_DEVICE_ADDRESS_FAILURE = {
     "postalCode": "02138"
 }
 
-# gis_utils.get_closest_feature
-GOOGLE_MAPS_JSON = [
-    {
-        'Driving distance': 2458,
-        'Driving distance text': '1.5 mi',
-        'Driving time': 427,
-        'Driving time text': '7 mins',
-        'test': '94 Sawyer Ave Boston, MA'
-    },
-    {
-        'Driving distance': 692625,
-        'Driving distance text': '430 mi',
-        'Driving time': 24533,
-        'Driving time text': '6 hours 49 mins',
-        'test': '4 Olivewood Ct Greenbelt, MD'
-    }
-]
-
-
 # gis_utils._get_dest_addresses_from_features
 PARKING_LOT_FEATURES = [
     [
@@ -270,7 +251,6 @@ GET_TRASH_DAY_MOCK = {
         'opts': {
             'app_search_desc': None,
             'notification_days': None,
-            'disable_google_geocoder': True,
             'disable_social': None,
             'app_search_title': None,
             'forced_widget_page': None,
@@ -282,7 +262,6 @@ GET_TRASH_DAY_MOCK = {
             'disable_print_download': None,
             'arcgis_geocoder': None,
             'pdf_header_center_html': None,
-            'google_geocoder': None,
             'app_navigation_page2': 'app_navigation_tabs',
             'pdf_show_zones': None,
             'require_explicit_consent': None,
