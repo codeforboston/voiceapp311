@@ -1,4 +1,3 @@
-import mycity.utilities.google_maps_utils as g_maps_utils
 import mycity.test.unit_tests.base as base
 from mycity.utilities.finder.FinderCSV import FinderCSV
 
@@ -13,7 +12,7 @@ class FinderCSVTestCase(base.BaseTestCase):
         fake_url = "www.fake.com"
         address_key = "Address"
         output_speech = "Trying to get {name}, {" + address_key + "}, " \
-            + "{" + g_maps_utils.DRIVING_DISTANCE_TEXT_KEY + "}."
+            + "{Driving distance text}."
         self.request.session_attributes['currentAddress'] = \
             '1000 Dorchester Ave'
         self.finder = FinderCSV(self.request, fake_url, address_key,
@@ -24,11 +23,10 @@ class FinderCSVTestCase(base.BaseTestCase):
         super().tearDown()
 
     def test_get_output_speech_with_success(self):
-        distance = g_maps_utils.DRIVING_DISTANCE_TEXT_KEY
         self.finder.set_output_speech({
             'Address': '123 Fake St Boston, MA',
             'name': 'The Place',
-            distance: '100 miles away'
+            'Driving distance text': '100 miles away'
         })
         self.assertEqual(
             "Trying to get The Place, 123 Fake St Boston, MA, 100 miles away.",

@@ -9,65 +9,11 @@ kill any computation that takes longer than 3 secs.
 from arcgis.gis import *
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
-import mycity.utilities.google_maps_utils as g_maps_utils
 import logging
 
 logger = logging.getLogger(__name__)
 
 dev_gis = GIS()  # this is needed to use geocoding
-
-def get_closest_feature(origin, feature_address_index, 
-                        feature_type, error_message, features):
-    """
-    Calculates the nearest feature given an origin
-    
-    :param origin: String containing starting address we calculate
-        shortest distance from
-    :param feature_address_index: index where address in features
-        is stored
-    :param feature_type: string describing the type of feature we are
-        calculating the shortest distance to
-    :param error_message: string to print if we fail to find a closest feature
-    :param features: list of features fetched from FeatureServer
-    :return: dictionary with address, distance, and
-        driving time for closest feature
-    """
-    logger.debug(
-        'origin received: ' + str(origin) +
-        ', feature_address_index received:' + str(feature_address_index) +
-        ', feature_type received: ' + str(feature_type) +
-        ', error_message received:' + str(error_message) +
-        ', features received (printing first five):' + str(features[:5]) +
-        ', count(features): ' + str(len(features))
-    )
-
-    dest_addresses = _get_dest_addresses_from_features(
-        feature_address_index,
-        features
-    )
-    location_driving_info = g_maps_utils._get_driving_info(
-        origin,
-        feature_type,
-        dest_addresses
-    )
-    if len(location_driving_info) > 0:
-        closest_location_info = min(
-            location_driving_info,
-            key=lambda x: x[g_maps_utils.DRIVING_DISTANCE_VALUE_KEY]
-        )
-    else:
-        logger.debug(error_message)
-        closest_location_info = {
-            feature_type: False,
-            g_maps_utils.DRIVING_DISTANCE_TEXT_KEY: False,
-            g_maps_utils.DRIVING_TIME_TEXT_KEY: False
-        }
-    closest_location_info = g_maps_utils.parse_closest_location_info(
-        feature_type,
-        closest_location_info
-    )
-    return closest_location_info
-
 
 def get_features_from_feature_server(url, query):
     """
