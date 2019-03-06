@@ -6,6 +6,7 @@ from . import intent_constants
 import mycity.intents.speech_constants.voting_intent as speech_constants
 from streetaddress import StreetAddressParser
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 import mycity.utilities.arcgis_utils as arcgis_utils
 import mycity.utilities.voting_utils as vote_utils
 import requests

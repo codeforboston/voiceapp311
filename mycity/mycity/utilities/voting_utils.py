@@ -3,7 +3,7 @@ import json
 import re
 
 
-def get_polling_location(ward_precinct):
+def get_polling_location(ward_precinct, requests=requests):
     """
     Returns dictionary containing location name and address from the provided ward and precinct
 
@@ -41,7 +41,7 @@ def get_polling_location(ward_precinct):
 
 
 
-def get_ward_precinct_info(coordinates):
+def get_ward_precinct_info(coordinates, requests=requests):
     """
     Returns dictionary containing location ward and precinct from the provided x, y coordinates
 
