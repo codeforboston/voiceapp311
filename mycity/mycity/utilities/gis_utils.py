@@ -9,11 +9,13 @@ kill any computation that takes longer than 3 secs.
 from arcgis.gis import *
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
+from math import sin, cos, sqrt, atan2, radians
 import logging
 
 logger = logging.getLogger(__name__)
 
 dev_gis = GIS()  # this is needed to use geocoding
+
 
 def get_features_from_feature_server(url, query):
     """
@@ -70,3 +72,21 @@ def geocode_address(m_address):
     m_location = geocode(address=m_address)[0]
     adict = (m_location['location'])
     return list(adict.values())
+
+
+def calculate_distance(m_first, m_second):
+    """
+    :param m_first: first address of interest
+    :param m_second: second address of interest
+    :return: the distance (in km) between these two addresses using the Haversine formula
+    """
+    R = 6371  # radius of the earth
+    lat1 = radians(m_first[0])
+    lon1 = radians(m_first[1])
+    lat2 = radians(m_second[0])
+    lon2 = radians(m_second[1])
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    return R * c

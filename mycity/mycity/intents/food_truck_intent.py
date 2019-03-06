@@ -6,7 +6,6 @@ import mycity.utilities.gis_utils as gis_utils
 import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
 import requests
-
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.mycity_response_data_model import MyCityResponseDataModel
@@ -19,13 +18,20 @@ from . import intent_constants
 logger = logging.getLogger(__name__)
 
 MILE_IN_KILOMETERS = 1.6
+BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
+               'services/food_trucks_schedule/FeatureServer/0/query'
+TRUCK = 1
+STREET_A = 2
+STREET_B = 3
+START_TIME = 4
+END_TIME = 5
 
 
 def get_truck_locations():
     """
     Get the location of the food trucks in Boston
 
-    :return: JSON object containing API parameters in the folllwing format:
+    :return: JSON object containing API parameters in the following format:
     {
         'attributes': {'CreationDate': 1520268574231,
                        'Creator': '143525_boston',
@@ -50,8 +56,6 @@ def get_truck_locations():
        'geometry': {'x': -71.05965270349564, 'y': 42.351281064296}
     }
     """
-    base_url = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
-               'services/food_trucks_schedule/FeatureServer/0/query'
     day_of_week = "Day='" + datetime.datetime.today().strftime('%A') + "' "
     url_params = {
         "f": "json",
@@ -61,18 +65,16 @@ def get_truck_locations():
         "where": day_of_week
     }
     logger.debug("Requesting data from ArcGIS server!")
-    food_truck_data_result = requests.get(base_url, url_params)
-    response_code = food_truck_data_result.status_code
+    food_trucks_raw = requests.get(BASE_URL, url_params)
+    response_code = food_trucks_raw.status_code
     logger.debug("Got response code: " + str(response_code))
     if response_code != requests.codes.ok:
-        logger.debug('HTTP Error: '.format(response_code))
+        logger.error('HTTP Error: '.format(response_code))
         return {}
-
-    print(food_truck_data_result)
 
     # Generate unique list of food truck locations
     # to send to the Google Maps API
-    trucks = food_truck_data_result.json()['features']
+    trucks = food_trucks_raw.json()['features']
     truck_unique_locations = []
     for truck in trucks:
         if truck["attributes"]["Loc"] not in truck_unique_locations:
@@ -101,8 +103,8 @@ def get_nearby_food_trucks(mycity_request):
 
         address_parser = StreetAddressParser()
         a = address_parser.parse(current_address)
-        address = str(a['house']) + " " + str(a['street_name']) + " " \
-                  + str(a['street_type'])
+        address = str(a["house"]) + " " + str(a["street_name"]) + " " \
+                  + str(a["street_type"])
         zip_code = str(a["other"]).zfill(5) if a["other"] else None
 
         zip_code_key = intent_constants.ZIP_CODE_KEY
@@ -131,22 +133,22 @@ def get_nearby_food_trucks(mycity_request):
                 response = f"I found {count} food trucks within a mile " \
                     "from your address! "
                 for i in range(count):
-                    response += f"{nearby_food_trucks[0][1]} is located at " \
-                        f"{nearby_food_trucks[i][2]} and " \
-                        f"{nearby_food_trucks[i][3]}, from " \
-                        f"{nearby_food_trucks[i][4]} to " \
-                        f"{nearby_food_trucks[i][5]}, "
+                    response += f"{nearby_food_trucks[0][TRUCK]} is located" \
+                        f" at {nearby_food_trucks[i][STREET_A]} and " \
+                        f"{nearby_food_trucks[i][STREET_A]}, from " \
+                        f"{nearby_food_trucks[i][START_TIME]} to " \
+                        f"{nearby_food_trucks[i][END_TIME]}, "
                 mycity_response.output_speech = response
 
             elif count > 3:
                 response = f"I found {count} food trucks within a mile " \
                     "from your address! Here are the first three: "
                 for i in range(3):
-                    response += f"{nearby_food_trucks[i][1]} is located at "\
-                        f"{nearby_food_trucks[i][2]} and " \
-                        f"{nearby_food_trucks[i][3]}, from " \
-                        f"{nearby_food_trucks[i][4]} to " \
-                        f"{nearby_food_trucks[i][5]}, "
+                    response += f"{nearby_food_trucks[i][TRUCK]} is located"\
+                        f" at {nearby_food_trucks[i][STREET_A]} and " \
+                        f"{nearby_food_trucks[i][STREET_B]}, from " \
+                        f"{nearby_food_trucks[i][START_TIME]} to " \
+                        f"{nearby_food_trucks[i][END_TIME]}, "
                 response += "Would you like to hear more?"
                 mycity_response.output_speech = response
 
