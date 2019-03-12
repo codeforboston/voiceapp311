@@ -70,7 +70,7 @@ def get_truck_locations():
     logger.debug("Got response code: " + str(response_code))
     if response_code != requests.codes.ok:
         logger.error('HTTP Error: '.format(response_code))
-        return {}
+        raise ValueError('Received HTTP Error'.format(response_code))
 
     # Generate unique list of food truck locations
     # to send to the Google Maps API
@@ -101,21 +101,29 @@ def get_nearby_food_trucks(mycity_request):
         current_address = \
             mycity_request.session_attributes[CURRENT_ADDRESS_KEY]
 
+        # Parsing street address using street-address package
         address_parser = StreetAddressParser()
         a = address_parser.parse(current_address)
         address = str(a["house"]) + " " + str(a["street_name"]) + " " \
                   + str(a["street_type"])
-        zip_code = str(a["other"]).zfill(5) if a["other"] else None
 
+        # Parsing zip code
+        zip_code = str(a["other"]).zfill(5) if a["other"] else None
         zip_code_key = intent_constants.ZIP_CODE_KEY
         if zip_code is None and zip_code_key in \
                 mycity_request.session_attributes:
             zip_code = mycity_request.session_attributes[zip_code_key]
 
+        # Get user's GIS Geocode Address
         usr_addr = gis_utils.geocode_address(address)
-        truck_unique_locations = get_truck_locations()
-        nearby_food_trucks = []
         try:
+            truck_unique_locations = get_truck_locations()
+        except ValueError as err:
+            print(err.args)
+        nearby_food_trucks = []
+
+        try:
+            # Loop through food truck list and search for nearby food trucks
             for location in truck_unique_locations:
                 truck_lat_lon = list(location[0].values())
                 dist = gis_utils.calculate_distance(usr_addr, truck_lat_lon)
@@ -129,13 +137,24 @@ def get_nearby_food_trucks(mycity_request):
             if count == 0:
                 mycity_response.output_speech = "I didn't find any food trucks!"
 
-            if 0 < count <= 3:
+            if count == 1:
+                response = f"I found {count} food truck within a mile " \
+                    "from your address! "
+                for i in range(count):
+                    response += f"{nearby_food_trucks[0][TRUCK]} is located" \
+                        f" at {nearby_food_trucks[i][STREET_A]} and " \
+                        f"{nearby_food_trucks[i][STREET_B]}, from " \
+                        f"{nearby_food_trucks[i][START_TIME]} to " \
+                        f"{nearby_food_trucks[i][END_TIME]}, "
+                mycity_response.output_speech = response
+
+            if 1 < count <= 3:
                 response = f"I found {count} food trucks within a mile " \
                     "from your address! "
                 for i in range(count):
                     response += f"{nearby_food_trucks[0][TRUCK]} is located" \
                         f" at {nearby_food_trucks[i][STREET_A]} and " \
-                        f"{nearby_food_trucks[i][STREET_A]}, from " \
+                        f"{nearby_food_trucks[i][STREET_B]}, from " \
                         f"{nearby_food_trucks[i][START_TIME]} to " \
                         f"{nearby_food_trucks[i][END_TIME]}, "
                 mycity_response.output_speech = response
