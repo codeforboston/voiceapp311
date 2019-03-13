@@ -168,7 +168,6 @@ def get_nearby_food_trucks(mycity_request):
                         f"{nearby_food_trucks[i][STREET_B]}, from " \
                         f"{nearby_food_trucks[i][START_TIME]} to " \
                         f"{nearby_food_trucks[i][END_TIME]}, "
-                response += "Would you like to hear more?"
                 mycity_response.output_speech = response
 
         except InvalidAddressError:
