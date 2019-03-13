@@ -23,7 +23,7 @@ def get_polling_location(ward_precinct, requests=requests):
         "where": "Ward = " + ward + "AND Precinct = " + precinct,
         "outFields": "Location2, Location3"
     }
-    response = requests.request("GET", url, params=params)
+    response = requests.get(url, params=params)
     if response.status_code != 200:
         return "None"
     else:
@@ -49,7 +49,6 @@ def get_ward_precinct_info(coordinates, requests=requests):
         values for x and y that represent longitude and latitude
     :return: Dict containing ward string and precinct string
     """
-    
     url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services/Precincts_2017/FeatureServer/0/query"
 
     params = {
@@ -61,7 +60,8 @@ def get_ward_precinct_info(coordinates, requests=requests):
         "outFields": "WARD_PRECINCT"
     }
 
-    response = requests.request("GET", url, params=params)
+    response = requests.get(url, params=params)
+
     if response.status_code != 200:
         return "None"
     else:
