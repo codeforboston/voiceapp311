@@ -64,7 +64,6 @@ def _build_text_from_response(response):
     :return: a string containing formatted incident responses
 
     """
-    print(response)
     text_response = ""
     if bool(response[SUCCESS_FIELD]):
         for incident in response[RESULT_FIELD][RECORDS_FIELD]:
