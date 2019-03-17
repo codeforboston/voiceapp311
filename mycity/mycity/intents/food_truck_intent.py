@@ -17,73 +17,34 @@ from . import intent_constants
 
 logger = logging.getLogger(__name__)
 
-MILE_IN_KILOMETERS = 1.6
+MILE = 1600
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
-               'services/food_trucks_schedule/FeatureServer/0/query'
-TRUCK = 1
-STREET_A = 2
-STREET_B = 3
-START_TIME = 4
-END_TIME = 5
+               'services/food_trucks_schedule/FeatureServer/0/'
+QUERY = {'where': '1=1', 'out_sr': '4326'}
+DAY = datetime.datetime.today().strftime('%A')
+
+
+def add_response_text(food_trucks):
+    response = ''
+    for t in food_trucks:
+        response += f"{t['attributes']['Truck']} is located" \
+            f" at {t['attributes']['Loc']} between " \
+            f"{t['attributes']['Start_time']} and " \
+            f"{t['attributes']['End_time']}, "
+    return response
 
 
 def get_truck_locations():
     """
-    Get the location of the food trucks in Boston
+    Get the location of the food trucks in Boston TODAY
 
-    :return: JSON object containing API parameters in the following format:
-    {
-        'attributes': {'CreationDate': 1520268574231,
-                       'Creator': '143525_boston',
-                       'Day': 'Wednesday',
-                       'EditDate': 1520268574231,
-                       'Editor': '143525_boston',
-                       'End_time': '3:00:00 PM',
-                       'FID': 10,
-                       'GlobalID': 'd4a84cb9-8685-461a-ab5e-a19260656933',
-                       'Hours': '11 a.m. - 3 p.m.',
-                       'Link': 'http://www.morockinfusion.com/',
-                       'Loc': 'Chinatown Park',
-                       'Management': 'Rose Kennedy Greenway Conservancy',
-                       'Notes': ' ',
-                       'POINT_X': -7910324.35486,
-                       'POINT_Y': 5213745.7545,
-                       'Site_num': 0,
-                       'Start_time': '11:00:00 AM',
-                       'Time': 'Lunch',
-                       'Title': 'Greenway',
-                       'Truck': "Mo'Rockin Fusion"},
-       'geometry': {'x': -71.05965270349564, 'y': 42.351281064296}
-    }
+    :return: a list of features with unique food truck locations
     """
-    day_of_week = "Day='" + datetime.datetime.today().strftime('%A') + "' "
-    url_params = {
-        "f": "json",
-        "outFields": "*",
-        "outSR": "4326",
-        "returnGeometry": "true",
-        "where": day_of_week
-    }
-    logger.debug("Requesting data from ArcGIS server!")
-    food_trucks_raw = requests.get(BASE_URL, url_params)
-    response_code = food_trucks_raw.status_code
-    logger.debug("Got response code: " + str(response_code))
-    if response_code != requests.codes.ok:
-        logger.error('HTTP Error: '.format(response_code))
-        raise ValueError('Received HTTP Error'.format(response_code))
-
-    # Generate unique list of food truck locations
-    # to send to the Google Maps API
-    trucks = food_trucks_raw.json()['features']
+    trucks = gis_utils.get_features_from_feature_server(BASE_URL, QUERY)
     truck_unique_locations = []
-    for truck in trucks:
-        if truck["attributes"]["Loc"] not in truck_unique_locations:
-            truck_unique_locations.append([truck["geometry"],
-                                           truck["attributes"]["Truck"],
-                                           truck["attributes"]["Loc"],
-                                           truck["attributes"]["Title"],
-                                           truck["attributes"]["Start_time"],
-                                           truck["attributes"]["End_time"]])
+    for t in trucks:
+        if t['attributes']['Day'] == DAY:
+            truck_unique_locations.append(t)
     return truck_unique_locations
 
 
@@ -114,24 +75,17 @@ def get_nearby_food_trucks(mycity_request):
                 mycity_request.session_attributes:
             zip_code = mycity_request.session_attributes[zip_code_key]
 
-        # Get user's GIS Geocode Address
+        # Get user's GIS Geocode Address and list of available trucks
         usr_addr = gis_utils.geocode_address(address)
-        try:
-            truck_unique_locations = get_truck_locations()
-        except ValueError as err:
-            print(err.args)
+        truck_unique_locations = get_truck_locations()
         nearby_food_trucks = []
 
         try:
             # Loop through food truck list and search for nearby food trucks
-            for location in truck_unique_locations:
-                truck_lat_lon = list(location[0].values())
-                dist = gis_utils.calculate_distance(usr_addr, truck_lat_lon)
-
-                if dist <= MILE_IN_KILOMETERS:
-                    nearby_food_trucks.append(location)
-                else:
-                    continue
+            for t in truck_unique_locations:
+                dist = gis_utils.calculate_distance(usr_addr, t)
+                if dist <= MILE:
+                    nearby_food_trucks.append(t)
 
             count = len(nearby_food_trucks)
             if count == 0:
@@ -140,34 +94,19 @@ def get_nearby_food_trucks(mycity_request):
             if count == 1:
                 response = f"I found {count} food truck within a mile " \
                     "from your address! "
-                for i in range(count):
-                    response += f"{nearby_food_trucks[0][TRUCK]} is located" \
-                        f" at {nearby_food_trucks[i][STREET_A]} and " \
-                        f"{nearby_food_trucks[i][STREET_B]}, from " \
-                        f"{nearby_food_trucks[i][START_TIME]} to " \
-                        f"{nearby_food_trucks[i][END_TIME]}, "
+                response += add_response_text(nearby_food_trucks)
                 mycity_response.output_speech = response
 
             if 1 < count <= 3:
                 response = f"I found {count} food trucks within a mile " \
                     "from your address! "
-                for i in range(count):
-                    response += f"{nearby_food_trucks[0][TRUCK]} is located" \
-                        f" at {nearby_food_trucks[i][STREET_A]} and " \
-                        f"{nearby_food_trucks[i][STREET_B]}, from " \
-                        f"{nearby_food_trucks[i][START_TIME]} to " \
-                        f"{nearby_food_trucks[i][END_TIME]}, "
+                response += add_response_text(nearby_food_trucks)
                 mycity_response.output_speech = response
 
             elif count > 3:
                 response = f"I found {count} food trucks within a mile " \
-                    "from your address! Here are the first three: "
-                for i in range(3):
-                    response += f"{nearby_food_trucks[i][TRUCK]} is located"\
-                        f" at {nearby_food_trucks[i][STREET_A]} and " \
-                        f"{nearby_food_trucks[i][STREET_B]}, from " \
-                        f"{nearby_food_trucks[i][START_TIME]} to " \
-                        f"{nearby_food_trucks[i][END_TIME]}, "
+                    "from your address! "
+                response += add_response_text(nearby_food_trucks)
                 mycity_response.output_speech = response
 
         except InvalidAddressError:
