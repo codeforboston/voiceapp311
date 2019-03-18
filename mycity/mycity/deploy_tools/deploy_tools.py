@@ -5,14 +5,16 @@ Tools to package and deploy the lambda function for the mycity voice app.
 from __future__ import print_function
 from subprocess import run, PIPE
 import argparse
-import os
-import shutil
-import zipfile
-import stat
 import errno
-import time
-import re
 import json
+import os
+import re
+import shutil
+import stat
+import sys
+import time
+import zipfile
+
 
 # path constants
 PROJECT_ROOT = os.path.join(os.getcwd(), os.path.pardir, os.path.pardir)
@@ -61,6 +63,8 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     :return: None
     """
     install_args = [
+        sys.executable,
+        "-m",
         "pip",
         "install",
         "-r",
@@ -70,6 +74,8 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     ]
 
     install_args_no_deps = [
+        sys.executable,
+        "-m",
         "pip",
         "install",
         "--no-deps",
