@@ -43,8 +43,8 @@ def _build_query_string(address):
 
     """
     coordinates = _get_coordinates_for_address(address)
-    return """SELECT * FROM "{}" WHERE "lat" LIKE '{}%' AND \
-        "long" LIKE '{}%' LIMIT {}""" \
+    return """SELECT * FROM "{}" WHERE "Lat" LIKE '{}%' AND \
+        "Long" LIKE '{}%' LIMIT {}""" \
         .format(RESOURCEID,
                 coordinates[0],
                 coordinates[1],
