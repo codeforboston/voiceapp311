@@ -5,12 +5,11 @@ Food Truck Intent
 import mycity.utilities.gis_utils as gis_utils
 import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
-import requests
+import datetime
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from streetaddress import StreetAddressParser
-import datetime
 from .custom_errors import \
     InvalidAddressError, BadAPIResponse, MultipleAddressError
 from . import intent_constants
@@ -22,11 +21,16 @@ BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
                'services/food_trucks_schedule/FeatureServer/0/'
 QUERY = {'where': '1=1', 'out_sr': '4326'}
 DAY = datetime.datetime.today().strftime('%A')
+FOOD_TRUCK_LIMIT = 5  # limits the number of food trucks
 
 
 def add_response_text(food_trucks):
     response = ''
+    count = 0
     for t in food_trucks:
+        count += 1
+        if count > FOOD_TRUCK_LIMIT:
+            break
         response += f"{t['attributes']['Truck']} is located" \
             f" at {t['attributes']['Loc']} between " \
             f"{t['attributes']['Start_time']} and " \
@@ -105,7 +109,8 @@ def get_nearby_food_trucks(mycity_request):
 
             elif count > 3:
                 response = f"I found {count} food trucks within a mile " \
-                    "from your address! "
+                    "from your address! Here are the first " \
+                           + str(FOOD_TRUCK_LIMIT) + ". "
                 response += add_response_text(nearby_food_trucks)
                 mycity_response.output_speech = response
 
