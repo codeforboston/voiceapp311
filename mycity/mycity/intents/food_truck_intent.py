@@ -88,6 +88,7 @@ def get_nearby_food_trucks(mycity_request):
                 dist = gis_utils.calculate_distance(usr_addr, t)
                 if dist <= MILE:
                     nearby_food_trucks.append(t)
+                    counter += 1
                     if counter == FOOD_TRUCK_LIMIT:
                         break
 
@@ -108,9 +109,9 @@ def get_nearby_food_trucks(mycity_request):
                 mycity_response.output_speech = response
 
             elif count > 3:
-                response = f"I found {count} food trucks within a mile " \
-                    "from your address! Here are the first " \
-                           + str(FOOD_TRUCK_LIMIT) + ". "
+                response = f"There are at least {count} food trucks within " \
+                           f"a mile from your address! Here are the first " \
+                           + str(count) + ". "
                 response += add_response_text(nearby_food_trucks)
                 mycity_response.output_speech = response
 
