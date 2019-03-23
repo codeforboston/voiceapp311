@@ -26,11 +26,7 @@ FOOD_TRUCK_LIMIT = 5  # limits the number of food trucks
 
 def add_response_text(food_trucks):
     response = ''
-    count = 0
     for t in food_trucks:
-        count += 1
-        if count > FOOD_TRUCK_LIMIT:
-            break
         response += f"{t['attributes']['Truck']} is located" \
             f" at {t['attributes']['Loc']} between " \
             f"{t['attributes']['Start_time']} and " \
@@ -86,10 +82,14 @@ def get_nearby_food_trucks(mycity_request):
 
         try:
             # Loop through food truck list and search for nearby food trucks
+            # limit to 5 to speed up response
+            counter = 0
             for t in truck_unique_locations:
                 dist = gis_utils.calculate_distance(usr_addr, t)
                 if dist <= MILE:
                     nearby_food_trucks.append(t)
+                    if counter == FOOD_TRUCK_LIMIT:
+                        break
 
             count = len(nearby_food_trucks)
             if count == 0:
