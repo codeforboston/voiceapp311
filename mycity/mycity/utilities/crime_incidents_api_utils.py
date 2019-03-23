@@ -43,9 +43,12 @@ def _build_query_string(address):
 
     """
     coordinates = _get_coordinates_for_address(address)
-    return """SELECT * FROM "{}" WHERE "lat" LIKE '{}%' AND \
-        "long" LIKE '{}%' LIMIT {}""" \
-        .format(RESOURCEID, coordinates[0], coordinates[1], QUERY_LIMIT)
+    return """SELECT * FROM "{}" WHERE "Lat" LIKE '{}%' AND \
+        "Long" LIKE '{}%' LIMIT {}""" \
+        .format(RESOURCEID,
+                coordinates[0],
+                coordinates[1],
+                QUERY_LIMIT)
 
 
 def _get_coordinates_for_address(address):
@@ -58,6 +61,6 @@ def _get_coordinates_for_address(address):
     """
     coordinates = geocode_address(address)
     logger.debug("Got coordinates: {}".format(coordinates))
-    _lat = "{:.2f}".format(float(coordinates[1]))
-    _long = "{:.2f}".format(float(coordinates[0]))
-    return (_lat, _long)
+    _lat = "{:.2f}".format(float(coordinates['y']))
+    _long = "{:.2f}".format(float(coordinates['x']))
+    return _lat, _long
