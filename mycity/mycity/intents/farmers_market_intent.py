@@ -1,6 +1,5 @@
 """
 Farmers Market Intent
-
 """
 import mycity.utilities.gis_utils as gis_utils
 import logging
