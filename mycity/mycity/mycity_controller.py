@@ -17,6 +17,7 @@ from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
 from .intents.crime_activity_intent import get_crime_incidents_intent
 from .intents.farmers_market_intent import get_farmers_markets_today
+from .intents.food_truck_intent import get_nearby_food_trucks
 from .intents import intent_constants
 import logging
 
@@ -131,6 +132,11 @@ def on_intent(mycity_request):
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_crime_incidents_intent(mycity_request)
+    elif mycity_request.intent_name == "FoodTruckIntent":
+        return request_user_address_response(mycity_request) \
+            if intent_constants.CURRENT_ADDRESS_KEY \
+            not in mycity_request.session_attributes \
+            else get_nearby_food_trucks(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":

@@ -16,6 +16,7 @@ ARCGIS_AUTH_URL = "https://www.arcgis.com/sharing/rest/oauth2/token"
 ARCGIS_CLOSEST_FACILITY_URL = "https://route.arcgis.com/arcgis/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World/solveClosestFacility"
 ARCGIS_GEOCODE_URL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates"
 
+
 def generate_access_token():
     """
     Generates a temporary access token fro ArcGIS REST APIs
@@ -44,6 +45,7 @@ def generate_access_token():
         logger.debug(e)
         return None
 
+
 def get_client_id():
     """
     Returns Client ID environment variable
@@ -56,6 +58,7 @@ def get_client_id():
     else:
         return client_id
 
+
 def get_client_secret():
     """
     Returns Client Secret environment variable
@@ -67,6 +70,7 @@ def get_client_secret():
         raise Exception('ARCGIS_CLIENT_SECRET Environment variable not set')
     else:
         return client_secret 
+
 
 def find_closest_route(api_access_token, origin_address, destination_addresses):
     """
@@ -176,8 +180,6 @@ def format_multipart_form_request(url, params):
     return (body_as_string, updated_header)
 
 
-
-
 def _modify_multipart_form_params(params):
     """
     Helper function for _format_multipart_form_request
@@ -193,8 +195,6 @@ def _modify_multipart_form_params(params):
     return updated_params
 
 
-
-
 def _format_float(input_float):
     """
     Takes a float and returns a formatted String
@@ -207,6 +207,7 @@ def _format_float(input_float):
     rounded = round(input_float, 2)
     as_string = str(rounded)
     return as_string
+
 
 def _post_request(url, params, headers):
     """
@@ -225,7 +226,6 @@ def _post_request(url, params, headers):
     prepared_request = request.prepare()
     response = session.send(prepared_request)
     return response
-
 
 
 def geocode_address_candidates(input_address):
