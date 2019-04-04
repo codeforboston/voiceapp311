@@ -9,8 +9,8 @@ from .custom_errors import BadAPIResponse
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
-           'services/Farmers_Markets_and_Fresh_Trucks/FeatureServer/0'
+BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
+           'services/Farmers_Markets_Fresh_Trucks_View/FeatureServer/0'
 QUERY = {'where': '1=1', 'out_sr': '4326'}
 DAY = datetime.datetime.today().strftime('%A')
 
@@ -31,14 +31,15 @@ def get_farmers_markets_today(mycity_request):
         # Loop through the list of available farmers markets at a certain day
         markets_unique = []
         for m in markets:
-            if m not in markets_unique and m['attributes']['Day_'] == DAY:
+            if m not in markets_unique and \
+                    m['attributes']['Day_of_Week'] == DAY:
                 markets_unique.append(m)
 
         response = 'Avaiable farmers markets today are:\n'
         for m in markets_unique:
             response += m['attributes']['Name'] + ' located at ' + \
-                        m['attributes']['Location'] + ' from ' + \
-                        m['attributes']['Start'] + '. '
+                        m['attributes']['Address'] + ' from ' + \
+                        m['attributes']['Hours'] + '. '
         mycity_response.output_speech = response
 
     except BadAPIResponse:
