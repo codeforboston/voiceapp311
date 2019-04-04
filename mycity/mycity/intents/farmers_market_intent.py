@@ -29,14 +29,14 @@ def get_farmers_markets_today(mycity_request):
 
     try:
         # Loop through the list of available farmers markets at a certain day
-        markets_unique = []
+        markets_today = []
         for m in markets:
-            if m not in markets_unique and \
+            if m not in markets_today and \
                     m['attributes']['Day_of_Week'] == DAY:
-                markets_unique.append(m)
+                markets_today.append(m)
 
         response = 'Avaiable farmers markets today are:\n'
-        for m in markets_unique:
+        for m in markets_today:
             response += m['attributes']['Name'] + ' located at ' + \
                         m['attributes']['Address'] + ' from ' + \
                         m['attributes']['Hours'] + '. '
