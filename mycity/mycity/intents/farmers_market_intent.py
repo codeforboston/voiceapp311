@@ -35,7 +35,7 @@ def get_farmers_markets_today(mycity_request):
                     m['attributes']['Day_of_Week'] == DAY:
                 markets_today.append(m)
 
-        response = 'Avaiable farmers markets today are:\n'
+        response = 'Available farmers markets today are:\n'
         for m in markets_today:
             response += m['attributes']['Name'] + ' located at ' + \
                         m['attributes']['Address'] + ' from ' + \
