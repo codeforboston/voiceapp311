@@ -207,9 +207,9 @@ def update_lambda_code(lambda_function_name, s3_bucket=None, publish_version=Fal
             try:
                 aws_response = json.loads(result.stdout)
                 version = aws_response["Version"]
-                print("Published as version {}\n".format(version))
+                print("*   Published as version {}".format(version))
             except KeyError as e:
-                print("\nCouldn't get version from AWS response")
+                print("!   Couldn't get version from AWS response")
 
             print("* DONE UPLOADING")
             print(HORIZONTAL_RULE)
