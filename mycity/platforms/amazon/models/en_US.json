@@ -1088,6 +1088,43 @@
                     ]
                 },
                 {
+                    "name": "FoodTruckIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "It's {Address}",
+                                "My address is {Address}",
+                                "I live at {Address}",
+                                "{Address}"
+                            ]
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "where are the nearest food trucks",
+                        "what are the nearest food trucks",
+                        "is there any food truck around",
+                        "is there any food truck around me",
+                        "is there any food truck around my office",
+                        "is there any food truck around my house",
+                        "are there any food trucks around",
+                        "are there any food trucks around me",
+                        "are there any food trucks around my office",
+                        "are there any food trucks around my house",
+                        "what kind of food trucks are around me",
+                        "what kind of food trucks are near me",
+                        "what kind of food trucks are nearby",
+                        "food trucks",
+                        "Nearby food trucks",
+                        "what's for lunch"
+                    ]
+                },
+                {
                     "name": "LatestThreeOneOne",
                     "slots": [
                         {
@@ -1191,6 +1228,31 @@
                         "is there an inclement weather emergency ",
                         "Is there a snow emergency"
                     ]
+                },
+                {
+                    "name": "FarmersMarketIntent",
+                    "slots": [],
+                    "samples": [
+                        "how do I get local produce",
+                        "how do I find local produce",
+                        "how do I buy local produce",
+                        "how do I get fresh produce",
+                        "where can I get local produce",
+                        "where can I buy local produce",
+                        "where can I find local produce",
+                        "what are the farmers markets hours",
+                        "where can I find farmers markets",
+                        "where can I find fresh produce",
+                        "where can I get fresh produce",
+                        "where can I buy fresh produce",
+                        "what farmer markets are open today",
+                        "where I can find a farmers market",
+                        "where are farm stands",
+                        "where are farmers market",
+                        "farmers markets today",
+                        "are there any farmers markets today",
+                        "farmers markets"
+                    ]
                 }
             ],
             "types": [
@@ -1288,6 +1350,22 @@
                     ]
                 },
                 {
+                    "name": "FoodTruckIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1478934588421.914733191093"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "CrimeIncidentsIntent",
                     "confirmationRequired": false,
                     "prompts": {},
@@ -1358,6 +1436,15 @@
                     {
                         "type": "PlainText",
                         "value": "In a few sentences or less, please describe the {FeedbackType}"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1478934588421.914733191093",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What is your address?"
                     }
                 ]
             }
