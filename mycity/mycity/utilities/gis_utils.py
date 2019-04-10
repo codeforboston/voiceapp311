@@ -1,5 +1,5 @@
 """
-Utilty functions that interact with ArcGIS Feature Servers
+Utility functions that interact with ArcGIS Feature Servers
 
 NOTE: Intents that query FeatureServers may fail because AWS will
 kill any computation that takes longer than 3 secs.
