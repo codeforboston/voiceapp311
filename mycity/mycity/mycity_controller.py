@@ -16,6 +16,7 @@ from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
 from .intents.crime_activity_intent import get_crime_incidents_intent
+from .intents.farmers_market_intent import get_farmers_markets_today
 from .intents.food_truck_intent import get_nearby_food_trucks
 from .intents import intent_constants
 import logging
@@ -151,6 +152,8 @@ def on_intent(mycity_request):
         return get_311_requests(mycity_request)
     elif mycity_request.intent_name == "InclementWeatherIntent":
         return get_inclement_weather_alert(mycity_request)
+    elif mycity_request.intent_name == "FarmersMarketIntent":
+        return get_farmers_markets_today(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
@@ -193,8 +196,6 @@ def get_help_response(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
     return mycity_response
-
-
 
 
 def get_welcome_response(mycity_request):
@@ -243,6 +244,3 @@ def handle_session_end_request(mycity_request):
         "See you next time!"
     mycity_response.should_end_session = True
     return mycity_response
-
-
-

@@ -1,11 +1,10 @@
 """
 Food Truck Intent
-
 """
 import mycity.utilities.gis_utils as gis_utils
+import mycity.utilities.datetime_utils as date
 import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
-import datetime
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.mycity_response_data_model import MyCityResponseDataModel
@@ -20,7 +19,7 @@ MILE = 1600
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
                'services/food_trucks_schedule/FeatureServer/0/'
 QUERY = {'where': '1=1', 'out_sr': '4326'}
-DAY = datetime.datetime.today().strftime('%A')
+DAY = date.get_day()
 FOOD_TRUCK_LIMIT = 5  # limits the number of food trucks
 
 
