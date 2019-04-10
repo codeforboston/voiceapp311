@@ -1228,6 +1228,31 @@
                         "is there an inclement weather emergency ",
                         "Is there a snow emergency"
                     ]
+                },
+                {
+                    "name": "FarmersMarketIntent",
+                    "slots": [],
+                    "samples": [
+                        "how do I get local produce",
+                        "how do I find local produce",
+                        "how do I buy local produce",
+                        "how do I get fresh produce",
+                        "where can I get local produce",
+                        "where can I buy local produce",
+                        "where can I find local produce",
+                        "what are the farmers markets hours",
+                        "where can I find farmers markets",
+                        "where can I find fresh produce",
+                        "where can I get fresh produce",
+                        "where can I buy fresh produce",
+                        "what farmer markets are open today",
+                        "where I can find a farmers market",
+                        "where are farm stands",
+                        "where are farmers market",
+                        "farmers markets today",
+                        "are there any farmers markets today",
+                        "farmers markets"
+                    ]
                 }
             ],
             "types": [
