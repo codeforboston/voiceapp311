@@ -38,7 +38,7 @@ def get_trash_day_info(mycity_request):
         # currently assumes that trash day is the same for all units at
         # the same street address
         address = str(a['house']) + " " + str(a['street_full'])
-        zip_code = str(a["other"]).zfill(5) if a["other"] else None
+        zip_code = str(a["other"]).zfill(5) if a["other"] and a["other"].isdigit() else None
 
         zip_code_key = intent_constants.ZIP_CODE_KEY
         if zip_code is None and zip_code_key in \
