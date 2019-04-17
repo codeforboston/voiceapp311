@@ -116,6 +116,7 @@ def get_inclement_weather_alert(
             output_speech = alerts[Services.ALERT_HEADER.value]
 
     mycity_response = _create_response_object()
+    mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.output_speech = output_speech
     return mycity_response
 
