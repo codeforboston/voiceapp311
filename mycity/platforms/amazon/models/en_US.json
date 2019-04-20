@@ -40,6 +40,11 @@
                         }
                     ],
                     "samples": [
+                        "when do I need to take the trash out",
+                        "when does the trash go out at {Address}",
+                        "when does the trash go out",
+                        "when is trash this week at {Address}",
+                        "when is trash this week",
                         "trash day",
                         "trash pickup",
                         "garbage day",
