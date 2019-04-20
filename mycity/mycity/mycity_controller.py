@@ -187,10 +187,10 @@ def get_help_response(mycity_request):
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Help"
     mycity_response.output_speech = (
-        "You are using Boston Info, a skill that provides general information "
-        "about Boston. You can currently ask about your trash and recycling "
-        "pickup schedule, the location of the nearest snow emergency parking,"
-        "and current alerts from Boston.gov. If you have feedback for the "
+        "You are using Boston Info, a skill that provides information "
+        "about Boston services and alerts. You can ask about your trash "
+        "pickup schedule, city alerts, the locations of food trucks "
+        "and farmers markets, info about snow emergencies, and more! If you have feedback for the "
         "skill, say, 'I have a suggestion.'"
      )
     mycity_response.reprompt_text = None
