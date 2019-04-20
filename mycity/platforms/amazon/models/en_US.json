@@ -1035,6 +1035,8 @@
                     "name": "GetAlertsIntent",
                     "slots": [],
                     "samples": [
+                        "what the current status",
+                        "give me the city status",
                         "give me all alerts",
                         "are there any alerts",
                         "are there any emergencies",
