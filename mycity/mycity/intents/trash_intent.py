@@ -1,15 +1,17 @@
 """
 Functions for Alexa responses related to trash day
 """
-from .custom_errors import \
+from mycity.intents import intent_constants
+from mycity.intents.custom_errors import \
     InvalidAddressError, BadAPIResponse, MultipleAddressError
-from streetaddress import StreetAddressParser
-from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
+import mycity.intents.speech_constants.trash_intent as speech_constants
+from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.utilities.address_utils as address_utils
+from streetaddress import StreetAddressParser
+
 import re
 import requests
-from . import intent_constants
-import mycity.intents.speech_constants.trash_intent as speech_constants
 import logging
 
 logger = logging.getLogger(__name__)
@@ -35,6 +37,18 @@ def get_trash_day_info(mycity_request):
         # grab relevant information from session address
         address_parser = StreetAddressParser()
         a = address_parser.parse(current_address)
+
+        if not address_utils.is_address_valid(a):
+            mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
+            mycity_response.dialog_directive = "ElicitSlotTrash"
+            mycity_response.reprompt_text = None
+            mycity_response.session_attributes = mycity_request.session_attributes
+            mycity_response.card_title = CARD_TITLE
+            mycity_request = clear_address_from_mycity_object(mycity_request)
+            mycity_response = clear_address_from_mycity_object(mycity_response)
+            return mycity_response
+
+
         # currently assumes that trash day is the same for all units at
         # the same street address
         address = str(a['house']) + " " + str(a['street_full'])
