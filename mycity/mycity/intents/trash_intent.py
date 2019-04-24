@@ -1,18 +1,24 @@
 """
 Functions for Alexa responses related to trash day
+
 """
-from mycity.intents import intent_constants
-from mycity.intents.custom_errors import \
-    InvalidAddressError, BadAPIResponse, MultipleAddressError
-from mycity.intents.user_address_intent import clear_address_from_mycity_object
-import mycity.intents.speech_constants.trash_intent as speech_constants
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.utilities.address_utils as address_utils
-from streetaddress import StreetAddressParser
 
 import re
-import requests
 import logging
+
+import requests
+from streetaddress import StreetAddressParser
+
+from mycity.intents import intent_constants
+from mycity.intents.custom_errors import (
+    BadAPIResponse,
+    InvalidAddressError,
+    MultipleAddressError,
+)
+from mycity.intents.speech_constants import trash_intent as speech_constants
+from mycity.intents.user_address_intent import clear_address_from_mycity_object
+from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.utilities import address_utils
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +102,7 @@ def get_trash_day_info(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = CARD_TITLE
-    return mycity_response 
+    return mycity_response
 
 
 def get_trash_and_recycling_days(address, zip_code=None):
@@ -286,7 +292,7 @@ def build_speech_from_list_of_days(days):
     """
     Converts a list of days into proper speech, such as adding the word 'and'
     before the last item.
-    
+
     :param days: String array of days
     :return: Speech representing the provided days
     :raises: BadAPIResponse

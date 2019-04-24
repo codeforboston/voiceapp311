@@ -1,9 +1,14 @@
 import csv
-import unittest.mock as mock
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.test_constants as test_constants
-import mycity.intents.snow_parking_intent as snow_parking
+from unittest import mock
+
+from mycity.intents import snow_parking_intent
+from mycity.test import test_constants
+from mycity.test.integration_tests.intent_base_case import IntentBaseCase
+from mycity.test.integration_tests.intent_test_mixins import (
+    CardTitleTestMixIn,
+    CorrectSpeechOutputTestMixIn,
+    RepromptTextTestMixIn,
+)
 
 
 
@@ -11,15 +16,15 @@ import mycity.intents.snow_parking_intent as snow_parking
 # TestCase class for snow_parking_intent #
 ##########################################
 
-class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn, 
-                            mix_ins.CardTitleTestMixIn,
-                            mix_ins.CorrectSpeechOutputTestMixIn,
-                            base_case.IntentBaseCase):
+class SnowEmergencyTestCase(RepromptTextTestMixIn,
+                            CardTitleTestMixIn,
+                            CorrectSpeechOutputTestMixIn,
+                            IntentBaseCase):
 
     intent_to_test = "SnowParkingIntent"
-    expected_title = snow_parking.SNOW_PARKING_CARD_TITLE
+    expected_title = snow_parking_intent.SNOW_PARKING_CARD_TITLE
     returns_reprompt_text = False
-    expected_card_title = snow_parking.SNOW_PARKING_CARD_TITLE
+    expected_card_title = snow_parking_intent.SNOW_PARKING_CARD_TITLE
 
     def setUp(self):
         """
@@ -33,7 +38,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
 
         self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV,
                              encoding='utf-8-sig')
-        mock_filtered_record_return = list(filter(fake_filter, 
+        mock_filtered_record_return = list(filter(fake_filter,
                                                   csv.DictReader(
                                                       self.csv_file,
                                                       delimiter=','
@@ -50,7 +55,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
 
         self.mock_address_candidates = \
             mock.patch(
-                'mycity.utilities.finder.Finder.arcgis_utils.geocode_address_candidates',
+                'mycity.utilities.finder.finder.arcgis_utils.geocode_address_candidates',
                 return_value=mock_geocoded_address_candidates
             )
 
@@ -59,7 +64,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
 
         self.mock_api_access_token = \
                 mock.patch(
-                    'mycity.utilities.finder.Finder.arcgis_utils.generate_access_token',
+                    'mycity.utilities.finder.finder.arcgis_utils.generate_access_token',
                     return_value=mock_api_access_token
                 )
 
@@ -67,12 +72,12 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                 test_constants.ARCGIS_CLOSEST_DESTINATION
         self.mock_closest_destination = \
                 mock.patch(
-                        'mycity.utilities.finder.Finder.arcgis_utils.find_closest_route',
+                        'mycity.utilities.finder.finder.arcgis_utils.find_closest_route',
                         return_value=mock_closest_destination
                     )
 
-        
-    
+
+
         self.mock_filtered_record.start()
         self.mock_address_candidates.start()
         self.mock_api_access_token.start()

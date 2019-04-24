@@ -1,10 +1,12 @@
 """
 Uses ArcGIS to find location based information about Boston city services
+
 """
 
-from mycity.utilities.finder.Finder import Finder
-from mycity.utilities.gis_utils import get_features_from_feature_server
 import logging
+
+from mycity.utilities.finder.finder import Finder
+from mycity.utilities.gis_utils import get_features_from_feature_server
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +33,9 @@ class FinderGIS(Finder):
         Call super constructor and save query
 
         :param req: MyCityRequestDataModel
-        :param resource_url: String that Finder classes will 
+        :param resource_url: String that Finder classes will
             use to GET or query from
-        :param address_key: string that names the type of 
+        :param address_key: string that names the type of
             location we are finding
         :param output_speech: String that will be formatted later
             with closest location to origin address. NOTE: this should
@@ -43,7 +45,7 @@ class FinderGIS(Finder):
         :param output_speech_prep_func: function that will access
             and modify fields in the returned record for output_speech
             formatted string
-        :param query: parameter for call to ArcGIS server 
+        :param query: parameter for call to ArcGIS server
         """
         super().__init__(
             req,
@@ -57,7 +59,7 @@ class FinderGIS(Finder):
     def get_records(self):
         """
         Query City of Boston Feature Server, and return a list of features
-        
+
         :return: list of features corresponding to query
         """
         logger.debug('')

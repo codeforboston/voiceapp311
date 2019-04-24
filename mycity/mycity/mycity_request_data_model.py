@@ -1,18 +1,18 @@
 """
 Data Model for structuring requests to the skill implementation
+
 """
-import json
 
 
 class MyCityRequestDataModel:
     """
     Represents a request from a voice platform.
-    
+
     Standard way requests are structured so they may be acted upon by
     the skill implementation.
 
     @todo: Consistent comment format that contains platform-specific terminology
-        
+
     Note:
         The property methods below get and set attribute values.
     """

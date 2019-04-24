@@ -1,9 +1,7 @@
-import requests
-import json
-import os
-import sys
-import urllib
 import logging
+import os
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +26,7 @@ def generate_access_token():
         client_secret = get_client_secret()
         payload = {
                 'client_id': client_id,
-                'client_secret' : client_secret, 
+                'client_secret' : client_secret,
                 'grant_type' : 'client_credentials'
                 }
         headers = {}
@@ -69,7 +67,7 @@ def get_client_secret():
     if not client_secret:
         raise Exception('ARCGIS_CLIENT_SECRET Environment variable not set')
     else:
-        return client_secret 
+        return client_secret
 
 
 def find_closest_route(api_access_token, origin_address, destination_addresses):

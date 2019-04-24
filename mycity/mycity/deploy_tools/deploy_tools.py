@@ -1,18 +1,20 @@
 """
 Tools to package and deploy the lambda function for the mycity voice app.
+
 """
 
 from __future__ import print_function
-from subprocess import run, PIPE
+
 import argparse
-import os
-import shutil
-import zipfile
-import stat
 import errno
-import time
-import re
 import json
+import os
+import re
+import shutil
+import stat
+from subprocess import run, PIPE
+import time
+import zipfile
 
 # path constants
 PROJECT_ROOT = os.path.join(os.getcwd(), os.path.pardir, os.path.pardir)
@@ -190,7 +192,7 @@ def update_lambda_code(lambda_function_name, s3_bucket=None, publish_version=Fal
                 print("*   UPLOADING TO LAMBDA FROM S3...")
 
                 # modified command array to upload from s3
-                update_command_array += [  
+                update_command_array += [
                     "--s3-bucket",
                     s3_bucket,
                     "--s3-key",
@@ -203,7 +205,7 @@ def update_lambda_code(lambda_function_name, s3_bucket=None, publish_version=Fal
                     "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
                 ]
             result = run(update_command_array, stdout=PIPE)
-            
+
             try:
                 aws_response = json.loads(result.stdout)
                 version = aws_response["Version"]

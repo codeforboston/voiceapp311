@@ -5,11 +5,13 @@ NOTE: Intents that query FeatureServers may fail because AWS will
 kill any computation that takes longer than 3 secs.
 
 """
-from arcgis.gis import *
+
+import logging
+
+from arcgis import geometry
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
-from arcgis import geometry
-import logging
+from arcgis.gis import GIS
 
 logger = logging.getLogger(__name__)
 dev_gis = GIS()
@@ -19,7 +21,7 @@ def get_features_from_feature_server(url, query):
     """
     Given a url to a City of Boston Feature Server, return a list
     of Features (for example, parking lots that are not full)
-    
+
     :param url: url for Feature Server
     :param query: a JSON object (example: { 'where': '1=1', 'out_sr': '4326' })
     :return: list of all features returned from the query
@@ -39,7 +41,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     """
     Generate and return a list of destination addresses (as strings)
     given a list of features
-    
+
     :param feature_address_index: to retrieve address string in feature
     :param features: list of features retrieved from FeatureServer
     :return: list of destination addresses
@@ -49,7 +51,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
         ', features received (printing first five): ' + str(features[:5]) +
         ', count(features): ' + str(len(features))
     )
-    
+
     dest_addresses = []
 
     # build array of each feature location

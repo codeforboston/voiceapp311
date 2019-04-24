@@ -3,9 +3,11 @@ Utilities for querying with the Boston crime incidents API
 
 """
 
-import requests
-from mycity.utilities.gis_utils import geocode_address
 import logging
+
+import requests
+
+from mycity.utilities.gis_utils import geocode_address
 
 RESOURCEID = "12cb3883-56f5-47de-afa5-3b1cf61b257b"
 QUERY_LIMIT = 5

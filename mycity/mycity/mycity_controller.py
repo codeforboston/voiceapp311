@@ -2,24 +2,29 @@
 Controller for mycity voice app.
 
 This class handles all voice requests.
+
 """
 
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-from .intents.user_address_intent import set_address_in_session, \
-    get_address_from_session, request_user_address_response, \
-    set_zipcode_in_session, get_address_from_user_device
-from mycity.intents.latest_311_intent import get_311_requests
-from .intents.trash_intent import get_trash_day_info
-from .intents.fallback_intent import fallback_intent
-from .intents.get_alerts_intent import get_alerts_intent
-from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
-from .intents.snow_parking_intent import get_snow_emergency_parking_intent
-from .intents.feedback_intent import submit_feedback
-from .intents.crime_activity_intent import get_crime_incidents_intent
-from .intents.farmers_market_intent import get_farmers_markets_today
-from .intents.food_truck_intent import get_nearby_food_trucks
-from .intents import intent_constants
 import logging
+
+from mycity.intents import intent_constants
+from mycity.intents.crime_activity_intent import get_crime_incidents_intent
+from mycity.intents.fallback_intent import fallback_intent
+from mycity.intents.farmers_market_intent import get_farmers_markets_today
+from mycity.intents.feedback_intent import submit_feedback
+from mycity.intents.food_truck_intent import get_nearby_food_trucks
+from mycity.intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
+from mycity.intents.latest_311_intent import get_311_requests
+from mycity.intents.snow_parking_intent import get_snow_emergency_parking_intent
+from mycity.intents.trash_intent import get_trash_day_info
+from mycity.intents.user_address_intent import (
+    set_address_in_session,
+    get_address_from_session,
+    request_user_address_response,
+    set_zipcode_in_session,
+    get_address_from_user_device,
+)
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +78,7 @@ def execute_request(mycity_request):
 
 def on_session_started(mycity_request):
     """
-    Called when the session starts. Creates a log entry with session info 
+    Called when the session starts. Creates a log entry with session info
     and inserts device address into session attributes if available.
 
     :param mycity_request: MyCityRequestDataModel object
@@ -105,7 +110,7 @@ def on_intent(mycity_request):
     this function is called to execute the logic associated with the
     provided intent and build a response. Checks for required
     session_attributes when applicable.
-    
+
     :param mycity_request: MyCityRequestDataModel object with
         request_type IntentRequest
     :return: MyCityRequestDataModel object corresponding to the intent_name
@@ -179,7 +184,7 @@ def on_session_ended(mycity_request):
         of the response datamodel
     """
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
-    
+
     return MyCityResponseDataModel()
     # add cleanup logic here
 
@@ -232,7 +237,7 @@ def handle_session_end_request(mycity_request):
     """
     Ends a user's session (with the Boston Info skill). Called when request
     intent is AMAZON.StopIntent or AMAZON.CancelIntent.
-    
+
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object that will end a user's session
     """

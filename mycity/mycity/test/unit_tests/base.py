@@ -1,16 +1,15 @@
-import unittest
-import unittest.mock as mock
-import mycity.intents.intent_constants as intent_constants
-import mycity.mycity_controller as my_controller
-import mycity.mycity_request_data_model as my_req
+from unittest import TestCase, mock
+
+from mycity import mycity_controller
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 
 
-class BaseTestCase(unittest.TestCase):
+class BaseTestCase(TestCase):
 
     def setUp(self):
-        self.controller = my_controller
-        self.request = my_req.MyCityRequestDataModel()
-        
+        self.controller = mycity_controller
+        self.request = MyCityRequestDataModel()
+
     def tearDown(self):
         self.controller = None
         self.request = None

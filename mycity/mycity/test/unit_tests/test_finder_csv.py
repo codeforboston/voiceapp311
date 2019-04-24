@@ -1,8 +1,8 @@
-import mycity.test.unit_tests.base as base
-from mycity.utilities.finder.FinderCSV import FinderCSV
+from mycity.test.unit_tests.base import BaseTestCase
+from mycity.utilities.finder.finder_csv import FinderCSV
 
 
-class FinderCSVTestCase(base.BaseTestCase):
+class FinderCSVTestCase(BaseTestCase):
 
     def setUp(self):
         def test_prep_func(keys):

@@ -1,18 +1,20 @@
 """
 Data Model for structuring responses from the skill implementation
+
 """
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class MyCityResponseDataModel:
-    
+
     """
     Represents a response to a voice platform.
 
     Standard way of structuring responses from the skill implementation.
-    
+
     @todo: Consistent comment format that contains platform-specific terminology
 
     Note:
@@ -131,7 +133,7 @@ class MyCityResponseDataModel:
         """
         String indicating the voice platform should modify the course of the
         dialog with the user in some way.
-        
+
         In the case of "Dialog.Delegate", this signals that the Alexa platform
         should "take charge" of this response to the user according to the
         intent's dialog model.(usually involves prompting the user to
@@ -155,7 +157,7 @@ class MyCityResponseDataModel:
         if value == "Delegate":
             self._dialog_directive = {'type': 'Dialog.Delegate'}
         elif value == "ElicitSlotTrash":
-            self._dialog_directive = { 
+            self._dialog_directive = {
                     'type': 'Dialog.ElicitSlot',
                     'slotToElicit': 'Address'
                     }

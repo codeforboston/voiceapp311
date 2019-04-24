@@ -1,4 +1,7 @@
-""" Custom error types for My City app"""
+"""
+Custom error types for My City app
+
+"""
 
 
 class InvalidAddressError(Exception):

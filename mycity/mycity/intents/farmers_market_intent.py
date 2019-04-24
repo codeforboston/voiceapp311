@@ -1,18 +1,20 @@
 """
 Farmers Market Intent
+
 """
-import mycity.utilities.gis_utils as gis_utils
-import mycity.utilities.datetime_utils as date
+
 import logging
+
+from mycity.intents.custom_errors import BadAPIResponse
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-from .custom_errors import BadAPIResponse
+from mycity.utilities import datetime_utils, gis_utils
 
 logger = logging.getLogger(__name__)
 
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
            'services/Farmers_Markets_Fresh_Trucks_View/FeatureServer/0'
 QUERY = {'where': '1=1', 'out_sr': '4326'}
-DAY = date.get_day()
+DAY = datetime_utils.get_day()
 
 
 def get_farmers_markets_today(mycity_request):

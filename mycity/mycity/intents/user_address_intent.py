@@ -1,11 +1,14 @@
 """
 Functions for setting and getting the current user address
+
 """
+
+import logging
+
+import requests
 
 from . import intent_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-import requests
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +47,8 @@ def set_zipcode_in_session(mycity_request):
 
 def get_address_from_user_device(mycity_request):
     """
-    checks Amazon api for device address permissions. 
-    If given, the address, if present, will be stored 
+    checks Amazon api for device address permissions.
+    If given, the address, if present, will be stored
     in the session attributes
 
     :param mycity_request: MyCityRequestDataModel

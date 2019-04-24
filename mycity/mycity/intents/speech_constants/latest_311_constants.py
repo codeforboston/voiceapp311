@@ -1,4 +1,7 @@
-""" Constants used to respond to latest 311 requests"""
+"""
+Constants used to respond to latest 311 requests
+
+"""
 
 REQUEST_311_NUMBER_REPORTS_SLOT_NAME = "number_requests"
 

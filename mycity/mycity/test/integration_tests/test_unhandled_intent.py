@@ -1,6 +1,10 @@
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.intents.fallback_intent as fallback_intent
+from mycity.intents import fallback_intent
+from mycity.test.integration_tests.intent_base_case import IntentBaseCase
+from mycity.test.integration_tests.intent_test_mixins import (
+    CardTitleTestMixIn,
+    CorrectSpeechOutputTestMixIn,
+    RepromptTextTestMixIn,
+)
 
 
 ########################################
@@ -8,10 +12,10 @@ import mycity.intents.fallback_intent as fallback_intent
 ########################################
 
 
-class FallbackIntentTestCase(mix_ins.RepromptTextTestMixIn,
-                              mix_ins.CardTitleTestMixIn,
-                              mix_ins.CorrectSpeechOutputTestMixIn,
-                              base_case.IntentBaseCase):
+class FallbackIntentTestCase(RepromptTextTestMixIn,
+                             CardTitleTestMixIn,
+                             CorrectSpeechOutputTestMixIn,
+                             IntentBaseCase):
 
     intent_to_test = "AMAZON.FallbackIntent"
     expected_title = fallback_intent.CARD_TITLE

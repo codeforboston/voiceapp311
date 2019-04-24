@@ -16,14 +16,16 @@ and street cleaning is running on a normal schedule."
 
 """
 
-from bs4 import BeautifulSoup
-from urllib import request
 from enum import Enum
-from mycity.mycity_request_data_model import MyCityRequestDataModel
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.intents.speech_constants.get_alerts_intent as constants
 import logging
 import typing
+from urllib import request
+
+from bs4 import BeautifulSoup
+
+from mycity.mycity_request_data_model import MyCityRequestDataModel
+from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.intents.speech_constants import get_alerts_intent as speech_constants
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +34,7 @@ class Services(Enum):
     """
     Organizes and contains information about all possible alert types
     that are supported in a readable format.
-    
+
     """
     STREET_CLEANING = 'Street Cleaning'
     TRASH = 'Trash and recycling'
@@ -44,7 +46,7 @@ class Services(Enum):
     ALERT_HEADER = 'Alert header'
 
 
-# constants for scraping boston.gov                                                                   
+# constants for scraping boston.gov
 BOSTON_GOV = "https://www.boston.gov"
 SERVICE_NAMES = "cds-t t--upper t--sans m-b300"
 SERVICE_INFO = "cds-d t--subinfo"
@@ -109,7 +111,7 @@ def get_inclement_weather_alert(
     logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
 
     logger.debug("filtering for inclement weather alerts")
-    output_speech = constants.NO_INCLEMENT_WEATHER_ALERTS
+    output_speech = speech_constants.NO_INCLEMENT_WEATHER_ALERTS
     if Services.ALERT_HEADER.value in alerts:
         if any(query in alerts[Services.ALERT_HEADER.value].lower() for query in SNOW_ALERT_QUERY):
             logger.debug("inclement weather alert found")
@@ -139,7 +141,7 @@ def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
     Checks whether the alert dictionary contains any entries. Returns a string
     that contains all alerts or a message that city services are operating
     normally.
-    
+
     :param alerts: pruned alert dictionary
     :return: a string containing all alerts, or if no alerts are
         found, a message indicating there are no alerts at this time
@@ -151,17 +153,17 @@ def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
     for alert in alerts.values():
         all_alerts += alert + ' '
     if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug
-        return constants.NO_ALERTS
+        return speech_constants.NO_ALERTS
     else:
         return all_alerts.rstrip()
-        
+
 
 def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     """
     Remove any text scraped from Boston.gov that aren't actually alerts.
-    For example, parking meters, city building hours, and trash and 
+    For example, parking meters, city building hours, and trash and
     recycling are described "as on a normal schedule"
-    
+
     :param service_alerts: raw alerts dictionary, potentially with unrelated
         non-alert data
     :return: pruned alert dictionary containing only the current
@@ -170,7 +172,7 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     logger.debug('service_alerts: ' + str(service_alerts))
 
 
-    # for any defined service, if its alert is that it's running normally, 
+    # for any defined service, if its alert is that it's running normally,
     # remove it from the dictionary
     for service in Services:
         if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
@@ -184,7 +186,7 @@ def get_alerts():
     """
     Checks Boston.gov for alerts, and if present scrapes them and returns
     them as a dictionary
-    
+
     :return: a dictionary that maps alert names to detailed alert message
     """
     logger.debug('')

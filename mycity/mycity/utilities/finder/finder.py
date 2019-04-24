@@ -1,21 +1,25 @@
 """
 Abstract parent class upon which subclasses are built that find location
 based information about city services
+
 """
 
-import mycity.utilities.address_utils as address_utils
-import mycity.utilities.csv_utils as csv_utils
-import mycity.utilities.arcgis_utils as arcgis_utils
 import logging
+
+from mycity.utilities import (
+    address_utils,
+    arcgis_utils,
+    csv_utils,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class Finder(object):
-    
+
     """
     Abstracts the logic for finding the closest location to the origin address.
-    
+
     @property: resource_url ::= string that Finder subclass will fetch data from
     @property: address_key ::= string that names the type of location we are finding
     @property: output_speech ::= string that will be passed to request object
@@ -42,9 +46,9 @@ class Finder(object):
     ):
         """
         :param req: MyCityRequestDataModel
-        :param resource_url : String that Finder classes will 
+        :param resource_url : String that Finder classes will
             use to GET or query from
-        :param address_key: string that names the type of 
+        :param address_key: string that names the type of
             location we are finding
         :param output_speech: String that will be formatted later
             with closest location to origin address. NOTE: this should
@@ -66,7 +70,7 @@ class Finder(object):
         """
         Raise a not implemented error if python tries to call this on the base
         class. Subclasses should implement this themselves
-        
+
         :return: None
         :raises: NotImplementedError
         """
@@ -76,9 +80,9 @@ class Finder(object):
     def start(self):
         """
         Begins process of retrieving records
-        
+
         All subclasses should provide a get_records for start
-        
+
         :return: None
         """
         logger.debug('')
@@ -88,16 +92,16 @@ class Finder(object):
     def _start(self, records):
         """
         Process list of records and set the output_speech field. output_speech
-        will be queried by creator of a Finder object and used to 
+        will be queried by creator of a Finder object and used to
         construct a MyCityResponseDataModel
-        
-        :param records: a list of all location records, records are stored as 
+
+        :param records: a list of all location records, records are stored as
             dictionaries
         :return: None
         """
         logger.debug('Last 5 records: ' + str(records[:5]))
         records = self.add_city_and_state_to_records(records)
-        
+
         geocoded_origin_address = self.geocode_origin_address()
         destination_coordinate_dictionary = self.records_to_coordinate_dict(records)
         api_access_token = arcgis_utils.generate_access_token()
@@ -111,7 +115,7 @@ class Finder(object):
         formatted_record = self.field_formatter(closest_record)
         # TODO: Should this be called with formatted_record?
         self.set_output_speech(closest_record)
-        
+
     def get_output_speech(self):
         """
         Return formatted speech output or the standard error message
@@ -124,12 +128,12 @@ class Finder(object):
     def set_output_speech(self, format_keys):
         """
         Format speech output with values from dictionary format_keys
-        
+
         :param format_keys: dictionary representing the closest record
         :return: None
         """
         logger.debug('format_keys' + str(format_keys))
-        
+
         try:
             self.output_speech = self.output_speech.format(**format_keys)
         except KeyError:        # our formatted string asked for key we don't
@@ -139,13 +143,13 @@ class Finder(object):
     def get_all_destinations(self, records):
         """
         Return a list of all destinations in the records
-        
-        :param records: a list of all location records, records are stored as 
+
+        :param records: a list of all location records, records are stored as
             dictionaries
         :return: list of destination address strings
         """
         logger.debug('Last 5 records: ' + str(records[:5]))
-        
+
         return [record[self.address_key] for record in records]
 
 
@@ -155,13 +159,13 @@ class Finder(object):
         (driving_info) - which was found to be closest to the origin address.
         Merge the record and destination dictionaries and return the
         resulting dictionary.
-        
+
         :param driving_info: dictionary with address, time to drive to
             address, and distance to the address (representing the closest
             destination to the origin)
-        :param records: a list of all location records, records are stored as 
+        :param records: a list of all location records, records are stored as
             dictionaries
-        :return: a merged dictionary with driving time, driving_distance and all 
+        :return: a merged dictionary with driving time, driving_distance and all
             fields from the closest record
         """
         logger.debug('driving_info:' + str(driving_info) +
@@ -175,8 +179,8 @@ class Finder(object):
     def add_city_and_state_to_records(self, records):
         """
         Appends a city and state to the address value of each record
-        
-        :param records: a list of all location records, records are stored as 
+
+        :param records: a list of all location records, records are stored as
             dictionaries
         :return: list of location dictionaries with updated address values
         """
@@ -188,7 +192,7 @@ class Finder(object):
 
     def records_to_coordinate_dict(self, records):
         """
-        Takes a set of Records and returns a 
+        Takes a set of Records and returns a
             (X, Y) Coordinate -> address dictionary
 
         :param records: a list of all location records, records are stored

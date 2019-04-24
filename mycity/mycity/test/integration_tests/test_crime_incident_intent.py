@@ -1,8 +1,12 @@
-import unittest.mock as mock
-import mycity.test.test_constants as test_constants
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.intents.crime_activity_intent as crime_intent
+from unittest import mock
+
+from mycity.intents import crime_activity_intent
+from mycity.test import test_constants
+from mycity.test.integration_tests.intent_base_case import IntentBaseCase
+from mycity.test.integration_tests.intent_test_mixins import (
+    CardTitleTestMixIn,
+    RepromptTextTestMixIn,
+)
 
 
 ############################################
@@ -10,16 +14,16 @@ import mycity.intents.crime_activity_intent as crime_intent
 ############################################
 
 MOCK_RESPONSE = test_constants.GET_CRIME_INCIDENTS_API_MOCK
-RESULT = crime_intent.RESULT_FIELD
-RECORDS = crime_intent.RECORDS_FIELD
-STREET = crime_intent.STREET_FIELD
+RESULT = crime_activity_intent.RESULT_FIELD
+RECORDS = crime_activity_intent.RECORDS_FIELD
+STREET = crime_activity_intent.STREET_FIELD
 
-class CrimeIncidentsTestCase(mix_ins.RepromptTextTestMixIn,
-                             mix_ins.CardTitleTestMixIn,
-                             base_case.IntentBaseCase):
+class CrimeIncidentsTestCase(RepromptTextTestMixIn,
+                             CardTitleTestMixIn,
+                             IntentBaseCase):
 
     intent_to_test = "CrimeIncidentsIntent"
-    expected_title = crime_intent.CARD_TITLE_CRIME
+    expected_title = crime_activity_intent.CARD_TITLE_CRIME
     returns_reprompt_text = False
 
     def setUp(self):

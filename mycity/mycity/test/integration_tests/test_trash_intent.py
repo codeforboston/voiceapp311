@@ -1,18 +1,23 @@
-import unittest.mock as mock
-import mycity.test.test_constants as test_constants
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.intents.trash_intent as trash_intent
+from unittest import mock
+
+from mycity.intents import trash_intent
+from mycity.test import test_constants
+from mycity.test.integration_tests.intent_base_case import IntentBaseCase
+from mycity.test.integration_tests.intent_test_mixins import (
+    CardTitleTestMixIn,
+    CorrectSpeechOutputTestMixIn,
+    RepromptTextTestMixIn,
+)
 
 
 ###################################
 # TestCase class for trash_intent #
 ###################################
 
-class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
-                       mix_ins.CardTitleTestMixIn,
-                       mix_ins.CorrectSpeechOutputTestMixIn,
-                       base_case.IntentBaseCase):
+class TrashDayTestCase(RepromptTextTestMixIn,
+                       CardTitleTestMixIn,
+                       CorrectSpeechOutputTestMixIn,
+                       IntentBaseCase):
 
     intent_to_test = "TrashDayIntent"
     expected_title = trash_intent.CARD_TITLE
@@ -32,7 +37,7 @@ class TrashDayTestCase(mix_ins.RepromptTextTestMixIn,
                        return_value = test_constants.GET_TRASH_DAY_MOCK)
         self.get_address_api_patch.start()
         self.get_trash_day_data_patch.start()
- 
+
     def tearDown(self):
         super().tearDown()
         self.get_address_api_patch.stop()

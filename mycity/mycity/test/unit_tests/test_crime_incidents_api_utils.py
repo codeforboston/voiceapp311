@@ -1,10 +1,10 @@
-import unittest.mock as mock
-import mycity.test.test_constants as test_constants
-import mycity.test.unit_tests.base as base
-from mycity.utilities.crime_incidents_api_utils import \
-    get_crime_incident_response
+from unittest import mock
 
-class CrimeIncidentsAPIUtilitiesTestCase(base.BaseTestCase):
+from mycity.test import test_constants
+from mycity.test.unit_tests.base import BaseTestCase
+from mycity.utilities.crime_incidents_api_utils import get_crime_incident_response
+
+class CrimeIncidentsAPIUtilitiesTestCase(BaseTestCase):
 
     @mock.patch(
         'mycity.utilities.gis_utils.geocode_address',

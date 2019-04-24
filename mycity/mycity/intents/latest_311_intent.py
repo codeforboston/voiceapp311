@@ -1,7 +1,19 @@
+"""
+Alexa intent used for 311 reports
+
+"""
+
 import requests
+
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.intents.custom_errors import BadAPIResponse
-from mycity.intents.speech_constants.latest_311_constants import *
+from mycity.intents.speech_constants.latest_311_constants import (
+    BAD_API_RESPONSE,
+    REQUEST_311_CARD_TITLE,
+    REQUEST_311_INTRO_SCRIPT,
+    REQUEST_311_NUMBER_REPORTS_SLOT_NAME,
+    REQUEST_311_REPORT_SCRIPT,
+)
 
 DEFAULT_NUMBER_OF_REPORTS = 3
 MAX_NUMBER_OF_REPORTS = 10

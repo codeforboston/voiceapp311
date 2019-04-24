@@ -1,20 +1,24 @@
 import csv
-import unittest
-import unittest.mock as mock
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.test_constants as test_constants
+from unittest import mock, skip
+
+from mycity.test import test_constants
+from mycity.test.integration_tests.intent_base_case import IntentBaseCase
+from mycity.test.integration_tests.intent_test_mixins import (
+    CardTitleTestMixIn,
+    CorrectSpeechOutputTestMixIn,
+    RepromptTextTestMixIn,
+)
 
 
 #############################################
 # TestCase class for get_open_spaces_intent #
 #############################################
 
-@unittest.skip('development on open spaces intent stalled!')
-class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
-                         mix_ins.CardTitleTestMixIn,
-                         mix_ins.CorrectSpeechOutputTestMixIn,
-                         base_case.IntentBaseCase):
+@skip('development on open spaces intent stalled!')
+class OpenSpacesTestCase(RepromptTextTestMixIn,
+                         CardTitleTestMixIn,
+                         CorrectSpeechOutputTestMixIn,
+                         IntentBaseCase):
 
     intent_to_test = "OpenSpacesIntent"
     returns_reprompt_text = False
@@ -26,7 +30,7 @@ class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
             _get_driving_info
         """
         super().setUp()
-        self.csv_file = open(test_constants.OPEN_SPACES_TEST_CSV, 
+        self.csv_file = open(test_constants.OPEN_SPACES_TEST_CSV,
                              encoding='utf-8-sig')
         mock_get_open_spaces_return = csv.reader(self.csv_file, delimiter=',')
         mock_get_driving_info_return = \

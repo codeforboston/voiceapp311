@@ -1,16 +1,16 @@
 """
-unit test for MyCityController 
+Unit test for MyCityController
 
 """
 
-import unittest.mock as mock
-import mycity.test.test_constants as test_constants
-import mycity.mycity_controller as my_con
-import mycity.intents.intent_constants as intent_constants
-import mycity.test.unit_tests.base as base
+from unittest import mock
+
+from mycity.intents import intent_constants
+from mycity.test import test_constants
+from mycity.test.unit_tests.base import BaseTestCase
 
 
-class MyCityControllerUnitTestCase(base.BaseTestCase):
+class MyCityControllerUnitTestCase(BaseTestCase):
     """
     testing:
         session started
@@ -37,7 +37,7 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.assertEqual(response.output_speech, expected_output_speech)
         self.assertEqual(response.reprompt_text, expected_reprompt_text)
         self.assertFalse(response.should_end_session)
-    
+
     def test_execute_request_with_no_request_type(self):
         self.request.is_new_session = False
         self.request.request_type = None
@@ -58,6 +58,27 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.assertEqual(response.card_title, expected_card_title)
         self.assertIsNone(response.reprompt_text)
 
+<<<<<<< HEAD
+=======
+    # if we change how we import intents in mycity_controller I think it will
+    # break these patches
+    @mock.patch('mycity.mycity_controller.set_address_in_session')
+    def test_set_address_intent_no_address_prompted(self, mock_set_address):
+        self.request.is_new_session = False
+        self.request.intent_name = "SetAddressIntent"
+        self.controller.on_intent(self.request)
+        mock_set_address.assert_called_with(self.request)
+
+    @mock.patch('mycity.mycity_controller.get_address_from_session')
+    def test_set_address_intent_no_address_in_session_attributes(
+            self,
+            mock_get_addr
+    ):
+        self.request.intent_name = "SetAddressIntent"
+        self.controller.on_intent(self.request)
+        mock_get_addr.assert_called_with(self.request)
+
+>>>>>>> Organize and clarify imports
     @mock.patch('mycity.mycity_controller.get_trash_day_info')
     def test_intent_that_needs_address_with_address_in_session_attributes(
             self,
@@ -79,12 +100,12 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
 
     @mock.patch('requests.get')
     def test_get_address_from_user_device(self, mock_get):
-        mock_resp = self._mock_response(status=200, 
+        mock_resp = self._mock_response(status=200,
             json_data=test_constants.ALEXA_DEVICE_ADDRESS)
         mock_get.return_value = mock_resp
         expected_output_text = "866 Huntington ave"
         result = self.controller.get_address_from_user_device(self.request)
-        self.assertEquals(expected_output_text, 
+        self.assertEquals(expected_output_text,
             result.session_attributes[intent_constants.CURRENT_ADDRESS_KEY])
 
     @mock.patch('requests.get')
@@ -93,7 +114,7 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         mock_get.return_value = mock_resp
         expected_output = {}
         result = self.controller.get_address_from_user_device(self.request)
-        self.assertEquals(expected_output, 
+        self.assertEquals(expected_output,
             result.session_attributes)
 
     def test_unknown_intent(self):

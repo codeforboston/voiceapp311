@@ -1,5 +1,6 @@
 """
 Mixins to be used with classes extending integration base case.
+
 """
 
 
