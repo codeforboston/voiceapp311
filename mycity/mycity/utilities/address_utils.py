@@ -41,14 +41,7 @@ def is_address_valid(address):
     :param address: json object that is a result of using the AddressParer library
     :return: True if valid, False if not
     """
-    try:
-        if address["house"] is None:
-            return False
-        if address["street_full"] is None:
-            return False
-        
-        return True
-        
-    except KeyError as error:
-        print("Invalid object passed to is_address_valid")
-        return False
+    return all(
+        key in address
+        and address[key] is not None
+        for key in ("house", "street_full"))
