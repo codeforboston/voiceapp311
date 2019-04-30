@@ -26,14 +26,8 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
     def test_on_launch(self):
         self.request.is_new_session = False
         expected_session_attributes = self.request.session_attributes
-        expected_output_speech = (
-            "Welcome to the Boston Info skill. "
-            "How can I help you? "
-        )
-        expected_reprompt_text = (
-            "You can ask me about Boston city services, "\
-            "such as \"are there any city alerts\"?"
-        )
+        expected_output_speech = my_con.LAUNCH_SPEECH
+        expected_reprompt_text = my_con.LAUNCH_REPROMPT_SPEECH
         expected_card_title = "Welcome"
         response = self.controller.on_launch(self.request)
         self.assertEqual(
