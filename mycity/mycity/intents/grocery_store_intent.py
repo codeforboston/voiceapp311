@@ -35,7 +35,7 @@ def add_response_text(features):
     for t in features:
         response += f"{t['attributes']['Store']}" \
             f" in {t['attributes']['Neighborho']} is located at " \
-            f"{t['attributes']['Address']}.\n"
+            f"{t['attributes']['Address']}. "
     return response
 
 
