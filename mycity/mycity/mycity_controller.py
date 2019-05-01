@@ -114,10 +114,6 @@ def on_intent(mycity_request):
 
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
-    if mycity_request.intent_name == "SetAddressIntent":
-        set_address_in_session(mycity_request)
-        return get_address_from_session(mycity_request)
-
     if "Address" in mycity_request.intent_variables \
             and "value" in mycity_request.intent_variables["Address"]:
         # Some of our intents have an associated address value.
