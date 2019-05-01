@@ -32,4 +32,16 @@ def build_origin_address(req):
 
     return origin_address
 
+def is_address_valid(address):
+    """
+    Checks that a provided AddressParser result has basic and valid information, that
+    will allow us to use the address in our intents. Alexa can sometimes provide us
+    with bad slot values, resulting in an invalid address.
 
+    :param address: json object that is a result of using the AddressParer library
+    :return: True if valid, False if not
+    """
+    return all(
+        key in address
+        and address[key] is not None
+        for key in ("house", "street_full"))

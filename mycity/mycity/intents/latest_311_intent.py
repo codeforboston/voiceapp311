@@ -4,6 +4,7 @@ from mycity.intents.custom_errors import BadAPIResponse
 from mycity.intents.speech_constants.latest_311_constants import *
 
 DEFAULT_NUMBER_OF_REPORTS = 3
+MAX_NUMBER_OF_REPORTS = 10
 
 BOSTON_311_URL = "https://data.boston.gov/api/3/action/datastore_search"
 BOSTON_RESOURCE_ID = "2968e2c0-d479-49ba-a884-4ef523ada3c0"
@@ -47,8 +48,9 @@ def number_of_reports(mycity_request):
             mycity_request.intent_variables and \
             "value" in mycity_request.intent_variables[
                 REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
-        return mycity_request.intent_variables[
-                REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]
+        return min(
+            int(mycity_request.intent_variables[REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
+            MAX_NUMBER_OF_REPORTS)
 
     return DEFAULT_NUMBER_OF_REPORTS
 
