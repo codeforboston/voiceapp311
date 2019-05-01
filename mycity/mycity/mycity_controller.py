@@ -23,6 +23,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help at any time, and I'll "\
+    "let you know what information I can provide. "\
+    "How can I help you?"
+
+LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, "\
+    "such as \"are there any city alerts\"?"
+
+HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
+        "about Boston services and alerts. You can ask about your trash " \
+        "pickup schedule, city alerts, the locations of food trucks " \
+        "and farmers markets, info about snow emergencies, the latest "\
+        "three one one reports, and the latest crime reports! "\
+        "If you have feedback for the skill, say, 'I have a suggestion.'"
+
 
 def execute_request(mycity_request):
     """
@@ -186,13 +200,7 @@ def get_help_response(mycity_request):
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Help"
-    mycity_response.output_speech = (
-        "You are using Boston Info, a skill that provides information "
-        "about Boston services and alerts. You can ask about your trash "
-        "pickup schedule, city alerts, the locations of food trucks "
-        "and farmers markets, info about snow emergencies, and more! If you have feedback for the "
-        "skill, say, 'I have a suggestion.'"
-     )
+    mycity_response.output_speech = HELP_SPEECH
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
     return mycity_response
@@ -214,15 +222,12 @@ def get_welcome_response(mycity_request):
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Welcome"
-    mycity_response.output_speech = \
-        "Welcome to the Boston Info skill. How can I help you? "
+    mycity_response.output_speech = LAUNCH_SPEECH
 
     # If the user either does not reply to the welcome message or says
     # something that is not understood, they will be prompted again with
     # this text.
-    mycity_response.reprompt_text = \
-        "You can ask me about Boston city services, "\
-        "such as \"are there any city alerts\"?"
+    mycity_response.reprompt_text = LAUNCH_REPROMPT_SPEECH
     mycity_response.should_end_session = False
     return mycity_response
 
