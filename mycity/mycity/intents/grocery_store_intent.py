@@ -90,10 +90,8 @@ def get_nearby_grocery_stores(mycity_request):
             if len(nearby_grocery_stores):
                 response = 'The following markets are located within a mile ' \
                            'from you. '
-                for i in nearby_grocery_stores:
-                    print(i)
-                    response += add_response_text(nearby_grocery_stores)
-                    mycity_response.output_speech = response
+                response += add_response_text(nearby_grocery_stores)
+                mycity_response.output_speech = response
             else:
                 response = 'I did not find any grocery stores within a mile ' \
                            'from your address.'

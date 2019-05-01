@@ -1155,7 +1155,11 @@
                         "are there any super markets near me",
                         "are there any super markets around me",
                         "are there any grocery stores near me",
-                        "are there any grocery stores around me"
+                        "are there any grocery stores around me",
+                        "where are the nearby grocery stores",
+                        "where are the nearby super markets",
+                        "what are the nearby grocery stores",
+                        "what are the nearby super markets"
                     ]
                 },
                 {
