@@ -1132,6 +1132,33 @@
                     ]
                 },
                 {
+                    "name": "GroceryStoreIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "It's {Address}",
+                                "My address is {Address}",
+                                "I live at {Address}",
+                                "{Address}"
+                            ]
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "super markets",
+                        "grocery stores",
+                        "are there any super markets near me",
+                        "are there any super markets around me",
+                        "are there any grocery stores near me",
+                        "are there any grocery stores around me"
+                    ]
+                },
+                {
                     "name": "LatestThreeOneOne",
                     "slots": [
                         {
@@ -1369,6 +1396,13 @@
                             "prompts": {
                                 "elicitation": "Elicit.Slot.1478934588421.914733191093"
                             }
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
                         }
                     ]
                 },
@@ -1385,6 +1419,29 @@
                             "prompts": {
                                 "elicitation": "Elicit.Slot.621270469710.323849903546"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "GroceryStoreIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.131087245388.622006095378"
+                            }
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
                         }
                     ]
                 }
@@ -1451,7 +1508,24 @@
                 "variations": [
                     {
                         "type": "PlainText",
+                        "value": "I will need your address for that. What's your address?"
+                    },
+                    {
+                        "type": "PlainText",
                         "value": "What is your address?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.131087245388.622006095378",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "I will need your address for that. What's your address?"
+                    },
+                    {
+                        "type": "PlainText",
+                        "value": "What's your address?"
                     }
                 ]
             }

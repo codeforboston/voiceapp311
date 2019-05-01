@@ -12,20 +12,22 @@ from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.fallback_intent import fallback_intent
 from .intents.get_alerts_intent import get_alerts_intent
-from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
+from .intents.get_alerts_intent import get_alerts_intent, \
+    get_inclement_weather_alert
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
 from .intents.crime_activity_intent import get_crime_incidents_intent
 from .intents.farmers_market_intent import get_farmers_markets_today
 from .intents.food_truck_intent import get_nearby_food_trucks
+from .intents.grocery_store_intent import get_nearby_grocery_stores
 from .intents import intent_constants
 import logging
 
 logger = logging.getLogger(__name__)
 
-LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help at any time, and I'll "\
-    "let you know what information I can provide. "\
-    "How can I help you?"
+LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help at " \
+                "any time, and I'll let you know what information I can " \
+                "provide. How can I help you?"
 
 LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, "\
     "such as \"are there any city alerts\"?"
@@ -151,6 +153,12 @@ def on_intent(mycity_request):
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_nearby_food_trucks(mycity_request)
+    elif mycity_request.intent_name == "GroceryStoreIntent":
+        return request_user_address_response(mycity_request) \
+            if intent_constants.CURRENT_ADDRESS_KEY \
+               not in mycity_request.session_attributes \
+            else get_nearby_grocery_stores(mycity_request)
+
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":
