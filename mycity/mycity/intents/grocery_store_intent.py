@@ -104,11 +104,11 @@ def get_nearby_grocery_stores(mycity_request):
                     .format(zip_code)
             mycity_response.output_speech = \
                 speech_constants.ADDRESS_NOT_FOUND.format(address_string)
-            mycity_response.dialog_directive = "ElicitSlotFoodTruck"
+            mycity_response.dialog_directive = "ElicitSlotGroceryStore"
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = \
                 mycity_request.session_attributes
-            mycity_response.card_title = "Food Trucks"
+            mycity_response.card_title = "Grocery Store"
             mycity_request = clear_address_from_mycity_object(mycity_request)
             mycity_response = clear_address_from_mycity_object(mycity_response)
             return mycity_response
