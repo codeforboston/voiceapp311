@@ -103,23 +103,20 @@ def get_nearby_food_trucks(mycity_request):
 
             if len(truck_unique_locations) == 1:
                 response = f"I found {len(truck_unique_locations)} food " \
-                           f"truck within a mile " \
-                           "from your address! "
+                           f"truck within a mile from your address! "
                 response += add_response_text(truck_unique_locations)
                 mycity_response.output_speech = response
 
             if 1 < len(truck_unique_locations) <= 3:
                 response = f"I found {len(truck_unique_locations)} food " \
-                           f"trucks within a mile " \
-                           "from your address! "
+                           f"trucks within a mile from your address! "
                 response += add_response_text(truck_unique_locations)
                 mycity_response.output_speech = response
 
             if len(truck_unique_locations) > 3:
                 response = f"There are at least {len(truck_unique_locations)}" \
                            f" food trucks within a mile from your " \
-                           f"address! Here are the first " \
-                           + str(len(truck_unique_locations)) + ". "
+                           f"address! Here are the first five. "
                 response += add_response_text(truck_unique_locations)
                 mycity_response.output_speech = response
 
