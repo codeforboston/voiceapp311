@@ -10,9 +10,9 @@ import mycity.intents.food_truck_intent as food_truck_intent
 ###################################
 
 class FoodTruckTestCase(mix_ins.RepromptTextTestMixIn,
-                       mix_ins.CardTitleTestMixIn,
-                       mix_ins.CorrectSpeechOutputTestMixIn,
-                       base_case.IntentBaseCase):
+                        mix_ins.CardTitleTestMixIn,
+                        mix_ins.CorrectSpeechOutputTestMixIn,
+                        base_case.IntentBaseCase):
 
     intent_to_test = "FoodTruckIntent"
     expected_title = food_truck_intent.CARD_TITLE
@@ -26,10 +26,10 @@ class FoodTruckTestCase(mix_ins.RepromptTextTestMixIn,
         super().setUp()
         self.get_address_api_patch = \
             mock.patch('mycity.intents.trash_intent.get_address_api_info',
-                       return_value = test_constants.GET_ADDRESS_API_MOCK)
+                       return_value=test_constants.GET_ADDRESS_API_MOCK)
         self.get_truck_locations_patch = \
             mock.patch('mycity.intents.trash_intent.get_trash_day_data',
-                       return_value = test_constants.GET_FOOD_TRUCKS_MOCK)
+                       return_value=test_constants.GET_FOOD_TRUCKS_MOCK)
         self.get_address_api_patch.start()
         self.get_truck_locations_patch.start()
 
