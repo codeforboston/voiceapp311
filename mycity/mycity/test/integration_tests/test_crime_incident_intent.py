@@ -8,7 +8,6 @@ from mycity.test.integration_tests.intent_test_mixins import (
     RepromptTextTestMixIn,
 )
 
-
 ############################################
 # TestCase class for crime_incident_intent #
 ############################################
@@ -18,10 +17,10 @@ RESULT = crime_activity_intent.RESULT_FIELD
 RECORDS = crime_activity_intent.RECORDS_FIELD
 STREET = crime_activity_intent.STREET_FIELD
 
+
 class CrimeIncidentsTestCase(RepromptTextTestMixIn,
                              CardTitleTestMixIn,
                              IntentBaseCase):
-
     intent_to_test = "CrimeIncidentsIntent"
     expected_title = crime_activity_intent.CARD_TITLE_CRIME
     returns_reprompt_text = False

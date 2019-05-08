@@ -17,7 +17,6 @@ from mycity.test.integration_tests.intent_test_mixins import (
 class GetAlertsTestCase(RepromptTextTestMixIn,
                         CardTitleTestMixIn,
                         IntentBaseCase):
-
     intent_to_test = "GetAlertsIntent"
     expected_title = get_alerts.ALERTS_INTENT_CARD_TITLE
     returns_reprompt_text = False
@@ -35,7 +34,7 @@ class GetAlertsTestCase(RepromptTextTestMixIn,
         super().setUp()
         self.mock_get_alerts = \
             mock.patch('mycity.intents.get_alerts_intent.get_alerts',
-                       return_value = self.no_alerts.copy())
+                       return_value=self.no_alerts.copy())
         self.mock_get_alerts.start()
 
     def tearDown(self):
@@ -56,5 +55,3 @@ class GetAlertsTestCase(RepromptTextTestMixIn,
     def test_response_with_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
         self.assertIn('Godzilla inbound!', response.output_speech)
-
-

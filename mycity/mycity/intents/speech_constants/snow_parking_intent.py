@@ -5,11 +5,11 @@ Speech utterances for snow_parking_intent.py
 
 from mycity.utilities import arcgis_utils
 
-OUTPUT_SPEECH_FORMAT = \
-    ("The closest snow emergency parking lot, {Name}, is at "
-     "{Address}. It is {" + arcgis_utils.DRIVING_DISTANCE_TEXT_KEY + "} away and should take "
-     "you {" + arcgis_utils.DRIVING_TIME_TEXT_KEY + "} to drive there. The lot has "
-     "{Spaces} spaces when empty. {Fee} {Comments} {Phone}")
+OUTPUT_SPEECH_FORMAT = (
+    "The closest snow emergency parking lot, {Name}, is at "
+    "{Address}. It is {" + arcgis_utils.DRIVING_DISTANCE_TEXT_KEY + "} away and should take "
+    "you {" + arcgis_utils.DRIVING_TIME_TEXT_KEY + "} to drive there. The lot has "
+    "{Spaces} spaces when empty. {Fee} {Comments} {Phone}")
 
 # Formatted strings for the phone number and fee for the parking lot
 PHONE_PREPARED_STRING = "Call {} for information."

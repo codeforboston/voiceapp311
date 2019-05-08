@@ -17,4 +17,3 @@ class BadAPIResponse(Exception):
 class MultipleAddressError(Exception):
     """Error for finding multiple addresses with the current info"""
     pass
-

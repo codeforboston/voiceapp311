@@ -16,7 +16,6 @@ class FallbackIntentTestCase(RepromptTextTestMixIn,
                              CardTitleTestMixIn,
                              CorrectSpeechOutputTestMixIn,
                              IntentBaseCase):
-
     intent_to_test = "AMAZON.FallbackIntent"
     expected_title = fallback_intent.CARD_TITLE
     returns_reprompt_text = True

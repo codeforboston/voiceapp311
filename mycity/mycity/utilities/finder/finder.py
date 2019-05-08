@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 
 class Finder(object):
-
     """
     Abstracts the logic for finding the closest location to the origin address.
 
@@ -108,8 +107,8 @@ class Finder(object):
         destination_coordinate_dictionary = self.records_to_coordinate_dict(records)
         api_access_token = arcgis_utils.generate_access_token()
         closest_dest = arcgis_utils.find_closest_route(api_access_token,
-                                                        geocoded_origin_address,
-                                                        destination_coordinate_dictionary)
+                                                       geocoded_origin_address,
+                                                       destination_coordinate_dictionary)
 
         closest_record = \
             self.get_closest_record_with_driving_info(closest_dest,
@@ -138,8 +137,8 @@ class Finder(object):
 
         try:
             self.output_speech = self.output_speech.format(**format_keys)
-        except KeyError:        # our formatted string asked for key we don't
-                                # have
+        except KeyError:
+            # our formatted string asked for key we don't have
             self.output_speech = Finder.ERROR_MESSAGE
 
     def get_all_destinations(self, records: typing.List[typing.Dict[str, str]]) -> typing.List[str]:
@@ -153,7 +152,6 @@ class Finder(object):
         logger.debug('Last 5 records: ' + str(records[:5]))
 
         return [record[self.address_key] for record in records]
-
 
     def get_closest_record_with_driving_info(self,
                                              driving_info: ComplexDict,
@@ -215,8 +213,6 @@ class Finder(object):
 
         return coordinate_dict
 
-
-
     def geocode_origin_address(self) -> typing.Union[int, StrDict]:
         """
         Utilizes ArcGIS to geocode the origin address,
@@ -227,5 +223,3 @@ class Finder(object):
         geocoded_origin_address_candidates = arcgis_utils.geocode_address_candidates(self.origin_address)
         geocoded_origin_address = arcgis_utils.select_top_address_candidate(geocoded_origin_address_candidates)
         return geocoded_origin_address
-
-

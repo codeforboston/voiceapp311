@@ -11,7 +11,6 @@ from mycity.test.integration_tests.intent_test_mixins import (
 )
 
 
-
 ##########################################
 # TestCase class for snow_parking_intent #
 ##########################################
@@ -20,7 +19,6 @@ class SnowEmergencyTestCase(RepromptTextTestMixIn,
                             CardTitleTestMixIn,
                             CorrectSpeechOutputTestMixIn,
                             IntentBaseCase):
-
     intent_to_test = "SnowParkingIntent"
     expected_title = snow_parking_intent.SNOW_PARKING_CARD_TITLE
     returns_reprompt_text = False
@@ -44,39 +42,29 @@ class SnowEmergencyTestCase(RepromptTextTestMixIn,
                                                       delimiter=','
                                                   )))
         self.mock_filtered_record = mock.patch(
-            ('mycity.intents.snow_parking_intent.'
-             'FinderCSV.file_to_filtered_records'),
+            'mycity.intents.snow_parking_intent.FinderCSV.file_to_filtered_records',
             return_value=mock_filtered_record_return
         )
 
-        mock_geocoded_address_candidates = \
-                test_constants.GEOCODE_ADDRESS_CANDIDATES
+        mock_geocoded_address_candidates = test_constants.GEOCODE_ADDRESS_CANDIDATES
 
+        self.mock_address_candidates = mock.patch(
+            'mycity.utilities.finder.finder.arcgis_utils.geocode_address_candidates',
+            return_value=mock_geocoded_address_candidates
+        )
 
-        self.mock_address_candidates = \
-            mock.patch(
-                'mycity.utilities.finder.finder.arcgis_utils.geocode_address_candidates',
-                return_value=mock_geocoded_address_candidates
-            )
+        mock_api_access_token = test_constants.ARCGIS_API_ACCESS_TOKEN
 
-        mock_api_access_token = \
-                test_constants.ARCGIS_API_ACCESS_TOKEN
+        self.mock_api_access_token = mock.patch(
+            'mycity.utilities.finder.finder.arcgis_utils.generate_access_token',
+            return_value=mock_api_access_token
+        )
 
-        self.mock_api_access_token = \
-                mock.patch(
-                    'mycity.utilities.finder.finder.arcgis_utils.generate_access_token',
-                    return_value=mock_api_access_token
-                )
-
-        mock_closest_destination = \
-                test_constants.ARCGIS_CLOSEST_DESTINATION
-        self.mock_closest_destination = \
-                mock.patch(
-                        'mycity.utilities.finder.finder.arcgis_utils.find_closest_route',
-                        return_value=mock_closest_destination
-                    )
-
-
+        mock_closest_destination = test_constants.ARCGIS_CLOSEST_DESTINATION
+        self.mock_closest_destination = mock.patch(
+            'mycity.utilities.finder.finder.arcgis_utils.find_closest_route',
+            return_value=mock_closest_destination
+        )
 
         self.mock_filtered_record.start()
         self.mock_address_candidates.start()
@@ -90,5 +78,3 @@ class SnowEmergencyTestCase(RepromptTextTestMixIn,
         self.mock_address_candidates.stop()
         self.mock_api_access_token.stop()
         self.mock_closest_destination.stop()
-
-

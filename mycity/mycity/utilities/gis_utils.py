@@ -40,7 +40,8 @@ def get_features_from_feature_server(url: str, query: StrDict) -> typing.List[Co
     return features
 
 
-def _get_dest_addresses_from_features(feature_address_index: str, features: typing.List[ComplexDict]) -> typing.List[str]:
+def _get_dest_addresses_from_features(feature_address_index: str,
+                                      features: typing.List[ComplexDict]) -> typing.List[str]:
     """
     Generate and return a list of destination addresses (as strings)
     given a list of features

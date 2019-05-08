@@ -13,7 +13,6 @@ from mycity.mycity_request_data_model import MyCityRequestDataModel
 ###############################################################################
 
 class IntentBaseCase(unittest.TestCase):
-
     intent_to_test = None
     expected_title = 'Boston Info'
     returns_reprompt_text = False
@@ -28,4 +27,3 @@ class IntentBaseCase(unittest.TestCase):
     def tearDown(self):
         self.controller = None
         self.request = None
-

@@ -11,7 +11,6 @@ from mycity.utilities.common_types import StrDict
 
 logger = logging.getLogger(__name__)
 
-
 NT = typing.TypeVar("NT", bound=tuple)
 
 
@@ -91,4 +90,4 @@ def map_attribute_to_records(attribute: str, records: typing.List[NT]) -> typing
         from a csv file
     :return: dictionary mapping an string Address to namedtuple record
     """
-    return {getattr(record, attribute) : record for record in records}
+    return {getattr(record, attribute): record for record in records}

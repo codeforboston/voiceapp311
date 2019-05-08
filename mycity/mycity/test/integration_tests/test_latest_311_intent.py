@@ -14,7 +14,6 @@ class Latest311TestCase(RepromptTextTestMixIn,
                         CardTitleTestMixIn,
                         CorrectSpeechOutputTestMixIn,
                         IntentBaseCase):
-
     intent_to_test = "LatestThreeOneOne"
     expected_title = intent_constants.REQUEST_311_CARD_TITLE
     returns_reprompt_text = False

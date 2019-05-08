@@ -28,8 +28,7 @@ def get_crime_incident_response(address: str) -> ComplexDict:
 
     """
     url_parameters = {"sql": _build_query_string(address)}
-    logger.debug("Finding crime incidents information for {} using query {}"
-        .format(address, url_parameters))
+    logger.debug("Finding crime incidents information for {} using query {}".format(address, url_parameters))
     with requests.Session() as session:
         response = session.get(CRIME_INCIDENTS_SQL_URL, params=url_parameters)
 

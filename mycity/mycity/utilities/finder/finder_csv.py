@@ -16,14 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 class FinderCSV(Finder):
-
     """
     Finder subclass that uses csv files to find destination addresses
 
     @property: filter ::= filter function to conditionally remove records
 
     """
-    default_filter = lambda record : record  # filter that filters nothing
+    default_filter = lambda record: record  # filter that filters nothing
 
     def __init__(
             self,
@@ -107,8 +106,8 @@ class FinderCSV(Finder):
             filter(
                 self._filter,
                 csv.DictReader(
-                   file_contents.splitlines(),
-                   delimiter=','
+                    file_contents.splitlines(),
+                    delimiter=','
                 )
             )
         )

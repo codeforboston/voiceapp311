@@ -91,14 +91,14 @@ def get_alerts_intent(
 
     mycity_response = _create_response_object()
     mycity_response.output_speech = alerts_to_speech_output(pruned_alerts) \
-        if alerts_to_speech_output_function_for_test is None else alerts_to_speech_output_function_for_test(pruned_alerts)
+        if alerts_to_speech_output_function_for_test is None else \
+        alerts_to_speech_output_function_for_test(pruned_alerts)
     return mycity_response
 
 
-def get_inclement_weather_alert(
-    mycity_request: MyCityRequestDataModel,
-    get_alerts_function_for_test: typing.Callable[[], typing.Dict] = None,
-) -> MyCityResponseDataModel:
+def get_inclement_weather_alert(mycity_request: MyCityRequestDataModel,
+                                get_alerts_function_for_test: typing.Callable[[], typing.Dict] = None
+                                ) -> MyCityResponseDataModel:
     """
     Generates a response with information about any inclement weather alerts.
 
@@ -153,7 +153,7 @@ def alerts_to_speech_output(alerts: typing.Dict) -> str:
         all_alerts += alerts.pop(Services.ALERT_HEADER.value)
     for alert in alerts.values():
         all_alerts += alert + ' '
-    if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug
+    if all_alerts.strip() == "":  # this is a kludgy fix for the {'alert header': ''} bug
         return speech_constants.NO_ALERTS
     else:
         return all_alerts.rstrip()
@@ -172,12 +172,12 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     """
     logger.debug('service_alerts: ' + str(service_alerts))
 
-
     # for any defined service, if its alert is that it's running normally,
     # remove it from the dictionary
     for service in Services:
-        if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
-            service_alerts.pop(service.value)                       # remove
+        if service.value in service_alerts and str.find(service_alerts[service.value],
+                                                        "normal") != -1:  # this is a leap of faith
+            service_alerts.pop(service.value)  # remove
     if service_alerts[Services.TOW_LOT.value] == TOW_LOT_NORMAL_MESSAGE:
         service_alerts.pop(Services.TOW_LOT.value)
     return service_alerts
@@ -199,20 +199,19 @@ def get_alerts() -> StrDict:
     url.close()
 
     # parse, sanitize returned strings, place in dictionary
-    services = [s.text.strip() for s in soup.find_all(class_= SERVICE_NAMES)]
-    service_info = [s_info.text.strip().replace(u'\xA0', u' ') for s_info in soup.find_all(class_= SERVICE_INFO)]
+    services = [s.text.strip() for s in soup.find_all(class_=SERVICE_NAMES)]
+    service_info = [s_info.text.strip().replace(u'\xA0', u' ') for s_info in soup.find_all(class_=SERVICE_INFO)]
     alerts = {}
     for i in range(len(services)):
         alerts[services[i]] = service_info[i]
     # get alert header, if any (this is something like "Winter Storm warning")
     header = ""
-    if soup.find(class_= HEADER_1) is not None:
-        header += soup.find(class_= HEADER_1).text + '. '
-        header += soup.find(class_= HEADER_2).text + '. '
-        header += soup.find(class_= HEADER_3).text + ' '
+    if soup.find(class_=HEADER_1) is not None:
+        header += soup.find(class_=HEADER_1).text + '. '
+        header += soup.find(class_=HEADER_2).text + '. '
+        header += soup.find(class_=HEADER_3).text + ' '
     # weird bug where a blank header was appended to dictionary. this should
     # prevent that
     if header != '':
         alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
-

@@ -19,7 +19,6 @@ class OpenSpacesTestCase(RepromptTextTestMixIn,
                          CardTitleTestMixIn,
                          CorrectSpeechOutputTestMixIn,
                          IntentBaseCase):
-
     intent_to_test = "OpenSpacesIntent"
     returns_reprompt_text = False
 
@@ -42,7 +41,7 @@ class OpenSpacesTestCase(RepromptTextTestMixIn,
         self.get_driving_info_patch = \
             mock.patch(('mycity.intents.open_spaces_intent.g_maps_utils'
                         '_get_driving_info'),
-                       return_value = mock_get_driving_info_return)
+                       return_value=mock_get_driving_info_return)
         self.get_open_spaces_patch.start()
         self.get_driving_info_patch.start()
 
@@ -51,5 +50,3 @@ class OpenSpacesTestCase(RepromptTextTestMixIn,
         self.csv_file.close()
         self.get_open_spaces_patch.stop()
         self.get_driving_info_patch.stop()
-
-

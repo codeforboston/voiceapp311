@@ -10,4 +10,3 @@ REQUEST_311_INTRO_SCRIPT = "Here are the {} latest three one one reports: "
 REQUEST_311_REPORT_SCRIPT = \
     "There was a request at {} for the {} to address {}. "
 REQUEST_311_CARD_TITLE = "311 Reports"
-

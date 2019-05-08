@@ -101,12 +101,12 @@ class MyCityControllerUnitTestCase(BaseTestCase):
     @mock.patch('requests.get')
     def test_get_address_from_user_device(self, mock_get):
         mock_resp = self._mock_response(status=200,
-            json_data=test_constants.ALEXA_DEVICE_ADDRESS)
+                                        json_data=test_constants.ALEXA_DEVICE_ADDRESS)
         mock_get.return_value = mock_resp
         expected_output_text = "866 Huntington ave"
         result = self.controller.get_address_from_user_device(self.request)
         self.assertEquals(expected_output_text,
-            result.session_attributes[intent_constants.CURRENT_ADDRESS_KEY])
+                          result.session_attributes[intent_constants.CURRENT_ADDRESS_KEY])
 
     @mock.patch('requests.get')
     def test_get_address_from_user_device_failure(self, mock_get):
@@ -115,7 +115,7 @@ class MyCityControllerUnitTestCase(BaseTestCase):
         expected_output = {}
         result = self.controller.get_address_from_user_device(self.request)
         self.assertEquals(expected_output,
-            result.session_attributes)
+                          result.session_attributes)
 
     def test_unknown_intent(self):
         self.request.intent_name = "MadeUpIntent"

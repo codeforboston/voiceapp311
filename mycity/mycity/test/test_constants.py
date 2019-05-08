@@ -14,7 +14,6 @@ PARKING_LOTS_TEST_DATA = os.path.join(
 )
 PARKING_LOTS_ADDR_INDEX = 7
 
-
 ##################################################################
 # Mocked returns for patched functions that access web resources #
 ##################################################################
@@ -119,7 +118,7 @@ GET_ADDRESS_API_MOCK = {
     'parcel_id': 31460684,
     'area_id': 311,
     'service_id': 310,
-    'area_name': 'Boston', # makes sense
+    'area_name': 'Boston',  # makes sense
     'place_id': 0,
     'name': '1000 Dorchester Ave, Boston, 02125'
 }
@@ -385,9 +384,6 @@ GET_TRASH_DAY_MOCK = {
     }
 }
 
-
-
-
 # Snow Emergency Parking Intent
 
 
@@ -436,11 +432,6 @@ CLOSEST_PARKING_DRIVING_DATA = [
     }
 ]
 
-
-
-
-
-
 CLOSEST_PARKING_MOCK_RETURN = {
     'Driving distance': 2458,
     'Driving distance text': '1.5 mi',
@@ -466,7 +457,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7918414.198468381,
             'y': 5213945.511252668
         }
@@ -487,7 +479,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7920695.3886001585,
             'y': 5213501.824205618
         }
@@ -508,7 +501,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512767171796,
-        '143525_boston', {
+        '143525_boston',
+        {
             'x': -7917328.721328608,
             'y': 5215701.113088339
         }
@@ -529,7 +523,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7921074.252411649,
             'y': 5203874.208464791
         }
@@ -550,7 +545,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512408881834,
-        '', {
+        '',
+        {
             'x': -7920843.6752729565,
             'y': 5203887.009613773
         }
@@ -571,7 +567,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1515067413215,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7910585.48963993,
             'y': 5214061.022491527
         }
@@ -592,7 +589,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7908861.051597621,
             'y': 5211509.010329823
         }
@@ -613,7 +611,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7907958.619185366,
             'y': 5211428.399287086
         }
@@ -634,7 +633,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512768444415,
-        '143525_boston', {
+        '143525_boston',
+        {
             'x': -7907683.986350929,
             'y': 5212805.040508509
         }
@@ -655,7 +655,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1513968972322,
-        '', {
+        '',
+        {
             'x': -7913403.170262766,
             'y': 5211611.002931875
         }
@@ -676,7 +677,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512768231449,
-        '143525_boston', {
+        '143525_boston',
+        {
             'x': -7913221.157520119,
             'y': 5212108.194550944
         }
@@ -697,7 +699,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512765941504,
-        '143525_boston', {
+        '143525_boston',
+        {
             'x': -7913231.87034365,
             'y': 5213115.979027377
         }
@@ -718,7 +721,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1520896459450,
-        'mclane', {
+        'mclane',
+        {
             'x': -7909345.539839093,
             'y': 5217566.218936113
         }
@@ -739,7 +743,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7911698.640175789,
             'y': 5204726.838356973
         }
@@ -760,7 +765,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7910949.366851533,
             'y': 5208745.364755854
         }
@@ -781,7 +787,8 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7910427.297246154,
             'y': 5206386.200671472
         }
@@ -802,13 +809,13 @@ GET_PARKING_DATA_MOCK_RETURN = [
         1512407360712,
         'BostonGIS',
         1512407360712,
-        'BostonGIS', {
+        'BostonGIS',
+        {
             'x': -7911151.4108671965,
             'y': 5208755.251808084
         }
     ]
 ]
-
 
 # get_alerts intent
 
@@ -831,7 +838,7 @@ GET_ALERTS_MOCK_SOME_ALERTS = {
 
 # get_open_spaces intent
 
-OPEN_SPACES_TEST_CSV =  os.getcwd() + "/mycity/test/test_data/.csv"
+OPEN_SPACES_TEST_CSV = os.getcwd() + "/mycity/test/test_data/.csv"
 
 CLOSEST_OPEN_SPACES_DRIVING_DATA = \
     [
@@ -858,21 +865,45 @@ CLOSEST_OPEN_SPACES_DRIVING_DATA = \
         }
     ]
 
-
 # ArcGIS test data
 
 GEOCODE_ADDRESS_CANDIDATES = {
-        'spatialReference': {'wkid': 4399, 'latestWkid': 4326}, 'candidates': [{'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125', 'location': {'x': -71.05664413015762, 'y': 42.31649037829649}, 'score': 100, 'attributes': {'Match_addr': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125', 'Addr_type': 'PointAddress'}, 'extent': {'xmin': -71.05752100000001, 'ymin': 42.315497, 'xmax': -71.055521, 'ymax': 42.317496999999996}}]}
-
+    'spatialReference': {
+        'wkid': 4399,
+        'latestWkid': 4326,
+    },
+    'candidates': [
+        {
+            'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
+            'location': {'x': -71.05664413015762, 'y': 42.31649037829649},
+            'score': 100,
+            'attributes': {
+                'Match_addr': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
+                'Addr_type': 'PointAddress',
+            },
+            'extent': {
+                'xmin': -71.05752100000001,
+                'ymin': 42.315497,
+                'xmax': -71.055521,
+                'ymax': 42.317496999999996,
+            },
+        },
+    ],
+}
 
 TOP_ADDRESS_CANDIDATE = {
-        'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
-        'x': -71.05664413015762, 
-        'y': 42.31649037829649}
+    'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
+    'x': -71.05664413015762,
+    'y': 42.31649037829649,
+}
 
-ARCGIS_CLOSEST_DESTINATION = {'Address': '8-20 Belden St Boston, MA', 'Driving_time': '3.65 minutes', 'Driving_distance': '0.73 miles'}
+ARCGIS_CLOSEST_DESTINATION = {
+    'Address': '8-20 Belden St Boston, MA',
+    'Driving_time': '3.65 minutes',
+    'Driving_distance': '0.73 miles',
+}
 
-ARCGIS_API_ACCESS_TOKEN="FAKE-ABCD"
+ARCGIS_API_ACCESS_TOKEN = "FAKE-ABCD"
 
 # Crime Incidents API
 GET_CRIME_INCIDENTS_API_MOCK = {

@@ -67,4 +67,3 @@ class GISUtilitiesTestCase(BaseTestCase):
 #         self.assertFalse(closest[feature_type])
 #         self.assertFalse(closest[location_utils.DRIVING_DISTANCE_TEXT_KEY])
 #         self.assertFalse(closest[location_utils.DRIVING_TIME_TEXT_KEY])
-

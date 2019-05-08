@@ -61,8 +61,7 @@ def number_of_reports(mycity_request: MyCityRequestDataModel) -> int:
     """
     if REQUEST_311_NUMBER_REPORTS_SLOT_NAME in \
             mycity_request.intent_variables and \
-            "value" in mycity_request.intent_variables[
-                REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
+            "value" in mycity_request.intent_variables[REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
         return min(
             int(mycity_request.intent_variables[REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
             MAX_NUMBER_OF_REPORTS)

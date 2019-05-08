@@ -6,7 +6,6 @@ from mycity.test.unit_tests.base import BaseTestCase
 
 
 class GetAlertsIntentTestCase(BaseTestCase):
-
     get_alerts_stub_return_dictionary = {}
     prune_normal_responses_return_dictionary = {}
     alerts_to_speech_return_string = ''

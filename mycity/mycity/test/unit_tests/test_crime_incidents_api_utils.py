@@ -4,6 +4,7 @@ from mycity.test import test_constants
 from mycity.test.unit_tests.base import BaseTestCase
 from mycity.utilities.crime_incidents_api_utils import get_crime_incident_response
 
+
 class CrimeIncidentsAPIUtilitiesTestCase(BaseTestCase):
 
     @mock.patch(
@@ -13,7 +14,7 @@ class CrimeIncidentsAPIUtilitiesTestCase(BaseTestCase):
     @mock.patch('requests.get')
     def test_get_crime_incident_response(self, mock_geocode_address, mock_get):
         mock_resp = self._mock_response(status=200,
-            json_data=test_constants.GET_CRIME_INCIDENTS_API_MOCK)
+                                        json_data=test_constants.GET_CRIME_INCIDENTS_API_MOCK)
         mock_get.return_value = mock_resp
 
         test_address = "46 Everdean St Boston, MA"

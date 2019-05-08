@@ -36,6 +36,7 @@ def build_origin_address(req: MyCityRequestDataModel) -> str:
 
     return origin_address
 
+
 def is_address_valid(address: ComplexDict) -> bool:
     """
     Checks that a provided AddressParser result has basic and valid information, that

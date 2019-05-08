@@ -8,15 +8,17 @@ class FinderCSVTestCase(BaseTestCase):
         def test_prep_func(keys):
             if keys["Address"] == "123 Fake St Boston, MA":
                 keys["Address"] = "123 Real St Boston, MA"
+
         super().setUp()
         fake_url = "www.fake.com"
         address_key = "Address"
-        output_speech = "Trying to get {name}, {" + address_key + "}, " \
-            + "{Driving distance text}."
-        self.request.session_attributes['currentAddress'] = \
-            '1000 Dorchester Ave'
-        self.finder = FinderCSV(self.request, fake_url, address_key,
-                                output_speech, test_prep_func)
+        output_speech = "Trying to get {name}, {" + address_key + "}, " + "{Driving distance text}."
+        self.request.session_attributes['currentAddress'] = '1000 Dorchester Ave'
+        self.finder = FinderCSV(self.request,
+                                fake_url,
+                                address_key,
+                                output_speech,
+                                test_prep_func)
 
     def tearDown(self):
         self.finder = None

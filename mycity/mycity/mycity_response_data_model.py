@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class MyCityResponseDataModel:
-
     """
     Represents a response to a voice platform.
 
@@ -158,9 +157,9 @@ class MyCityResponseDataModel:
             self._dialog_directive = {'type': 'Dialog.Delegate'}
         elif value == "ElicitSlotTrash":
             self._dialog_directive = {
-                    'type': 'Dialog.ElicitSlot',
-                    'slotToElicit': 'Address'
-                    }
+                'type': 'Dialog.ElicitSlot',
+                'slotToElicit': 'Address'
+            }
         elif value == "ElicitSlotZipCode":
             self._dialog_directive = {
                 'type': 'Dialog.ElicitSlot',
