@@ -28,7 +28,7 @@ ZIP_FILE_NAME = "lambda_function.zip"
 HORIZONTAL_RULE = '* ---------------------------------------'
 
 
-def zip_lambda_function_directory(zip_target_dir):
+def zip_lambda_function_directory(zip_target_dir: str):
     """
     Generates a .zip file containing the contents of the temporary directory
     where the project files have been copied. Note that this .zip file
@@ -52,7 +52,7 @@ def zip_lambda_function_directory(zip_target_dir):
     os.chdir(original_directory)
 
 
-def install_pip_dependencies(requirements_path, requirements_path_no_deps):
+def install_pip_dependencies(requirements_path: str, requirements_path_no_deps: str):
     """
     Installs all the dependencies for the project's entry point to a
     temporary directory the .zip file is later created from.
@@ -93,7 +93,7 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     print(HORIZONTAL_RULE)
 
 
-def print_package_names(install_output):
+def print_package_names(install_output: bytes):
     pattern = "Collecting [\w-]+=="
     dependencies = re.findall(pattern, install_output.decode('utf-8'))
     for dependency in dependencies:
@@ -147,7 +147,7 @@ def package_lambda_function():
     print(HORIZONTAL_RULE)
 
 
-def update_lambda_code(lambda_function_name, s3_bucket=None, publish_version=False):
+def update_lambda_code(lambda_function_name: str, s3_bucket: str = None, publish_version: str = False):
     """
     Uploads the archive containing our lambda function and dependencies to the
     specified lambda. Requires that the user has configured AWS CLI and that
@@ -226,7 +226,7 @@ def update_lambda_code(lambda_function_name, s3_bucket=None, publish_version=Fal
         print("! Unable to upload to Lambda: zip file does not exist.\n")
 
 
-def update_interaction_model(provided_skill_id):
+def update_interaction_model(provided_skill_id: str):
     """
     Upload the interaction model JSON file stored in
       mycity/platforms/amazon/models/

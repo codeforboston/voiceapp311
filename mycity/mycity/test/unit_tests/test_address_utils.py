@@ -7,11 +7,11 @@ from mycity.utilities import address_utils
 
 class AddressUtilitiesTestCase(BaseTestCase):
 
-    def change_address(self, new_address):
+    def change_address(self, new_address: str):
         self.request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = \
             new_address
 
-    def compare_built_address(self, expected_result):
+    def compare_built_address(self, expected_result: str):
         origin_addr = address_utils.build_origin_address(self.request)
         self.assertEqual(origin_addr, expected_result)
 

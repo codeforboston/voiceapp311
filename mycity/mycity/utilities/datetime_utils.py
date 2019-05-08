@@ -8,7 +8,7 @@ import datetime
 import pytz
 
 
-def get_day():
+def get_day() -> str:
     """
     Function to get day of the week
     :return: A day of the week (Monday, Tuesday, etc)

@@ -7,7 +7,9 @@ from dateutil.parser import parse
 import logging
 
 from mycity.intents import intent_constants
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.utilities.common_types import ComplexDict
 from mycity.utilities.crime_incidents_api_utils import get_crime_incident_response
 
 # Constants
@@ -29,7 +31,7 @@ RECORDS_FIELD = "records"
 logger = logging.getLogger(__name__)
 
 
-def get_crime_incidents_intent(mycity_request):
+def get_crime_incidents_intent(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Populate MyCityResponseDataModel with crime incidents response information.
 
@@ -59,7 +61,7 @@ def get_crime_incidents_intent(mycity_request):
     return mycity_response
 
 
-def _build_text_from_response(response):
+def _build_text_from_response(response: ComplexDict) -> str:
     """
     Parses the crime incident API response
 
@@ -80,7 +82,7 @@ def _build_text_from_response(response):
     return text_response
 
 
-def _build_text_from_record(incident):
+def _build_text_from_record(incident: ComplexDict) -> str:
     """
     Builds the text response for a single crime incident record
 

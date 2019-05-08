@@ -56,7 +56,7 @@ class MyCityRequestDataModel:
             self._api_access_token
         )
 
-    def get_logger_string(self):
+    def get_logger_string(self) -> str:
         """
         Cloudwatch will group multiline log strings if they use return
         character instead of the newline character.

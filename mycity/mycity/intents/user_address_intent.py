@@ -6,14 +6,16 @@ Functions for setting and getting the current user address
 import logging
 
 import requests
+import typing
 
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from . import intent_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 logger = logging.getLogger(__name__)
 
 
-def set_address_in_session(mycity_request):
+def set_address_in_session(mycity_request: MyCityRequestDataModel):
     """
     Adds an address to the provided session object
 
@@ -33,7 +35,7 @@ def set_address_in_session(mycity_request):
                 [intent_constants.ZIP_CODE_KEY])
 
 
-def set_zipcode_in_session(mycity_request):
+def set_zipcode_in_session(mycity_request: MyCityRequestDataModel):
     """
     Adds a zip code to the provided request object.
 
@@ -45,15 +47,14 @@ def set_zipcode_in_session(mycity_request):
             mycity_request.intent_variables['Zipcode']['value'].zfill(5)
 
 
-def get_address_from_user_device(mycity_request):
+def get_address_from_user_device(mycity_request: MyCityRequestDataModel) -> MyCityRequestDataModel:
     """
     checks Amazon api for device address permissions.
     If given, the address, if present, will be stored
     in the session attributes
 
     :param mycity_request: MyCityRequestDataModel
-    :param mycity_response: MyCityResponseDataModel
-    :return : MyCityRequestModel object
+    :return : MyCityRequestDataModel object
     """
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
@@ -72,7 +73,7 @@ def get_address_from_user_device(mycity_request):
     return mycity_request
 
 
-def get_address_from_session(mycity_request):
+def get_address_from_session(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Looks for a current address in the session attributes and constructs a
     response based on whether one exists or not. If one exists, it is
@@ -105,7 +106,7 @@ def get_address_from_session(mycity_request):
     return mycity_response
 
 
-def request_user_address_response(mycity_request):
+def request_user_address_response(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Creates a response to request the user's address
 
@@ -124,7 +125,9 @@ def request_user_address_response(mycity_request):
     return mycity_response
 
 
-def clear_address_from_mycity_object(mycity_object):
+def clear_address_from_mycity_object(
+        mycity_object: typing.Union[MyCityRequestDataModel, MyCityResponseDataModel]
+) -> typing.Union[MyCityRequestDataModel, MyCityResponseDataModel]:
     """
     Removes any address info from a mycity object session attribute
 

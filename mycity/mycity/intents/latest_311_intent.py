@@ -4,7 +4,9 @@ Alexa intent used for 311 reports
 """
 
 import requests
+import typing
 
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.intents.custom_errors import BadAPIResponse
 from mycity.intents.speech_constants.latest_311_constants import (
@@ -14,6 +16,7 @@ from mycity.intents.speech_constants.latest_311_constants import (
     REQUEST_311_NUMBER_REPORTS_SLOT_NAME,
     REQUEST_311_REPORT_SCRIPT,
 )
+from mycity.utilities.common_types import ComplexDict, StrDict
 
 DEFAULT_NUMBER_OF_REPORTS = 3
 MAX_NUMBER_OF_REPORTS = 10
@@ -22,7 +25,7 @@ BOSTON_311_URL = "https://data.boston.gov/api/3/action/datastore_search"
 BOSTON_RESOURCE_ID = "2968e2c0-d479-49ba-a884-4ef523ada3c0"
 
 
-def get_311_requests(mycity_request):
+def get_311_requests(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Generates response object for a 311 request inquiry.
 
@@ -50,7 +53,7 @@ def get_311_requests(mycity_request):
     return mycity_response
 
 
-def number_of_reports(mycity_request):
+def number_of_reports(mycity_request: MyCityRequestDataModel) -> int:
     """
     Returns number of reports from the request if available or a default value
     :param mycity_request: MyCityRequestDataModel object
@@ -67,7 +70,7 @@ def number_of_reports(mycity_request):
     return DEFAULT_NUMBER_OF_REPORTS
 
 
-def get_311_requests_from_server(number_entries):
+def get_311_requests_from_server(number_entries: int) -> typing.List[StrDict]:
     """
     Returns the 311 data of the latest number_entries of requests to Boston's
     311
@@ -80,7 +83,7 @@ def get_311_requests_from_server(number_entries):
     return response_json["result"]["records"]
 
 
-def get_raw_311_reports_json(number_entries):
+def get_raw_311_reports_json(number_entries: int) -> ComplexDict:
     """
     Returns the JSON object from the 311 API
 
@@ -105,7 +108,7 @@ def get_raw_311_reports_json(number_entries):
     return response.json()
 
 
-def build_speech_from_311_report(report):
+def build_speech_from_311_report(report: StrDict) -> str:
     """
     Builds a speech string from a given 311 report
     :param report: JSON object of a single 311 report

@@ -1,7 +1,10 @@
 import logging
 import os
+import typing
 
 import requests
+
+from mycity.utilities.common_types import ComplexDict, StrDict
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +18,7 @@ ARCGIS_CLOSEST_FACILITY_URL = "https://route.arcgis.com/arcgis/rest/services/Wor
 ARCGIS_GEOCODE_URL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates"
 
 
-def generate_access_token():
+def generate_access_token() -> typing.Optional[str]:
     """
     Generates a temporary access token fro ArcGIS REST APIs
 
@@ -44,7 +47,7 @@ def generate_access_token():
         return None
 
 
-def get_client_id():
+def get_client_id() -> str:
     """
     Returns Client ID environment variable
 
@@ -57,7 +60,7 @@ def get_client_id():
         return client_id
 
 
-def get_client_secret():
+def get_client_secret() -> str:
     """
     Returns Client Secret environment variable
 
@@ -70,7 +73,9 @@ def get_client_secret():
         return client_secret
 
 
-def find_closest_route(api_access_token, origin_address, destination_addresses):
+def find_closest_route(api_access_token: str,
+                       origin_address: StrDict,
+                       destination_addresses: typing.Dict[typing.Tuple[str, str], str]) -> typing.Optional[StrDict]:
     """
     Finds the closest route, by driving distance,
     given the coordinates of an origin and possible destinations
@@ -149,7 +154,7 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
         return None
 
 
-def format_multipart_form_request(url, params):
+def format_multipart_form_request(url: str, params: StrDict) -> typing.Tuple[str, StrDict]:
     """
     Formats a multipart/form POST request
     for requests module properly for
@@ -178,7 +183,7 @@ def format_multipart_form_request(url, params):
     return (body_as_string, updated_header)
 
 
-def _modify_multipart_form_params(params):
+def _modify_multipart_form_params(params: StrDict) -> typing.Dict[str, typing.Tuple[type(None), str]]:
     """
     Helper function for _format_multipart_form_request
     that properly formats param dictionary
@@ -193,7 +198,7 @@ def _modify_multipart_form_params(params):
     return updated_params
 
 
-def _format_float(input_float):
+def _format_float(input_float: float) -> str:
     """
     Takes a float and returns a formatted String
 
@@ -207,7 +212,7 @@ def _format_float(input_float):
     return as_string
 
 
-def _post_request(url, params, headers):
+def _post_request(url: str, params: typing.Union[str, StrDict], headers: StrDict) -> requests.Response:
     """
     Utilizes requests module to formulate
     HTTP POST request over the network
@@ -226,7 +231,7 @@ def _post_request(url, params, headers):
     return response
 
 
-def geocode_address_candidates(input_address):
+def geocode_address_candidates(input_address: str) -> typing.Optional[ComplexDict]:
     """
     Finds candidate addresses from ArcGIS Geocoding service
     based on input address string
@@ -248,7 +253,7 @@ def geocode_address_candidates(input_address):
         return None
 
 
-def select_top_address_candidate(geocode_candidate_response_json):
+def select_top_address_candidate(geocode_candidate_response_json: ComplexDict) -> typing.Union[int, StrDict]:
     """
     Selects the geocoded address candidate with the highest score
 

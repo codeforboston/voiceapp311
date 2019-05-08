@@ -5,12 +5,14 @@ based information about city services
 """
 
 import logging
+import typing
 
 from mycity.utilities import (
     address_utils,
     arcgis_utils,
     csv_utils,
 )
+from mycity.utilities.common_types import ComplexDict, StrDict
 
 logger = logging.getLogger(__name__)
 
@@ -39,10 +41,10 @@ class Finder(object):
     def __init__(
             self,
             req,
-            resource_url,
-            address_key,
-            output_speech,
-            output_speech_prep_func
+            resource_url: str,
+            address_key: str,
+            output_speech: str,
+            output_speech_prep_func: typing.Callable
     ):
         """
         :param req: MyCityRequestDataModel
@@ -89,7 +91,7 @@ class Finder(object):
         records = self.get_records()
         self._start(records)
 
-    def _start(self, records):
+    def _start(self, records: typing.List[ComplexDict]):
         """
         Process list of records and set the output_speech field. output_speech
         will be queried by creator of a Finder object and used to
@@ -116,7 +118,7 @@ class Finder(object):
         # TODO: Should this be called with formatted_record?
         self.set_output_speech(closest_record)
 
-    def get_output_speech(self):
+    def get_output_speech(self) -> str:
         """
         Return formatted speech output or the standard error message
 
@@ -125,7 +127,7 @@ class Finder(object):
         logger.debug('output_speech: ' + str(self.output_speech))
         return self.output_speech
 
-    def set_output_speech(self, format_keys):
+    def set_output_speech(self, format_keys: typing.Dict[str, str]):
         """
         Format speech output with values from dictionary format_keys
 
@@ -140,7 +142,7 @@ class Finder(object):
                                 # have
             self.output_speech = Finder.ERROR_MESSAGE
 
-    def get_all_destinations(self, records):
+    def get_all_destinations(self, records: typing.List[typing.Dict[str, str]]) -> typing.List[str]:
         """
         Return a list of all destinations in the records
 
@@ -153,7 +155,9 @@ class Finder(object):
         return [record[self.address_key] for record in records]
 
 
-    def get_closest_record_with_driving_info(self, driving_info, records):
+    def get_closest_record_with_driving_info(self,
+                                             driving_info: ComplexDict,
+                                             records: typing.List[ComplexDict]) -> ComplexDict:
         """
         Find the record corresponding to the destination address
         (driving_info) - which was found to be closest to the origin address.
@@ -176,7 +180,7 @@ class Finder(object):
                 #       unlikely) between the two dictionaries.
                 return {**record, **driving_info}
 
-    def add_city_and_state_to_records(self, records):
+    def add_city_and_state_to_records(self, records: typing.List[StrDict]) -> typing.List[StrDict]:
         """
         Appends a city and state to the address value of each record
 
@@ -190,7 +194,7 @@ class Finder(object):
                                                        city=Finder.CITY,
                                                        state=Finder.STATE)
 
-    def records_to_coordinate_dict(self, records):
+    def records_to_coordinate_dict(self, records: typing.List[ComplexDict]) -> typing.Dict[typing.Tuple[str, str], str]:
         """
         Takes a set of Records and returns a
             (X, Y) Coordinate -> address dictionary
@@ -213,7 +217,7 @@ class Finder(object):
 
 
 
-    def geocode_origin_address(self):
+    def geocode_origin_address(self) -> typing.Union[int, StrDict]:
         """
         Utilizes ArcGIS to geocode the origin address,
         which means to assign (X, Y) coordinates to the address

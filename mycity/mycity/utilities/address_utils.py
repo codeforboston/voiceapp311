@@ -8,11 +8,13 @@ import logging
 from streetaddress import StreetAddressParser
 
 from mycity.intents import intent_constants
+from mycity.mycity_request_data_model import MyCityRequestDataModel
+from mycity.utilities.common_types import ComplexDict
 
 logger = logging.getLogger(__name__)
 
 
-def build_origin_address(req):
+def build_origin_address(req: MyCityRequestDataModel) -> str:
     """
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
@@ -34,7 +36,7 @@ def build_origin_address(req):
 
     return origin_address
 
-def is_address_valid(address):
+def is_address_valid(address: ComplexDict) -> bool:
     """
     Checks that a provided AddressParser result has basic and valid information, that
     will allow us to use the address in our intents. Alexa can sometimes provide us

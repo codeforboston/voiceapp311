@@ -5,6 +5,7 @@ Functions for Alexa responses related to trash day
 
 import re
 import logging
+import typing
 
 import requests
 from streetaddress import StreetAddressParser
@@ -17,8 +18,10 @@ from mycity.intents.custom_errors import (
 )
 from mycity.intents.speech_constants import trash_intent as speech_constants
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities import address_utils
+from mycity.utilities.common_types import ComplexDict, StrDict
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +29,7 @@ DAY_CODE_REGEX = r'\d+A? - '
 CARD_TITLE = "Trash Day"
 
 
-def get_trash_day_info(mycity_request):
+def get_trash_day_info(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Generates response object for a trash day inquiry.
 
@@ -105,7 +108,7 @@ def get_trash_day_info(mycity_request):
     return mycity_response
 
 
-def get_trash_and_recycling_days(address, zip_code=None):
+def get_trash_and_recycling_days(address: str, zip_code: str = None) -> typing.List[str]:
     """
     Determines the trash and recycling days for the provided address.
     These are on the same day, so only one array of days will be returned.
@@ -133,7 +136,7 @@ def get_trash_and_recycling_days(address, zip_code=None):
     return trash_and_recycling_days
 
 
-def find_unique_zipcodes(address_request_json):
+def find_unique_zipcodes(address_request_json: typing.List[ComplexDict]) -> ComplexDict:
     """
     Finds unique zip codes in a provided address request json returned
     from the ReCollect service
@@ -155,7 +158,7 @@ def find_unique_zipcodes(address_request_json):
     return found_zip_codes
 
 
-def validate_found_address(found_address, user_provided_address):
+def validate_found_address(found_address: StrDict, user_provided_address: StrDict) -> bool:
     """
     Validates that the street name and number found in trash collection
     database matches the provided values. We do not treat partial matches
@@ -194,7 +197,7 @@ def validate_found_address(found_address, user_provided_address):
     return True
 
 
-def get_address_api_info(address, provided_zip_code):
+def get_address_api_info(address: str, provided_zip_code: str) -> ComplexDict:
     """
     Gets the parameters required for the ReCollect API call
 
@@ -244,7 +247,7 @@ def get_address_api_info(address, provided_zip_code):
     return result_json[0]
 
 
-def get_trash_day_data(api_parameters):
+def get_trash_day_data(api_parameters: StrDict) -> ComplexDict:
     """
     Gets the trash day data from ReCollect using the provided API parameters
 
@@ -267,7 +270,7 @@ def get_trash_day_data(api_parameters):
     return request_result.json()
 
 
-def get_trash_days_from_trash_data(trash_data):
+def get_trash_days_from_trash_data(trash_data: ComplexDict) -> typing.List[str]:
     """
     Parse trash data from ReCollect service and return the trash and recycling
     days.
@@ -288,7 +291,7 @@ def get_trash_days_from_trash_data(trash_data):
     return trash_days
 
 
-def build_speech_from_list_of_days(days):
+def build_speech_from_list_of_days(days: typing.List[str]) -> str:
     """
     Converts a list of days into proper speech, such as adding the word 'and'
     before the last item.

@@ -7,7 +7,9 @@ import logging
 
 from mycity.intents import intent_constants
 from mycity.intents.speech_constants import snow_parking_intent as speech_constants
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.utilities.common_types import StrDict
 from mycity.utilities.finder.finder_csv import FinderCSV
 
 PARKING_INFO_URL = "http://bostonopendata-boston.opendata.arcgis.com/datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
@@ -17,7 +19,7 @@ ADDRESS_KEY = "Address"
 logger = logging.getLogger(__name__)
 
 
-def format_record_fields(record):
+def format_record_fields(record: StrDict):
     """
     Updates the record fields by replacing the raw information with a sentence
     that provides context and will be more easily understood by users.
@@ -33,7 +35,7 @@ def format_record_fields(record):
         if record["Fee"] != "No Charge" else speech_constants.NO_FEE
 
 
-def get_snow_emergency_parking_intent(mycity_request):
+def get_snow_emergency_parking_intent(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Populate MyCityResponseDataModel with snow emergency parking response information.
 

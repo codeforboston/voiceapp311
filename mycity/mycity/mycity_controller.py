@@ -24,6 +24,7 @@ from mycity.intents.user_address_intent import (
     set_zipcode_in_session,
     get_address_from_user_device,
 )
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
         "If you have feedback for the skill, say, 'I have a suggestion.'"
 
 
-def execute_request(mycity_request):
+def execute_request(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
@@ -76,7 +77,7 @@ def execute_request(mycity_request):
         return on_session_ended(mycity_request)
 
 
-def on_session_started(mycity_request):
+def on_session_started(mycity_request: MyCityRequestDataModel) -> MyCityRequestDataModel:
     """
     Called when the session starts. Creates a log entry with session info
     and inserts device address into session attributes if available.
@@ -88,7 +89,7 @@ def on_session_started(mycity_request):
     return get_address_from_user_device(mycity_request)
 
 
-def on_launch(mycity_request):
+def on_launch(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Called when the user launches the skill without specifying what
     they want.
@@ -104,7 +105,7 @@ def on_launch(mycity_request):
     return get_welcome_response(mycity_request)
 
 
-def on_intent(mycity_request):
+def on_intent(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     If the event type is "request" and the request type is "IntentRequest",
     this function is called to execute the logic associated with the
@@ -173,7 +174,7 @@ def on_intent(mycity_request):
         raise ValueError("Invalid intent")
 
 
-def on_session_ended(mycity_request):
+def on_session_ended(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Called when the user ends the session.
     Is not called when the skill returns should_end_session=true
@@ -189,7 +190,7 @@ def on_session_ended(mycity_request):
     # add cleanup logic here
 
 
-def get_help_response(mycity_request):
+def get_help_response(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Provides an overview of the skill. This is triggered by AMAZON.HelpIntent.
 
@@ -207,7 +208,7 @@ def get_help_response(mycity_request):
     return mycity_response
 
 
-def get_welcome_response(mycity_request):
+def get_welcome_response(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Welcomes the user and sets initial session attributes. Is triggered on
     initial launch and on AMAZON.HelpIntent.
@@ -233,7 +234,7 @@ def get_welcome_response(mycity_request):
     return mycity_response
 
 
-def handle_session_end_request(mycity_request):
+def handle_session_end_request(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Ends a user's session (with the Boston Info skill). Called when request
     intent is AMAZON.StopIntent or AMAZON.CancelIntent.

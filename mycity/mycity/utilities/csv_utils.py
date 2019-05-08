@@ -5,11 +5,17 @@ Utility functions for manipulating csv files
 
 import collections
 import logging
+import typing
+
+from mycity.utilities.common_types import StrDict
 
 logger = logging.getLogger(__name__)
 
 
-def create_record_model(model_name, attributes):
+NT = typing.TypeVar("NT", bound=tuple)
+
+
+def create_record_model(model_name: str, attributes: typing.List[str]) -> typing.Type[NT]:
     """
     Spin up a namedtuple class to represent a record from a csv file
 
@@ -27,7 +33,7 @@ def create_record_model(model_name, attributes):
     return Model
 
 
-def csv_to_namedtuples(model, csv_reader):
+def csv_to_namedtuples(model: typing.Type[NT], csv_reader: typing.Iterable[str]) -> typing.List[NT]:
     """
     Create and return a list of namedtuples representing all records from the
     csv.
@@ -44,7 +50,10 @@ def csv_to_namedtuples(model, csv_reader):
     return records
 
 
-def add_city_and_state_to_records(records, address_key, city, state):
+def add_city_and_state_to_records(records: typing.List[StrDict],
+                                  address_key: str,
+                                  city: str,
+                                  state: str) -> typing.List[StrDict]:
     """
     Append '{city}, {state}' to the Address fields of each record
     in records.
@@ -67,7 +76,7 @@ def add_city_and_state_to_records(records, address_key, city, state):
     return ret
 
 
-def map_attribute_to_records(attribute, records):
+def map_attribute_to_records(attribute: str, records: typing.List[NT]) -> typing.Dict[str, NT]:
     """
     Create and return a dictionary mapping a records address field
     to the record itself. This allows us to access the whole record
@@ -77,6 +86,7 @@ def map_attribute_to_records(attribute, records):
     to be implemented in "get_closest_record_with_driving_info"
     function in finder.py on Line 193
 
+    :param attribute:
     :param records: a list of namedtuples representing records
         from a csv file
     :return: dictionary mapping an string Address to namedtuple record

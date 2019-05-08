@@ -26,6 +26,7 @@ from bs4 import BeautifulSoup
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.intents.speech_constants import get_alerts_intent as speech_constants
+from mycity.utilities.common_types import StrDict
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ def get_alerts_intent(
         mycity_request: MyCityRequestDataModel,
         get_alerts_function_for_test: typing.Callable[[], typing.Dict] = None,
         prune_normal_responses_function_for_test: typing.Callable[[], typing.Dict] = None,
-        alerts_to_speech_output_function_for_test: typing.Callable[[], typing.AnyStr] = None
+        alerts_to_speech_output_function_for_test: typing.Callable[[], str] = None
 ) -> MyCityResponseDataModel:
     """
     Generate response object with information about citywide alerts
@@ -136,7 +137,7 @@ def _create_response_object() -> MyCityResponseDataModel:
     return mycity_response
 
 
-def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
+def alerts_to_speech_output(alerts: typing.Dict) -> str:
     """
     Checks whether the alert dictionary contains any entries. Returns a string
     that contains all alerts or a message that city services are operating
@@ -182,7 +183,7 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     return service_alerts
 
 
-def get_alerts():
+def get_alerts() -> StrDict:
     """
     Checks Boston.gov for alerts, and if present scrapes them and returns
     them as a dictionary

@@ -4,9 +4,11 @@ Utilities for querying with the Boston crime incidents API
 """
 
 import logging
+import typing
 
 import requests
 
+from mycity.utilities.common_types import ComplexDict
 from mycity.utilities.gis_utils import geocode_address
 
 RESOURCEID = "12cb3883-56f5-47de-afa5-3b1cf61b257b"
@@ -17,7 +19,7 @@ CRIME_INCIDENTS_SQL_URL = \
 logger = logging.getLogger(__name__)
 
 
-def get_crime_incident_response(address):
+def get_crime_incident_response(address: str) -> ComplexDict:
     """
     Executes and returns the crime incident request response
 
@@ -36,7 +38,7 @@ def get_crime_incident_response(address):
     return {}
 
 
-def _build_query_string(address):
+def _build_query_string(address: str) -> str:
     """
     Builds the SQL query given an address
 
@@ -53,7 +55,7 @@ def _build_query_string(address):
                 QUERY_LIMIT)
 
 
-def _get_coordinates_for_address(address):
+def _get_coordinates_for_address(address: str) -> typing.Tuple[str, str]:
     """
     Populates the GPS coordinates for the provided address
 

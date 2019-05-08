@@ -4,6 +4,7 @@ Food Truck Intent
 """
 
 import logging
+import typing
 
 from streetaddress import StreetAddressParser
 
@@ -11,8 +12,10 @@ from mycity.intents.custom_errors import InvalidAddressError, BadAPIResponse, Mu
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.intents.speech_constants import food_truck_intent as speech_constants
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities import datetime_utils, gis_utils
+from mycity.utilities.common_types import ComplexDict
 from . import intent_constants
 
 logger = logging.getLogger(__name__)
@@ -25,7 +28,7 @@ DAY = datetime_utils.get_day()
 FOOD_TRUCK_LIMIT = 5  # limits the number of food trucks
 
 
-def add_response_text(food_trucks):
+def add_response_text(food_trucks: typing.List[ComplexDict]) -> str:
     response = ''
     for t in food_trucks:
         response += f"{t['attributes']['Truck']} is located" \
@@ -35,7 +38,7 @@ def add_response_text(food_trucks):
     return response
 
 
-def get_truck_locations():
+def get_truck_locations() -> typing.List[ComplexDict]:
     """
     Get the location of the food trucks in Boston TODAY
 
@@ -49,7 +52,7 @@ def get_truck_locations():
     return truck_unique_locations
 
 
-def get_nearby_food_trucks(mycity_request):
+def get_nearby_food_trucks(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Gets food truck info near an address
 

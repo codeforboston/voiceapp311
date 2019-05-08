@@ -6,6 +6,7 @@ Farmers Market Intent
 import logging
 
 from mycity.intents.custom_errors import BadAPIResponse
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities import datetime_utils, gis_utils
 
@@ -17,7 +18,7 @@ QUERY = {'where': '1=1', 'out_sr': '4326'}
 DAY = datetime_utils.get_day()
 
 
-def get_farmers_markets_today(mycity_request):
+def get_farmers_markets_today(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Get all available farmers markets today
 

@@ -4,7 +4,9 @@ Uses ArcGIS to find location based information about Boston city services
 """
 
 import logging
+import typing
 
+from mycity.utilities.common_types import ComplexDict, StrDict
 from mycity.utilities.finder.finder import Finder
 from mycity.utilities.gis_utils import get_features_from_feature_server
 
@@ -23,11 +25,11 @@ class FinderGIS(Finder):
     def __init__(
             self,
             req,
-            resource_url,
-            address_key,
-            output_speech,
-            output_speech_prep_func,
-            query=DEFAULT_QUERY
+            resource_url: str,
+            address_key: str,
+            output_speech: str,
+            output_speech_prep_func: typing.Callable,
+            query: StrDict = DEFAULT_QUERY
     ):
         """
         Call super constructor and save query
@@ -56,7 +58,7 @@ class FinderGIS(Finder):
         )
         self.query = query
 
-    def get_records(self):
+    def get_records(self) -> typing.List[ComplexDict]:
         """
         Query City of Boston Feature Server, and return a list of features
 

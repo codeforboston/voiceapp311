@@ -5,9 +5,11 @@ Uses csv files to find location based information about Boston city services
 
 import csv
 import logging
+import typing
 
 import requests
 
+from mycity.utilities.common_types import StrDict
 from mycity.utilities.finder.finder import Finder
 
 logger = logging.getLogger(__name__)
@@ -26,11 +28,11 @@ class FinderCSV(Finder):
     def __init__(
             self,
             req,
-            resource_url,
-            address_key,
-            output_speech,
-            output_speech_prep_func,
-            filter = default_filter
+            resource_url: str,
+            address_key: str,
+            output_speech: str,
+            output_speech_prep_func: typing.Callable,
+            filter: typing.Callable = default_filter
     ):
         """
         Call super constructor and save filter
@@ -62,7 +64,7 @@ class FinderCSV(Finder):
         )
         self._filter = filter
 
-    def get_records(self):
+    def get_records(self) -> typing.List[StrDict]:
         """
         Get web csv resource and format its information
 
@@ -90,7 +92,7 @@ class FinderCSV(Finder):
         r.close()
         return file_contents
 
-    def file_to_filtered_records(self, file_contents):
+    def file_to_filtered_records(self, file_contents) -> typing.List[StrDict]:
         """
         Convert the string representation of the csv file into a list of
         dictionaries, each representing one record

@@ -7,17 +7,20 @@ kill any computation that takes longer than 3 secs.
 """
 
 import logging
+import typing
 
 from arcgis import geometry
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
 from arcgis.gis import GIS
 
+from mycity.utilities.common_types import ComplexDict, StrDict
+
 logger = logging.getLogger(__name__)
 dev_gis = GIS()
 
 
-def get_features_from_feature_server(url, query):
+def get_features_from_feature_server(url: str, query: StrDict) -> typing.List[ComplexDict]:
     """
     Given a url to a City of Boston Feature Server, return a list
     of Features (for example, parking lots that are not full)
@@ -37,7 +40,7 @@ def get_features_from_feature_server(url, query):
     return features
 
 
-def _get_dest_addresses_from_features(feature_address_index, features):
+def _get_dest_addresses_from_features(feature_address_index: str, features: typing.List[ComplexDict]) -> typing.List[str]:
     """
     Generate and return a list of destination addresses (as strings)
     given a list of features
@@ -63,7 +66,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     return dest_addresses
 
 
-def geocode_address(m_address):
+def geocode_address(m_address: str) -> StrDict:
     """
     :param m_address: address of interest in street form
     :return: address in coordinate (X and Y) form

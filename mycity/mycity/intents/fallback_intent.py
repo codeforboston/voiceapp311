@@ -6,13 +6,14 @@ Function(s) for dealing with fallback intents
 import logging
 
 from mycity.intents.speech_constants import fallback_intent as speech_constants
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 CARD_TITLE = "Boston Info"
 logger = logging.getLogger(__name__)
 
 
-def fallback_intent(mycity_request):
+def fallback_intent(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Deals with unhandled intents by prompting the user again
 

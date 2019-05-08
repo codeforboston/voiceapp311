@@ -26,7 +26,7 @@ class GetAlertsIntentTestCase(BaseTestCase):
     def stub_get_alerts(self, *args) -> typing.Dict:
         return self.get_alerts_stub_return_dictionary
 
-    def stub_alerts_to_speech(self, *args) -> typing.AnyStr:
+    def stub_alerts_to_speech(self, *args) -> str:
         return self.alerts_to_speech_return_string
 
     def test_that_get_alerts_intent_will_not_end_session(self):

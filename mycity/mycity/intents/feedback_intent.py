@@ -10,12 +10,14 @@ import os
 import requests
 
 from mycity.intents.speech_constants import feedback_intent as speech_constants
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 SLACK_WEBHOOKS_URL = os.environ['SLACK_WEBHOOKS_URL']
 CARD_TITLE = "Feedback"
 
-def submit_feedback(mycity_request):
+
+def submit_feedback(mycity_request: MyCityRequestDataModel) -> MyCityResponseDataModel:
     """
     Logs user feedback to the mycity-feedback slack channel.
 
@@ -62,7 +64,7 @@ def submit_feedback(mycity_request):
     return mycity_response
 
 
-def send_to_slack(message):
+def send_to_slack(message: str) -> int:
     """
     Posts feedback in the mycity-feedback Slack channel via HTTP request.
 
@@ -81,7 +83,7 @@ def send_to_slack(message):
     return request.status_code
 
 
-def build_slack_message(feedback_type, feedback_text):
+def build_slack_message(feedback_type: str, feedback_text: str) -> str:
     """
     Configures the message we will post to slack.
 
