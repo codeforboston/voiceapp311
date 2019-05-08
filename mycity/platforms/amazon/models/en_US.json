@@ -4,25 +4,6 @@
             "invocationName": "boston info",
             "intents": [
                 {
-                    "name": "SetAddressIntent",
-                    "slots": [
-                        {
-                            "name": "Address",
-                            "type": "AMAZON.PostalAddress"
-                        }
-                    ],
-                    "samples": [
-                        "my address is {Address}",
-                        "i live at {Address}",
-                        "my home address is {Address}",
-                        "set address {Address}",
-                        "set my address to {Address}",
-                        "change address to {Address}",
-                        "update address to {Address}",
-                        "new address is {Address}"
-                    ]
-                },
-                {
                     "name": "TrashDayIntent",
                     "slots": [
                         {
