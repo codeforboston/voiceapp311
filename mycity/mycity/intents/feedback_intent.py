@@ -46,13 +46,18 @@ def submit_feedback(mycity_request):
     else:
         feedback_type = intent_variables['FeedbackType']['value']
         feedback_text = intent_variables['Feedback']['value']
-        status = send_to_slack(
-            build_slack_message(feedback_type, feedback_text)
-        )
-        if status == 200:
-            mycity_response.output_speech = speech_constants.BIG_THANKS
-        else:
+
+        try:
+            status = send_to_slack(
+                build_slack_message(feedback_type, feedback_text)
+            )
+            if status == 200:
+                mycity_response.output_speech = speech_constants.BIG_THANKS
+            else:
+                mycity_response.output_speech = speech_constants.PROBLEM_SAVING_FEEDBACK
+        except Exception:
             mycity_response.output_speech = speech_constants.PROBLEM_SAVING_FEEDBACK
+
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
         mycity_response.card_title = CARD_TITLE
