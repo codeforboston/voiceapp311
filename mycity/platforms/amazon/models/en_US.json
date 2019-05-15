@@ -1159,7 +1159,9 @@
                         "where are the nearby grocery stores",
                         "where are the nearby super markets",
                         "what are the nearby grocery stores",
-                        "what are the nearby super markets"
+                        "what are the nearby super markets",
+                        "where is a grocery store",
+                        "what are grocery store locations"
                     ]
                 },
                 {
@@ -1512,7 +1514,7 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "I will need your address for that. What's your address?"
+                        "value": "What's your address?"
                     },
                     {
                         "type": "PlainText",
@@ -1525,7 +1527,7 @@
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "I will need your address for that. What's your address?"
+                        "value": "What's your address?"
                     },
                     {
                         "type": "PlainText",

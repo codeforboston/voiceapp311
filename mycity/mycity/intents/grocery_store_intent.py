@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/' \
            'services/Supermarkets_GroceryStores/FeatureServer/0'
+DAY = date.get_day()
+CARD_TITLE = "Grocery Store"
 QUERY = {
     "distance": "1",
     "inSR": "4326",
@@ -26,11 +28,15 @@ QUERY = {
     "units": "esriSRUnit_StatuteMile",
     "geometryType": "esriGeometryPoint"
 }
-DAY = date.get_day()
-CARD_TITLE = "Grocery Stores"
 
 
 def add_response_text(features):
+    """
+    Iterated through the list of features, extracts the useful fields, and
+    creates the response text.
+    :param features:
+    :return: response :string
+    """
     response = ''
     for t in features:
         response += f"{t['attributes']['Store']}" \
@@ -75,13 +81,6 @@ def get_nearby_grocery_stores(mycity_request):
         address = str(a["house"]) + " " + str(a["street_name"]) + " " \
                   + str(a["street_type"])
 
-        # Parsing zip code
-        zip_code = str(a["other"]).zfill(5) if a["other"] else None
-        zip_code_key = intent_constants.ZIP_CODE_KEY
-        if zip_code is None and zip_code_key in \
-                mycity_request.session_attributes:
-            zip_code = mycity_request.session_attributes[zip_code_key]
-
         # Get user's address and get grocery stores
         usr_addr = gis_utils.geocode_address(address)
         nearby_grocery_stores = get_grocery_grocery_stores(usr_addr)
@@ -99,17 +98,13 @@ def get_nearby_grocery_stores(mycity_request):
 
         except InvalidAddressError:
             address_string = address
-            if zip_code:
-                address_string = address_string + " with zip code {}"\
-                    .format(zip_code)
             mycity_response.output_speech = \
                 speech_constants.ADDRESS_NOT_FOUND.format(address_string)
             mycity_response.dialog_directive = "ElicitSlotGroceryStore"
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = \
                 mycity_request.session_attributes
-            mycity_response.card_title = "Grocery Store"
-            mycity_request = clear_address_from_mycity_object(mycity_request)
+            mycity_response.card_title = CARD_TITLE
             mycity_response = clear_address_from_mycity_object(mycity_response)
             return mycity_response
 
@@ -120,7 +115,6 @@ def get_nearby_grocery_stores(mycity_request):
         except MultipleAddressError:
             mycity_response.output_speech = \
                 speech_constants.MULTIPLE_ADDRESS_ERROR.format(address)
-            mycity_response.dialog_directive = "ElicitSlotZipCode"
 
     else:
         logger.error("Error: Called grocery_store_intent with no address")
@@ -132,6 +126,6 @@ def get_nearby_grocery_stores(mycity_request):
     # understood, the session will end.
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.card_title = "Grocery Store"
+    mycity_response.card_title = CARD_TITLE
 
     return mycity_response
