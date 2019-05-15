@@ -8,8 +8,8 @@ import logging
 import requests
 import typing
 
+from mycity.intents import intent_constants
 from mycity.mycity_request_data_model import MyCityRequestDataModel
-from . import intent_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 logger = logging.getLogger(__name__)

@@ -8,6 +8,7 @@ import typing
 
 from streetaddress import StreetAddressParser
 
+from mycity.intents import intent_constants
 from mycity.intents.custom_errors import InvalidAddressError, BadAPIResponse, MultipleAddressError
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.intents.speech_constants import food_truck_intent as speech_constants
@@ -16,7 +17,6 @@ from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities import datetime_utils, gis_utils
 from mycity.utilities.common_types import ComplexDict
-from . import intent_constants
 
 logger = logging.getLogger(__name__)
 
