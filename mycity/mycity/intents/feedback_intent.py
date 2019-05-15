@@ -55,7 +55,7 @@ def submit_feedback(mycity_request):
                 mycity_response.output_speech = speech_constants.BIG_THANKS
             else:
                 mycity_response.output_speech = speech_constants.PROBLEM_SAVING_FEEDBACK
-        except requests.exceptions.MissingSchema:
+        except Exception:
             mycity_response.output_speech = speech_constants.PROBLEM_SAVING_FEEDBACK
 
         mycity_response.reprompt_text = None
