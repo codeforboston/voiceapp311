@@ -11,10 +11,8 @@ from mycity.utilities.common_types import StrDict
 
 logger = logging.getLogger(__name__)
 
-NT = typing.TypeVar("NT", bound=tuple)
 
-
-def create_record_model(model_name: str, attributes: typing.List[str]) -> typing.Type[NT]:
+def create_record_model(model_name: str, attributes: typing.List[str]) -> typing.Type[collections.namedtuple]:
     """
     Spin up a namedtuple class to represent a record from a csv file
 
@@ -32,7 +30,8 @@ def create_record_model(model_name: str, attributes: typing.List[str]) -> typing
     return Model
 
 
-def csv_to_namedtuples(model: typing.Type[NT], csv_reader: typing.Iterable[str]) -> typing.List[NT]:
+def csv_to_namedtuples(model: typing.Type[collections.namedtuple],
+                       csv_reader: typing.Iterable[str]) -> typing.List[collections.namedtuple]:
     """
     Create and return a list of namedtuples representing all records from the
     csv.
@@ -75,7 +74,8 @@ def add_city_and_state_to_records(records: typing.List[StrDict],
     return ret
 
 
-def map_attribute_to_records(attribute: str, records: typing.List[NT]) -> typing.Dict[str, NT]:
+def map_attribute_to_records(attribute: str,
+                             records: typing.List[collections.namedtuple]) -> typing.Dict[str, collections.namedtuple]:
     """
     Create and return a dictionary mapping a records address field
     to the record itself. This allows us to access the whole record
