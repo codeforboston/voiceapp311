@@ -73,6 +73,7 @@ def geocode_address(m_address):
         m_location = ''
     return m_location['location']
 
+
 def calculate_distance(feature1, feature2):
     """
     :param feature1: the first feature
