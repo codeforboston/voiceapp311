@@ -67,9 +67,11 @@ def geocode_address(m_address):
     :return: address in coordinate (X and Y) form
     """
     m_address = m_address + ", City: Boston, State: MA"
-    m_location = geocode(address=m_address)[0]
+    if geocode(address=m_address)[0]['attributes']['Score'] > 90:
+        m_location = geocode(address=m_address)[0]
+    else:
+        m_location = ''
     return m_location['location']
-
 
 def calculate_distance(feature1, feature2):
     """
