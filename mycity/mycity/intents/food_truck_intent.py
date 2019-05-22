@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 MILE = 1600
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
-               'services/food_trucks_schedule/FeatureServer/0/'
+               'services/food_truck_schedule/FeatureServer/0/'
 DAY = date.get_day()
 FOOD_TRUCK_LIMIT = 5  # limits the number of food trucks
 CARD_TITLE = "Food Trucks"
@@ -37,10 +37,9 @@ def add_response_text(food_trucks):
     response = ''
     for x in range(length):
         t = food_trucks[x]
+        open_hours = str(t['attributes']['Hours']).replace("-", "and")
         response += f"{t['attributes']['Truck']} is located" \
-            f" at {t['attributes']['Loc']} between " \
-            f"{t['attributes']['Start_time']} and " \
-            f"{t['attributes']['End_time']}, "
+            f" at {t['attributes']['Location']} between {open_hours},"
     return response
 
 
