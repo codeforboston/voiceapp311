@@ -58,6 +58,23 @@
                         }
                     ],
                     "samples": [
+                        "when do I need to take the trash out",
+                        "when does the trash go out at {Address}",
+                        "when does the trash go out",
+                        "when is trash this week at {Address}",
+                        "when is trash this week",
+                        "trash day",
+                        "trash pickup",
+                        "garbage day",
+                        "garbage pickup",
+                        "recycling day",
+                        "recycling pickup",
+                        "refuse day",
+                        "refuse pickup",
+                        "rubbish day",
+                        "rubbish pickup",
+                        "find the garbage collection",
+                        "find the garbage collection days",
                         "find the garbage collection days at {Address}",
                         "find the garbage collection days for {Address}",
                         "find the garbage day at {Address}",
@@ -489,6 +506,7 @@
                         "what days are refuse days for {Address}",
                         "what days are trash days at {Address}",
                         "what days are trash days for {Address}",
+                        "what is my garbage day",
                         "what is garbage day at {Address}",
                         "what is garbage day for {Address}",
                         "what is recyclables day at {Address}",
@@ -1036,6 +1054,8 @@
                     "name": "GetAlertsIntent",
                     "slots": [],
                     "samples": [
+                        "what the current status",
+                        "give me the city status",
                         "give me all alerts",
                         "are there any alerts",
                         "are there any emergencies",
@@ -1046,24 +1066,6 @@
                 {
                     "name": "AMAZON.HelpIntent",
                     "samples": []
-                },
-                {
-                    "name": "UnhandledIntent",
-                    "slots": [],
-                    "samples": [
-                        "blah blah blah",
-                        "gofougildags",
-                        "heh",
-                        "testing",
-                        "this is dumb",
-                        "workaround to get around",
-                        "thinking about things",
-                        "what up doe",
-                        "dealing with it",
-                        "doing it",
-                        "whatever",
-                        "whatever and ever amen"
-                    ]
                 },
                 {
                     "name": "AMAZON.StopIntent",
@@ -1109,6 +1111,43 @@
                         "I have an idea for your app",
                         "I'd like to report a bug",
                         "I have a suggestion"
+                    ]
+                },
+                {
+                    "name": "FoodTruckIntent",
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "samples": [
+                                "It's {Address}",
+                                "My address is {Address}",
+                                "I live at {Address}",
+                                "{Address}"
+                            ]
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "where are the nearest food trucks",
+                        "what are the nearest food trucks",
+                        "is there any food truck around",
+                        "is there any food truck around me",
+                        "is there any food truck around my office",
+                        "is there any food truck around my house",
+                        "are there any food trucks around",
+                        "are there any food trucks around me",
+                        "are there any food trucks around my office",
+                        "are there any food trucks around my house",
+                        "what kind of food trucks are around me",
+                        "what kind of food trucks are near me",
+                        "what kind of food trucks are nearby",
+                        "food trucks",
+                        "Nearby food trucks",
+                        "what's for lunch"
                     ]
                 },
                 {
@@ -1194,6 +1233,10 @@
                     ]
                 },
                 {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
                     "name": "AMAZON.NavigateHomeIntent",
                     "samples": []
                 },
@@ -1210,6 +1253,31 @@
                         "it there a snow alert",
                         "is there an inclement weather emergency ",
                         "Is there a snow emergency"
+                    ]
+                },
+                {
+                    "name": "FarmersMarketIntent",
+                    "slots": [],
+                    "samples": [
+                        "how do I get local produce",
+                        "how do I find local produce",
+                        "how do I buy local produce",
+                        "how do I get fresh produce",
+                        "where can I get local produce",
+                        "where can I buy local produce",
+                        "where can I find local produce",
+                        "what are the farmers markets hours",
+                        "where can I find farmers markets",
+                        "where can I find fresh produce",
+                        "where can I get fresh produce",
+                        "where can I buy fresh produce",
+                        "what farmer markets are open today",
+                        "where I can find a farmers market",
+                        "where are farm stands",
+                        "where are farmers market",
+                        "farmers markets today",
+                        "are there any farmers markets today",
+                        "farmers markets"
                     ]
                 }
             ],
@@ -1308,6 +1376,22 @@
                     ]
                 },
                 {
+                    "name": "FoodTruckIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Address",
+                            "type": "AMAZON.PostalAddress",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1478934588421.914733191093"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "VotingIntent",
                     "confirmationRequired": false,
                     "prompts": {},
@@ -1398,7 +1482,7 @@
                 ]
             },
             {
-                "id": "Elicit.Slot.1096834840884.281360406464",
+                "id": "Elicit.Slot.1478934588421.914733191093",
                 "variations": [
                     {
                         "type": "PlainText",

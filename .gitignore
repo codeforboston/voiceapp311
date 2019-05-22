@@ -10,6 +10,7 @@
 
 # vs code folder
 .vscode
+*.code-workspace
 
 # virtualenv files/dirs
 
@@ -104,3 +105,5 @@ BostonData/lambda_function/urllib3*
 *.pyc
 
 lambda_function.zip
+ipython/
+

@@ -145,7 +145,7 @@ def package_lambda_function():
     print(HORIZONTAL_RULE)
 
 
-def update_lambda_code(lambda_function_name, s3_bucket=None):
+def update_lambda_code(lambda_function_name, s3_bucket=None, publish_version=False):
     """
     Uploads the archive containing our lambda function and dependencies to the
     specified lambda. Requires that the user has configured AWS CLI and that
@@ -166,6 +166,15 @@ def update_lambda_code(lambda_function_name, s3_bucket=None):
 
         # If the upload fails, catch the exception and alert user.
         try:
+            update_command_array = [
+                shutil.which("aws"),  # path to user's AWS CLI installation
+                "lambda",
+                "update-function-code",
+                "--function-name",
+                lambda_function_name
+            ]
+            if publish_version:
+                update_command_array.append("--publish")
             if s3_bucket:
                 # The S3 flag was provided, we'll upload to S3 first.
                 print("*   UPLOADING TO S3 BUCKET: " + s3_bucket + " ...")
@@ -181,12 +190,7 @@ def update_lambda_code(lambda_function_name, s3_bucket=None):
                 print("*   UPLOADING TO LAMBDA FROM S3...")
 
                 # modified command array to upload from s3
-                update_command_array = [
-                    shutil.which("aws"),  # path to user's AWS CLI installation
-                    "lambda",
-                    "update-function-code",
-                    "--function-name",
-                    lambda_function_name,
+                update_command_array += [  
                     "--s3-bucket",
                     s3_bucket,
                     "--s3-key",
@@ -194,16 +198,19 @@ def update_lambda_code(lambda_function_name, s3_bucket=None):
                 ]
             else:
                 # we are uploading to lambda directly
-                update_command_array = [
-                    shutil.which("aws"),  # path to user's AWS CLI installation
-                    "lambda",
-                    "update-function-code",
-                    "--function-name",
-                    lambda_function_name,
+                update_command_array += [
                     "--zip-file",
                     "fileb://" + PROJECT_ROOT + "/" + ZIP_FILE_NAME
                 ]
-            run(update_command_array, stdout=PIPE)
+            result = run(update_command_array, stdout=PIPE)
+            
+            try:
+                aws_response = json.loads(result.stdout)
+                version = aws_response["Version"]
+                print("*   Published as version {}".format(version))
+            except KeyError as e:
+                print("!   Couldn't get version from AWS response")
+
             print("* DONE UPLOADING")
             print(HORIZONTAL_RULE)
         except OSError as e:
@@ -365,13 +372,20 @@ def main():
              "slow connections that time out uploading directly to Lambda."
     )
 
+    parser.add_argument(
+        '-v',
+        '--version',
+        action="store_true",
+        help="Publish uploaded code as a new lambda version."
+    )
+
     args = parser.parse_args()
 
     is_interaction_model_updated = False
 
     if args.function:
         package_lambda_function()
-        update_lambda_code(args.function, args.s3bucket)
+        update_lambda_code(args.function, args.s3bucket, args.version)
     elif args.package:
         package_lambda_function()
     elif args.interaction:

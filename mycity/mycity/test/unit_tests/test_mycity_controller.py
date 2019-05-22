@@ -26,14 +26,8 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
     def test_on_launch(self):
         self.request.is_new_session = False
         expected_session_attributes = self.request.session_attributes
-        expected_output_speech = (
-            "Welcome to the Boston Info skill. "
-            "How can I help you? "
-        )
-        expected_reprompt_text = (
-            "You can tell me your address by saying, "
-            "\"my address is\", and then your address."
-        )
+        expected_output_speech = my_con.LAUNCH_SPEECH
+        expected_reprompt_text = my_con.LAUNCH_REPROMPT_SPEECH
         expected_card_title = "Welcome"
         response = self.controller.on_launch(self.request)
         self.assertEqual(
@@ -63,24 +57,6 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.assertEqual(response.output_speech, expected_output_speech)
         self.assertEqual(response.card_title, expected_card_title)
         self.assertIsNone(response.reprompt_text)
-
-    # if we change how we import intents in mycity_controller I think it will
-    # break these patches
-    @mock.patch('mycity.mycity_controller.set_address_in_session')
-    def test_set_address_intent_no_address_prompted(self, mock_set_address):
-        self.request.is_new_session = False
-        self.request.intent_name = "SetAddressIntent"
-        self.controller.on_intent(self.request)
-        mock_set_address.assert_called_with(self.request)
-   
-    @mock.patch('mycity.mycity_controller.get_address_from_session')
-    def test_set_address_intent_no_address_in_session_attributes(
-            self,
-            mock_get_addr
-    ):
-        self.request.intent_name = "SetAddressIntent"
-        self.controller.on_intent(self.request)
-        mock_get_addr.assert_called_with(self.request)
 
     @mock.patch('mycity.mycity_controller.get_trash_day_info')
     def test_intent_that_needs_address_with_address_in_session_attributes(
