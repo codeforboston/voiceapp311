@@ -1,11 +1,11 @@
 import requests
-import json
 import re
 
 
-def get_polling_location(ward_precinct, requests=requests):
+def get_polling_location(ward_precinct):
     """
-    Returns dictionary containing location name and address from the provided ward and precinct
+    Returns dictionary containing location name and address from
+    the provided ward and precinct
 
     :param ward_precinct: dictionary object containing the ward and precinct
     :return: Dict containing location address string and
@@ -15,7 +15,8 @@ def get_polling_location(ward_precinct, requests=requests):
     ward = ward_precinct["ward"].lstrip()
     precinct = ward_precinct["precinct"].lstrip()
 
-    url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/polling_locations_2017/FeatureServer/0/query"
+    url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/" \
+          "rest/services/polling_locations_2017/FeatureServer/0/query"
 
     params = {
         "f": "json",
@@ -40,16 +41,18 @@ def get_polling_location(ward_precinct, requests=requests):
         return poll_location
 
 
-
-def get_ward_precinct_info(coordinates, requests=requests):
+def get_ward_precinct_info(coordinates):
     """
-    Returns dictionary containing location ward and precinct from the provided x, y coordinates
+    Returns dictionary containing location ward and precinct from the
+    provided x, y coordinates
 
-    :param coordinates: dictionary object containing the address string and floating point
-        values for x and y that represent longitude and latitude
+    :param coordinates: dictionary object containing the address
+    string and floating point values for x and y that represent
+    longitude and latitude
     :return: Dict containing ward string and precinct string
     """
-    url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/rest/services/Precincts_2017/FeatureServer/0/query"
+    url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/ArcGIS/" \
+          "rest/services/Precincts_2017/FeatureServer/0/query"
 
     params = {
         "f": "json",
