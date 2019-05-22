@@ -39,7 +39,7 @@ def add_response_text(food_trucks):
         t = food_trucks[x]
         open_hours = str(t['attributes']['Hours']).replace("-", "and")
         response += f"{t['attributes']['Truck']} is located" \
-            f" at {t['attributes']['Location']} between {open_hours},"
+            f" at {t['attributes']['Location']} between {open_hours} ."
     return response
 
 
