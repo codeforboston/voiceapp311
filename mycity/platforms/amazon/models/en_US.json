@@ -1402,7 +1402,7 @@
                             "confirmationRequired": false,
                             "elicitationRequired": true,
                             "prompts": {
-                                "elicitation": "Elicit.Slot.1096834840884.281360406464"
+                                "elicitation": "Elicit.Slot.74387520929.991889541851"
                             }
                         }
                     ]
@@ -1487,6 +1487,15 @@
                     {
                         "type": "PlainText",
                         "value": "What is your address?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.74387520929.991889541851",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "What's your address?"
                     }
                 ]
             }
