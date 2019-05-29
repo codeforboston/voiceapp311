@@ -53,15 +53,20 @@ def get_trash_day_info(mycity_request):
         # the same street address
         address = str(a['house']) + " " + str(a['street_full'])
         zip_code = str(a["other"]).zfill(5) if a["other"] and a["other"].isdigit() else None
-        city = a["other"] if a["other"] and not a["other"].isdigit() else None
+        neighborhood = a["other"] if a["other"] and not a["other"].isdigit() else None
 
         zip_code_key = intent_constants.ZIP_CODE_KEY
         if zip_code is None and zip_code_key in \
                 mycity_request.session_attributes:
             zip_code = mycity_request.session_attributes[zip_code_key]
 
+        if "Neighborhood" in mycity_request.intent_variables and \
+            "value" in mycity_request.intent_variables["Neighborhood"]:
+            neighborhood = mycity_request.intent_variables["Neighborhood"]["value"]
+
+
         try:
-            trash_days = get_trash_and_recycling_days(address, zip_code, city)
+            trash_days = get_trash_and_recycling_days(address, zip_code, neighborhood)
             trash_days_speech = build_speech_from_list_of_days(trash_days)
 
             mycity_response.output_speech = speech_constants.PICK_UP_DAY.format(trash_days_speech)
@@ -85,7 +90,7 @@ def get_trash_day_info(mycity_request):
         except MultipleAddressError as error:
             address_list = ', '.join(error.addresses)
             mycity_response.output_speech = speech_constants.MULTIPLE_ADDRESS_ERROR.format(address_list)
-            mycity_response.dialog_directive = "ElicitSlotZipCode"
+            mycity_response.dialog_directive = "ElicitSlotNeighborhood"
 
         mycity_response.should_end_session = False
     else:
@@ -101,7 +106,7 @@ def get_trash_day_info(mycity_request):
     return mycity_response 
 
 
-def get_trash_and_recycling_days(address, zip_code=None, city=None):
+def get_trash_and_recycling_days(address, zip_code=None, neighborhood=None):
     """
     Determines the trash and recycling days for the provided address.
     These are on the same day, so only one array of days will be returned.
@@ -111,8 +116,8 @@ def get_trash_and_recycling_days(address, zip_code=None, city=None):
     :return: array containing next trash and recycling days
     :raises: InvalidAddressError, BadAPIResponse
     """
-    logger.debug('address: ' + str(address) + ', zip_code: ' + str(zip_code) + ', city: {}' + str(city))
-    api_params = get_address_api_info(address, zip_code, city)
+    logger.debug('address: ' + str(address) + ', zip_code: ' + str(zip_code) + ', neighborhood: {}' + str(neighborhood))
+    api_params = get_address_api_info(address, zip_code, neighborhood)
     if not api_params:
         raise InvalidAddressError
 
@@ -192,7 +197,7 @@ def validate_found_address(found_address, user_provided_address):
     return True
 
 
-def get_address_api_info(address, provided_zip_code, city):
+def get_address_api_info(address, provided_zip_code, neighborhood):
     """
     Gets the parameters required for the ReCollect API call
 
@@ -216,7 +221,7 @@ def get_address_api_info(address, provided_zip_code, city):
     base_url = "https://recollect.net/api/areas/" \
                "Boston/services/310/address-suggest"
     
-    full_address = address if city is None else ' '.join([address, city])
+    full_address = address if neighborhood is None else ' '.join([address, neighborhood])
     url_params = {'q': full_address, 'locale': 'en-US'}
     request_result = requests.get(base_url, url_params)
 

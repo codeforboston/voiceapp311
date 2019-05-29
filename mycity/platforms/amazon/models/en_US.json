@@ -18,6 +18,10 @@
                         {
                             "name": "Zipcode",
                             "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "Neighborhood",
+                            "type": "AMAZON.City"
                         }
                     ],
                     "samples": [
