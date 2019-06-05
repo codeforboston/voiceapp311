@@ -10,6 +10,7 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 import mycity.utilities.address_utils as address_utils
 from streetaddress import StreetAddressParser
 
+import collections
 import re
 import requests
 import logging
@@ -103,7 +104,7 @@ def get_trash_day_info(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = CARD_TITLE
-    return mycity_response 
+    return mycity_response
 
 
 def get_trash_and_recycling_days(address, zip_code=None, neighborhood=None):
@@ -143,15 +144,23 @@ def find_unique_addresses(address_request_json):
     :return: list of unique addresses
     """
     logger.debug('address_request_json: ' + str(address_request_json))
-    found_addresses = []
-    for address_info in address_request_json:
-        address = re.sub(r',? Unit \d+', '', address_info["name"])
-        
-        if address:
-            if address not in found_addresses:
-                found_addresses.append(address)
+    substring_matches = collections.defaultdict(set)
+    # Pre-extract the addresses from the payload and uniquify them
+    reduced_strings = set(address["name"] for address in address_request_json)
+    strings_to_compare = sorted(reduced_strings, key=len)
 
-    return found_addresses
+    for i, compare_a in enumerate(strings_to_compare):
+        for compare_b in strings_to_compare[i + 1:]:
+            # We want to collect a mapping of strings to a set of super-strings
+            # (strings that contain a common substring, the key)
+            if compare_a in compare_b:
+                substring_matches[compare_a].add(compare_b)
+
+    # Drop the superstrings
+    for super_strings in substring_matches.values():
+        reduced_strings.difference_update(super_strings)
+
+    return list(reduced_strings)
 
 
 def validate_found_address(found_address, user_provided_address):
@@ -220,7 +229,7 @@ def get_address_api_info(address, provided_zip_code, neighborhood):
                  'provided_zip_code: ' + str(provided_zip_code))
     base_url = "https://recollect.net/api/areas/" \
                "Boston/services/310/address-suggest"
-    
+
     full_address = address if neighborhood is None else ' '.join([address, neighborhood])
     url_params = {'q': full_address, 'locale': 'en-US'}
     request_result = requests.get(base_url, url_params)
@@ -289,7 +298,7 @@ def build_speech_from_list_of_days(days):
     """
     Converts a list of days into proper speech, such as adding the word 'and'
     before the last item.
-    
+
     :param days: String array of days
     :return: Speech representing the provided days
     :raises: BadAPIResponse
