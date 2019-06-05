@@ -144,23 +144,14 @@ def find_unique_addresses(address_request_json):
     :return: list of unique addresses
     """
     logger.debug('address_request_json: ' + str(address_request_json))
-    substring_matches = collections.defaultdict(set)
     # Pre-extract the addresses from the payload and uniquify them
-    reduced_strings = set(address["name"] for address in address_request_json)
-    strings_to_compare = sorted(reduced_strings, key=len)
+    strings_to_compare = sorted(set(address["name"] for address in address_request_json), key=len, reverse=True)
 
-    for i, compare_a in enumerate(strings_to_compare):
-        for compare_b in strings_to_compare[i + 1:]:
-            # We want to collect a mapping of strings to a set of super-strings
-            # (strings that contain a common substring, the key)
-            if compare_a in compare_b:
-                substring_matches[compare_a].add(compare_b)
-
-    # Drop the superstrings
-    for super_strings in substring_matches.values():
-        reduced_strings.difference_update(super_strings)
-
-    return list(reduced_strings)
+    return [
+        compare_a
+        for i, compare_a in enumerate(strings_to_compare)
+        if not any(compare_b in compare_a for compare_b in strings_to_compare[i + 1:])
+    ]
 
 
 def validate_found_address(found_address, user_provided_address):

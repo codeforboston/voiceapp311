@@ -24,12 +24,14 @@ class TrashIntentTestCase(base.BaseTestCase):
                 "789 Lane Ave, Allston 02134",
                 "1 - 789 Lane Ave, Allston 02134",
                 "2 - 789 Lane Ave, Allston 02134",
+                "I am all alone, no substrings or superstrings",
             ]
         ]
         expected_options = [
             "123 Street Rd, Brookline 02445",
             "456 Road St, South Boston 02127",
             "789 Lane Ave, Allston 02134",
+            "I am all alone, no substrings or superstrings",
         ]
         for _ in range(3):
             # Ordering of the payload shouldn't matter
