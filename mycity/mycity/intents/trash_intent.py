@@ -89,7 +89,8 @@ def get_trash_day_info(mycity_request):
         except BadAPIResponse:
             mycity_response.output_speech = speech_constants.BAD_API_RESPONSE
         except MultipleAddressError as error:
-            address_list = ', '.join(error.addresses)
+            addresses = [re.sub(r' \d{5}', '', address) for address in error.addresses]
+            address_list = ', '.join(addresses)
             mycity_response.output_speech = speech_constants.MULTIPLE_ADDRESS_ERROR.format(address_list)
             mycity_response.dialog_directive = "ElicitSlotNeighborhood"
 
