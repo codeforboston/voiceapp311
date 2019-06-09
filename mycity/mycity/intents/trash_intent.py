@@ -89,7 +89,8 @@ def get_trash_day_info(mycity_request):
         except BadAPIResponse:
             mycity_response.output_speech = speech_constants.BAD_API_RESPONSE
         except MultipleAddressError as error:
-            address_list = ', '.join(error.addresses)
+            addresses = [re.sub(r' \d{5}', '', address) for address in error.addresses]
+            address_list = ', '.join(addresses)
             mycity_response.output_speech = speech_constants.MULTIPLE_ADDRESS_ERROR.format(address_list)
             mycity_response.dialog_directive = "ElicitSlotNeighborhood"
 
@@ -174,8 +175,8 @@ def validate_found_address(found_address, user_provided_address):
         return False
 
     # Re-collect replaces South with S and North with N
-    found_address["street_name"] = found_address["street_name"].replace('S', "South")
-    found_address["street_name"] = found_address["street_name"].replace('N', "North")
+    found_address["street_name"] = re.sub(r'^S\.? ', "South", found_address["street_name"])
+    found_address["street_name"] = re.sub(r'^N\.? ', "North", found_address["street_name"])
 
     if found_address["street_name"].lower() != \
             user_provided_address["street_name"].lower():
