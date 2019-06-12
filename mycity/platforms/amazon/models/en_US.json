@@ -47,6 +47,9 @@
                             "name": "Address",
                             "type": "AMAZON.PostalAddress",
                             "samples": [
+                                "{Address} {Neighborhood}",
+                                "It's {Address} in {Neighborhood}",
+                                "{Address} in {Neighborhood}",
                                 "It's {Address}",
                                 "My address is {Address}",
                                 "{Address}"
@@ -55,6 +58,10 @@
                         {
                             "name": "Zipcode",
                             "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "Neighborhood",
+                            "type": "AMAZON.City"
                         }
                     ],
                     "samples": [
@@ -1327,6 +1334,13 @@
                         {
                             "name": "Zipcode",
                             "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
+                        },
+                        {
+                            "name": "Neighborhood",
+                            "type": "AMAZON.City",
                             "confirmationRequired": false,
                             "elicitationRequired": false,
                             "prompts": {}

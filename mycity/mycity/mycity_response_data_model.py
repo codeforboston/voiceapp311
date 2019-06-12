@@ -145,7 +145,8 @@ class MyCityResponseDataModel:
         valid_directives = [
             "Delegate",  # Delegate dialog decision to platform
             "ElicitSlotTrash",  # Ask for address for trash
-            "ElicitSlotZipCode"  # Ask for users zip code
+            "ElicitSlotZipCode",  # Ask for users zip code
+            "ElicitSlotNeighborhood", # Ask for user's neighborhood 
         ]
 
         if value not in valid_directives:
@@ -164,3 +165,8 @@ class MyCityResponseDataModel:
                 'type': 'Dialog.ElicitSlot',
                 'slotToElicit': 'Zipcode'
             }
+        elif value == "ElicitSlotNeighborhood":
+            self._dialog_directive = {
+                'type': 'Dialog.ElicitSlot',
+                'slotToElicit': 'Neighborhood'
+            }            
