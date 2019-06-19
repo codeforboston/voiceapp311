@@ -130,7 +130,7 @@ def _create_response_object() -> MyCityResponseDataModel:
     mycity_response = MyCityResponseDataModel()
     mycity_response.card_title = ALERTS_INTENT_CARD_TITLE
     mycity_response.reprompt_text = None
-    mycity_response.should_end_session = False
+    mycity_response.should_end_session = True
     return mycity_response
 
 

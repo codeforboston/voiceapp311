@@ -24,6 +24,6 @@ def fallback_intent(mycity_request):
     mycity_response.card_title = CARD_TITLE
     mycity_response.reprompt_text = speech_constants.REPROMPT_TEXT
     mycity_response.output_speech = speech_constants.OUTPUT_SPEECH
-    mycity_response.should_end_session = False
+    mycity_response.should_end_session = True
 
     return mycity_response

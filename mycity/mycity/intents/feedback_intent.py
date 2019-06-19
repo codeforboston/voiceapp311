@@ -35,7 +35,7 @@ def submit_feedback(mycity_request):
     #     confirm to the user
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
-    mycity_response.should_end_session = False
+    mycity_response.should_end_session = True
     if (
             'value' not in intent_variables['FeedbackType'] or
             'value' not in intent_variables['Feedback']

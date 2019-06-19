@@ -198,7 +198,7 @@ def get_help_response(mycity_request):
     mycity_response.card_title = "Help"
     mycity_response.output_speech = HELP_SPEECH
     mycity_response.reprompt_text = None
-    mycity_response.should_end_session = False
+    mycity_response.should_end_session = True
     return mycity_response
 
 
@@ -224,7 +224,7 @@ def get_welcome_response(mycity_request):
     # something that is not understood, they will be prompted again with
     # this text.
     mycity_response.reprompt_text = LAUNCH_REPROMPT_SPEECH
-    mycity_response.should_end_session = False
+    mycity_response.should_end_session = True
     return mycity_response
 
 

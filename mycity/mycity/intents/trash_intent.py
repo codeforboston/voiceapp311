@@ -94,7 +94,7 @@ def get_trash_day_info(mycity_request):
             mycity_response.output_speech = speech_constants.MULTIPLE_ADDRESS_ERROR.format(address_list)
             mycity_response.dialog_directive = "ElicitSlotNeighborhood"
 
-        mycity_response.should_end_session = False
+        mycity_response.should_end_session = True
     else:
         logger.error("Error: Called trash_day_intent with no address")
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
