@@ -5,6 +5,9 @@ This module is the entry point for processing voice data from an Alexa device.
 """
 
 import logging
+import traceback
+
+from mycity.intents.feedback_intent import build_slack_traceback, send_to_slack
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_controller import execute_request
 
@@ -18,7 +21,7 @@ def lambda_handler(event, context):
     :param event: JSON object containing the raw request information received
         from the Alexa service platform
     :param context: a LambdaContext object containing runtime info
-    :return: JSON response object to be sent to the Alexa service platform 
+    :return: JSON response object to be sent to the Alexa service platform
     """
     # Handle logger configuration here at the first use of the logger
     while len(logging.root.handlers) > 0:
@@ -29,8 +32,13 @@ def lambda_handler(event, context):
     )
     logger.debug('Amazon request received: ' + str(event))
 
-    model = platform_to_mycity_request(event)
-    return mycity_response_to_platform(execute_request(model))
+    try:
+        model = platform_to_mycity_request(event)
+        return mycity_response_to_platform(execute_request(model))
+    except Exception as error:
+        trace = traceback.format_exc()
+        send_to_slack(build_slack_traceback(error, trace))
+        raise
 
 
 def platform_to_mycity_request(event):
@@ -101,7 +109,7 @@ def mycity_response_to_platform(mycity_response):
                     'content': str(mycity_response.output_speech)
                     }
             }
-        else: 
+        else:
             response = {
                 'outputSpeech': {
                     'type': 'PlainText',
