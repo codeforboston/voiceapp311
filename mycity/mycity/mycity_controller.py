@@ -11,7 +11,6 @@ from .intents.user_address_intent import set_address_in_session, \
 from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.fallback_intent import fallback_intent
-from .intents.get_alerts_intent import get_alerts_intent
 from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
@@ -126,46 +125,49 @@ def on_intent(mycity_request):
 
     # session_attributes = session.get("attributes", {})
     if mycity_request.intent_name == "GetAddressIntent":
-        return get_address_from_session(mycity_request)
+        mycity_response = get_address_from_session(mycity_request)
     elif mycity_request.intent_name == "TrashDayIntent":
-        return request_user_address_response(mycity_request) \
+        mycity_response = request_user_address_response(mycity_request) \
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_trash_day_info(mycity_request)
     elif mycity_request.intent_name == "SnowParkingIntent":
-        return request_user_address_response(mycity_request) \
+        mycity_response = request_user_address_response(mycity_request) \
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_snow_emergency_parking_intent(mycity_request)
     elif mycity_request.intent_name == "CrimeIncidentsIntent":
-        return request_user_address_response(mycity_request) \
+        mycity_response = request_user_address_response(mycity_request) \
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_crime_incidents_intent(mycity_request)
     elif mycity_request.intent_name == "FoodTruckIntent":
-        return request_user_address_response(mycity_request) \
+        mycity_response = request_user_address_response(mycity_request) \
             if intent_constants.CURRENT_ADDRESS_KEY \
             not in mycity_request.session_attributes \
             else get_nearby_food_trucks(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
-        return get_alerts_intent(mycity_request)
+        mycity_response = get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":
-        return get_help_response(mycity_request)
+        mycity_response = get_help_response(mycity_request)
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
             mycity_request.intent_name == "AMAZON.CancelIntent":
-        return handle_session_end_request(mycity_request)
+        mycity_response = handle_session_end_request(mycity_request)
     elif mycity_request.intent_name == "FeedbackIntent":
-        return submit_feedback(mycity_request)
+        mycity_response = submit_feedback(mycity_request)
     elif mycity_request.intent_name == "AMAZON.FallbackIntent":
-        return fallback_intent(mycity_request)
+        mycity_response = fallback_intent(mycity_request)
     elif mycity_request.intent_name == "LatestThreeOneOne":
-        return get_311_requests(mycity_request)
+        mycity_response = get_311_requests(mycity_request)
     elif mycity_request.intent_name == "InclementWeatherIntent":
-        return get_inclement_weather_alert(mycity_request)
+        mycity_response = get_inclement_weather_alert(mycity_request)
     elif mycity_request.intent_name == "FarmersMarketIntent":
-        return get_farmers_markets_today(mycity_request)
+        mycity_response = get_farmers_markets_today(mycity_request)
     else:
         raise ValueError("Invalid intent")
+
+    mycity_response.should_end_session = True
+    return mycity_response
 
 
 def on_session_ended(mycity_request):

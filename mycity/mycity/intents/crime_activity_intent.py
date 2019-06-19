@@ -50,6 +50,7 @@ def get_crime_incidents_intent(mycity_request):
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
     mycity_response.reprompt_text = None
+    mycity_response.should_end_session = True
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = CARD_TITLE_CRIME
 
