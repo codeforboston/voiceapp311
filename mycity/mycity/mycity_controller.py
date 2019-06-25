@@ -7,7 +7,7 @@ This class handles all voice requests.
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response, \
-    set_zipcode_in_session, get_address_from_user_device
+    set_zipcode_in_session
 from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.fallback_intent import fallback_intent
@@ -80,7 +80,7 @@ def on_session_started(mycity_request):
     :return: None
     """
     logger.debug('Request object: ' + mycity_request.get_logger_string())
-    return get_address_from_user_device(mycity_request)
+    return mycity_request
 
 
 def on_launch(mycity_request):
