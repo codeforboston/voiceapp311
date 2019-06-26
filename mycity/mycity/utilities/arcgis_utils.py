@@ -209,7 +209,7 @@ def _format_float(input_float):
     return as_string
 
 
-def _post_request(url, params, headers):
+def _post_request(url, params, headers, method="POST"):
     """
     Utilizes requests module to formulate
     HTTP POST request over the network
@@ -222,7 +222,7 @@ def _post_request(url, params, headers):
     logger.debug("URL: {}, Params: {}, Headers: {}".format(url, str(params), str(headers)))
 
     session = requests.Session()
-    request = requests.Request("POST", url, data=params, headers=headers)
+    request = requests.Request(method, url, params=params, headers=headers)
     prepared_request = request.prepare()
     response = session.send(prepared_request)
     return response

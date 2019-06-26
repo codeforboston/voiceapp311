@@ -1,7 +1,8 @@
 """
 Farmers Market Intent
 """
-import mycity.utilities.gis_utils as gis_utils
+# import mycity.utilities.gis_utils as gis_utils
+import mycity.utilities.arcgis_utils as arcgis_utils
 import mycity.utilities.datetime_utils as date
 import logging
 from mycity.mycity_response_data_model import MyCityResponseDataModel
@@ -10,8 +11,8 @@ from .custom_errors import BadAPIResponse
 logger = logging.getLogger(__name__)
 
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
-           'services/Farmers_Markets_Fresh_Trucks_View/FeatureServer/0'
-QUERY = {'where': '1=1', 'out_sr': '4326'}
+           'services/Farmers_Markets_Fresh_Trucks_View/FeatureServer/0/query?'
+QUERY = {'where': '1=1', 'out_sr': '4326', 'f': 'json', 'outFields': '*'}
 DAY = date.get_day()
 
 
@@ -25,8 +26,11 @@ def get_farmers_markets_today(mycity_request):
     mycity_response = MyCityResponseDataModel()
 
     # List all available farmers markets today
-    markets = gis_utils.get_features_from_feature_server(BASE_URL, QUERY)
-
+    # markets = gis_utils.get_features_from_feature_server(BASE_URL, QUERY)
+    response = arcgis_utils._post_request(BASE_URL, QUERY, {}, "GET")
+    logger.info("markets:" + response.text)
+    markets = response.json()
+    markets = markets['features']
     try:
         # Loop through the list of available farmers markets at a certain day
         markets_today = []
