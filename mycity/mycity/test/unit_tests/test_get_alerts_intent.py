@@ -29,14 +29,14 @@ class GetAlertsIntentTestCase(base.BaseTestCase):
     def stub_alerts_to_speech(self, *args) -> typing.AnyStr:
         return self.alerts_to_speech_return_string
 
-    def test_that_get_alerts_intent_will_not_end_session(self):
+    def test_that_get_alerts_intent_will_end_session(self):
         response = get_alerts_intent.get_alerts_intent(
             self.request,
             self.stub_get_alerts,
             self.stub_prune_normal_responses,
             self.stub_alerts_to_speech
         )
-        self.assertFalse(response.should_end_session)
+        self.assertTrue(response.should_end_session)
 
     def test_that_get_alerts_intent_sets_reponse_output_speech_with_return_value_of_alerts_to_speech(self):
         output_speech = 'Bingo'

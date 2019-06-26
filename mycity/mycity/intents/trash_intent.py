@@ -45,9 +45,8 @@ def get_trash_day_info(mycity_request):
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = mycity_request.session_attributes
             mycity_response.card_title = CARD_TITLE
-            mycity_request = clear_address_from_mycity_object(mycity_request)
-            mycity_response = clear_address_from_mycity_object(mycity_response)
-            return mycity_response
+            mycity_response.should_end_session = True
+            return clear_address_from_mycity_object(mycity_response)
 
 
         # currently assumes that trash day is the same for all units at
@@ -82,9 +81,8 @@ def get_trash_day_info(mycity_request):
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = mycity_request.session_attributes
             mycity_response.card_title = CARD_TITLE
-            mycity_request = clear_address_from_mycity_object(mycity_request)
-            mycity_response = clear_address_from_mycity_object(mycity_response)
-            return mycity_response
+            mycity_response.should_end_session = True
+            return clear_address_from_mycity_object(mycity_response)
 
         except BadAPIResponse:
             mycity_response.output_speech = speech_constants.BAD_API_RESPONSE
@@ -98,6 +96,7 @@ def get_trash_day_info(mycity_request):
     else:
         logger.error("Error: Called trash_day_intent with no address")
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
+        mycity_response.should_end_session = True
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
