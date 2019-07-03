@@ -12,8 +12,7 @@ from mycity.utilities.crime_incidents_api_utils import (
 
 # Constants
 CARD_TITLE_CRIME = "Crime Report"
-RESPONSE_TEXT_TEMPLATE = \
-    " {} an incident at {} with description {} categorized as {} occurred."
+RESPONSE_TEXT_TEMPLATE = " {} an incident at {} occurred categorized as {}."
 ERROR_RESPONSE = "An error occurred requesting crime incidents for this address"
 NO_RESULT_RESPONSE = "We found no incidents in that area"
 
@@ -55,6 +54,7 @@ def get_crime_incidents_intent(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = CARD_TITLE_CRIME
+    mycity_response.should_end_session = True
 
     return mycity_response
 
@@ -91,5 +91,4 @@ def _build_text_from_record(incident):
     dt = parse(incident[DATE_FIELD])
     return RESPONSE_TEXT_TEMPLATE.format(
         dt.strftime("On %A %d of %B %Y at %I:%M%p"),
-        incident[STREET_FIELD], incident[OFFENSE_FIELD],
-        incident[OFFENSE_GROUP_FIELD])
+        incident[STREET_FIELD], incident[OFFENSE_GROUP_FIELD])

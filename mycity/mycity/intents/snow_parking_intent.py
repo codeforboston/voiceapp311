@@ -57,5 +57,6 @@ def get_snow_emergency_parking_intent(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = SNOW_PARKING_CARD_TITLE
+    mycity_response.should_end_session = True
 
     return mycity_response

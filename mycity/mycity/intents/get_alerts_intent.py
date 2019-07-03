@@ -120,6 +120,7 @@ def get_inclement_weather_alert(mycity_request: MyCityRequestDataModel,
     mycity_response = _create_response_object()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.output_speech = output_speech
+    mycity_response.should_end_session = True
     return mycity_response
 
 
@@ -132,7 +133,7 @@ def _create_response_object() -> MyCityResponseDataModel:
     mycity_response = MyCityResponseDataModel()
     mycity_response.card_title = ALERTS_INTENT_CARD_TITLE
     mycity_response.reprompt_text = None
-    mycity_response.should_end_session = False
+    mycity_response.should_end_session = True
     return mycity_response
 
 
