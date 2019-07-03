@@ -1,8 +1,10 @@
 import unittest
-import mycity.intents.intent_constants as intent_constants
-import mycity.mycity_controller as my_controller
-import mycity.mycity_request_data_model as req
 
+from mycity import (
+    mycity_controller as my_controller,
+    mycity_request_data_model as req,
+)
+from mycity.intents import intent_constants
 
 ###############################################################################
 # TestCase parent class for all intent TestCases, which are integration tests #
@@ -27,4 +29,3 @@ class IntentBaseCase(unittest.TestCase):
     def tearDown(self):
         self.controller = None
         self.request = None
-

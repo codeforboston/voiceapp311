@@ -1,4 +1,4 @@
-import mycity.test.unit_tests.base as base
+from mycity.test.unit_tests import base
 from mycity.utilities.finder.FinderCSV import FinderCSV
 
 

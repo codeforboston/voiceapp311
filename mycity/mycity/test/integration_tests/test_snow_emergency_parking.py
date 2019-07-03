@@ -1,17 +1,18 @@
 import csv
-import unittest.mock as mock
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.test_constants as test_constants
-import mycity.intents.snow_parking_intent as snow_parking
+from unittest import mock
 
-
+from mycity.intents import snow_parking_intent as snow_parking
+from mycity.test import test_constants
+from mycity.test.integration_tests import (
+    intent_base_case as base_case,
+    intent_test_mixins as mix_ins,
+)
 
 ##########################################
 # TestCase class for snow_parking_intent #
 ##########################################
 
-class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn, 
+class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                             mix_ins.CardTitleTestMixIn,
                             mix_ins.CorrectSpeechOutputTestMixIn,
                             base_case.IntentBaseCase):
@@ -33,7 +34,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
 
         self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV,
                              encoding='utf-8-sig')
-        mock_filtered_record_return = list(filter(fake_filter, 
+        mock_filtered_record_return = list(filter(fake_filter,
                                                   csv.DictReader(
                                                       self.csv_file,
                                                       delimiter=','
@@ -71,8 +72,8 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                         return_value=mock_closest_destination
                     )
 
-        
-    
+
+
         self.mock_filtered_record.start()
         self.mock_address_candidates.start()
         self.mock_api_access_token.start()
@@ -85,5 +86,3 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
         self.mock_address_candidates.stop()
         self.mock_api_access_token.stop()
         self.mock_closest_destination.stop()
-
-

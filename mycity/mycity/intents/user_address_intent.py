@@ -2,10 +2,10 @@
 Functions for setting and getting the current user address
 """
 
-from . import intent_constants
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-import requests
 import logging
+
+from mycity.intents import intent_constants
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 logger = logging.getLogger(__name__)
 

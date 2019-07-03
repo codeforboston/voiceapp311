@@ -3,11 +3,13 @@ The feedback intent allows the user to provide feedback about the skill,
 including bug reports and suggestions for new intents.
 """
 
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.intents.speech_constants.feedback_intent as speech_constants
-import requests
 import json
 import os
+
+import requests
+
+from mycity.intents.speech_constants import feedback_intent as speech_constants
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 SLACK_WEBHOOKS_URL = os.environ['SLACK_WEBHOOKS_URL']
 CARD_TITLE = "Feedback"

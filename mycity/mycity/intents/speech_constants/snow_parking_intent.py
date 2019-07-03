@@ -2,7 +2,7 @@
 Speech utterances for snow_parking_intent.py
 
 """
-import mycity.utilities.arcgis_utils as arcgis_utils
+from mycity.utilities import arcgis_utils
 
 OUTPUT_SPEECH_FORMAT = \
     ("The closest snow emergency parking lot, {Name}, is at "

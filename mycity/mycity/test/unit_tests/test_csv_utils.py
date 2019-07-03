@@ -1,8 +1,9 @@
-import csv
 import collections
-import mycity.test.test_constants as test_constants
-import mycity.test.unit_tests.base as base
-import mycity.utilities.csv_utils as csv_utils
+import csv
+
+from mycity.test import test_constants
+from mycity.test.unit_tests import base
+from mycity.utilities import csv_utils
 
 
 class CSVUtilitiesTestCase(base.BaseTestCase):
@@ -18,7 +19,7 @@ class CSVUtilitiesTestCase(base.BaseTestCase):
         test_file = test_constants.PARKING_LOTS_TEST_CSV
         with open(test_file, encoding='utf-8-sig') as f:
             csv_file = csv.reader(f, delimiter=',')
-            attributes = next(csv_file)           
+            attributes = next(csv_file)
             model = csv_utils.create_record_model('TestRecord', attributes)
         for attribute in attributes:
             self.assertTrue(hasattr(model, attribute))

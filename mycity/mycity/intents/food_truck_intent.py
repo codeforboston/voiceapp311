@@ -1,17 +1,23 @@
 """
 Food Truck Intent
 """
-import mycity.utilities.gis_utils as gis_utils
-import mycity.utilities.datetime_utils as date
-import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
+
+from streetaddress import StreetAddressParser
+
+from mycity.intents import intent_constants
+from mycity.intents.custom_errors import (
+    BadAPIResponse,
+    InvalidAddressError,
+    MultipleAddressError,
+)
 from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
+from mycity.intents.speech_constants import (
+    food_truck_intent as speech_constants,
+)
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-from streetaddress import StreetAddressParser
-from .custom_errors import \
-    InvalidAddressError, BadAPIResponse, MultipleAddressError
-from . import intent_constants
+from mycity.utilities import datetime_utils as date, gis_utils
 
 logger = logging.getLogger(__name__)
 

@@ -15,4 +15,3 @@ class MultipleAddressError(Exception):
     """Error for finding multiple addresses with the current info"""
     def __init__(self, addresses):
         self.addresses = addresses
-

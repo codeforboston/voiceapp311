@@ -1,13 +1,13 @@
 """
-unit test for MyCityController 
+unit test for MyCityController
 
 """
 
-import unittest.mock as mock
-import mycity.test.test_constants as test_constants
-import mycity.mycity_controller as my_con
-import mycity.intents.intent_constants as intent_constants
-import mycity.test.unit_tests.base as base
+from unittest import mock
+
+from mycity import mycity_controller as my_con
+from mycity.intents import intent_constants
+from mycity.test.unit_tests import base
 
 
 class MyCityControllerUnitTestCase(base.BaseTestCase):
@@ -37,7 +37,7 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.assertEqual(response.output_speech, expected_output_speech)
         self.assertEqual(response.reprompt_text, expected_reprompt_text)
         self.assertFalse(response.should_end_session)
-    
+
     def test_execute_request_with_no_request_type(self):
         self.request.is_new_session = False
         self.request.request_type = None

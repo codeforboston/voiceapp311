@@ -1,19 +1,22 @@
 """
 Functions for Alexa responses related to trash day
 """
-from mycity.intents import intent_constants
-from mycity.intents.custom_errors import \
-    InvalidAddressError, BadAPIResponse, MultipleAddressError
-from mycity.intents.user_address_intent import clear_address_from_mycity_object
-import mycity.intents.speech_constants.trash_intent as speech_constants
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.utilities.address_utils as address_utils
+import logging
+import re
+
+import requests
 from streetaddress import StreetAddressParser
 
-import collections
-import re
-import requests
-import logging
+from mycity.intents import intent_constants
+from mycity.intents.custom_errors import (
+    BadAPIResponse,
+    InvalidAddressError,
+    MultipleAddressError,
+)
+from mycity.intents.speech_constants import trash_intent as speech_constants
+from mycity.intents.user_address_intent import clear_address_from_mycity_object
+from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.utilities import address_utils
 
 logger = logging.getLogger(__name__)
 

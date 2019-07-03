@@ -1,8 +1,8 @@
-import mycity.intents.intent_constants as intent_constants
-import mycity.test.unit_tests.base as base
-import mycity.intents.get_alerts_intent as get_alerts_intent
-import mycity.intents.speech_constants.get_alerts_intent as constants
 import typing
+
+from mycity.intents import get_alerts_intent
+from mycity.intents.speech_constants import get_alerts_intent as constants
+from mycity.test.unit_tests import base
 
 
 class GetAlertsIntentTestCase(base.BaseTestCase):

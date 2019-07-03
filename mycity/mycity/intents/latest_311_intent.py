@@ -1,7 +1,8 @@
 import requests
-from mycity.mycity_response_data_model import MyCityResponseDataModel
+
 from mycity.intents.custom_errors import BadAPIResponse
-from mycity.intents.speech_constants.latest_311_constants import *
+from mycity.intents.speech_constants import latest_311_constants
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 DEFAULT_NUMBER_OF_REPORTS = 3
 MAX_NUMBER_OF_REPORTS = 10
@@ -25,15 +26,15 @@ def get_311_requests(mycity_request):
         request_entries = \
             get_311_requests_from_server(number_reports)
         mycity_response.output_speech = \
-            REQUEST_311_INTRO_SCRIPT.format(number_reports)
+            latest_311_constants.REQUEST_311_INTRO_SCRIPT.format(number_reports)
         for request_entry in request_entries:
             mycity_response.output_speech += \
                 build_speech_from_311_report(request_entry)
 
-        mycity_response.card_title = REQUEST_311_CARD_TITLE
+        mycity_response.card_title = latest_311_constants.REQUEST_311_CARD_TITLE
 
     except BadAPIResponse:
-        mycity_response.output_speech = BAD_API_RESPONSE
+        mycity_response.output_speech = latest_311_constants.BAD_API_RESPONSE
 
     return mycity_response
 
@@ -44,12 +45,12 @@ def number_of_reports(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: Number of 311 requests to return from this intent
     """
-    if REQUEST_311_NUMBER_REPORTS_SLOT_NAME in \
+    if latest_311_constants.REQUEST_311_NUMBER_REPORTS_SLOT_NAME in \
             mycity_request.intent_variables and \
             "value" in mycity_request.intent_variables[
-                REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
+                latest_311_constants.REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
         return min(
-            int(mycity_request.intent_variables[REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
+            int(mycity_request.intent_variables[latest_311_constants.REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
             MAX_NUMBER_OF_REPORTS)
 
     return DEFAULT_NUMBER_OF_REPORTS
@@ -107,4 +108,4 @@ def build_speech_from_311_report(report):
     except KeyError:
         raise BadAPIResponse
 
-    return REQUEST_311_REPORT_SCRIPT.format(location, subject, report_type)
+    return latest_311_constants.REQUEST_311_REPORT_SCRIPT.format(location, subject, report_type)

@@ -1,11 +1,12 @@
 """Alexa intent used to find snow emergency parking"""
 
 
-import mycity.intents.intent_constants as intent_constants
-import mycity.intents.speech_constants.snow_parking_intent as constants
-from mycity.utilities.finder.FinderCSV import FinderCSV
-from mycity.mycity_response_data_model import MyCityResponseDataModel
 import logging
+
+from mycity.intents import intent_constants
+from mycity.intents.speech_constants import snow_parking_intent as constants
+from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.utilities.finder.FinderCSV import FinderCSV
 
 PARKING_INFO_URL = "http://bostonopendata-boston.opendata.arcgis.com/datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
 SNOW_PARKING_CARD_TITLE = "Snow Parking"
@@ -18,8 +19,8 @@ def format_record_fields(record):
     """
     Updates the record fields by replacing the raw information with a sentence
     that provides context and will be more easily understood by users.
-    
-    :param record: a dictionary with driving time, driving_distance and all 
+
+    :param record: a dictionary with driving time, driving_distance and all
         fields from the closest record
     :return: None
     """
@@ -41,7 +42,7 @@ def get_snow_emergency_parking_intent(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        finder = FinderCSV(mycity_request, PARKING_INFO_URL, ADDRESS_KEY, 
+        finder = FinderCSV(mycity_request, PARKING_INFO_URL, ADDRESS_KEY,
                            constants.OUTPUT_SPEECH_FORMAT, format_record_fields)
         print("Finding snow emergency parking for {}".format(finder.origin_address))
         finder.start()
@@ -57,5 +58,5 @@ def get_snow_emergency_parking_intent(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = SNOW_PARKING_CARD_TITLE
-    
+
     return mycity_response

@@ -1,7 +1,6 @@
-import unittest.mock as mock
-import mycity.test.test_constants as test_constants
-import mycity.test.unit_tests.base as base
-import mycity.utilities.gis_utils as gis_utils
+from mycity.test import test_constants
+from mycity.test.unit_tests import base
+from mycity.utilities import gis_utils
 
 
 class GISUtilitiesTestCase(base.BaseTestCase):
@@ -34,7 +33,7 @@ class GISUtilitiesTestCase(base.BaseTestCase):
 #                   ["closest", "50 Everdean St"] ]
 #         address_index = 1
 #         feature_type = "test_feature"
-#         closest = location_utils.get_closest_feature(origin, address_index, 
+#         closest = location_utils.get_closest_feature(origin, address_index,
 #                                                      feature_type,
 #                                                      "A fake error message",
 #                                                      features)
@@ -43,7 +42,7 @@ class GISUtilitiesTestCase(base.BaseTestCase):
 #                               str)
 #         self.assertIsInstance(closest[location_utils.DRIVING_TIME_TEXT_KEY],
 #                               str)
-#         # check to make sure DRIVING_DISTANCE and DRIVING_TIME are not 
+#         # check to make sure DRIVING_DISTANCE and DRIVING_TIME are not
 #         # empty strings
 #         self.assertNotEqual("", closest[location_utils.DRIVING_DISTANCE_TEXT_KEY])
 #         self.assertNotEqual("", closest[location_utils.DRIVING_TIME_TEXT_KEY])
@@ -54,7 +53,7 @@ class GISUtilitiesTestCase(base.BaseTestCase):
 #         with these key:value pairs
 #             { feature_type: False,
 #               DRIVING_DISTANCE_TEXT_KEY: False,
-#               DRIVING_TIME_TEXT_KEY: False 
+#               DRIVING_TIME_TEXT_KEY: False
 #             }
 #         """
 #         origin = "46 Everdean St"
@@ -68,4 +67,3 @@ class GISUtilitiesTestCase(base.BaseTestCase):
 #         self.assertFalse(closest[feature_type])
 #         self.assertFalse(closest[location_utils.DRIVING_DISTANCE_TEXT_KEY])
 #         self.assertFalse(closest[location_utils.DRIVING_TIME_TEXT_KEY])
-

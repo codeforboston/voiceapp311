@@ -30,4 +30,3 @@ class CorrectSpeechOutputTestMixIn:
         response = self.controller.on_intent(self.request)
         self.assertNotIn("Uh oh", response.output_speech)
         self.assertNotIn("Error", response.output_speech)
-
