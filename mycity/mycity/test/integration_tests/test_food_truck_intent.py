@@ -7,6 +7,7 @@ from mycity.test.integration_tests import (
     intent_test_mixins as mix_ins,
 )
 
+
 ###################################
 # TestCase class for trash_intent #
 ###################################
@@ -15,7 +16,6 @@ class FoodTruckTestCase(mix_ins.RepromptTextTestMixIn,
                         mix_ins.CardTitleTestMixIn,
                         mix_ins.CorrectSpeechOutputTestMixIn,
                         base_case.IntentBaseCase):
-
     intent_to_test = "FoodTruckIntent"
     expected_title = food_truck_intent.CARD_TITLE
     returns_reprompt_text = False

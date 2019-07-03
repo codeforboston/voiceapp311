@@ -26,8 +26,7 @@ def set_address_in_session(mycity_request):
         if intent_constants.ZIP_CODE_KEY in mycity_request.session_attributes:
             # We clear out any zip code saved if the user has
             # changed the address
-            del(mycity_request.session_attributes
-                [intent_constants.ZIP_CODE_KEY])
+            del mycity_request.session_attributes[intent_constants.ZIP_CODE_KEY]
 
 
 def set_zipcode_in_session(mycity_request):
@@ -103,10 +102,9 @@ def clear_address_from_mycity_object(mycity_object):
     :return: MyCity object with attributes removed
     """
     if intent_constants.ZIP_CODE_KEY in mycity_object.session_attributes:
-        del(mycity_object.session_attributes[intent_constants.ZIP_CODE_KEY])
+        del mycity_object.session_attributes[intent_constants.ZIP_CODE_KEY]
 
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_object.session_attributes:
-        del(mycity_object.session_attributes[
-            intent_constants.CURRENT_ADDRESS_KEY])
+        del mycity_object.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
 
     return mycity_object

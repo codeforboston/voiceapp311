@@ -8,6 +8,7 @@ from mycity.test.integration_tests import (
     intent_test_mixins as mix_ins,
 )
 
+
 ##########################################
 # TestCase class for snow_parking_intent #
 ##########################################
@@ -16,7 +17,6 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                             mix_ins.CardTitleTestMixIn,
                             mix_ins.CorrectSpeechOutputTestMixIn,
                             base_case.IntentBaseCase):
-
     intent_to_test = "SnowParkingIntent"
     expected_title = snow_parking.SNOW_PARKING_CARD_TITLE
     returns_reprompt_text = False
@@ -46,8 +46,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
         )
 
         mock_geocoded_address_candidates = \
-                test_constants.GEOCODE_ADDRESS_CANDIDATES
-
+            test_constants.GEOCODE_ADDRESS_CANDIDATES
 
         self.mock_address_candidates = \
             mock.patch(
@@ -56,23 +55,21 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
             )
 
         mock_api_access_token = \
-                test_constants.ARCGIS_API_ACCESS_TOKEN
+            test_constants.ARCGIS_API_ACCESS_TOKEN
 
         self.mock_api_access_token = \
-                mock.patch(
-                    'mycity.utilities.finder.Finder.arcgis_utils.generate_access_token',
-                    return_value=mock_api_access_token
-                )
+            mock.patch(
+                'mycity.utilities.finder.Finder.arcgis_utils.generate_access_token',
+                return_value=mock_api_access_token
+            )
 
         mock_closest_destination = \
-                test_constants.ARCGIS_CLOSEST_DESTINATION
+            test_constants.ARCGIS_CLOSEST_DESTINATION
         self.mock_closest_destination = \
-                mock.patch(
-                        'mycity.utilities.finder.Finder.arcgis_utils.find_closest_route',
-                        return_value=mock_closest_destination
-                    )
-
-
+            mock.patch(
+                'mycity.utilities.finder.Finder.arcgis_utils.find_closest_route',
+                return_value=mock_closest_destination
+            )
 
         self.mock_filtered_record.start()
         self.mock_address_candidates.start()

@@ -25,13 +25,13 @@ def create_record_model(model_name, attributes):
     )
     Model = collections.namedtuple(model_name, attributes)
     return Model
-                                   
+
 
 def csv_to_namedtuples(model, csv_reader):
     """
-    Create and return a list of namedtuples representing all records from the 
+    Create and return a list of namedtuples representing all records from the
     csv.
-    
+
     :param model: namedtuple subclass to convert each line in csv
         file to
     :param csv_reader: csv reader object
@@ -46,7 +46,7 @@ def csv_to_namedtuples(model, csv_reader):
 
 def add_city_and_state_to_records(records, address_key, city, state):
     """
-    Append '{city}, {state}' to the Address fields of each record 
+    Append '{city}, {state}' to the Address fields of each record
     in records.
 
     :param records: filtered CSV.DictReader
@@ -77,8 +77,8 @@ def map_attribute_to_records(attribute, records):
     to be implemented in "get_closest_record_with_driving_info"
     function in Finder.py on Line 193
 
-    :param records: a list of namedtuples representing records 
+    :param records: a list of namedtuples representing records
         from a csv file
     :return: dictionary mapping an string Address to namedtuple record
     """
-    return {getattr(record, attribute) : record for record in records}
+    return {getattr(record, attribute): record for record in records}

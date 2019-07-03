@@ -6,6 +6,7 @@ from mycity import (
 )
 from mycity.intents import intent_constants
 
+
 ###############################################################################
 # TestCase parent class for all intent TestCases, which are integration tests #
 # to see if any changes in codebase have broken response-request model.       #
@@ -14,7 +15,6 @@ from mycity.intents import intent_constants
 ###############################################################################
 
 class IntentBaseCase(unittest.TestCase):
-
     intent_to_test = None
     expected_title = 'Boston Info'
     returns_reprompt_text = False

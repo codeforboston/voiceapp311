@@ -29,22 +29,20 @@ FAKE_JSON_DATA_3 = {
     "location_street_name": FAKE_LOCATION_3,
 }
 
-FAKE_JSON_RESPONSE_1 =\
-    {
-        "result": {
-            "records": [
-              FAKE_JSON_DATA_1
-            ]
-        }
+FAKE_JSON_RESPONSE_1 = {
+    "result": {
+        "records": [
+            FAKE_JSON_DATA_1
+        ]
     }
+}
 
-FAKE_JSON_RESPONSE_3 = \
-    {
-        "result": {
-            "records": [
-                FAKE_JSON_DATA_1,
-                FAKE_JSON_DATA_2,
-                FAKE_JSON_DATA_3
-            ]
-        }
+FAKE_JSON_RESPONSE_3 = {
+    "result": {
+        "records": [
+            FAKE_JSON_DATA_1,
+            FAKE_JSON_DATA_2,
+            FAKE_JSON_DATA_3
+        ]
     }
+}

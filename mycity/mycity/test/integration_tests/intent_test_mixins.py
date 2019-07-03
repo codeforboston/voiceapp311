@@ -20,7 +20,6 @@ class CardTitleTestMixIn:
         self.assertEqual(response.card_title, self.expected_title)
 
 
-
 # there are some intents where it makes sense to write custom tests for error
 # messages so we can abstract the most common test as a mix in
 

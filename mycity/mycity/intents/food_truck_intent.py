@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 MILE = 1600
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
-               'services/food_truck_schedule/FeatureServer/0/'
+           'services/food_truck_schedule/FeatureServer/0/'
 DAY = date.get_day()
 FOOD_TRUCK_LIMIT = 5  # limits the number of food trucks
 CARD_TITLE = "Food Trucks"
@@ -108,27 +108,27 @@ def get_nearby_food_trucks(mycity_request):
 
             if len(truck_unique_locations) == 1:
                 response = f"I found {len(truck_unique_locations)} food " \
-                           f"truck within a mile from your address! "
+                    f"truck within a mile from your address! "
                 response += add_response_text(truck_unique_locations)
                 mycity_response.output_speech = response
 
             if 1 < len(truck_unique_locations) <= 3:
                 response = f"I found {len(truck_unique_locations)} food " \
-                           f"trucks within a mile from your address! "
+                    f"trucks within a mile from your address! "
                 response += add_response_text(truck_unique_locations)
                 mycity_response.output_speech = response
 
             if len(truck_unique_locations) > 3:
                 response = f"There are at least {len(truck_unique_locations)}" \
-                           f" food trucks within a mile from your " \
-                           f"address! Here are the first five. "
+                    f" food trucks within a mile from your " \
+                    f"address! Here are the first five. "
                 response += add_response_text(truck_unique_locations)
                 mycity_response.output_speech = response
 
         except InvalidAddressError:
             address_string = address
             if zip_code:
-                address_string = address_string + " with zip code {}"\
+                address_string = address_string + " with zip code {}" \
                     .format(zip_code)
             mycity_response.output_speech = \
                 speech_constants.ADDRESS_NOT_FOUND.format(address_string)

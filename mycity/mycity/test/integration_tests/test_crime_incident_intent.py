@@ -16,10 +16,10 @@ RESULT = crime_intent.RESULT_FIELD
 RECORDS = crime_intent.RECORDS_FIELD
 STREET = crime_intent.STREET_FIELD
 
+
 class CrimeIncidentsTestCase(mix_ins.RepromptTextTestMixIn,
                              mix_ins.CardTitleTestMixIn,
                              base_case.IntentBaseCase):
-
     intent_to_test = "CrimeIncidentsIntent"
     expected_title = crime_intent.CARD_TITLE_CRIME
     returns_reprompt_text = False

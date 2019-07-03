@@ -39,7 +39,5 @@ class BaseTestCase(unittest.TestCase):
         mock_resp.content = content
         # add json data if provided
         if json_data:
-            mock_resp.json = mock.MagicMock(spec=dict,
-                return_value=json_data
-            )
+            mock_resp.json = mock.MagicMock(spec=dict, return_value=json_data)
         return mock_resp

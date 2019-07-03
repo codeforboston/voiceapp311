@@ -141,7 +141,6 @@ class MyCityRequestDataModel:
     def intent_variables(self, value):
         self._intent_variables = value
 
-
     @property
     def device_id(self):
         """

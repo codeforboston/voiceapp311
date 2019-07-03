@@ -10,6 +10,7 @@ from mycity.test.integration_tests import (
     intent_test_mixins as mix_ins,
 )
 
+
 ########################################
 # TestCase class for get_alerts_intent #
 ########################################
@@ -17,7 +18,6 @@ from mycity.test.integration_tests import (
 class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
                         mix_ins.CardTitleTestMixIn,
                         base_case.IntentBaseCase):
-
     intent_to_test = "GetAlertsIntent"
     expected_title = get_alerts.ALERTS_INTENT_CARD_TITLE
     returns_reprompt_text = False
@@ -35,7 +35,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         super().setUp()
         self.mock_get_alerts = \
             mock.patch('mycity.intents.get_alerts_intent.get_alerts',
-                       return_value = self.no_alerts.copy())
+                       return_value=self.no_alerts.copy())
         self.mock_get_alerts.start()
 
     def tearDown(self):

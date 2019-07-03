@@ -1,6 +1,5 @@
 """Alexa intent used to find snow emergency parking"""
 
-
 import logging
 
 from mycity.intents import intent_constants

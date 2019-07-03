@@ -7,12 +7,11 @@ logger = logging.getLogger(__name__)
 
 
 class MyCityResponseDataModel:
-    
     """
     Represents a response to a voice platform.
 
     Standard way of structuring responses from the skill implementation.
-    
+
     @todo: Consistent comment format that contains platform-specific terminology
 
     Note:
@@ -131,7 +130,7 @@ class MyCityResponseDataModel:
         """
         String indicating the voice platform should modify the course of the
         dialog with the user in some way.
-        
+
         In the case of "Dialog.Delegate", this signals that the Alexa platform
         should "take charge" of this response to the user according to the
         intent's dialog model.(usually involves prompting the user to
@@ -146,7 +145,7 @@ class MyCityResponseDataModel:
             "Delegate",  # Delegate dialog decision to platform
             "ElicitSlotTrash",  # Ask for address for trash
             "ElicitSlotZipCode",  # Ask for users zip code
-            "ElicitSlotNeighborhood", # Ask for user's neighborhood 
+            "ElicitSlotNeighborhood",  # Ask for user's neighborhood
         ]
 
         if value not in valid_directives:
@@ -156,10 +155,10 @@ class MyCityResponseDataModel:
         if value == "Delegate":
             self._dialog_directive = {'type': 'Dialog.Delegate'}
         elif value == "ElicitSlotTrash":
-            self._dialog_directive = { 
-                    'type': 'Dialog.ElicitSlot',
-                    'slotToElicit': 'Address'
-                    }
+            self._dialog_directive = {
+                'type': 'Dialog.ElicitSlot',
+                'slotToElicit': 'Address'
+            }
         elif value == "ElicitSlotZipCode":
             self._dialog_directive = {
                 'type': 'Dialog.ElicitSlot',
@@ -169,4 +168,4 @@ class MyCityResponseDataModel:
             self._dialog_directive = {
                 'type': 'Dialog.ElicitSlot',
                 'slotToElicit': 'Neighborhood'
-            }            
+            }

@@ -14,6 +14,7 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 SLACK_WEBHOOKS_URL = os.environ['SLACK_WEBHOOKS_URL']
 CARD_TITLE = "Feedback"
 
+
 def submit_feedback(mycity_request):
     """
     Logs user feedback to the mycity-feedback slack channel.

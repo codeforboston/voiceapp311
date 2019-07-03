@@ -25,12 +25,12 @@ def generate_access_token():
         client_id = get_client_id()
         client_secret = get_client_secret()
         payload = {
-                'client_id': client_id,
-                'client_secret' : client_secret,
-                'grant_type' : 'client_credentials'
-                }
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'grant_type': 'client_credentials'
+        }
         headers = {}
-        response = _post_request(ARCGIS_AUTH_URL, payload , headers)
+        response = _post_request(ARCGIS_AUTH_URL, payload, headers)
         if response.status_code == 200:
             response_json = response.json()
             access_token = response_json['access_token']
@@ -82,9 +82,9 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
     :return: Dictionary containing address, driving time and driving distance of closest destination
     """
     logger.debug("api_access_token: {} ".format(api_access_token) \
-                + "origin_address: {} ".format(str(origin_address)) \
-                + "destination_addresses: {}".format(str(destination_addresses))
-            )
+                 + "origin_address: {} ".format(str(origin_address)) \
+                 + "destination_addresses: {}".format(str(destination_addresses))
+                 )
 
     # (x, y) coordinates of origin address
     try:
@@ -95,18 +95,19 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
 
     # List of (x, y) coordinates of possible destinations
     facility_list = []
-    facility_key_list = list(filter(lambda k: k[0] != EMPTY_RECORD and k[1] != EMPTY_RECORD, destination_addresses.keys()))
-    facility_list = map(lambda k : "{},{}".format(k[0], k[1]), facility_key_list)
+    facility_key_list = list(
+        filter(lambda k: k[0] != EMPTY_RECORD and k[1] != EMPTY_RECORD, destination_addresses.keys()))
+    facility_list = map(lambda k: "{},{}".format(k[0], k[1]), facility_key_list)
     # Separate destination coordinates with ";"
     facilities = ";".join(facility_list)
     params = {
-            'f': 'json',
-            'token': api_access_token,
-            'returnDirections': 'false',
-            'returnCFRoutes': 'true',
-            'incidents': incidents,
-            'facilities': facilities
-            }
+        'f': 'json',
+        'token': api_access_token,
+        'returnDirections': 'false',
+        'returnCFRoutes': 'true',
+        'incidents': incidents,
+        'facilities': facilities
+    }
 
     body_as_string, updated_header = format_multipart_form_request(ARCGIS_CLOSEST_FACILITY_URL, params)
     # POST request over network
@@ -137,10 +138,10 @@ def find_closest_route(api_access_token, origin_address, destination_addresses):
         facility_address = destination_addresses[facility_key]
 
         destination_dict = {
-                'Address': facility_address,
-                'Driving_time': travel_time_string,
-                'Driving_distance': travel_distance_string
-                }
+            'Address': facility_address,
+            'Driving_time': travel_time_string,
+            'Driving_distance': travel_distance_string
+        }
 
         logger.debug("Returning closest destination: {}".format(str(destination_dict)))
         return destination_dict
@@ -237,10 +238,10 @@ def geocode_address_candidates(input_address):
     logger.debug("Input Address: {}".format(input_address))
 
     params = {
-            "f": "json",
-            "singleLine": input_address,
-            "outFields":"Match_addr,Addr_type"
-            }
+        "f": "json",
+        "singleLine": input_address,
+        "outFields": "Match_addr,Addr_type"
+    }
     response = requests.request("GET", ARCGIS_GEOCODE_URL, params=params)
     if response.status_code == 200:
         return response.json()
@@ -263,14 +264,14 @@ def select_top_address_candidate(geocode_candidate_response_json):
     if not candidates:
         return -1
     else:
-        top_candidate = max(candidates, key=lambda candidate : candidate['score'])
+        top_candidate = max(candidates, key=lambda candidate: candidate['score'])
         address_string = top_candidate['address']
         x_coordinate = top_candidate['location']['x']
         y_coordinate = top_candidate['location']['y']
 
         coordinate_dict = {
-                'address': address_string,
-                'x': x_coordinate,
-                'y': y_coordinate
-                }
+            'address': address_string,
+            'x': x_coordinate,
+            'y': y_coordinate
+        }
         return coordinate_dict

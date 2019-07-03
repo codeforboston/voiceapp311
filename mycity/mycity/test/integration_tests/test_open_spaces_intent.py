@@ -8,6 +8,7 @@ from mycity.test.integration_tests import (
     intent_test_mixins as mix_ins,
 )
 
+
 #############################################
 # TestCase class for get_open_spaces_intent #
 #############################################
@@ -17,7 +18,6 @@ class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
                          mix_ins.CardTitleTestMixIn,
                          mix_ins.CorrectSpeechOutputTestMixIn,
                          base_case.IntentBaseCase):
-
     intent_to_test = "OpenSpacesIntent"
     returns_reprompt_text = False
 
@@ -40,7 +40,7 @@ class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
         self.get_driving_info_patch = \
             mock.patch(('mycity.intents.open_spaces_intent.g_maps_utils'
                         '_get_driving_info'),
-                       return_value = mock_get_driving_info_return)
+                       return_value=mock_get_driving_info_return)
         self.get_open_spaces_patch.start()
         self.get_driving_info_patch.start()
 

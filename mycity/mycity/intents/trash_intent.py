@@ -52,7 +52,6 @@ def get_trash_day_info(mycity_request):
             mycity_response = clear_address_from_mycity_object(mycity_response)
             return mycity_response
 
-
         # currently assumes that trash day is the same for all units at
         # the same street address
         address = str(a['house']) + " " + str(a['street_full'])
@@ -65,9 +64,8 @@ def get_trash_day_info(mycity_request):
             zip_code = mycity_request.session_attributes[zip_code_key]
 
         if "Neighborhood" in mycity_request.intent_variables and \
-            "value" in mycity_request.intent_variables["Neighborhood"]:
+                "value" in mycity_request.intent_variables["Neighborhood"]:
             neighborhood = mycity_request.intent_variables["Neighborhood"]["value"]
-
 
         try:
             trash_days = get_trash_and_recycling_days(address, zip_code, neighborhood)
@@ -78,8 +76,7 @@ def get_trash_day_info(mycity_request):
         except InvalidAddressError:
             address_string = address
             if zip_code:
-                address_string = address_string + " with zip code {}"\
-                    .format(zip_code)
+                address_string = address_string + " with zip code {}".format(zip_code)
             mycity_response.output_speech = speech_constants.ADDRESS_NOT_FOUND.format(address_string)
             mycity_response.dialog_directive = "ElicitSlotTrash"
             mycity_response.reprompt_text = None
@@ -187,16 +184,15 @@ def validate_found_address(found_address, user_provided_address):
 
     # Allow for mismatched "Road" street_type between user input and ReCollect API
     if "rd" in found_address["street_type"].lower() and \
-        "road" in user_provided_address["street_type"].lower():
+            "road" in user_provided_address["street_type"].lower():
         return True
 
     # Allow fuzzy match on street type to allow "ave" to match "avenue"
     if found_address["street_type"].lower() not in \
-        user_provided_address["street_type"].lower() and \
-        user_provided_address["street_type"].lower() not in \
+            user_provided_address["street_type"].lower() and \
+            user_provided_address["street_type"].lower() not in \
             found_address["street_type"].lower():
-                return False
-
+        return False
 
     return True
 

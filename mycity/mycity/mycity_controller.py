@@ -29,19 +29,19 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 logger = logging.getLogger(__name__)
 
-LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help at any time, and I'll "\
-    "let you know what information I can provide. "\
-    "How can I help you?"
+LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help at any time, and I'll " \
+                "let you know what information I can provide. " \
+                "How can I help you?"
 
-LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, "\
-    "such as \"are there any city alerts\"?"
+LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, " \
+                         "such as \"are there any city alerts\"?"
 
 HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
-        "about Boston services and alerts. You can ask about your trash " \
-        "pickup schedule, city alerts, the locations of food trucks " \
-        "and farmers markets, info about snow emergencies, the latest "\
-        "three one one reports, and the latest crime reports! "\
-        "If you have feedback for the skill, say, 'I have a suggestion.'"
+              "about Boston services and alerts. You can ask about your trash " \
+              "pickup schedule, city alerts, the locations of food trucks " \
+              "and farmers markets, info about snow emergencies, the latest " \
+              "three one one reports, and the latest crime reports! " \
+              "If you have feedback for the skill, say, 'I have a suggestion.'"
 
 
 def execute_request(mycity_request):
@@ -126,8 +126,7 @@ def on_intent(mycity_request):
         # Capture that into session data here
         set_address_in_session(mycity_request)
 
-    if "Zipcode" in mycity_request.intent_variables \
-        and "value" in mycity_request.intent_variables["Zipcode"]:
+    if "Zipcode" in mycity_request.intent_variables and "value" in mycity_request.intent_variables["Zipcode"]:
         set_zipcode_in_session(mycity_request)
 
     # session_attributes = session.get("attributes", {})
@@ -135,24 +134,20 @@ def on_intent(mycity_request):
         return get_address_from_session(mycity_request)
     elif mycity_request.intent_name == "TrashDayIntent":
         return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_trash_day_info(mycity_request)
+            if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes else \
+            get_trash_day_info(mycity_request)
     elif mycity_request.intent_name == "SnowParkingIntent":
         return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_snow_emergency_parking_intent(mycity_request)
+            if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes else \
+            get_snow_emergency_parking_intent(mycity_request)
     elif mycity_request.intent_name == "CrimeIncidentsIntent":
         return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_crime_incidents_intent(mycity_request)
+            if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes else \
+            get_crime_incidents_intent(mycity_request)
     elif mycity_request.intent_name == "FoodTruckIntent":
         return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_nearby_food_trucks(mycity_request)
+            if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes else \
+            get_nearby_food_trucks(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":

@@ -16,7 +16,7 @@ def build_origin_address(req):
     """
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
-    
+
     :param req: MyCityRequestDataModel object
     :return: String containing full address
     """
@@ -33,6 +33,7 @@ def build_origin_address(req):
         origin_address += " Boston MA"
 
     return origin_address
+
 
 def is_address_valid(address):
     """
