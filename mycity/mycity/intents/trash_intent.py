@@ -70,6 +70,7 @@ def get_trash_day_info(mycity_request):
             trash_days_speech = build_speech_from_list_of_days(trash_days)
 
             mycity_response.output_speech = speech_constants.PICK_UP_DAY.format(trash_days_speech)
+            mycity_response.should_end_session = True
 
         except InvalidAddressError:
             address_string = address
@@ -86,13 +87,15 @@ def get_trash_day_info(mycity_request):
 
         except BadAPIResponse:
             mycity_response.output_speech = speech_constants.BAD_API_RESPONSE
+            mycity_response.should_end_session = True
+            
         except MultipleAddressError as error:
             addresses = [re.sub(r' \d{5}', '', address) for address in error.addresses]
             address_list = ', '.join(addresses)
             mycity_response.output_speech = speech_constants.MULTIPLE_ADDRESS_ERROR.format(address_list)
             mycity_response.dialog_directive = "ElicitSlotNeighborhood"
+            mycity_response.should_end_session = False
 
-        mycity_response.should_end_session = False
     else:
         logger.error("Error: Called trash_day_intent with no address")
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
