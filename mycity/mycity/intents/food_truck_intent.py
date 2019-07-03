@@ -133,6 +133,7 @@ def get_nearby_food_trucks(mycity_request):
             mycity_response.card_title = CARD_TITLE
             mycity_request = clear_address_from_mycity_object(mycity_request)
             mycity_response = clear_address_from_mycity_object(mycity_response)
+            mycity_response.should_end_session = True
             return mycity_response
 
         except BadAPIResponse:
@@ -155,5 +156,6 @@ def get_nearby_food_trucks(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = CARD_TITLE
+    mycity_response.should_end_session = True
 
     return mycity_response
