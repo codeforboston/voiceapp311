@@ -11,3 +11,4 @@ urllib3>=1.23
 beautifulsoup4==4.6.0
 python-dateutil==2.7.3
 pytz==2017.3
+isort==4.3.20

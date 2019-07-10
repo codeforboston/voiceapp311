@@ -4,7 +4,6 @@ from mycity.test.integration_tests import (
     intent_test_mixins as mix_ins,
 )
 
-
 ########################################
 # TestCase class for unhandled intents #
 ########################################
