@@ -105,8 +105,9 @@ def build_slack_traceback(error, trace):
     """
     Configures the message we will post to slack
 
-    :param error:
-    :return:
+    :param error: `Exception` instance
+    :param trace: execute `traceback.format_exc()` in the `except` block to get the correct value of this
+    :return: A string formatted for sending to Slack
     """
     print(
         '[module: feedback_intent]',
