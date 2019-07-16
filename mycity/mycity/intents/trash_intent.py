@@ -77,6 +77,8 @@ def get_trash_day_info(mycity_request):
             if zip_code:
                 address_string = address_string + " with zip code {}"\
                     .format(zip_code)
+            if neighborhood:
+                address_string = address_string + " in {}".format(neighborhood)
             mycity_response.output_speech = speech_constants.ADDRESS_NOT_FOUND.format(address_string)
             mycity_response.dialog_directive = "ElicitSlotTrash"
             mycity_response.reprompt_text = None
