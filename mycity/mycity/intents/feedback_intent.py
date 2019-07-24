@@ -41,6 +41,7 @@ def submit_feedback(mycity_request):
             'value' not in intent_variables['Feedback']
     ):
         mycity_response.intent_variables = intent_variables
+        mycity_response.card_title = CARD_TITLE
         mycity_response.dialog_directive = "Delegate"
         return mycity_response
     else:
