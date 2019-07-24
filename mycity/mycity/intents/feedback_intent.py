@@ -11,6 +11,7 @@ import os
 
 SLACK_WEBHOOKS_URL = os.environ['SLACK_WEBHOOKS_URL']
 CARD_TITLE = "Feedback"
+REPROMPT_TEXT = "In a few sentences or less, please describe the issue or feedback."
 
 def submit_feedback(mycity_request):
     """
@@ -37,20 +38,19 @@ def submit_feedback(mycity_request):
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.should_end_session = False
     if (
-            'value' not in intent_variables['FeedbackType'] or
             'value' not in intent_variables['Feedback']
     ):
         mycity_response.intent_variables = intent_variables
         mycity_response.card_title = CARD_TITLE
         mycity_response.dialog_directive = "Delegate"
+        mycity_response.output_speech = REPROMPT_TEXT
         return mycity_response
     else:
-        feedback_type = intent_variables['FeedbackType']['value']
         feedback_text = intent_variables['Feedback']['value']
 
         try:
             status = send_to_slack(
-                build_slack_message(feedback_type, feedback_text)
+                build_slack_message("Feedback", feedback_text)
             )
             if status == 200:
                 mycity_response.output_speech = speech_constants.BIG_THANKS
