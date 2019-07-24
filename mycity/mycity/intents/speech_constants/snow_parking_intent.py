@@ -17,3 +17,4 @@ NO_PHONE = ""
 NO_FEE = " There is no fee. "
 
 ERROR_SPEECH = "I need a valid address to find the closest parking"
+ERROR_INVALID_ADDRESS = "We are unable to use this address at this time"
