@@ -7,6 +7,8 @@ from streetaddress import StreetAddressParser
 import mycity.intents.intent_constants as intent_constants
 import logging
 
+from mycity.intents.custom_errors import InvalidAddressError
+
 logger = logging.getLogger(__name__)
 
 
@@ -14,7 +16,7 @@ def build_origin_address(req):
     """
     Builds an address from an Alexa session. Assumes city is Boston if not
     specified
-    
+
     :param req: MyCityRequestDataModel object
     :return: String containing full address
     """
@@ -23,6 +25,11 @@ def build_origin_address(req):
     current_address = \
         req.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
     parsed_address = address_parser.parse(current_address)
+    if parsed_address["house"] is None or parsed_address["street_full"] is None:
+        logger.debug("Parsed address had an unexpected None part in {house: %r, street_full: %r}",
+                     parsed_address["house"],
+                     parsed_address["street_full"])
+        raise InvalidAddressError()
     origin_address = " ".join([parsed_address["house"],
                                parsed_address["street_full"]])
     if parsed_address["other"]:
@@ -31,6 +38,7 @@ def build_origin_address(req):
         origin_address += " Boston MA"
 
     return origin_address
+
 
 def is_address_valid(address):
     """
