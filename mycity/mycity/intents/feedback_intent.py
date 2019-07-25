@@ -101,3 +101,27 @@ def build_slack_message(feedback_type, feedback_text):
     )
     emoji = ':bug:' if feedback_type == 'bug' else ':bulb:'
     return emoji + '\n>' + feedback_text
+
+
+def build_slack_traceback(error, trace):
+    """
+    Configures the message we will post to slack
+
+    :param error: `Exception` instance
+    :param trace: execute `traceback.format_exc()` in the `except` block to get the correct value of this
+    :return: A string formatted for sending to Slack
+    """
+    print(
+        '[module: feedback_intent]',
+        '[method: build_slack_traceback]',
+        'feedback type and text received:',
+        error.__class__.__name__ + ', ' + trace
+    )
+    return f'''
+An unhandled error occured:
+`{error.__class__.__name__}({repr(str(error))})`
+
+```
+{trace}
+```
+    '''.strip()
