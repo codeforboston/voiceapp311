@@ -40,6 +40,26 @@ def lambda_handler(event, context):
         send_to_slack(build_slack_traceback(error, trace))
         raise
 
+def _get_location_services_info(event: object, mycity_request: object) -> object:
+    """
+    Converts Alexa location services to MyCityRequestDataModel
+
+    :param event: event JSON object provided by Alexa
+    :param mycity_request: MyCityRequestDataModel to add location service info to
+    :return MyCityRequestDataModel: The new MyCityRequestDataModel containing
+        location service info
+    """
+    # Determine geolocation services support
+    system_context = event['context']['System']
+    device_context = system_context.get('device', {})
+    supported_interfaces = device_context.get("supportedInterfaces", {})
+    mycity_request.device_has_geolocation = "Geolocation" in supported_interfaces
+
+    # Determine permissions
+    if (mycity_request.device_has_geolocation):
+        mycity_request.geolocation_permission = "Geolocation" in event["context"]
+
+    return mycity_request
 
 def platform_to_mycity_request(event):
     """
@@ -68,9 +88,8 @@ def platform_to_mycity_request(event):
     mycity_request.device_id = device_context.get('deviceId', "unknown")
     mycity_request.api_access_token = system_context.get('apiAccessToken', "none")
 
-    # Determine location services support
-    supported_interfaces = device_context.get("supportedInterfaces", {})
-    mycity_request.device_has_geolocation = "Geolocation" in supported_interfaces
+    # Get location services info
+    mycity_request = _get_location_services_info(event, mycity_request)
 
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
