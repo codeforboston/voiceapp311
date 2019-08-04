@@ -28,6 +28,7 @@ class MyCityRequestDataModel:
         self._intent_variables = {}
         self._device_id = None
         self._api_access_token = None
+        self._has_geolocation = None
 
     def __str__(self):
         return """\
@@ -41,7 +42,8 @@ class MyCityRequestDataModel:
             intent_name={},
             intent_variables={},
             device_id={},
-            api_access_token={}
+            api_access_token={},
+            has_geolocation={}
         >
         """.format(
             self._request_type,
@@ -53,7 +55,8 @@ class MyCityRequestDataModel:
             self._intent_name,
             self._intent_variables,
             self._device_id,
-            self._api_access_token
+            self._api_access_token,
+            self._has_geolocation
         )
 
     def get_logger_string(self):
@@ -164,3 +167,15 @@ class MyCityRequestDataModel:
     @api_access_token.setter
     def api_access_token(self, value):
         self._api_access_token = value
+
+    @property
+    def device_has_geolocation(self):
+        """
+        Returns if the user's device has geolocation services
+        """
+        return self._has_geolocation
+
+    @device_has_geolocation.setter
+    def device_has_geolocation(self, value: bool):
+        self._has_geolocation = value
+    

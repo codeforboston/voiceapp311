@@ -52,20 +52,31 @@ def platform_to_mycity_request(event):
     """
     logger.debug('Amazon request received: ' + str(event))
     mycity_request = MyCityRequestDataModel()
+
+    # Get base request information
     mycity_request.request_type = event['request']['type']
     mycity_request.request_id = event['request']['requestId']
+
+    # Get session information
     mycity_request.is_new_session = event['session']['new']
     mycity_request.session_id = event['session']['sessionId']
+    mycity_request.application_id = event['session']['application']['applicationId']
 
+    # Get device information
     system_context = event['context']['System']
-    mycity_request.device_id = system_context.get('device', {}).get('deviceId', "unknown")
+    device_context = system_context.get('device', {})
+    mycity_request.device_id = device_context.get('deviceId', "unknown")
     mycity_request.api_access_token = system_context.get('apiAccessToken', "none")
+
+    # Determine location services support
+    supported_interfaces = device_context.get("supportedInterfaces", {})
+    mycity_request.device_has_geolocation = "Geolocation" in supported_interfaces
 
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
     else:
         mycity_request.session_attributes = {}
-    mycity_request.application_id = event['session']['application']['applicationId']
+    
     if 'intent' in event['request']:
         mycity_request.intent_name = event['request']['intent']['name']
         if 'slots' in event['request']['intent']:
