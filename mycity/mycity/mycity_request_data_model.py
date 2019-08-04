@@ -204,5 +204,8 @@ class MyCityRequestDataModel:
 
     @geolocation_coordinates.setter
     def geolocation_coordinates(self, value: dict):
+        if "longitudeInDegrees" not in value or "latitudeInDegrees" not in value:
+            raise Exception("Missing dictionary value set on geolocation_coordinates")
+
         self._geolocation_coordinates = value
     

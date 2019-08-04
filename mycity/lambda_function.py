@@ -150,7 +150,7 @@ def mycity_response_to_platform(mycity_response):
                     'text': mycity_response.output_speech
              },
                 'card': {
-                    'type': 'Simple',
+                    'type': mycity_response.card_type,
                     'title': str(mycity_response.card_title),
                     'content': str(mycity_response.output_speech)
                 },
@@ -172,7 +172,7 @@ def mycity_response_to_platform(mycity_response):
                 'text': mycity_response.output_speech
             },
             'card': {
-                'type': 'Simple',
+                'type': str(mycity_response.card_type),
                 'title': str(mycity_response.card_title),
                 'content': str(mycity_response.output_speech)
             },
@@ -184,6 +184,9 @@ def mycity_response_to_platform(mycity_response):
             },
             'shouldEndSession': mycity_response.should_end_session
         }
+
+    if mycity_response.card_permissions:
+        response['card']['permissions'] = mycity_response.card_permissions
 
     if mycity_response.dialog_directive == "Dialog.ElicitSlot":
         # Add the slot we want to elicit on top of the normal output.

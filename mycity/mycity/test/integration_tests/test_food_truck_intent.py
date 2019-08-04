@@ -3,7 +3,9 @@ import mycity.test.test_constants as test_constants
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.intents.food_truck_intent as food_truck_intent
+import mycity.intents.intent_constants as intent_constants
 
+import unittest
 
 ###################################
 # TestCase class for trash_intent #
@@ -37,3 +39,31 @@ class FoodTruckTestCase(mix_ins.RepromptTextTestMixIn,
         super().tearDown()
         self.get_address_api_patch.stop()
         self.get_truck_locations_patch.stop()
+
+    def test_delegates_if_not_provided_no_geolocation(self):
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        response = self.controller.on_intent(self.request)
+        self.assertEqual(response.dialog_directive['type'], "Dialog.Delegate")
+
+    def test_requests_geolocation_permissions_if_device_capable(self):
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        self.request.device_has_geolocation = True
+        self.request.geolocation_permission = False
+        response = self.controller.on_intent(self.request)
+        self.assertEqual(response.card_type, "AskForPermissionsConsent")
+
+    def test_properly_uses_geolocation(self):
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        self.request.device_has_geolocation = True
+        self.request.geolocation_permission = True
+        self.request.geolocation_coordinates = {
+            "latitudeInDegrees": 42.316466,
+            "longitudeInDegrees": -71.056769,
+        }
+        response = self.controller.on_intent(self.request)
+        self.assertNotEqual(response.card_type, "AskForPermissionsConsent")
+        self.assertTrue(response.dialog_directive is None)
+
+
+if __name__ == '__main__':
+    unittest.main()
