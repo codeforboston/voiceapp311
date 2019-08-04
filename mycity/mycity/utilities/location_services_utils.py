@@ -1,4 +1,4 @@
-""" Methods for determining location base permissions and extracting the location data """
+"""Methods for determining location base permissions and extracting the location data"""
 
 import mycity.mycity_response_data_model as mycity_response_data_model
 

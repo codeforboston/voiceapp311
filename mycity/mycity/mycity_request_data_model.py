@@ -30,6 +30,7 @@ class MyCityRequestDataModel:
         self._api_access_token = None
         self._has_geolocation = None
         self._geolocation_permission = None
+        self._geolocation_coordinates = None
 
     def __str__(self):
         return """\
@@ -45,7 +46,8 @@ class MyCityRequestDataModel:
             device_id={},
             api_access_token={},
             has_geolocation={},
-            _geolocation_permission={}
+            geolocation_permission={},
+            geolocation_coordinates={}
         >
         """.format(
             self._request_type,
@@ -59,7 +61,8 @@ class MyCityRequestDataModel:
             self._device_id,
             self._api_access_token,
             self._has_geolocation,
-            self._geolocation_permission
+            self._geolocation_permission,
+            self._geolocation_coordinates
         )
 
     def get_logger_string(self):
@@ -194,4 +197,12 @@ class MyCityRequestDataModel:
     @geolocation_permission.setter
     def geolocation_permission(self, value: bool):
         self._geolocation_permission = value
+
+    @property
+    def geolocation_coordinates(self):
+        return self._geolocation_coordinates
+
+    @geolocation_coordinates.setter
+    def geolocation_coordinates(self, value: dict):
+        self._geolocation_coordinates = value
     

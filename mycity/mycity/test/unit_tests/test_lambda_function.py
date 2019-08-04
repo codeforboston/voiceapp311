@@ -56,6 +56,13 @@ class TestAlexaLambdaFunctionLocationServices(unittest.TestCase):
         mycity_request = lambda_function.platform_to_mycity_request(self.alexa_request_json)
         self.assertTrue(mycity_request.geolocation_permission)
 
+    def test_geolocation_permission_has_coordinates(self):
+        self._add_geolocation_support_to_json()
+        self._add_geolocation_info_to_json()
+        mycity_request = lambda_function.platform_to_mycity_request(self.alexa_request_json)
+        self.assertTrue("latitudeInDegrees" in mycity_request.geolocation_coordinates)
+        self.assertTrue("longitudeInDegrees" in mycity_request.geolocation_coordinates)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -59,6 +59,10 @@ def _get_location_services_info(event: object, mycity_request: object) -> object
     if (mycity_request.device_has_geolocation):
         mycity_request.geolocation_permission = "Geolocation" in event["context"]
 
+    # Get coordinates
+    if (mycity_request.geolocation_permission):
+        mycity_request.geolocation_coordinates = event["context"]["Geolocation"].get("coordinate", {})
+
     return mycity_request
 
 def platform_to_mycity_request(event):
