@@ -177,7 +177,7 @@ class MyCityRequestDataModel:
     @property
     def device_has_geolocation(self):
         """
-        Returns if the user's device has geolocation services
+        Returns if the user's device supports geolocation services
         """
         return self._has_geolocation
 
@@ -188,7 +188,7 @@ class MyCityRequestDataModel:
     @property
     def geolocation_permission(self):
         """
-        Returns if this device has geolocation permission
+        Returns if our app has been granted geolocation permission
         """
         if not self._has_geolocation:
             return False
@@ -200,12 +200,15 @@ class MyCityRequestDataModel:
 
     @property
     def geolocation_coordinates(self):
+        """
+        Returns dictionary of geolocation coordinates.
+        """
         return self._geolocation_coordinates
 
     @geolocation_coordinates.setter
     def geolocation_coordinates(self, value: dict):
         if "longitudeInDegrees" not in value or "latitudeInDegrees" not in value:
-            raise Exception("Missing dictionary value set on geolocation_coordinates")
+            raise Exception("Missing expected dictionary key set on geolocation_coordinates")
 
         self._geolocation_coordinates = value
     

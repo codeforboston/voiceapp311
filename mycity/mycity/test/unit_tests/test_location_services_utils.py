@@ -1,3 +1,4 @@
+""" Tests utilities for location services  """
 
 import mycity.test.unit_tests.base as base
 import mycity.utilities.location_services_utils as location_services_utils

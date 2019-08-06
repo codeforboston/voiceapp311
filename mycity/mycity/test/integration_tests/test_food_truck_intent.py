@@ -40,7 +40,7 @@ class FoodTruckTestCase(mix_ins.RepromptTextTestMixIn,
         self.get_address_api_patch.stop()
         self.get_truck_locations_patch.stop()
 
-    def test_delegates_if_not_provided_no_geolocation(self):
+    def test_delegates_if_address_not_provided_no_geolocation_support(self):
         self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
         response = self.controller.on_intent(self.request)
         self.assertEqual(response.dialog_directive['type'], "Dialog.Delegate")

@@ -1,4 +1,4 @@
-"""Methods for determining location base permissions and extracting the location data"""
+""" Methods for working with location based data """
 
 import mycity.mycity_response_data_model as mycity_response_data_model
 
@@ -9,7 +9,7 @@ GENERIC_GEOLOCATION_PRERMISSON_SPEECH = """
 def request_geolocation_permission_response():
     """
     Builds a response object for requesting geolocation permissions. The
-    returned object's speech can be modified if you want to add more information
+    returned object's speech can be modified if you want to add more information.
 
     :return MyCityResponseDataModel: MyCityResponseDataModel with required fields
         to request geolocation access
@@ -22,10 +22,14 @@ def request_geolocation_permission_response():
     return response
 
 
-def convert_mycity_coordinates_to_arcgis(mycity_request):
+def convert_mycity_coordinates_to_arcgis(mycity_request)->dict:
     """
     Gets coordinates from a MyCityRequestDataModel and converts them to dictionary
     required by GIS utilities
+
+    :param mycity_request: MyCityRequstDataModel containing geolcation coordinates
+        to convert
+    :return dictionary: x, y coordinates of device location
     """
     gis_coordinates = {
         'x': 0,

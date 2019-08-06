@@ -41,7 +41,7 @@ class TestAlexaLambdaFunctionLocationServices(unittest.TestCase):
         mycity_request = lambda_function.platform_to_mycity_request(self.alexa_request_json)
         self.assertTrue(mycity_request.device_has_geolocation)
 
-    def test_geolcation_no_oermission_on_unsupported_device(self):
+    def test_geolcation_no_permission_on_unsupported_device(self):
         mycity_request = lambda_function.platform_to_mycity_request(self.alexa_request_json)
         self.assertFalse(mycity_request.geolocation_permission)
 

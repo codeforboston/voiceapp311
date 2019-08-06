@@ -65,27 +65,40 @@ def get_truck_locations(given_address):
             truck_unique_locations.append(t)
     return truck_unique_locations
 
-def _get_address_from_session(mycity_request):
-    usr_addr = None
+def _get_address_coordinates_from_session(mycity_request) -> dict:
+    """
+    Gets coordinates of the provided address from the session attributes. 
+    Returns None if no address is available.
+
+    :param mycity_request: MyCityRequestDataModel for the current request
+    :return dict: Dictionary containing coordinates of the address
+    """
+    user_address = None
     if CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        # Fall back to user address in session
-        current_address = \
-            mycity_request.session_attributes[CURRENT_ADDRESS_KEY]
-        address_parser = StreetAddressParser()
-        a = address_parser.parse(current_address)
-        address = str(a["house"]) + " " + str(a["street_name"]) + " " \
-                + str(a["street_type"])
-        usr_addr = gis_utils.geocode_address(address)
+        current_address = mycity_request.session_attributes[CURRENT_ADDRESS_KEY]
+        parsed_address = StreetAddressParser().parse(current_address)
+        address = " ".join([
+            parsed_address["house"], 
+            parsed_address["street_name"], 
+            parsed_address["street_type"]])
+        user_address = gis_utils.geocode_address(address)
 
-    return usr_addr
+    return user_address
 
 
-def _get_address_from_geolocation(mycity_request):
-    usr_addr = None
+def _get_address_coordinates_from_geolocation(mycity_request):
+    """
+    Gets coordinates of the device location. Returns None if not provided
+    or not accessible.
+
+    :param mycity_request: MyCityRequestDataModel for the current request
+    :return dict: Dictionary containing coordinates of the device
+    """
+    user_address = None
     if mycity_request.device_has_geolocation:
         if mycity_request.geolocation_permission:
-            usr_addr = location_services_utils.convert_mycity_coordinates_to_arcgis(mycity_request)
-    return usr_addr
+            user_address = location_services_utils.convert_mycity_coordinates_to_arcgis(mycity_request)
+    return user_address
 
 
 def get_nearby_food_trucks(mycity_request):
@@ -98,22 +111,22 @@ def get_nearby_food_trucks(mycity_request):
     mycity_response = MyCityResponseDataModel()
 
     # See if the user provided a custom address
-    usr_addr = _get_address_from_session(mycity_request)
+    user_address = _get_address_coordinates_from_session(mycity_request)
 
     # If not, try to get user position from geolocation
-    if not usr_addr:
-        usr_addr = _get_address_from_geolocation(mycity_request)
+    if not user_address:
+        user_address = _get_address_coordinates_from_geolocation(mycity_request)
 
-    if not usr_addr:
+    if not user_address:
         # Couldn't get address. Request the to use geolocation if possible, fall back to 
-        # asking for speech input
+        # asking for speech input if device doesn't support it.
         if mycity_request.device_has_geolocation:
             return location_services_utils.request_geolocation_permission_response()
         else:
             return request_user_address_response(mycity_request)
 
     # Get list of available trucks
-    truck_unique_locations = get_truck_locations(usr_addr)
+    truck_unique_locations = get_truck_locations(user_address)
 
     # Create custom response based on number of trucks returned
     try:
@@ -140,9 +153,8 @@ def get_nearby_food_trucks(mycity_request):
             mycity_response.output_speech = response
 
     except InvalidAddressError:
-        address_string = address
         mycity_response.output_speech = \
-            speech_constants.ADDRESS_NOT_FOUND.format(address_string)
+            speech_constants.ADDRESS_NOT_FOUND.format("that address")
         mycity_response.dialog_directive = "ElicitSlotFoodTruck"
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = \

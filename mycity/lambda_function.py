@@ -42,7 +42,7 @@ def lambda_handler(event, context):
 
 def _get_location_services_info(event: object, mycity_request: object) -> object:
     """
-    Converts Alexa location services to MyCityRequestDataModel
+    Adds Alexa location services to MyCityRequestDataModel
 
     :param event: event JSON object provided by Alexa
     :param mycity_request: MyCityRequestDataModel to add location service info to
@@ -150,7 +150,7 @@ def mycity_response_to_platform(mycity_response):
                     'text': mycity_response.output_speech
              },
                 'card': {
-                    'type': mycity_response.card_type,
+                    'type': str(mycity_response.card_type),
                     'title': str(mycity_response.card_title),
                     'content': str(mycity_response.output_speech)
                 },

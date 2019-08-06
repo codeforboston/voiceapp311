@@ -19,7 +19,7 @@
 		}
 	},
 	"request": {
-		"type": "BaseTestRequst",
+		"type": "BaseTestRequest",
 		"requestId": "TestDataRequestID",
 		"timestamp": "2019-08-04T13:41:19Z",
 		"locale": "en-US",
