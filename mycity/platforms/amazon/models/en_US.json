@@ -1095,16 +1095,17 @@
                         }
                     ],
                     "samples": [
+                        "what are the food trucks near {Address}",
+                        "food trucks at {Address}",
+                        "food trucks near {Address}",
+                        "are there any food trucks around {Address}",
+                        "where are the food trucks near {Address}",
                         "where are the nearest food trucks",
                         "what are the nearest food trucks",
                         "is there any food truck around",
                         "is there any food truck around me",
-                        "is there any food truck around my office",
-                        "is there any food truck around my house",
                         "are there any food trucks around",
                         "are there any food trucks around me",
-                        "are there any food trucks around my office",
-                        "are there any food trucks around my house",
                         "what kind of food trucks are around me",
                         "what kind of food trucks are near me",
                         "what kind of food trucks are nearby",
@@ -1243,7 +1244,8 @@
                         "farmers markets"
                     ]
                 }
-            ]
+            ],
+            "types": []
         },
         "dialog": {
             "intents": [
@@ -1322,6 +1324,13 @@
                             "prompts": {
                                 "elicitation": "Elicit.Slot.1478934588421.914733191093"
                             }
+                        },
+                        {
+                            "name": "Zipcode",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
                         }
                     ]
                 },
