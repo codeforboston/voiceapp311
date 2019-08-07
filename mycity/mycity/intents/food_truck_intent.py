@@ -3,17 +3,15 @@ Food Truck Intent
 """
 import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.datetime_utils as date
+import mycity.utilities.address_utils as address_utils
 import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
-from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.intents.user_address_intent import request_user_address_response
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import mycity.utilities.location_services_utils as location_services_utils
-from streetaddress import StreetAddressParser
 from .custom_errors import \
     InvalidAddressError, BadAPIResponse, MultipleAddressError
-from . import intent_constants
 
 logger = logging.getLogger(__name__)
 
@@ -65,41 +63,6 @@ def get_truck_locations(given_address):
             truck_unique_locations.append(t)
     return truck_unique_locations
 
-def _get_address_coordinates_from_session(mycity_request) -> dict:
-    """
-    Gets coordinates of the provided address from the session attributes. 
-    Returns None if no address is available.
-
-    :param mycity_request: MyCityRequestDataModel for the current request
-    :return dict: Dictionary containing coordinates of the address
-    """
-    user_address = None
-    if CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        current_address = mycity_request.session_attributes[CURRENT_ADDRESS_KEY]
-        parsed_address = StreetAddressParser().parse(current_address)
-        address = " ".join([
-            parsed_address["house"], 
-            parsed_address["street_name"], 
-            parsed_address["street_type"]])
-        user_address = gis_utils.geocode_address(address)
-
-    return user_address
-
-
-def _get_address_coordinates_from_geolocation(mycity_request):
-    """
-    Gets coordinates of the device location. Returns None if not provided
-    or not accessible.
-
-    :param mycity_request: MyCityRequestDataModel for the current request
-    :return dict: Dictionary containing coordinates of the device
-    """
-    user_address = None
-    if mycity_request.device_has_geolocation:
-        if mycity_request.geolocation_permission:
-            user_address = location_services_utils.convert_mycity_coordinates_to_arcgis(mycity_request)
-    return user_address
-
 
 def get_nearby_food_trucks(mycity_request):
     """
@@ -111,11 +74,11 @@ def get_nearby_food_trucks(mycity_request):
     mycity_response = MyCityResponseDataModel()
 
     # See if the user provided a custom address
-    user_address = _get_address_coordinates_from_session(mycity_request)
+    user_address = address_utils.get_address_coordinates_from_session(mycity_request)
 
     # If not, try to get user position from geolocation
     if not user_address:
-        user_address = _get_address_coordinates_from_geolocation(mycity_request)
+        user_address = address_utils.get_address_coordinates_from_geolocation(mycity_request)
 
     if not user_address:
         # Couldn't get address. Request the to use geolocation if possible, fall back to 
@@ -168,13 +131,6 @@ def get_nearby_food_trucks(mycity_request):
     except BadAPIResponse:
         mycity_response.output_speech = \
             "Hmm something went wrong. Maybe try again?"
-
-    except MultipleAddressError:
-        mycity_response.output_speech = \
-            speech_constants.MULTIPLE_ADDRESS_ERROR.format(address)
-        mycity_response.dialog_directive = "ElicitSlotZipCode"
-
-
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
