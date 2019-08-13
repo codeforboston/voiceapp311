@@ -1,6 +1,9 @@
 """
 Functions for Alexa responses related to trash day
 """
+from mycity.utilities.location_services_utils \
+    import request_device_address_permission_response, \
+    get_address_from_user_device
 from mycity.intents import intent_constants
 from mycity.intents.custom_errors import \
     InvalidAddressError, BadAPIResponse, MultipleAddressError
@@ -31,6 +34,7 @@ def get_trash_day_info(mycity_request):
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
+    mycity_request = get_address_from_user_device(mycity_request)
     if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
         current_address = \
             mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
@@ -97,9 +101,10 @@ def get_trash_day_info(mycity_request):
             mycity_response.should_end_session = False
 
     else:
-        logger.error("Error: Called trash_day_intent with no address")
-        mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
-        mycity_response.should_end_session = True
+        return request_device_address_permission_response()
+        # logger.error("Error: Called trash_day_intent with no address")
+        # mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
+        # mycity_response.should_end_session = True
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not

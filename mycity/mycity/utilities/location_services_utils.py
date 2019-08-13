@@ -1,6 +1,10 @@
-""" Methods for working with location based data """
-
+import requests
+import logging
+from mycity.intents import intent_constants
 import mycity.mycity_response_data_model as mycity_response_data_model
+
+""" Methods for working with location based data """
+logger = logging.getLogger(__name__)
 
 GENERIC_GEOLOCATION_PERMISSON_SPEECH = """
     Boston Info would like to use your location. 
@@ -10,6 +14,33 @@ GENERIC_DEVICE_PERMISSON_SPEECH = """
     Boston Info would like to use your device's address. 
     To turn on location sharing, please go to your Alexa app and follow the instructions."""
 
+
+def get_address_from_user_device(mycity_request):
+    """
+    checks Amazon api for device address permissions. 
+    If given, the address, if present, will be stored 
+    in the session attributes
+    :param mycity_request: MyCityRequestDataModel
+    :param mycity_response: MyCityResponseDataModel
+    :return : MyCityRequestModel object
+    """
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+
+    base_url = "https://api.amazonalexa.com/v1/devices/{}" \
+        "/settings/address".format(mycity_request.device_id)
+    head_info = {'Accept': 'application/json',
+                'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
+    response_object = requests.get(base_url, headers=head_info)
+
+    logger.debug("response object:{}".format(response_object))
+    if response_object.status_code == 200:
+        res = response_object.json()
+        if res['addressLine1'] is not None:
+            current_address = res['addressLine1']
+            mycity_request.session_attributes[
+                intent_constants.CURRENT_ADDRESS_KEY] = current_address
+    return mycity_request
+    
 
 def request_geolocation_permission_response():
     """
@@ -40,6 +71,7 @@ def request_device_address_permission_response():
     response.card_permissions = ["read::alexa:device:all:address"]
     response.should_end_session = True
     return response
+
 
 def convert_mycity_coordinates_to_arcgis(mycity_request)->dict:
     """

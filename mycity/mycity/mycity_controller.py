@@ -128,10 +128,11 @@ def on_intent(mycity_request):
     if mycity_request.intent_name == "GetAddressIntent":
         return get_address_from_session(mycity_request)
     elif mycity_request.intent_name == "TrashDayIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_trash_day_info(mycity_request)
+        # return request_user_address_response(mycity_request) \
+        #     if intent_constants.CURRENT_ADDRESS_KEY \
+        #     not in mycity_request.session_attributes \
+            # else get_trash_day_info(mycity_request)
+        return get_trash_day_info(mycity_request)
     elif mycity_request.intent_name == "SnowParkingIntent":
         return request_user_address_response(mycity_request) \
             if intent_constants.CURRENT_ADDRESS_KEY \
