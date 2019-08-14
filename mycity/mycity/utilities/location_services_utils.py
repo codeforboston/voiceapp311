@@ -33,12 +33,11 @@ def get_address_from_user_device(mycity_request):
     response_object = requests.get(base_url, headers=head_info)
 
     logger.debug("response object:{}".format(response_object))
-    if response_object.status_code == 200:
-        res = response_object.json()
-        if res['addressLine1'] is not None:
-            current_address = res['addressLine1']
-            mycity_request.session_attributes[
-                intent_constants.CURRENT_ADDRESS_KEY] = current_address
+    res = response_object.json()
+    if response_object.status_code == 200 and res['addressLine1'] is not None:
+        current_address = res['addressLine1']
+        mycity_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY] = current_address
     return mycity_request
     
 
