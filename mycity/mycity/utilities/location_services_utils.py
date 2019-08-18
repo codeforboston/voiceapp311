@@ -22,7 +22,8 @@ def get_address_from_user_device(mycity_request):
     in the session attributes
     :param mycity_request: MyCityRequestDataModel
     :param mycity_response: MyCityResponseDataModel
-    :return : MyCityRequestModel object
+    :return : MyCityRequestModel object and boolean indicating if we have
+        device address permissions
     """
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
@@ -38,7 +39,7 @@ def get_address_from_user_device(mycity_request):
         current_address = res['addressLine1']
         mycity_request.session_attributes[
             intent_constants.CURRENT_ADDRESS_KEY] = current_address
-    return mycity_request
+    return mycity_request, response_object.status_code == 200
     
 
 def request_geolocation_permission_response():
