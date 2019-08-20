@@ -68,14 +68,19 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.controller.on_intent(self.request)
         mock_intent.assert_called_with(self.request)
 
-    @mock.patch('mycity.mycity_controller.request_user_address_response')
+    @mock.patch('requests.get')
+    @mock.patch('mycity.utilities.location_services_utils.request_device_address_permission_response')
     def test_intent_that_needs_address_without_address_in_session_attributes(
             self,
+            mock_res,
             mock_intent
     ):
         self.request.intent_name = "TrashDayIntent"
-        self.controller.on_intent(self.request)
-        mock_intent.assert_called_with(self.request)
+        mock_request = self._mock_response(status=200, json_data=test_constants.ALEXA_DEVICE_ADDRESS)
+        mock_res.return_value = mock_request
+        result = self.controller.on_intent(self.request)
+        self.assertEqual(True, result)
+        # mock_intent.assert_called_with(self.request)
 
     def test_unknown_intent(self):
         self.request.intent_name = "MadeUpIntent"
