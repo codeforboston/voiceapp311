@@ -47,19 +47,19 @@ class GetAlertsIntentTestCase(base.BaseTestCase):
             self.stub_prune_normal_responses,
             self.stub_alerts_to_speech
         )
-        self.assertEquals(output_speech, response.output_speech)
+        self.assertEqual(output_speech, response.output_speech)
 
     def test_that_alerts_to_speech_output_concats_values_of_alert_dictionary_into_string(self):
         expected = 'This is a test. Big test.'
         alerts = dict()
         alerts[get_alerts_intent.Services.TRASH.value] = 'This is a test.'
         alerts[get_alerts_intent.Services.SCHOOLS.value] = 'Big test.'
-        self.assertEquals(expected, get_alerts_intent.alerts_to_speech_output(alerts))
+        self.assertEqual(expected, get_alerts_intent.alerts_to_speech_output(alerts))
 
     def test_that_alerts_to_speech_output_returns_default_response_if_no_alerts_in_dictionary(self):
         expected = constants.NO_ALERTS
         alerts = dict()
-        self.assertEquals(expected, get_alerts_intent.alerts_to_speech_output(alerts))
+        self.assertEqual(expected, get_alerts_intent.alerts_to_speech_output(alerts))
 
     def test_that_prune_normal_responses_returns_an_empty_dictionary_if_all_responses_are_normal(self):
         alerts = dict()

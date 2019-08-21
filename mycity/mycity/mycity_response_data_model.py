@@ -2,6 +2,7 @@
 Data Model for structuring responses from the skill implementation
 """
 import logging
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,8 @@ class MyCityResponseDataModel:
     def __init__(self):
         self._session_attributes = {}
         self._card_title = None
+        self._card_type = "Simple"
+        self._card_permissions = None
         self._output_speech = None
         self._reprompt_text = None
         self._should_end_session = None
@@ -34,16 +37,20 @@ class MyCityResponseDataModel:
         <MyCityResponseDataModel
             session_attributes={},
             card_title={},
+            card_type={},
+            card_permissions={},
             output_speech={},
             reprompt_text={},
             should_end_session={},
-            intent_variables={}
-            dialog_directive={}
-            slot_to_elicit={}
+            intent_variables={},
+            dialog_directive={},
+            slot_to_elicit={},
         >
         """.format(
             self._session_attributes,
             self._card_title,
+            self._card_type,
+            self._card_permissions,
             self._output_speech,
             self._reprompt_text,
             self._should_end_session,
@@ -170,3 +177,19 @@ class MyCityResponseDataModel:
                 'type': 'Dialog.ElicitSlot',
                 'slotToElicit': 'Neighborhood'
             }            
+
+    @property
+    def card_type(self):
+        return self._card_type
+
+    @card_type.setter
+    def card_type(self, value: str):
+        self._card_type = value
+
+    @property
+    def card_permissions(self):
+        return self._card_permissions
+
+    @card_permissions.setter
+    def card_permissions(self, value: List[str]):
+        self._card_permissions = value
