@@ -1,11 +1,11 @@
 """Alexa intent used to find crime incidents"""
 
-from dateutil.parser import parse
+import logging
 import mycity.intents.intent_constants as intent_constants
+from dateutil.parser import parse
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities.crime_incidents_api_utils import \
     get_crime_incident_response
-import logging
 
 # Constants
 CARD_TITLE_CRIME = "Crime Report"
