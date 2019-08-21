@@ -17,7 +17,7 @@ import json
 # path constants
 PROJECT_ROOT = os.path.join(os.getcwd(), os.path.pardir, os.path.pardir)
 TEMP_DIR_PATH = os.path.join(PROJECT_ROOT, 'temp')
-LAMBDA_REL_PATH = 'platforms/amazon/lambda/custom/lambda_function.py'
+LAMBDA_REL_PATH = 'lambda_function.py'
 LAMBDA_FUNCTION_PATH = os.path.join(PROJECT_ROOT, LAMBDA_REL_PATH)
 INTERACTION_MODEL_REL_PATH = 'platforms/amazon/models/en_US.json'
 INTERACTION_MODEL_PATH = os.path.join(PROJECT_ROOT, INTERACTION_MODEL_REL_PATH)

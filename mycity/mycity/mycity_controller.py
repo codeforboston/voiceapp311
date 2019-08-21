@@ -143,16 +143,14 @@ def on_intent(mycity_request):
             not in mycity_request.session_attributes \
             else get_crime_incidents_intent(mycity_request)
     elif mycity_request.intent_name == "FoodTruckIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_nearby_food_trucks(mycity_request)
+        return get_nearby_food_trucks(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":
         return get_help_response(mycity_request)
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
-            mycity_request.intent_name == "AMAZON.CancelIntent":
+            mycity_request.intent_name == "AMAZON.CancelIntent" or \
+                mycity_request.intent_name == "AMAZON.NavigateHomeIntent":
         return handle_session_end_request(mycity_request)
     elif mycity_request.intent_name == "FeedbackIntent":
         return submit_feedback(mycity_request)

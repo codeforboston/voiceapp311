@@ -179,8 +179,8 @@ def validate_found_address(found_address, user_provided_address):
         return False
 
     # Re-collect replaces South with S and North with N
-    found_address["street_name"] = re.sub(r'^S\.? ', "South", found_address["street_name"])
-    found_address["street_name"] = re.sub(r'^N\.? ', "North", found_address["street_name"])
+    found_address["street_name"] = re.sub(r'^S\.? ', "South ", found_address["street_name"])
+    found_address["street_name"] = re.sub(r'^N\.? ', "North ", found_address["street_name"])
 
     if found_address["street_name"].lower() != \
             user_provided_address["street_name"].lower():

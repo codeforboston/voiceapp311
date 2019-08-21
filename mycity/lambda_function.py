@@ -5,6 +5,9 @@ This module is the entry point for processing voice data from an Alexa device.
 """
 
 import logging
+import traceback
+
+from mycity.intents.feedback_intent import build_slack_traceback, send_to_slack
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_controller import execute_request
 
@@ -18,7 +21,7 @@ def lambda_handler(event, context):
     :param event: JSON object containing the raw request information received
         from the Alexa service platform
     :param context: a LambdaContext object containing runtime info
-    :return: JSON response object to be sent to the Alexa service platform 
+    :return: JSON response object to be sent to the Alexa service platform
     """
     # Handle logger configuration here at the first use of the logger
     while len(logging.root.handlers) > 0:
@@ -29,9 +32,38 @@ def lambda_handler(event, context):
     )
     logger.debug('Amazon request received: ' + str(event))
 
-    model = platform_to_mycity_request(event)
-    return mycity_response_to_platform(execute_request(model))
+    try:
+        model = platform_to_mycity_request(event)
+        return mycity_response_to_platform(execute_request(model))
+    except Exception as error:
+        trace = traceback.format_exc()
+        send_to_slack(build_slack_traceback(error, trace))
+        raise
 
+def _get_location_services_info(event: object, mycity_request: object) -> object:
+    """
+    Adds Alexa location services to MyCityRequestDataModel
+
+    :param event: event JSON object provided by Alexa
+    :param mycity_request: MyCityRequestDataModel to add location service info to
+    :return MyCityRequestDataModel: The new MyCityRequestDataModel containing
+        location service info
+    """
+    # Determine geolocation services support
+    system_context = event['context']['System']
+    device_context = system_context.get('device', {})
+    supported_interfaces = device_context.get("supportedInterfaces", {})
+    mycity_request.device_has_geolocation = "Geolocation" in supported_interfaces
+
+    # Determine permissions
+    if (mycity_request.device_has_geolocation):
+        mycity_request.geolocation_permission = "Geolocation" in event["context"]
+
+    # Get coordinates
+    if (mycity_request.geolocation_permission):
+        mycity_request.geolocation_coordinates = event["context"]["Geolocation"].get("coordinate", {})
+
+    return mycity_request
 
 def platform_to_mycity_request(event):
     """
@@ -44,20 +76,30 @@ def platform_to_mycity_request(event):
     """
     logger.debug('Amazon request received: ' + str(event))
     mycity_request = MyCityRequestDataModel()
+
+    # Get base request information
     mycity_request.request_type = event['request']['type']
     mycity_request.request_id = event['request']['requestId']
+
+    # Get session information
     mycity_request.is_new_session = event['session']['new']
     mycity_request.session_id = event['session']['sessionId']
+    mycity_request.application_id = event['session']['application']['applicationId']
 
+    # Get device information
     system_context = event['context']['System']
-    mycity_request.device_id = system_context.get('device', {}).get('deviceId', "unknown")
+    device_context = system_context.get('device', {})
+    mycity_request.device_id = device_context.get('deviceId', "unknown")
     mycity_request.api_access_token = system_context.get('apiAccessToken', "none")
+
+    # Get location services info
+    mycity_request = _get_location_services_info(event, mycity_request)
 
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
     else:
         mycity_request.session_attributes = {}
-    mycity_request.application_id = event['session']['application']['applicationId']
+    
     if 'intent' in event['request']:
         mycity_request.intent_name = event['request']['intent']['name']
         if 'slots' in event['request']['intent']:
@@ -101,14 +143,14 @@ def mycity_response_to_platform(mycity_response):
                     'content': str(mycity_response.output_speech)
                     }
             }
-        else: 
+        else:
             response = {
                 'outputSpeech': {
                     'type': 'PlainText',
                     'text': mycity_response.output_speech
              },
                 'card': {
-                    'type': 'Simple',
+                    'type': str(mycity_response.card_type),
                     'title': str(mycity_response.card_title),
                     'content': str(mycity_response.output_speech)
                 },
@@ -130,7 +172,7 @@ def mycity_response_to_platform(mycity_response):
                 'text': mycity_response.output_speech
             },
             'card': {
-                'type': 'Simple',
+                'type': str(mycity_response.card_type),
                 'title': str(mycity_response.card_title),
                 'content': str(mycity_response.output_speech)
             },
@@ -142,6 +184,9 @@ def mycity_response_to_platform(mycity_response):
             },
             'shouldEndSession': mycity_response.should_end_session
         }
+
+    if mycity_response.card_permissions:
+        response['card']['permissions'] = mycity_response.card_permissions
 
     if mycity_response.dialog_directive == "Dialog.ElicitSlot":
         # Add the slot we want to elicit on top of the normal output.
