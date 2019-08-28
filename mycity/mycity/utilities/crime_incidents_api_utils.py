@@ -8,22 +8,22 @@ from mycity.utilities.gis_utils import geocode_address
 import logging
 
 RESOURCEID = "12cb3883-56f5-47de-afa5-3b1cf61b257b"
-QUERY_LIMIT = 3
 CRIME_INCIDENTS_SQL_URL = \
     "https://data.boston.gov/api/3/action/datastore_search_sql"
 
 logger = logging.getLogger(__name__)
 
 
-def get_crime_incident_response(address):
+def get_crime_incident_response(address, number_incidents):
     """
     Executes and returns the crime incident request response
 
     :param address: address to query
+    :param number_incidents: number of incidents to query
     :return: the raw json response
 
     """
-    url_parameters = {"sql": _build_query_string(address)}
+    url_parameters = {"sql": _build_query_string(address, number_incidents)}
     logger.debug("Finding crime incidents information for {} using query {}"
         .format(address, url_parameters))
     with requests.Session() as session:
@@ -34,11 +34,12 @@ def get_crime_incident_response(address):
     return {}
 
 
-def _build_query_string(address):
+def _build_query_string(address, number_incidents):
     """
     Builds the SQL query given an address
 
     :param address: address to query
+    :param number_incidents: number of incidents to query
     :return: a SQL query string
 
     """
@@ -48,7 +49,7 @@ def _build_query_string(address):
         .format(RESOURCEID,
                 coordinates[0],
                 coordinates[1],
-                QUERY_LIMIT)
+                number_incidents)
 
 
 def _get_coordinates_for_address(address):
