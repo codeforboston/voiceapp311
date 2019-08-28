@@ -17,7 +17,8 @@ class CrimeIncidentsAPIUtilitiesTestCase(base.BaseTestCase):
         mock_get.return_value = mock_resp
 
         test_address = "46 Everdean St Boston, MA"
-        result = get_crime_incident_response(test_address)
+        test_number_incidents = 4
+        result = get_crime_incident_response(test_address, test_number_incidents)
         self.assertEqual(
             True,
             result['success']
