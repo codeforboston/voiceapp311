@@ -12,6 +12,9 @@ CARD_TITLE_CRIME = "Crime Report"
 RESPONSE_TEXT_TEMPLATE = " {} an incident at {} occurred categorized as {}."
 ERROR_RESPONSE = "An error occurred requesting crime incidents for this address"
 NO_RESULT_RESPONSE = "We found no incidents in that area"
+REQUEST_NUMBER_CRIME_INCIDENTS_SLOT_NAME = 'number_incidents'
+MAX_NUMBER_OF_CRIME_INCIDENTS = 10
+DEFAULT_NUMBER_OF_CRIME_INCIDENTS = 3
 
 # Crime API response fields
 OFFENSE_FIELD = "OFFENSE_DESCRIPTION"
@@ -24,6 +27,21 @@ RECORDS_FIELD = "records"
 
 logger = logging.getLogger(__name__)
 
+def number_of_crime_incidents(mycity_request):
+    """
+    Returns number of reports from the request if available or a default value
+    :param mycity_request: MyCityRequestDataModel object
+    :return: Number of crime incidents to return from this intent
+    """
+    if REQUEST_NUMBER_CRIME_INCIDENTS_SLOT_NAME in \
+            mycity_request.intent_variables and \
+            "value" in mycity_request.intent_variables[
+                REQUEST_NUMBER_CRIME_INCIDENTS_SLOT_NAME]:
+        return min(
+            int(mycity_request.intent_variables[REQUEST_NUMBER_CRIME_INCIDENTS_SLOT_NAME]["value"]),
+            MAX_NUMBER_OF_CRIME_INCIDENTS)
+
+    return DEFAULT_NUMBER_OF_CRIME_INCIDENTS
 
 def get_crime_incidents_intent(mycity_request):
     """
@@ -39,7 +57,8 @@ def get_crime_incidents_intent(mycity_request):
             mycity_request.session_attributes:
         address = mycity_request. \
             session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
-        response = get_crime_incident_response(address)
+        number_incidents = number_of_crime_incidents(mycity_request)
+        response = get_crime_incident_response(address, number_incidents)
         mycity_response.output_speech = \
             _build_text_from_response(response)
     else:
