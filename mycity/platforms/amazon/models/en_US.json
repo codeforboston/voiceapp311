@@ -1002,9 +1002,16 @@
                                 "It's {Address}",
                                 "{Address}"
                             ]
+                        },
+                        {
+                            "name": "number_incidents",
+                            "type": "AMAZON.NUMBER"
                         }
                     ],
                     "samples": [
+                        "most recent {number_incidents} crime activity",
+                        "top {number_incidents} incidents happened near me",
+                        "top {number_incidents} crime activity",
                         "what's the crime activity in my area",
                         "what is the crime activity in my area",
                         "what crime incidents occurred in my area",
@@ -1347,6 +1354,13 @@
                             "prompts": {
                                 "elicitation": "Elicit.Slot.621270469710.323849903546"
                             }
+                        },
+                        {
+                            "name": "number_incidents",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
                         }
                     ]
                 }
