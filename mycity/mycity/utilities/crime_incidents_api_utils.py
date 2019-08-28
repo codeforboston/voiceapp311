@@ -8,7 +8,7 @@ from mycity.utilities.gis_utils import geocode_address
 import logging
 
 RESOURCEID = "12cb3883-56f5-47de-afa5-3b1cf61b257b"
-QUERY_LIMIT = 5
+QUERY_LIMIT = 3
 CRIME_INCIDENTS_SQL_URL = \
     "https://data.boston.gov/api/3/action/datastore_search_sql"
 
