@@ -8,11 +8,13 @@ logger = logging.getLogger(__name__)
 
 GENERIC_GEOLOCATION_PERMISSON_SPEECH = """
     Boston Info would like to use your location. 
-    To turn on location sharing, please go to your Alexa app and follow the instructions."""
+    To turn on location sharing, please go to your Alexa app and 
+    follow the instructions."""
 
 GENERIC_DEVICE_PERMISSON_SPEECH = """
     Boston Info would like to use your device's address. 
-    To turn on location sharing, please go to your Alexa app and follow the instructions."""
+    To turn on location sharing, please go to your Alexa app and 
+    follow the instructions."""
 
 
 def get_address_from_user_device(mycity_request):
@@ -25,12 +27,14 @@ def get_address_from_user_device(mycity_request):
     :return : MyCityRequestModel object and boolean indicating if we have
         device address permissions
     """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.
+                 get_logger_string())
 
     base_url = "https://api.amazonalexa.com/v1/devices/{}" \
         "/settings/address".format(mycity_request.device_id)
     head_info = {'Accept': 'application/json',
-                'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
+                 'Authorization': 'Bearer {}'.format(mycity_request.
+                                                     api_access_token)}
     response_object = requests.get(base_url, headers=head_info)
 
     logger.debug("response object:{}".format(response_object))
@@ -57,6 +61,7 @@ def request_geolocation_permission_response():
     response.should_end_session = True
     return response
 
+
 def request_device_address_permission_response():
     """
     Builds a response object for requesting geolocation permissions. The
@@ -73,12 +78,12 @@ def request_device_address_permission_response():
     return response
 
 
-def convert_mycity_coordinates_to_arcgis(mycity_request)->dict:
+def convert_mycity_coordinates_to_arcgis(mycity_request) -> dict:
     """
     Gets coordinates from a MyCityRequestDataModel and converts them to dictionary
     required by GIS utilities
 
-    :param mycity_request: MyCityRequstDataModel containing geolcation coordinates
+    :param mycity_request: MyCityRequstDataModel containing geolocation coordinates
         to convert
     :return dictionary: x, y coordinates of device location
     """

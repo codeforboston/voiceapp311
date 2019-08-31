@@ -40,7 +40,9 @@ def lambda_handler(event, context):
         send_to_slack(build_slack_traceback(error, trace))
         raise
 
-def _get_location_services_info(event: object, mycity_request: object) -> object:
+
+def _get_location_services_info(event: object,
+                                mycity_request: object) -> object:
     """
     Adds Alexa location services to MyCityRequestDataModel
 
@@ -53,17 +55,21 @@ def _get_location_services_info(event: object, mycity_request: object) -> object
     system_context = event['context']['System']
     device_context = system_context.get('device', {})
     supported_interfaces = device_context.get("supportedInterfaces", {})
-    mycity_request.device_has_geolocation = "Geolocation" in supported_interfaces
+    mycity_request.device_has_geolocation = "Geolocation" in \
+                                            supported_interfaces
 
     # Determine permissions
-    if (mycity_request.device_has_geolocation):
-        mycity_request.geolocation_permission = "Geolocation" in event["context"]
+    if mycity_request.device_has_geolocation:
+        mycity_request.geolocation_permission = "Geolocation" in \
+                                                event["context"]
 
     # Get coordinates
-    if (mycity_request.geolocation_permission):
-        mycity_request.geolocation_coordinates = event["context"]["Geolocation"].get("coordinate", {})
+    if mycity_request.geolocation_permission:
+        mycity_request.geolocation_coordinates = \
+            event["context"]["Geolocation"].get("coordinate", {})
 
     return mycity_request
+
 
 def platform_to_mycity_request(event):
     """
@@ -84,13 +90,15 @@ def platform_to_mycity_request(event):
     # Get session information
     mycity_request.is_new_session = event['session']['new']
     mycity_request.session_id = event['session']['sessionId']
-    mycity_request.application_id = event['session']['application']['applicationId']
+    mycity_request.application_id = \
+        event['session']['application']['applicationId']
 
     # Get device information
     system_context = event['context']['System']
     device_context = system_context.get('device', {})
     mycity_request.device_id = device_context.get('deviceId', "unknown")
-    mycity_request.api_access_token = system_context.get('apiAccessToken', "none")
+    mycity_request.api_access_token = \
+        system_context.get('apiAccessToken', "none")
 
     # Get location services info
     mycity_request = _get_location_services_info(event, mycity_request)
@@ -103,7 +111,8 @@ def platform_to_mycity_request(event):
     if 'intent' in event['request']:
         mycity_request.intent_name = event['request']['intent']['name']
         if 'slots' in event['request']['intent']:
-            mycity_request.intent_variables = event['request']['intent']['slots']
+            mycity_request.intent_variables = \
+                event['request']['intent']['slots']
     else:
         mycity_request.intent_name = None
     mycity_request.output_speech = None
@@ -137,7 +146,7 @@ def mycity_response_to_platform(mycity_response):
                 'directives': [
                     mycity_response.dialog_directive
                 ],
-                'card' : {
+                'card': {
                     'type': 'Simple',
                     'title': str(mycity_response.card_title),
                     'content': str(mycity_response.output_speech)
@@ -148,7 +157,7 @@ def mycity_response_to_platform(mycity_response):
                 'outputSpeech': {
                     'type': 'PlainText',
                     'text': mycity_response.output_speech
-             },
+                },
                 'card': {
                     'type': str(mycity_response.card_type),
                     'title': str(mycity_response.card_title),
@@ -159,9 +168,9 @@ def mycity_response_to_platform(mycity_response):
                         'type': 'PlainText',
                         'text': mycity_response.reprompt_text
                  }
-             },
+                },
                 'shouldEndSession': mycity_response.should_end_session,
-                'directives' : [
+                'directives': [
                     mycity_response.dialog_directive
                     ]
             }

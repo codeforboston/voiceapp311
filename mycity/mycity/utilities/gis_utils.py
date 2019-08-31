@@ -5,9 +5,10 @@ NOTE: Intents that query FeatureServers may fail because AWS will
 kill any computation that takes longer than 3 secs.
 
 """
-from arcgis.gis import *
+from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
+from arcgis.geocoding import reverse_geocode
 from arcgis import geometry
 import logging
 
@@ -71,6 +72,17 @@ def geocode_address(m_address):
     return m_location['location']
 
 
+def reverse_geocode_addr(coord_list):
+    """
+    Given a list of [Long, Lat] values, reverse geocode to identify which
+    city and state those values are. Used to ensure that a certain provided
+    address is in Boston, MA
+    :param coord_list: a list of [Long, Lat]
+    :return: a descriptive location
+    """
+    return reverse_geocode(coord_list)
+
+
 def calculate_distance(feature1, feature2):
     """
     :param feature1: the first feature
@@ -79,8 +91,8 @@ def calculate_distance(feature1, feature2):
     """
     geometry1 = feature1  # feature1 is the address, which is already a geometry
     geometry2 = feature2['geometry']
-    spation_ref = {"wkid": 4326}
-    return geometry.distance(spation_ref,
+    spatial_ref = {"wkid": 4326}
+    return geometry.distance(spatial_ref,
                              geometry1,
                              geometry2,
                              distance_unit='',
