@@ -66,9 +66,9 @@ def execute_request(mycity_request):
     #     raise ValueError("Invalid Application ID")
 
     # First check if user's device is in Boston
-    lat = mycity_request.geolocation_coordinates['latitudeInDegrees']
-    long = mycity_request.geolocation_coordinates['longitudeInDegrees']
-    if lat is not None and long is not None:
+    if mycity_request.geolocation_coordinates is not None:
+        lat = mycity_request.geolocation_coordinates['latitudeInDegrees']
+        long = mycity_request.geolocation_coordinates['longitudeInDegrees']
         location = gis_utils.reverse_geocode_addr([long, lat])
         if location['address']['City'] != 'Boston' or \
                 location['address']['Region'] != 'Massachusetts':
