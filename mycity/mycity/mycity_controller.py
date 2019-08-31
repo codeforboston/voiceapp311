@@ -20,6 +20,7 @@ from .intents.farmers_market_intent import get_farmers_markets_today
 from .intents.food_truck_intent import get_nearby_food_trucks
 from .intents import intent_constants
 import logging
+import mycity.utilities.gis_utils as gis_utils
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,10 @@ HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
         "and farmers markets, info about snow emergencies, the latest "\
         "three one one reports, and the latest crime reports! "\
         "If you have feedback for the skill, say, 'I have a suggestion.'"
+
+NOT_IN_BOSTON_SPEECH = 'Welcome to the Boston Info skill. I see that you ' \
+                       'are not in Boston at the moment. Please use this ' \
+                       'skill while in Boston. See you later!'
 
 
 def execute_request(mycity_request):
@@ -59,6 +64,18 @@ def execute_request(mycity_request):
     # if (mcd.application_id !=
     #         "amzn1.echo-sdk-ams.app.[unique-value-here]"):
     #     raise ValueError("Invalid Application ID")
+
+    # First check if user's device is in Boston
+    lat = mycity_request.geolocation_coordinates['latitudeInDegrees']
+    long = mycity_request.geolocation_coordinates['longitudeInDegrees']
+    if lat is not None and long is not None:
+        location = gis_utils.reverse_geocode_addr([long, lat])
+        if location['address']['City'] != 'Boston' or \
+                location['address']['Region'] != 'Massachusetts':
+            mycity_response = MyCityResponseDataModel()
+            mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
+            # TODO: End Session
+            return mycity_response
 
     if mycity_request.is_new_session:
         mycity_request = on_session_started(mycity_request)
