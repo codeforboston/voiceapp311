@@ -44,22 +44,23 @@ def get_snow_emergency_parking_intent(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
 
-    # If not provided, try to get the user address through geolocation and device address
     coordinates = None
     if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
+        # If not provided, try to get the user address through geolocation and device address
+
         coordinates = address_utils.get_address_coordinates_from_geolocation(mycity_request)
 
         if not coordinates: 
             if mycity_request.device_has_geolocation:
                 return location_services_utils.request_geolocation_permission_response()
 
-            # Try getting device location
+            # Try getting registered device address
             mycity_request, location_permissions = location_services_utils.get_address_from_user_device(mycity_request)
             if not location_permissions:
                 return location_services_utils.request_device_address_permission_response()
 
     
-    # If don't have coordinates or an address by now, ask the user
+    # If we don't have coordinates or an address by now, and we have all required permissions, ask the user
     if not coordinates and intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
         return user_address_intent.request_user_address_response(mycity_request)
 
