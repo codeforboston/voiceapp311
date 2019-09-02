@@ -38,7 +38,8 @@ class Finder(object):
             resource_url,
             address_key,
             output_speech,
-            output_speech_prep_func
+            output_speech_prep_func,
+            origin_coordinates = None
     ):
         """
         :param req: MyCityRequestDataModel
@@ -54,13 +55,22 @@ class Finder(object):
         :param output_speech_prep_func: function that will access
             and modify fields in the returned record for output_speech
             formatted string
+        :param origin_coordinates: coordinates to use as the orgin for
+            distance search. If None, will use the address in the req
+            parameter
         """
         self.resource_url = resource_url
         self.address_key = address_key
         self.output_speech = output_speech
         self.field_formatter = output_speech_prep_func
-        # pull the origin address from request data model
-        self.origin_address = Finder.address_builder(req)
+
+        if origin_coordinates is None:
+            # pull the origin address from request data model
+            self.origin_address = Finder.address_builder(req)
+            self.origin_coordinates = self.geocode_origin_address()
+        else:
+            self.origin_address = None
+            self.origin_coordinates = origin_coordinates
 
     def get_records(self):
         """
@@ -98,11 +108,10 @@ class Finder(object):
         logger.debug('Last 5 records: ' + str(records[:5]))
         records = self.add_city_and_state_to_records(records)
         
-        geocoded_origin_address = self.geocode_origin_address()
         destination_coordinate_dictionary = self.records_to_coordinate_dict(records)
         api_access_token = arcgis_utils.generate_access_token()
         closest_dest = arcgis_utils.find_closest_route(api_access_token,
-                                                        geocoded_origin_address,
+                                                        self.origin_coordinates,
                                                         destination_coordinate_dictionary)
 
         closest_record = \
