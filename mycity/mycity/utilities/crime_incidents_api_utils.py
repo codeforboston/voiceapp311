@@ -19,7 +19,8 @@ def get_crime_incident_response(origin_coordinates):
     """
     Executes and returns the crime incident request response
 
-    :param origin_coordinates: dictionary or origin_coordinates to query
+    :param origin_coordinates: dictionary of origin_coordinates to query.
+        Expects keys of 'x' and 'y'
     :return: the raw json response
 
     """
