@@ -117,8 +117,9 @@ def build_slack_traceback(error, trace):
         'feedback type and text received:',
         error.__class__.__name__ + ', ' + trace
     )
+    env = os.environ.get('WHOAMI', 'unknown')
     return f'''
-An unhandled error occured:
+An unhandled error occured in `{env}` environment:
 `{error.__class__.__name__}({repr(str(error))})`
 
 ```
