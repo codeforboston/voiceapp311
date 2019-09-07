@@ -15,17 +15,18 @@ CRIME_INCIDENTS_SQL_URL = \
 logger = logging.getLogger(__name__)
 
 
-def get_crime_incident_response(address):
+def get_crime_incident_response(origin_coordinates):
     """
     Executes and returns the crime incident request response
 
-    :param address: address to query
+    :param origin_coordinates: dictionary of origin_coordinates to query.
+        Expects keys of 'x' and 'y'
     :return: the raw json response
 
     """
-    url_parameters = {"sql": _build_query_string(address)}
-    logger.debug("Finding crime incidents information for {} using query {}"
-        .format(address, url_parameters))
+    url_parameters = {"sql": _build_query_string(origin_coordinates)}
+    logger.debug("Finding crime incidents information for {}, {} using query {}"
+        .format(origin_coordinates['x'], origin_coordinates['y'], url_parameters))
     with requests.Session() as session:
         response = session.get(CRIME_INCIDENTS_SQL_URL, params=url_parameters)
 
@@ -34,33 +35,19 @@ def get_crime_incident_response(address):
     return {}
 
 
-def _build_query_string(address):
+def _build_query_string(origin_coordinates):
     """
     Builds the SQL query given an address
 
-    :param address: address to query
+    :param address: origin_coordinates to query
     :return: a SQL query string
 
     """
-    coordinates = _get_coordinates_for_address(address)
+    _lat = "{:.2f}".format(float(origin_coordinates['y']))
+    _long = "{:.2f}".format(float(origin_coordinates['x']))
     return """SELECT * FROM "{}" WHERE "Lat" LIKE '{}%' AND \
         "Long" LIKE '{}%' LIMIT {}""" \
         .format(RESOURCEID,
-                coordinates[0],
-                coordinates[1],
+                _lat,
+                _long,
                 QUERY_LIMIT)
-
-
-def _get_coordinates_for_address(address):
-    """
-    Populates the GPS coordinates for the provided address
-
-    :param address: address to query
-    :return: a tuple of the form (lat, long)
-
-    """
-    coordinates = geocode_address(address)
-    logger.debug("Got coordinates: {}".format(coordinates))
-    _lat = "{:.2f}".format(float(coordinates['y']))
-    _long = "{:.2f}".format(float(coordinates['x']))
-    return _lat, _long
