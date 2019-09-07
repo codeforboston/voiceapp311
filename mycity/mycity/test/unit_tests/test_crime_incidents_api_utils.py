@@ -16,8 +16,10 @@ class CrimeIncidentsAPIUtilitiesTestCase(base.BaseTestCase):
             json_data=test_constants.GET_CRIME_INCIDENTS_API_MOCK)
         mock_get.return_value = mock_resp
 
-        test_address = "46 Everdean St Boston, MA"
-        result = get_crime_incident_response(test_address)
+        test_coords = {
+            'x': 42.316466,
+            'y': -71.056769}
+        result = get_crime_incident_response(test_coords)
         self.assertEqual(
             True,
             result['success']
