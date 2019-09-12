@@ -1,6 +1,7 @@
 import requests
 import logging
 from mycity.intents import intent_constants
+import mycity.utilities.gis_utils as gis_utils
 import mycity.mycity_response_data_model as mycity_response_data_model
 
 """ Methods for working with location based data """
@@ -97,3 +98,25 @@ def convert_mycity_coordinates_to_arcgis(mycity_request) -> dict:
         gis_coordinates['x'] = mycity_request.geolocation_coordinates["longitudeInDegrees"]
 
     return gis_coordinates
+
+
+def is_in_city(mycity_request, city):
+    """
+    Reverse geo-locate the session's coordinates to determine if the device is
+    in Boston
+    :param city: City to check reverse geo-location to
+    :param mycity_request: MyCityRequestDataModel
+    :return: True or False
+    """
+    logger.debug('MyCityRequestDataModel received:' +
+                 mycity_request.get_logger_string())
+
+    if mycity_request.geolocation_coordinates:
+        lat = mycity_request.geolocation_coordinates['latitudeInDegrees']
+        long = mycity_request.geolocation_coordinates['longitudeInDegrees']
+        location = gis_utils.reverse_geocode_addr([long, lat])
+        if location['address']['City'] != city or \
+                location['address']['Region'] != 'Massachusetts':
+            return False
+
+    return True
