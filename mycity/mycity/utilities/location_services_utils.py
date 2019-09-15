@@ -3,6 +3,7 @@ import logging
 from mycity.intents import intent_constants
 import mycity.utilities.gis_utils as gis_utils
 import mycity.mycity_response_data_model as mycity_response_data_model
+from streetaddress import StreetAddressParser
 
 """ Methods for working with location based data """
 logger = logging.getLogger(__name__)
@@ -117,6 +118,27 @@ def is_in_city(mycity_request, city):
         location = gis_utils.reverse_geocode_addr([long, lat])
         if location['address']['City'] != city or \
                 location['address']['Region'] != 'Massachusetts':
+            return False
+
+    return True
+
+
+def is_current_address_in_city(mycity_request, city):
+    """
+    Checks that the address set for the current session is
+    located in provided city. If the city can't be determined,
+    returns True.
+    :param mycity_request: MyCityRequestDataModel
+    :param city: City to check is in address
+    """
+    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
+        current_address = \
+            mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+        address_parser = StreetAddressParser()
+        a = address_parser.parse(current_address)
+
+        other_address = a["other"]
+        if other_address and not other_address.isdigit() and city not in other_address:
             return False
 
     return True
