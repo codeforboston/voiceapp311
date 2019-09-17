@@ -1009,9 +1009,13 @@
                         }
                     ],
                     "samples": [
+                        "{number_incidents} crimes near me",
+                        "tell me {number_incidents} crimes",
+                        "{number_incidents} most recent incidents happened near me",
+                        "what {number_incidents} crimes were reported",
+                        "give me {number_incidents} crime reports",
+                        "what are the {number_incidents} most recent crime reports",
                         "most recent {number_incidents} crime activity",
-                        "top {number_incidents} incidents happened near me",
-                        "top {number_incidents} crime activity",
                         "what's the crime activity in my area",
                         "what is the crime activity in my area",
                         "what crime incidents occurred in my area",
