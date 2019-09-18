@@ -42,6 +42,9 @@ def get_trash_day_info(mycity_request):
 
     mycity_response = MyCityResponseDataModel()
 
+    # TODO: Determine if the address is in Boston using the new function
+    # addr_in_city('477 Cambridge St, Allston, MA 02134')
+
     # Determine if we have required address information. Request if we do not.
     if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
         mycity_request, location_permissions = get_address_from_user_device(mycity_request)
