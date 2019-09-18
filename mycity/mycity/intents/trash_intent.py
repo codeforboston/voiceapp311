@@ -1,9 +1,11 @@
 """
 Functions for Alexa responses related to trash day
 """
-from mycity.utilities.location_services_utils \
-    import request_device_address_permission_response, \
-    get_address_from_user_device, is_current_address_in_city
+from mycity.utilities.location_services_utils import \
+    request_device_address_permission_response, \
+    get_address_from_user_device, \
+    is_current_address_in_city, \
+    addr_in_city
 from mycity.intents import intent_constants
 from mycity.intents.custom_errors import \
     InvalidAddressError, BadAPIResponse, MultipleAddressError
@@ -39,6 +41,9 @@ def get_trash_day_info(mycity_request):
                  mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
+
+    # TODO: Determine if the address is in Boston using the new function
+    # addr_in_city('477 Cambridge St, Allston, MA 02134')
 
     # Determine if we have required address information. Request if we do not.
     if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:

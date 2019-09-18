@@ -15,6 +15,21 @@ import logging
 logger = logging.getLogger(__name__)
 dev_gis = GIS()
 
+# A list of neighborhoods in Boston for address geocoding
+NEIGHBORHOODS = ['Allston',
+                 'Boston',
+                 'Brighton',
+                 'Charlestown',
+                 'Dorchester Center',
+                 'East Boston',
+                 'Hyde Park',
+                 'Jamaica Plain',
+                 'Mattapan',
+                 'Roslindale',
+                 'Roxbury',
+                 'South Boston',
+                 'West Roxbury']
+
 
 def get_features_from_feature_server(url, query):
     """
@@ -70,6 +85,21 @@ def geocode_address(m_address):
     m_address = m_address + ", City: Boston, State: MA"
     m_location = geocode(address=m_address)[0]
     return m_location['location']
+
+
+def geocode_addr(addr, city):
+    """
+    Given a string and a city, determine if the address is in Boston, MA
+    :param addr: string corresponding to the address
+    :param city: the city of interest
+    :return: boolean
+    """
+    m_location = geocode(addr)
+    if m_location[0]['attributes']['MetroArea'] == city and \
+            m_location[0]['attributes']['City'] in NEIGHBORHOODS:
+        return True
+    else:
+        return False
 
 
 def reverse_geocode_addr(coord_list):

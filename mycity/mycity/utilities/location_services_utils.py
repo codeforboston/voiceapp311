@@ -123,6 +123,16 @@ def is_in_city(mycity_request, city):
     return True
 
 
+def addr_in_city(addr):
+    """
+    Call the geocode function to determine if an address is in Boston
+    :param addr: the string to search
+    :return: boolean
+    """
+    city = 'Boston Metro Area'
+    return gis_utils.geocode_addr(addr, city)
+
+
 def is_current_address_in_city(mycity_request, city):
     """
     Checks that the address set for the current session is
