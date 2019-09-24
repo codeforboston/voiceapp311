@@ -5,11 +5,12 @@ NOTE: Intents that query FeatureServers may fail because AWS will
 kill any computation that takes longer than 3 secs.
 
 """
-from arcgis.gis import *
+import logging
+
+from arcgis import geometry
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
-from arcgis import geometry
-import logging
+from arcgis.gis import *
 
 logger = logging.getLogger(__name__)
 dev_gis = GIS()

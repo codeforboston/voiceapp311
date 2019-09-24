@@ -2,9 +2,10 @@
 Uses ArcGIS to find location based information about Boston city services
 """
 
+import logging
+
 from mycity.utilities.finder.Finder import Finder
 from mycity.utilities.gis_utils import get_features_from_feature_server
-import logging
 
 logger = logging.getLogger(__name__)
 

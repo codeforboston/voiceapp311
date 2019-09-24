@@ -211,4 +211,3 @@ class MyCityRequestDataModel:
             raise Exception("Missing expected dictionary key set on geolocation_coordinates")
 
         self._geolocation_coordinates = value
-    

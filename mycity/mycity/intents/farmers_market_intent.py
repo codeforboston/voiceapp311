@@ -1,10 +1,12 @@
 """
 Farmers Market Intent
 """
-import mycity.utilities.gis_utils as gis_utils
-import mycity.utilities.datetime_utils as date
 import logging
+
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.utilities.datetime_utils as date
+import mycity.utilities.gis_utils as gis_utils
+
 from .custom_errors import BadAPIResponse
 
 logger = logging.getLogger(__name__)

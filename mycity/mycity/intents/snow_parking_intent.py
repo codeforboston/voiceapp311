@@ -1,14 +1,15 @@
 """Alexa intent used to find snow emergency parking"""
 
+import logging
+
+from mycity.intents.custom_errors import InvalidAddressError
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.speech_constants.snow_parking_intent as constants
 import mycity.intents.user_address_intent as user_address_intent
-from mycity.intents.custom_errors import InvalidAddressError
-from mycity.utilities.finder.FinderCSV import FinderCSV
-import mycity.utilities.address_utils as address_utils
-import mycity.utilities.location_services_utils as location_services_utils
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-import logging
+import mycity.utilities.address_utils as address_utils
+from mycity.utilities.finder.FinderCSV import FinderCSV
+import mycity.utilities.location_services_utils as location_services_utils
 
 PARKING_INFO_URL = "http://bostonopendata-boston.opendata.arcgis.com/datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
 SNOW_PARKING_CARD_TITLE = "Snow Parking"

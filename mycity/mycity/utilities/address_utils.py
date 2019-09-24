@@ -3,13 +3,14 @@ Utility function for building an address string from a mycity request
 
 """
 
-import mycity.utilities.gis_utils as gis_utils
-import mycity.intents.intent_constants as intent_constants
-import mycity.utilities.location_services_utils as location_services_utils
 import logging
 
 from streetaddress import StreetAddressParser
+
 from mycity.intents.custom_errors import InvalidAddressError
+import mycity.intents.intent_constants as intent_constants
+import mycity.utilities.gis_utils as gis_utils
+import mycity.utilities.location_services_utils as location_services_utils
 
 logger = logging.getLogger(__name__)
 

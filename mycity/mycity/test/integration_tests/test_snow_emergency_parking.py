@@ -1,14 +1,13 @@
 import csv
+import unittest
 import unittest.mock as mock
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.test_constants as test_constants
+
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.snow_parking_intent as snow_parking
 from mycity.mycity_request_data_model import MyCityRequestDataModel
-
-import unittest
-
+import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.test.integration_tests.intent_test_mixins as mix_ins
+import mycity.test.test_constants as test_constants
 
 ##########################################
 # TestCase class for snow_parking_intent #
@@ -136,5 +135,3 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
 
 if __name__ == '__main__':
     unittest.main()
-
-

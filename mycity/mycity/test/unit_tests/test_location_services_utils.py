@@ -1,9 +1,10 @@
 """ Tests utilities for location services  """
 
+import unittest
+
 import mycity.test.unit_tests.base as base
 import mycity.utilities.location_services_utils as location_services_utils
 
-import unittest
 
 class LocationServicesUtilsUnitTestCase(base.BaseTestCase):
 

@@ -1,10 +1,10 @@
 import unittest.mock as mock
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.test_constants as test_constants
+
 import mycity.intents.get_alerts_intent as get_alerts
 import mycity.intents.speech_constants.get_alerts_intent as get_alerts_speech_constants
-
+import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.test.integration_tests.intent_test_mixins as mix_ins
+import mycity.test.test_constants as test_constants
 
 ########################################
 # TestCase class for get_alerts_intent #
@@ -52,5 +52,3 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
     def test_response_with_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
         self.assertIn('Godzilla inbound!', response.output_speech)
-
-

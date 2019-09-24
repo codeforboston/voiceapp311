@@ -1,9 +1,10 @@
-import requests
 import json
+import logging
 import os
 import sys
 import urllib
-import logging
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -276,4 +277,3 @@ def select_top_address_candidate(geocode_candidate_response_json):
                 'y': y_coordinate
                 }
         return coordinate_dict
-

@@ -2,9 +2,10 @@
 Function(s) for dealing with fallback intents
 """
 
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.intents.speech_constants.fallback_intent as speech_constants
 import logging
+
+import mycity.intents.speech_constants.fallback_intent as speech_constants
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 CARD_TITLE = "Boston Info"
 logger = logging.getLogger(__name__)

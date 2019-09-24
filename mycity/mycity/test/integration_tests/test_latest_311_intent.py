@@ -1,8 +1,8 @@
 import unittest.mock as mock
-import mycity.intents.speech_constants.latest_311_constants \
-    as intent_constants
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
+
+import mycity.intents.speech_constants.latest_311_constants as intent_constants
 import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.test.integration_tests.intent_test_mixins as mix_ins
 from mycity.test.test_data.latest_311_fake_data import *
 
 

@@ -16,14 +16,16 @@ and street cleaning is running on a normal schedule."
 
 """
 
-from bs4 import BeautifulSoup
-from urllib import request
 from enum import Enum
-from mycity.mycity_request_data_model import MyCityRequestDataModel
-from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.intents.speech_constants.get_alerts_intent as constants
 import logging
 import typing
+from urllib import request
+
+from bs4 import BeautifulSoup
+
+import mycity.intents.speech_constants.get_alerts_intent as constants
+from mycity.mycity_request_data_model import MyCityRequestDataModel
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 logger = logging.getLogger(__name__)
 
@@ -213,4 +215,3 @@ def get_alerts():
     if header != '':
         alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
-

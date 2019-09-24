@@ -3,10 +3,11 @@ Abstract parent class upon which subclasses are built that find location
 based information about city services
 """
 
-import mycity.utilities.address_utils as address_utils
-import mycity.utilities.csv_utils as csv_utils
-import mycity.utilities.arcgis_utils as arcgis_utils
 import logging
+
+import mycity.utilities.address_utils as address_utils
+import mycity.utilities.arcgis_utils as arcgis_utils
+import mycity.utilities.csv_utils as csv_utils
 
 logger = logging.getLogger(__name__)
 
@@ -228,5 +229,3 @@ class Finder(object):
         geocoded_origin_address_candidates = arcgis_utils.geocode_address_candidates(self.origin_address)
         geocoded_origin_address = arcgis_utils.select_top_address_candidate(geocoded_origin_address_candidates)
         return geocoded_origin_address
-
-

@@ -1,4 +1,5 @@
 import unittest.mock as mock
+
 import mycity.test.test_constants as test_constants
 import mycity.test.unit_tests.base as base
 import mycity.utilities.gis_utils as gis_utils
@@ -68,4 +69,3 @@ class GISUtilitiesTestCase(base.BaseTestCase):
 #         self.assertFalse(closest[feature_type])
 #         self.assertFalse(closest[location_utils.DRIVING_DISTANCE_TEXT_KEY])
 #         self.assertFalse(closest[location_utils.DRIVING_TIME_TEXT_KEY])
-

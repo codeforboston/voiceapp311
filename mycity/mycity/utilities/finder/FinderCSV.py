@@ -3,9 +3,11 @@ Uses csv files to find location based information about Boston city services
 """
 
 import csv
-import requests
-from mycity.utilities.finder.Finder import Finder
 import logging
+
+import requests
+
+from mycity.utilities.finder.Finder import Finder
 
 logger = logging.getLogger(__name__)
 

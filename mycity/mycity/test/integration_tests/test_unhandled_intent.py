@@ -1,7 +1,6 @@
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.intents.fallback_intent as fallback_intent
-
+import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.test.integration_tests.intent_test_mixins as mix_ins
 
 ########################################
 # TestCase class for unhandled intents #

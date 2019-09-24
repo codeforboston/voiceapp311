@@ -1,10 +1,10 @@
 import csv
 import unittest
 import unittest.mock as mock
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.test_constants as test_constants
 
+import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.test.integration_tests.intent_test_mixins as mix_ins
+import mycity.test.test_constants as test_constants
 
 #############################################
 # TestCase class for get_open_spaces_intent #
@@ -47,5 +47,3 @@ class OpenSpacesTestCase(mix_ins.RepromptTextTestMixIn,
         self.csv_file.close()
         self.get_open_spaces_patch.stop()
         self.get_driving_info_patch.stop()
-
-

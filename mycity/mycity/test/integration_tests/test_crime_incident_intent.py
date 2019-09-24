@@ -1,12 +1,12 @@
+import unittest
 import unittest.mock as mock
-from mycity.mycity_request_data_model import MyCityRequestDataModel
-import mycity.test.test_constants as test_constants
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
+
 import mycity.intents.crime_activity_intent as crime_intent
 import mycity.intents.intent_constants as intent_constants
-
-import unittest
+from mycity.mycity_request_data_model import MyCityRequestDataModel
+import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.test.integration_tests.intent_test_mixins as mix_ins
+import mycity.test.test_constants as test_constants
 
 ############################################
 # TestCase class for crime_incident_intent #

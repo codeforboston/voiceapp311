@@ -1,11 +1,11 @@
+import unittest
 import unittest.mock as mock
-import mycity.test.test_constants as test_constants
-import mycity.test.integration_tests.intent_base_case as base_case
-import mycity.test.integration_tests.intent_test_mixins as mix_ins
+
 import mycity.intents.food_truck_intent as food_truck_intent
 import mycity.intents.intent_constants as intent_constants
-
-import unittest
+import mycity.test.integration_tests.intent_base_case as base_case
+import mycity.test.integration_tests.intent_test_mixins as mix_ins
+import mycity.test.test_constants as test_constants
 
 ###################################
 # TestCase class for trash_intent #

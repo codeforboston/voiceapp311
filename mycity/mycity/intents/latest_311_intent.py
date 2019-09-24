@@ -1,7 +1,8 @@
 import requests
-from mycity.mycity_response_data_model import MyCityResponseDataModel
+
 from mycity.intents.custom_errors import BadAPIResponse
 from mycity.intents.speech_constants.latest_311_constants import *
+from mycity.mycity_response_data_model import MyCityResponseDataModel
 
 DEFAULT_NUMBER_OF_REPORTS = 3
 MAX_NUMBER_OF_REPORTS = 10

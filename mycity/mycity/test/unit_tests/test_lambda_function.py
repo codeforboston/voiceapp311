@@ -1,9 +1,10 @@
 """ Tests for functions specific to Alexa devices """
 
-import lambda_function as lambda_function
-
 import json
 import unittest
+
+import lambda_function as lambda_function
+
 
 class TestAlexaLambdaFunctionLocationServices(unittest.TestCase):
 

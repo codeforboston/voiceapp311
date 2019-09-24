@@ -1,5 +1,6 @@
-import csv
 import collections
+import csv
+
 import mycity.test.test_constants as test_constants
 import mycity.test.unit_tests.base as base
 import mycity.utilities.csv_utils as csv_utils

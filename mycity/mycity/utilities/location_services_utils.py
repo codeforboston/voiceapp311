@@ -1,5 +1,7 @@
-import requests
 import logging
+
+import requests
+
 from mycity.intents import intent_constants
 import mycity.mycity_response_data_model as mycity_response_data_model
 

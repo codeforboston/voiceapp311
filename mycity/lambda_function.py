@@ -8,8 +8,8 @@ import logging
 import traceback
 
 from mycity.intents.feedback_intent import build_slack_traceback, send_to_slack
-from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_controller import execute_request
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 
 logger = logging.getLogger(__name__)
 

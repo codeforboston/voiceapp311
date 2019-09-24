@@ -1,7 +1,8 @@
+from streetaddress import StreetAddressParser
+
 import mycity.intents.intent_constants as intent_constants
 import mycity.test.unit_tests.base as base
 import mycity.utilities.address_utils as address_utils
-from streetaddress import StreetAddressParser 
 
 
 class AddressUtilitiesTestCase(base.BaseTestCase):
