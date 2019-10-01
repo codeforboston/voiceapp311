@@ -17,25 +17,21 @@ class LocationServicesUtilsUnitTestCase(base.BaseTestCase):
         response = location_services_utils.request_geolocation_permission_response()
         self.assertTrue(any("geolocation:read" in permission for permission in response.card_permissions))
 
-    def test_boston_address_string_is_valid(self):
-        request = MyCityRequestDataModel()
-        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "100 Main Street Boston MA"
-        self.assertTrue(location_services_utils.is_current_address_in_city(request, "Boston"))
+    def test_boston_address_string_is_in_city(self):
+        address = "100 Main Street Boston MA"
+        self.assertTrue(location_services_utils.is_address_in_city(address))
 
-    def test_non_boston_address_string_is_not_valid(self):
-        request = MyCityRequestDataModel()
-        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "100 Main Street New York NY"
-        self.assertFalse(location_services_utils.is_current_address_in_city(request, "Boston"))
+    def test_non_boston_address_string_is_not_in_city(self):
+        address = "100 Main Street New York NY"
+        self.assertFalse(location_services_utils.is_address_in_city(address))
 
-    def test_no_city_string_is_valid(self):
-        request = MyCityRequestDataModel()
-        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "100 Main Street"
-        self.assertTrue(location_services_utils.is_current_address_in_city(request, "Boston"))
+    def test_zip_code_is_in_city(self):
+        address = "100 Main Street 02129"
+        self.assertTrue(location_services_utils.is_address_in_city(address))
 
-    def test_zip_code_is_valid(self):
-        request = MyCityRequestDataModel()
-        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "100 Main Street 02129"
-        self.assertTrue(location_services_utils.is_current_address_in_city(request, "Boston"))       
+    def test_zip_code_is_not_in_city(self):
+        address = "100 Main Street 17603"
+        self.assertFalse(location_services_utils.is_address_in_city(address))
 
 
 if __name__ == '__main__':

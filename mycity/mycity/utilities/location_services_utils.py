@@ -42,11 +42,14 @@ def get_address_from_user_device(mycity_request):
     logger.debug("response object:{}".format(response_object))
     res = response_object.json()
     if response_object.status_code == 200 and res['addressLine1'] is not None:
-        current_address = res['addressLine1']
+        address = res['addressLine1']
+        state = res['stateOrRegion']
+        city = res['city']
+        current_address = " ".join([address, state, city])
         mycity_request.session_attributes[
             intent_constants.CURRENT_ADDRESS_KEY] = current_address
     return mycity_request, response_object.status_code == 200
-    
+
 
 def request_geolocation_permission_response():
     """
@@ -123,32 +126,11 @@ def is_in_city(mycity_request, city):
     return True
 
 
-def addr_in_city(addr):
+def is_address_in_city(address):
     """
-    Call the geocode function to determine if an address is in Boston
-    :param addr: the string to search
+    Check if the provided address is in Boston
+    :param address: the adress to check
     :return: boolean
     """
     city = 'Boston Metro Area'
-    return gis_utils.geocode_addr(addr, city)
-
-
-def is_current_address_in_city(mycity_request, city):
-    """
-    Checks that the address set for the current session is
-    located in provided city. If the city can't be determined,
-    returns True.
-    :param mycity_request: MyCityRequestDataModel
-    :param city: City to check is in address
-    """
-    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        current_address = \
-            mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
-        address_parser = StreetAddressParser()
-        a = address_parser.parse(current_address)
-
-        other_address = a["other"]
-        if other_address and not other_address.isdigit() and city not in other_address:
-            return False
-
-    return True
+    return gis_utils.geocode_addr(address, city)
