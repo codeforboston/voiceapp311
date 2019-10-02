@@ -13,7 +13,7 @@ from mycity.intents.user_address_intent import \
 import mycity.intents.speech_constants.trash_intent as speech_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import mycity.utilities.address_utils as address_utils
-from streetaddress import StreetAddressParser
+import usaddress
 
 
 import re
@@ -54,12 +54,11 @@ def get_trash_day_info(mycity_request):
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
 
     # grab relevant information from session address
-    address_parser = StreetAddressParser()
-    a = address_parser.parse(current_address)
+    a, _ = usaddress.tag(current_address)
 
     # If we have more specific info then just the street
     # address, make sure we are in Boston
-    if a["other"] and not is_address_in_city(current_address):
+    if "PlaceName" in a and not is_address_in_city(current_address):
         mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
         mycity_response.should_end_session = True
         mycity_response.card_title = CARD_TITLE
@@ -76,9 +75,9 @@ def get_trash_day_info(mycity_request):
 
     # currently assumes that trash day is the same for all units at
     # the same street address
-    address = str(a['house']) + " " + str(a['street_full'])
-    zip_code = str(a["other"]).zfill(5) if a["other"] and a["other"].isdigit() else None
-    neighborhood = a["other"] if a["other"] and not a["other"].isdigit() else None
+    address = str(a['AddressNumber']) + " " + str(a['StreetName'])
+    zip_code = str(a["ZipCode"]).zfill(5) if "ZipCode" in a and a["ZipCode"].isdigit() else None
+    neighborhood = a["PlaceName"] if "PlaceName" in a and not a["PlaceName"].isdigit() else None
 
     zip_code_key = intent_constants.ZIP_CODE_KEY
     if zip_code is None and zip_code_key in \
@@ -192,32 +191,34 @@ def validate_found_address(found_address, user_provided_address):
     """
     logger.debug('found_address: ' + str(found_address) +
                  'user_provided_address: ' + str(user_provided_address))
-    address_parser = StreetAddressParser()
-    found_address = address_parser.parse(found_address)
-    user_provided_address = address_parser.parse(user_provided_address)
+    found_address, _ = usaddress.tag(found_address)
+    user_provided_address, _ = usaddress.tag(user_provided_address)
 
-    if found_address["house"] != user_provided_address["house"]:
+    if found_address["AddressNumber"] != user_provided_address["AddressNumber"]:
         return False
 
     # Re-collect replaces South with S and North with N
-    found_address["street_name"] = re.sub(r'^S\.? ', "South ", found_address["street_name"])
-    found_address["street_name"] = re.sub(r'^N\.? ', "North ", found_address["street_name"])
+    found_address["StreetName"] = re.sub(r'^S\.? ', "South ", found_address["StreetName"])
+    found_address["StreetName"] = re.sub(r'^N\.? ', "North ", found_address["StreetName"])
 
-    if found_address["street_name"].lower() != \
-            user_provided_address["street_name"].lower():
+    if found_address["StreetName"].lower() != \
+            user_provided_address["StreetName"].lower():
         return False
 
     # Allow for mismatched "Road" street_type between user input and ReCollect API
-    if "rd" in found_address["street_type"].lower() and \
-        "road" in user_provided_address["street_type"].lower():
+    if "rd" in found_address["StreetNamePostType"].lower() and \
+        "road" in user_provided_address["StreetNamePostType"].lower():
         return True
 
     # Allow fuzzy match on street type to allow "ave" to match "avenue"
-    if found_address["street_type"].lower() not in \
-        user_provided_address["street_type"].lower() and \
-        user_provided_address["street_type"].lower() not in \
-            found_address["street_type"].lower():
-                return False
+    if "StreetNamePostType" in found_address and \
+        "StreetNamePostType" in user_provided_address:
+        
+        if found_address["StreetNamePostType"].lower() not in \
+            user_provided_address["StreetNamePostType"].lower() and \
+            user_provided_address["StreetNamePostType"].lower() not in \
+                found_address["StreetNamePostType"].lower():
+                    return False
 
 
     return True

@@ -62,11 +62,13 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
     """
     install_args = [
         "pip",
-        "install",
+        "download",
         "-r",
         requirements_path,
-        "-t",
-        TEMP_DIR_PATH
+        "-d",
+        TEMP_DIR_PATH,
+        "--platform",
+        "linux_x86_64"
     ]
 
     install_args_no_deps = [
@@ -75,8 +77,10 @@ def install_pip_dependencies(requirements_path, requirements_path_no_deps):
         "--no-deps",
         "-r",
         requirements_path_no_deps,
-        "-t",
-        TEMP_DIR_PATH
+        "-d",
+        TEMP_DIR_PATH,
+        "--platform",
+        "linux_x86_64"
     ]
 
     print('* Installing dependencies ...')
