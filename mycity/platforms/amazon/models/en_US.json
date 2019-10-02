@@ -4,31 +4,15 @@
             "invocationName": "boston info",
             "intents": [
                 {
-                    "name": "SetAddressIntent",
-                    "slots": [
-                        {
-                            "name": "Address",
-                            "type": "AMAZON.PostalAddress"
-                        }
-                    ],
-                    "samples": [
-                        "my address is {Address}",
-                        "i live at {Address}",
-                        "my home address is {Address}",
-                        "set address {Address}",
-                        "set my address to {Address}",
-                        "change address to {Address}",
-                        "update address to {Address}",
-                        "new address is {Address}"
-                    ]
-                },
-                {
                     "name": "TrashDayIntent",
                     "slots": [
                         {
                             "name": "Address",
                             "type": "AMAZON.PostalAddress",
                             "samples": [
+                                "{Address} {Neighborhood}",
+                                "It's {Address} in {Neighborhood}",
+                                "{Address} in {Neighborhood}",
                                 "It's {Address}",
                                 "My address is {Address}",
                                 "{Address}"
@@ -37,6 +21,10 @@
                         {
                             "name": "Zipcode",
                             "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "Neighborhood",
+                            "type": "AMAZON.City"
                         }
                     ],
                     "samples": [
@@ -488,6 +476,7 @@
                         "what days are refuse days for {Address}",
                         "what days are trash days at {Address}",
                         "what days are trash days for {Address}",
+                        "what is my garbage day",
                         "what is garbage day at {Address}",
                         "what is garbage day for {Address}",
                         "what is recyclables day at {Address}",
@@ -1060,28 +1049,21 @@
                     "name": "FeedbackIntent",
                     "slots": [
                         {
-                            "name": "FeedbackType",
-                            "type": "FeedbackType",
-                            "samples": [
-                                "Suggesting a new {FeedbackType} ",
-                                "Reporting a {FeedbackType} ",
-                                "I have an {FeedbackType}  for this app",
-                                "Report a {FeedbackType} ",
-                                "{FeedbackType} ",
-                                "I'd like to make a {FeedbackType} ",
-                                "This skill has a {FeedbackType} ",
-                                "There is a {FeedbackType} in the skill",
-                                "There is a {FeedbackType} on the skill",
-                                "I have an {FeedbackType} ",
-                                "I have a {FeedbackType} ",
-                                "I'd like to report a {FeedbackType} "
-                            ]
-                        },
-                        {
                             "name": "Feedback",
                             "type": "AMAZON.SearchQuery",
                             "samples": [
-                                "{Feedback}"
+                                "Suggesting a new {Feedback} ",
+                                "Reporting a {Feedback} ",
+                                "I have an {Feedback}  for this app",
+                                "Report a {Feedback} ",
+                                "{Feedback} ",
+                                "I'd like to make a {Feedback} ",
+                                "This skill has a {Feedback} ",
+                                "There is a {Feedback} in the skill",
+                                "There is a {Feedback} on the skill",
+                                "I have an {Feedback} ",
+                                "I have a {Feedback} ",
+                                "I'd like to report a {Feedback} "
                             ]
                         }
                     ],
@@ -1113,16 +1095,17 @@
                         }
                     ],
                     "samples": [
+                        "what are the food trucks near {Address}",
+                        "food trucks at {Address}",
+                        "food trucks near {Address}",
+                        "are there any food trucks around {Address}",
+                        "where are the food trucks near {Address}",
                         "where are the nearest food trucks",
                         "what are the nearest food trucks",
                         "is there any food truck around",
                         "is there any food truck around me",
-                        "is there any food truck around my office",
-                        "is there any food truck around my house",
                         "are there any food trucks around",
                         "are there any food trucks around me",
-                        "are there any food trucks around my office",
-                        "are there any food trucks around my house",
                         "what kind of food trucks are around me",
                         "what kind of food trucks are near me",
                         "what kind of food trucks are nearby",
@@ -1295,32 +1278,7 @@
                     ]
                 }
             ],
-            "types": [
-                {
-                    "name": "FeedbackType",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "Bug",
-                                "synonyms": [
-                                    "error",
-                                    "Problem"
-                                ]
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "Idea",
-                                "synonyms": [
-                                    "functionality",
-                                    "feature",
-                                    "Suggestion"
-                                ]
-                            }
-                        }
-                    ]
-                }
-            ]
+            "types": []
         },
         "dialog": {
             "intents": [
@@ -1341,6 +1299,13 @@
                         {
                             "name": "Zipcode",
                             "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
+                        },
+                        {
+                            "name": "Neighborhood",
+                            "type": "AMAZON.City",
                             "confirmationRequired": false,
                             "elicitationRequired": false,
                             "prompts": {}
@@ -1368,16 +1333,6 @@
                     "confirmationRequired": false,
                     "prompts": {},
                     "slots": [
-                        {
-                            "name": "FeedbackType",
-                            "type": "FeedbackType",
-                            "confirmationRequired": true,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "confirmation": "Confirm.Slot.583949240758.172473885615",
-                                "elicitation": "Elicit.Slot.583949240758.172473885615"
-                            }
-                        },
                         {
                             "name": "Feedback",
                             "type": "AMAZON.SearchQuery",
@@ -1492,20 +1447,11 @@
                 ]
             },
             {
-                "id": "Confirm.Slot.583949240758.172473885615",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "I heard {FeedbackType} , is that correct?"
-                    }
-                ]
-            },
-            {
                 "id": "Elicit.Slot.583949240758.1214821999168",
                 "variations": [
                     {
                         "type": "PlainText",
-                        "value": "In a few sentences or less, please describe the {FeedbackType}"
+                        "value": "In a few sentences or less, please describe the issue or feedback."
                     }
                 ]
             },

@@ -3,8 +3,11 @@ import unittest.mock as mock
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
+import mycity.intents.intent_constants as intent_constants
 import mycity.intents.snow_parking_intent as snow_parking
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 
+import unittest
 
 
 ##########################################
@@ -85,5 +88,53 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
         self.mock_address_candidates.stop()
         self.mock_api_access_token.stop()
         self.mock_closest_destination.stop()
+
+    def test_requests_geolocation_permissions_if_supported(self):
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        self.request.device_has_geolocation = True
+        self.request.geolocation_permission = False
+        response = snow_parking.get_snow_emergency_parking_intent(self.request)
+        self.assertEqual(response.card_type, "AskForPermissionsConsent")
+
+    @mock.patch('mycity.intents.snow_parking_intent.location_services_utils.get_address_from_user_device')
+    def test_requests_device_address_if_supported(self, mock_get_address):
+        mock_get_address.return_value = (MyCityRequestDataModel(), False)
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        self.request.device_has_geolocation = False
+        response = snow_parking.get_snow_emergency_parking_intent(self.request)
+        self.assertEqual(response.card_type, "AskForPermissionsConsent")
+
+    @mock.patch('mycity.intents.snow_parking_intent.location_services_utils.get_address_from_user_device')
+    def test_fallback_to_manual_request_if_no_device_address(self, mock_get_address):
+        mock_get_address.return_value = (MyCityRequestDataModel(), True)
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        self.request.device_has_geolocation = False
+        response = snow_parking.get_snow_emergency_parking_intent(self.request)
+        self.assertEqual("Address", response.card_title)
+
+    def test_geolocation_finds_closest_parking(self):
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        self.request.device_has_geolocation = True
+        self.request.geolocation_permission = True
+        self.request.geolocation_coordinates = {
+            "latitudeInDegrees": 42.316466,
+            "longitudeInDegrees": -71.056769,
+        }
+        response = snow_parking.get_snow_emergency_parking_intent(self.request)
+        self.assertEqual(self.expected_card_title, response.card_title)
+
+    @mock.patch('mycity.intents.snow_parking_intent.location_services_utils.get_address_from_user_device')
+    def test_device_address_finds_closest_parking(self, mock_get_address):
+        request_with_address = MyCityRequestDataModel()
+        request_with_address._session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "1000 Dorchester Ave"
+        mock_get_address.return_value = (request_with_address, True)
+
+        self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
+        self.request.device_has_geolocation = False
+        response = snow_parking.get_snow_emergency_parking_intent(self.request)
+        self.assertEqual(self.expected_card_title, response.card_title)
+
+if __name__ == '__main__':
+    unittest.main()
 
 

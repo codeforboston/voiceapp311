@@ -867,7 +867,7 @@ GEOCODE_ADDRESS_CANDIDATES = {
 
 TOP_ADDRESS_CANDIDATE = {
         'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
-        'x': -71.05664413015762, 
+        'x': -71.05664413015762,
         'y': 42.31649037829649}
 
 ARCGIS_CLOSEST_DESTINATION = {'Address': '8-20 Belden St Boston, MA', 'Driving_time': '3.65 minutes', 'Driving_distance': '0.73 miles'}
@@ -896,3 +896,175 @@ GET_CRIME_INCIDENTS_API_MOCK = {
 }
 
 GEOCODE_ADDRESS_MOCK = [42.35351814, -71.13117064]
+
+# Food Truck Intent
+GET_FOOD_TRUCKS_MOCK = [
+    {
+        "attributes": {
+            "FID": 159,
+            "Time": "Lunch",
+            "Day": "Monday",
+            "Truck": "Taco Don Beto",
+            "Loc": "Harrison Avenue",
+            "Hours": "11 a.m. - 3 p.m.",
+            "Title": "Boston Medical Center",
+            "Site_num": 11,
+            "Management": "City of Boston",
+            "Notes": " ",
+            "POINT_X": -7911820.41299,
+            "POINT_Y": 5211547.53614,
+            "Link": "https://www.boston.gov/departments/small-business-development/city-boston-food-trucks-schedule",
+            "Start_time": "11:00:00 AM",
+            "End_time": "3:00:00 PM",
+            "GlobalID": "d026b595-a4ee-4d92-ad22-401dc3e44a73",
+            "CreationDate": 1520268574231,
+            "Creator": "143525_boston",
+            "EditDate": 1522697895524,
+            "Editor": "143525_boston"
+        },
+        "geometry": {
+            "x": -71.073092022067257,
+            "y": 42.336685825960636
+        }
+    },
+    {
+        "attributes": {
+            "FID": 160,
+            "Time": "Lunch",
+            "Day": "Tuesday",
+            "Truck": "Fat Chowda",
+            "Loc": "Harrison Avenue",
+            "Hours": "11 a.m. - 3 p.m.",
+            "Title": "Boston Medical Center",
+            "Site_num": 11,
+            "Management": "City of Boston",
+            "Notes": " ",
+            "POINT_X": -7911820.41299,
+            "POINT_Y": 5211547.53614,
+            "Link": "https://twitter.com/fatchowda?lang=en",
+            "Start_time": "11:00:00 AM",
+            "End_time": "3:00:00 PM",
+            "GlobalID": "d45412ba-ce97-4bfe-a1bc-6b7a9f486a63",
+            "CreationDate": 1520268574231,
+            "Creator": "143525_boston",
+            "EditDate": 1522695459727,
+            "Editor": "143525_boston"
+        },
+        "geometry": {
+            "x": -71.073092022067257,
+            "y": 42.336685825960636
+        }
+    },
+    {
+        "attributes": {
+            "FID": 161,
+            "Time": "Lunch",
+            "Day": "Tuesday",
+            "Truck": "Tandoor and Curry",
+            "Loc": "Harrison Avenue",
+            "Hours": "11 a.m. - 3 p.m.",
+            "Title": "Boston Medical Center",
+            "Site_num": 11,
+            "Management": "City of Boston",
+            "Notes": " ",
+            "POINT_X": -7911820.41299,
+            "POINT_Y": 5211547.53614,
+            "Link": "https://tandoorandcurryonwheels.com/",
+            "Start_time": "11:00:00 AM",
+            "End_time": "3:00:00 PM",
+            "GlobalID": "54e455d1-fa6e-46a7-8843-8392af151ee9",
+            "CreationDate": 1520268574231,
+            "Creator": "143525_boston",
+            "EditDate": 1522687154711,
+            "Editor": "143525_boston"
+        },
+        "geometry": {
+            "x": -71.073092022067257,
+            "y": 42.336685825960636
+        }
+    },
+    {
+        "attributes": {
+            "FID": 162,
+            "Time": "Lunch",
+            "Day": "Wednesday",
+            "Truck": "Pomaire Chilean",
+            "Loc": "Harrison Avenue",
+            "Hours": "11 a.m. - 3 p.m.",
+            "Title": "Boston Medical Center",
+            "Site_num": 11,
+            "Management": "City of Boston",
+            "Notes": " ",
+            "POINT_X": -7911820.41299,
+            "POINT_Y": 5211547.53614,
+            "Link": "http://pomairefoodtruck.com/?_sm_nck=1",
+            "Start_time": "11:00:00 AM",
+            "End_time": "3:00:00 PM",
+            "GlobalID": "0014aba5-b529-4ece-8a11-355541e36652",
+            "CreationDate": 1520268574231,
+            "Creator": "143525_boston",
+            "EditDate": 1522689060795,
+            "Editor": "143525_boston"
+        },
+        "geometry": {
+            "x": -71.073092022067257,
+            "y": 42.336685825960636
+        }
+    },
+    {
+        "attributes": {
+            "FID": 163,
+            "Time": "Lunch",
+            "Day": "Wednesday",
+            "Truck": "Mediterranean Home Cooking",
+            "Loc": "Harrison Avenue",
+            "Hours": "11 a.m. - 3 p.m.",
+            "Title": "Boston Medical Center",
+            "Site_num": 11,
+            "Management": "City of Boston",
+            "Notes": " ",
+            "POINT_X": -7911820.41299,
+            "POINT_Y": 5211547.53614,
+            "Link": "https://www.facebook.com/Mediterranean-Home-Cooking-440428386060916/",
+            "Start_time": "11:00:00 AM",
+            "End_time": "3:00:00 PM",
+            "GlobalID": "6426fecb-6aa3-45f3-a1c4-8d9b5c054e82",
+            "CreationDate": 1520268574231,
+            "Creator": "143525_boston",
+            "EditDate": 1522695522352,
+            "Editor": "143525_boston"
+        },
+        "geometry": {
+            "x": -71.073092022067257,
+            "y": 42.336685825960636
+        }
+    },
+    {
+        "attributes": {
+            "FID": 164,
+            "Time": "Lunch",
+            "Day": "Thursday",
+            "Truck": "Big Daddy Hotdogs",
+            "Loc": "Harrison Avenue",
+            "Hours": "11 a.m. - 3 p.m.",
+            "Title": "Boston Medical Center",
+            "Site_num": 11,
+            "Management": "City of Boston",
+            "Notes": " ",
+            "POINT_X": -7911820.41299,
+            "POINT_Y": 5211547.53614,
+            "Link": "https://www.facebook.com/bigdaddyhotdogscopley/",
+            "Start_time": "11:00:00 AM",
+            "End_time": "3:00:00 PM",
+            "GlobalID": "d34179fa-27fb-42f6-be8e-2ee735b36062",
+            "CreationDate": 1520268574231,
+            "Creator": "143525_boston",
+            "EditDate": 1522777085406,
+            "Editor": "143525_boston"
+        },
+        "geometry": {
+            "x": -71.073092022067257,
+            "y": 42.336685825960636
+        }
+    }
+]

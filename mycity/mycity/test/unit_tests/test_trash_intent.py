@@ -1,0 +1,73 @@
+import random
+import unittest
+import unittest.mock as mock
+
+from mycity.intents.trash_intent import find_unique_addresses, get_trash_day_info
+import mycity.intents.intent_constants as intent_constants
+from mycity.mycity_request_data_model import MyCityRequestDataModel
+from mycity.test.unit_tests import base
+
+
+class TrashIntentTestCase(base.BaseTestCase):
+    def test_multiple_address_options(self):
+        """
+        If the recollect API returns multiple possibilities for a given address query,
+        we need to ask the user which one they meant. As we find more cases for address
+        similarity, we should add them as tests here so we avoid asking the user about
+        similar addresses
+        """
+        fake_response_partial = [
+            {"name": name}
+            for name in [
+                "123 Street Rd, Brookline 02445",
+                "123 Street Rd, Brookline 02445 Unit 1",
+                "123 Street Rd, Brookline 02445 Unit 2",
+                "456 Road St, South Boston 02127",
+                "456 Road St, South Boston 02127 #1",
+                "456 Road St, South Boston 02127 #2",
+                "789 Lane Ave, Allston 02134",
+                "1 - 789 Lane Ave, Allston 02134",
+                "2 - 789 Lane Ave, Allston 02134",
+                "I am all alone, no substrings or superstrings",
+            ]
+        ]
+        expected_options = [
+            "123 Street Rd, Brookline 02445",
+            "456 Road St, South Boston 02127",
+            "789 Lane Ave, Allston 02134",
+            "I am all alone, no substrings or superstrings",
+        ]
+        for _ in range(3):
+            # Ordering of the payload shouldn't matter
+            random.shuffle(fake_response_partial)
+            found_addresses = find_unique_addresses(fake_response_partial)
+            # We don't care about ordering really, so comparing sorted is easiest
+            self.assertListEqual(sorted(expected_options), sorted(found_addresses))
+
+    @mock.patch('mycity.intents.trash_intent.get_address_from_user_device')
+    def test_requests_device_address_permission(self, mock_get_address):
+        mock_get_address.return_value = (MyCityRequestDataModel(), False)
+        request = MyCityRequestDataModel()
+        response = get_trash_day_info(request)
+        self.assertTrue("read::alexa:device:all:address" in response.card_permissions)
+
+    @mock.patch('mycity.intents.trash_intent.get_address_from_user_device')
+    def test_requests_user_supplied_address_when_no_device_address_set(self, mock_get_address):
+        mock_get_address.return_value = (MyCityRequestDataModel(), True)
+        request = MyCityRequestDataModel()
+        response = get_trash_day_info(request)
+        self.assertEqual("Address", response.card_title)
+    
+    @mock.patch('mycity.intents.trash_intent.get_address_from_user_device')
+    @mock.patch('mycity.intents.trash_intent.get_trash_and_recycling_days')
+    def test_does_not_get_device_address_if_desired_address_provided(self, mock_get_days, mock_get_address):
+        mock_get_days.return_value = ["Monday"]
+        request = MyCityRequestDataModel()
+        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "10 Main Street Boston MA"
+        get_trash_day_info(request)
+        mock_get_address.assert_not_called()
+
+
+if __name__ == '__main__':
+    unittest.main()
+

@@ -35,6 +35,7 @@ def get_311_requests(mycity_request):
     except BadAPIResponse:
         mycity_response.output_speech = BAD_API_RESPONSE
 
+    mycity_response.should_end_session = True
     return mycity_response
 
 

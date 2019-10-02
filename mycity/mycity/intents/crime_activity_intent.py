@@ -1,16 +1,24 @@
 """Alexa intent used to find crime incidents"""
 
-from dateutil.parser import parse
+import logging
 import mycity.intents.intent_constants as intent_constants
+from mycity.intents.user_address_intent \
+    import request_user_address_response
+from dateutil.parser import parse
+from mycity.utilities.location_services_utils \
+    import request_geolocation_permission_response, \
+    request_device_address_permission_response, \
+    get_address_from_user_device
+from mycity.utilities.address_utils \
+    import get_address_coordinates_from_geolocation
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities.crime_incidents_api_utils import \
     get_crime_incident_response
-import logging
+import mycity.utilities.gis_utils as gis_utils
 
 # Constants
 CARD_TITLE_CRIME = "Crime Report"
-RESPONSE_TEXT_TEMPLATE = \
-    " {} an incident at {} with description {} categorized as {} occurred."
+RESPONSE_TEXT_TEMPLATE = " {} an incident at {} occurred categorized as {}."
 ERROR_RESPONSE = "An error occurred requesting crime incidents for this address"
 NO_RESULT_RESPONSE = "We found no incidents in that area"
 
@@ -35,16 +43,38 @@ def get_crime_incidents_intent(mycity_request):
     """
     logger.debug('[method: get_crime_incidents_intent]')
 
-    mycity_response = MyCityResponseDataModel()
-    if intent_constants.CURRENT_ADDRESS_KEY in \
+    coordinates = {}
+    if intent_constants.CURRENT_ADDRESS_KEY not in \
             mycity_request.session_attributes:
-        address = mycity_request. \
-            session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
-        response = get_crime_incident_response(address)
-        mycity_response.output_speech = \
-            _build_text_from_response(response)
-    else:
-        logger.debug("Error: Called crime_incidents_intent with no address")
+        coordinates = get_address_coordinates_from_geolocation(mycity_request)
+
+        if not coordinates:
+            if mycity_request.device_has_geolocation:
+                return request_geolocation_permission_response()
+
+            # Try getting registered device address
+            mycity_request, location_permissions \
+                = get_address_from_user_device(mycity_request)
+            if not location_permissions:
+                return request_device_address_permission_response()
+
+    # Convert address to coordinates if we only have user address
+    if intent_constants.CURRENT_ADDRESS_KEY \
+            in mycity_request.session_attributes:
+        current_address = mycity_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY]
+        coordinates = gis_utils.geocode_address(current_address)
+
+    # If we don't have coordinates by now, and we have all required
+    #  permissions, ask the user for an address
+    if not coordinates:
+        return request_user_address_response(mycity_request)
+
+    mycity_response = MyCityResponseDataModel()
+
+    response = get_crime_incident_response(coordinates)
+    mycity_response.output_speech = \
+        _build_text_from_response(response)
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
@@ -52,6 +82,7 @@ def get_crime_incidents_intent(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = CARD_TITLE_CRIME
+    mycity_response.should_end_session = True
 
     return mycity_response
 
@@ -88,5 +119,4 @@ def _build_text_from_record(incident):
     dt = parse(incident[DATE_FIELD])
     return RESPONSE_TEXT_TEMPLATE.format(
         dt.strftime("On %A %d of %B %Y at %I:%M%p"),
-        incident[STREET_FIELD], incident[OFFENSE_FIELD],
-        incident[OFFENSE_GROUP_FIELD])
+        incident[STREET_FIELD], incident[OFFENSE_GROUP_FIELD])

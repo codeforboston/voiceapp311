@@ -42,33 +42,6 @@ def set_zipcode_in_session(mycity_request):
             mycity_request.intent_variables['Zipcode']['value'].zfill(5)
 
 
-def get_address_from_user_device(mycity_request):
-    """
-    checks Amazon api for device address permissions. 
-    If given, the address, if present, will be stored 
-    in the session attributes
-
-    :param mycity_request: MyCityRequestDataModel
-    :param mycity_response: MyCityResponseDataModel
-    :return : MyCityRequestModel object
-    """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
-
-    base_url = "https://api.amazonalexa.com/v1/devices/{}" \
-        "/settings/address".format(mycity_request.device_id)
-    head_info = {'Accept': 'application/json',
-                'Authorization': 'Bearer {}'.format(mycity_request.api_access_token)}
-    response_object = requests.get(base_url, headers=head_info)
-
-    if response_object.status_code == 200:
-        res = response_object.json()
-        if res['addressLine1'] is not None:
-            current_address = res['addressLine1']
-            mycity_request.session_attributes[
-                intent_constants.CURRENT_ADDRESS_KEY] = current_address
-    return mycity_request
-
-
 def get_address_from_session(mycity_request):
     """
     Looks for a current address in the session attributes and constructs a

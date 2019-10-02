@@ -1,9 +1,12 @@
 """Alexa intent used to find snow emergency parking"""
 
-
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.speech_constants.snow_parking_intent as constants
+import mycity.intents.user_address_intent as user_address_intent
+from mycity.intents.custom_errors import InvalidAddressError
 from mycity.utilities.finder.FinderCSV import FinderCSV
+import mycity.utilities.address_utils as address_utils
+import mycity.utilities.location_services_utils as location_services_utils
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import logging
 
@@ -18,8 +21,8 @@ def format_record_fields(record):
     """
     Updates the record fields by replacing the raw information with a sentence
     that provides context and will be more easily understood by users.
-    
-    :param record: a dictionary with driving time, driving_distance and all 
+
+    :param record: a dictionary with driving time, driving_distance and all
         fields from the closest record
     :return: None
     """
@@ -40,16 +43,40 @@ def get_snow_emergency_parking_intent(mycity_request):
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
-    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        finder = FinderCSV(mycity_request, PARKING_INFO_URL, ADDRESS_KEY, 
-                           constants.OUTPUT_SPEECH_FORMAT, format_record_fields)
-        print("Finding snow emergency parking for {}".format(finder.origin_address))
+
+    coordinates = None
+    if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
+        # If not provided, try to get the user address through geolocation and device address
+
+        coordinates = address_utils.get_address_coordinates_from_geolocation(mycity_request)
+
+        if not coordinates: 
+            if mycity_request.device_has_geolocation:
+                return location_services_utils.request_geolocation_permission_response()
+
+            # Try getting registered device address
+            mycity_request, location_permissions = location_services_utils.get_address_from_user_device(mycity_request)
+            if not location_permissions:
+                return location_services_utils.request_device_address_permission_response()
+
+    
+    # If we don't have coordinates or an address by now, and we have all required permissions, ask the user
+    if not coordinates and intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
+        return user_address_intent.request_user_address_response(mycity_request)
+
+    try:
+        finder = FinderCSV(mycity_request, PARKING_INFO_URL, ADDRESS_KEY,
+                            constants.OUTPUT_SPEECH_FORMAT, format_record_fields,
+                            origin_coordinates = coordinates)
+    except InvalidAddressError:
+        mycity_response.output_speech = constants.ERROR_INVALID_ADDRESS
+    else:
+        finder_location_string = finder.origin_address if finder.origin_address \
+            else "{}, {}".format(finder.origin_coordinates['x'], finder.origin_coordinates['y'])
+        print("Finding snow emergency parking for {}".format(finder_location_string))
         finder.start()
         mycity_response.output_speech = finder.get_output_speech()
 
-    else:
-        print("Error: Called snow_parking_intent with no address")
-        mycity_response.output_speech = constants.ERROR_SPEECH
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
@@ -57,5 +84,6 @@ def get_snow_emergency_parking_intent(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = SNOW_PARKING_CARD_TITLE
-    
+    mycity_response.should_end_session = True
+
     return mycity_response

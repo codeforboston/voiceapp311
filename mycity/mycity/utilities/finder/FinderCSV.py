@@ -27,7 +27,8 @@ class FinderCSV(Finder):
             address_key,
             output_speech,
             output_speech_prep_func,
-            filter = default_filter
+            filter = default_filter,
+            origin_coordinates = None
     ):
         """
         Call super constructor and save filter
@@ -48,6 +49,9 @@ class FinderCSV(Finder):
         :param filter: filter that we can use to remove records from csv
             file before using a service to find distances and 
             driving_times
+        :param origin_coordinates: coordinates to use as the orgin for
+            distance search. If None, will use the address in the req
+            parameter
         """
 
         super().__init__(
@@ -55,7 +59,8 @@ class FinderCSV(Finder):
             resource_url,
             address_key,
             output_speech,
-            output_speech_prep_func
+            output_speech_prep_func,
+            origin_coordinates
         )
         self._filter = filter
 
