@@ -54,17 +54,17 @@ def get_trash_day_info(mycity_request):
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
 
     # grab relevant information from session address
-    a, _ = usaddress.tag(current_address)
+    parsed_address, _ = usaddress.tag(current_address)
 
     # If we have more specific info then just the street
     # address, make sure we are in Boston
-    if "PlaceName" in a and not is_address_in_city(current_address):
+    if "PlaceName" in parsed_address and not is_address_in_city(current_address):
         mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
         mycity_response.should_end_session = True
         mycity_response.card_title = CARD_TITLE
         return mycity_response
 
-    if not address_utils.is_address_valid(a):
+    if not address_utils.is_address_valid(parsed_address):
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
         mycity_response.dialog_directive = "ElicitSlotTrash"
         mycity_response.reprompt_text = None
@@ -75,14 +75,19 @@ def get_trash_day_info(mycity_request):
 
     # currently assumes that trash day is the same for all units at
     # the same street address
-    address = str(a['AddressNumber']) + " " + str(a['StreetName'])
-    neighborhood = a["PlaceName"] if "PlaceName" in a and not a["PlaceName"].isdigit() else None
+    address = " ".join([
+        parsed_address['AddressNumber'],
+        parsed_address['StreetName'],
+        parsed_address['StreetNamePostType']])
+    neighborhood = parsed_address["PlaceName"] \
+        if "PlaceName" in parsed_address \
+        and not parsed_address["PlaceName"].isdigit() \
+        else None
 
-    
     if "Neighborhood" in mycity_request.intent_variables and \
         "value" in mycity_request.intent_variables["Neighborhood"]:
-        neighborhood = mycity_request.intent_variables["Neighborhood"]["value"]
-
+            neighborhood = \
+                mycity_request.intent_variables["Neighborhood"]["value"]
 
     try:
         trash_days = get_trash_and_recycling_days(address, neighborhood)
