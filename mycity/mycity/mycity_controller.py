@@ -131,15 +131,9 @@ def on_intent(mycity_request):
     elif mycity_request.intent_name == "TrashDayIntent":
         return get_trash_day_info(mycity_request)
     elif mycity_request.intent_name == "SnowParkingIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_snow_emergency_parking_intent(mycity_request)
+        return get_snow_emergency_parking_intent(mycity_request)
     elif mycity_request.intent_name == "CrimeIncidentsIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_crime_incidents_intent(mycity_request)
+        return get_crime_incidents_intent(mycity_request)
     elif mycity_request.intent_name == "FoodTruckIntent":
         return get_nearby_food_trucks(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
