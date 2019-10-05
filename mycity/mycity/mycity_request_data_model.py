@@ -151,11 +151,10 @@ class MyCityRequestDataModel:
     def intent_variables(self, value):
         self._intent_variables = value
 
-
     @property
     def device_id(self):
         """
-        An id to identify which device Alexa is utlizing for the service
+        An id to identify which device Alexa is utilizing for the service
         """
         return self._device_id
 
@@ -166,7 +165,8 @@ class MyCityRequestDataModel:
     @property
     def api_access_token(self):
         """
-        the token which is neccessary to acquire access to a user's personal information
+        the token which is necessary to acquire access to a user's personal
+        information
         """
         return self._api_access_token
 
@@ -207,8 +207,9 @@ class MyCityRequestDataModel:
 
     @geolocation_coordinates.setter
     def geolocation_coordinates(self, value: dict):
-        if "longitudeInDegrees" not in value or "latitudeInDegrees" not in value:
-            raise Exception("Missing expected dictionary key set on geolocation_coordinates")
+        if "longitudeInDegrees" not in value or "latitudeInDegrees" \
+                not in value:
+            raise Exception("Missing expected dictionary key set "
+                            "on geolocation_coordinates")
 
         self._geolocation_coordinates = value
-    

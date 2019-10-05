@@ -11,8 +11,8 @@ from .intents.user_address_intent import set_address_in_session, \
 from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.fallback_intent import fallback_intent
-from .intents.get_alerts_intent import get_alerts_intent
-from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
+from .intents.get_alerts_intent import get_alerts_intent, \
+    get_inclement_weather_alert
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
 from .intents.crime_activity_intent import get_crime_incidents_intent
@@ -23,12 +23,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help at any time, and I'll "\
-    "let you know what information I can provide. "\
-    "How can I help you?"
+LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help " \
+                "at any time, and I'll let you know what information I can " \
+                "provide. How can I help you?"
 
-LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, "\
-    "such as \"are there any city alerts\"?"
+LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, " \
+                         "such as \"are there any city alerts\"?"
 
 HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
         "about Boston services and alerts. You can ask about your trash " \
@@ -112,7 +112,8 @@ def on_intent(mycity_request):
     :raises: ValueError
     """
 
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' +
+                 mycity_request.get_logger_string())
 
     if "Address" in mycity_request.intent_variables \
             and "value" in mycity_request.intent_variables["Address"]:
@@ -141,7 +142,7 @@ def on_intent(mycity_request):
         return get_help_response(mycity_request)
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
             mycity_request.intent_name == "AMAZON.CancelIntent" or \
-                mycity_request.intent_name == "AMAZON.NavigateHomeIntent":
+            mycity_request.intent_name == "AMAZON.NavigateHomeIntent":
         return handle_session_end_request(mycity_request)
     elif mycity_request.intent_name == "FeedbackIntent":
         return submit_feedback(mycity_request)
