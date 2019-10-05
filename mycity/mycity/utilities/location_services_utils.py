@@ -45,7 +45,7 @@ def get_address_from_user_device(mycity_request):
         address = res['addressLine1']
         state = res['stateOrRegion']
         city = res['city']
-        current_address = " ".join([address, state, city])
+        current_address = " ".join([address, city, state])
         mycity_request.session_attributes[
             intent_constants.CURRENT_ADDRESS_KEY] = current_address
     return mycity_request, response_object.status_code == 200
