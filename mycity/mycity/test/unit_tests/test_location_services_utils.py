@@ -21,6 +21,10 @@ class LocationServicesUtilsUnitTestCase(base.BaseTestCase):
         address = "100 Main Street Boston MA"
         self.assertTrue(location_services_utils.is_address_in_city(address))
 
+    def test_boston_address_string_state_only_is_in_city(self):
+        address = "100 Main Street MA"
+        self.assertTrue(location_services_utils.is_address_in_city(address))
+
     def test_non_boston_address_string_is_not_in_city(self):
         address = "100 Main Street New York NY"
         self.assertFalse(location_services_utils.is_address_in_city(address))

@@ -95,11 +95,21 @@ def geocode_addr(addr, city):
     :return: boolean
     """
     m_location = geocode(addr)
-    if m_location[0]['attributes']['MetroArea'] == city and \
-            m_location[0]['attributes']['City'] in NEIGHBORHOODS:
+
+    for location in m_location:
+        if location['score'] < 100:
+            continue
+        if location['attributes']['MetroArea'] \
+            and location['attributes']['MetroArea'] != city:
+                continue
+        if location['attributes']['City'] \
+            and location['attributes']['City'] not in NEIGHBORHOODS:
+                continue
+
         return True
-    else:
-        return False
+
+    # No address found in the provided city
+    return False
 
 
 def reverse_geocode_addr(coord_list):
