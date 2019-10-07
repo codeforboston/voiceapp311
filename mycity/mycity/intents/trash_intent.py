@@ -13,7 +13,7 @@ from mycity.intents.user_address_intent import \
 import mycity.intents.speech_constants.trash_intent as speech_constants
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import mycity.utilities.address_utils as address_utils
-from streetaddress import StreetAddressParser
+import usaddress
 
 
 import re
@@ -54,18 +54,17 @@ def get_trash_day_info(mycity_request):
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
 
     # grab relevant information from session address
-    address_parser = StreetAddressParser()
-    a = address_parser.parse(current_address)
+    parsed_address, _ = usaddress.tag(current_address)
 
     # If we have more specific info then just the street
     # address, make sure we are in Boston
-    if a["other"] and not is_address_in_city(current_address):
+    if "PlaceName" in parsed_address and not is_address_in_city(current_address):
         mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
         mycity_response.should_end_session = True
         mycity_response.card_title = CARD_TITLE
         return mycity_response
 
-    if not address_utils.is_address_valid(a):
+    if not address_utils.is_address_valid(parsed_address):
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
         mycity_response.dialog_directive = "ElicitSlotTrash"
         mycity_response.reprompt_text = None
@@ -76,22 +75,22 @@ def get_trash_day_info(mycity_request):
 
     # currently assumes that trash day is the same for all units at
     # the same street address
-    address = str(a['house']) + " " + str(a['street_full'])
-    zip_code = str(a["other"]).zfill(5) if a["other"] and a["other"].isdigit() else None
-    neighborhood = a["other"] if a["other"] and not a["other"].isdigit() else None
-
-    zip_code_key = intent_constants.ZIP_CODE_KEY
-    if zip_code is None and zip_code_key in \
-            mycity_request.session_attributes:
-        zip_code = mycity_request.session_attributes[zip_code_key]
+    address = " ".join([
+        parsed_address['AddressNumber'],
+        parsed_address['StreetName'],
+        parsed_address['StreetNamePostType']])
+    neighborhood = parsed_address["PlaceName"] \
+        if "PlaceName" in parsed_address \
+        and not parsed_address["PlaceName"].isdigit() \
+        else None
 
     if "Neighborhood" in mycity_request.intent_variables and \
         "value" in mycity_request.intent_variables["Neighborhood"]:
-        neighborhood = mycity_request.intent_variables["Neighborhood"]["value"]
-
+            neighborhood = \
+                mycity_request.intent_variables["Neighborhood"]["value"]
 
     try:
-        trash_days = get_trash_and_recycling_days(address, zip_code, neighborhood)
+        trash_days = get_trash_and_recycling_days(address, neighborhood)
         trash_days_speech = build_speech_from_list_of_days(trash_days)
 
         mycity_response.output_speech = speech_constants.PICK_UP_DAY.format(trash_days_speech)
@@ -99,9 +98,6 @@ def get_trash_day_info(mycity_request):
 
     except InvalidAddressError:
         address_string = address
-        if zip_code:
-            address_string = address_string + " with zip code {}"\
-                .format(zip_code)
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_FOUND.format(address_string)
         mycity_response.dialog_directive = "ElicitSlotTrash"
         mycity_response.reprompt_text = None
@@ -130,21 +126,19 @@ def get_trash_day_info(mycity_request):
     return mycity_response
 
 
-def get_trash_and_recycling_days(address, zip_code=None, neighborhood=None):
+def get_trash_and_recycling_days(address, neighborhood=None):
     """
     Determines the trash and recycling days for the provided address.
     These are on the same day, so only one array of days will be returned.
 
     :param neighborhood:
     :param address: String of address to find trash day for
-    :param zip_code: Optional zip code to resolve multiple addresses
     :return: array containing next trash and recycling days
     :raises: InvalidAddressError, BadAPIResponse
     """
     logger.debug('address: ' + str(address) +
-                 ', zip_code: ' + str(zip_code) +
                  ', neighborhood: {}' + str(neighborhood))
-    api_params = get_address_api_info(address, zip_code, neighborhood)
+    api_params = get_address_api_info(address, neighborhood)
     if not api_params:
         raise InvalidAddressError
 
@@ -192,44 +186,44 @@ def validate_found_address(found_address, user_provided_address):
     """
     logger.debug('found_address: ' + str(found_address) +
                  'user_provided_address: ' + str(user_provided_address))
-    address_parser = StreetAddressParser()
-    found_address = address_parser.parse(found_address)
-    user_provided_address = address_parser.parse(user_provided_address)
+    found_address, _ = usaddress.tag(found_address)
+    user_provided_address, _ = usaddress.tag(user_provided_address)
 
-    if found_address["house"] != user_provided_address["house"]:
+    if found_address["AddressNumber"] != user_provided_address["AddressNumber"]:
         return False
 
     # Re-collect replaces South with S and North with N
-    found_address["street_name"] = re.sub(r'^S\.? ', "South ", found_address["street_name"])
-    found_address["street_name"] = re.sub(r'^N\.? ', "North ", found_address["street_name"])
+    found_address["StreetName"] = re.sub(r'^S\.? ', "South ", found_address["StreetName"])
+    found_address["StreetName"] = re.sub(r'^N\.? ', "North ", found_address["StreetName"])
 
-    if found_address["street_name"].lower() != \
-            user_provided_address["street_name"].lower():
+    if found_address["StreetName"].lower() != \
+            user_provided_address["StreetName"].lower():
         return False
 
     # Allow for mismatched "Road" street_type between user input and ReCollect API
-    if "rd" in found_address["street_type"].lower() and \
-        "road" in user_provided_address["street_type"].lower():
+    if "rd" in found_address["StreetNamePostType"].lower() and \
+        "road" in user_provided_address["StreetNamePostType"].lower():
         return True
 
     # Allow fuzzy match on street type to allow "ave" to match "avenue"
-    if found_address["street_type"].lower() not in \
-        user_provided_address["street_type"].lower() and \
-        user_provided_address["street_type"].lower() not in \
-            found_address["street_type"].lower():
-                return False
+    if "StreetNamePostType" in found_address and \
+        "StreetNamePostType" in user_provided_address:
+        
+        if found_address["StreetNamePostType"].lower() not in \
+            user_provided_address["StreetNamePostType"].lower() and \
+            user_provided_address["StreetNamePostType"].lower() not in \
+                found_address["StreetNamePostType"].lower():
+                    return False
 
 
     return True
 
 
-def get_address_api_info(address, provided_zip_code, neighborhood):
+def get_address_api_info(address, neighborhood):
     """
     Gets the parameters required for the ReCollect API call
 
     :param address: Address to get parameters for
-    :param provided_zip_code: Optional zip code used if we find multiple
-        addresses
     :return: JSON object containing API parameters with format:
 
     {
@@ -242,8 +236,7 @@ def get_address_api_info(address, provided_zip_code, neighborhood):
     }
 
     """
-    logger.debug('address: ' + address +
-                 'provided_zip_code: ' + str(provided_zip_code))
+    logger.debug('address: ' + address)
     base_url = "https://recollect.net/api/areas/" \
                "Boston/services/310/address-suggest"
 

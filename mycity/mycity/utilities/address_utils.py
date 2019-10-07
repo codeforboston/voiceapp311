@@ -54,7 +54,7 @@ def is_address_valid(address):
     return all(
         key in address
         and address[key] is not None
-        for key in ("house", "street_full"))
+        for key in ("AddressNumber", "StreetName"))
 
 
 def get_address_coordinates_from_session(mycity_request) -> dict:
