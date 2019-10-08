@@ -37,6 +37,31 @@ class LocationServicesUtilsUnitTestCase(base.BaseTestCase):
         address = "100 Main Street 17603"
         self.assertFalse(location_services_utils.is_address_in_city(address))
 
+    def test_street_only_is_in_city(self):
+        address = "100 Main Street"
+        self.assertTrue(location_services_utils.is_address_in_city(address))
+
+    def test_is_location_in_city_with_address(self):
+        address = "100 Main Street 02129"
+        self.assertTrue(
+            location_services_utils.is_location_in_city(address, None))
+
+    def test_is_location_in_city_with_mycity_coordinates(self):
+        coordinates = {
+            "latitudeInDegrees": 42.316466,
+            "longitudeInDegrees": -71.056769,
+        }
+        self.assertTrue(
+            location_services_utils.is_location_in_city(None, coordinates))
+
+    def test_is_location_in_city_with_arcgis_coordinates(self):
+        coordinates = {
+            "y": 42.316466,
+            "x": -71.056769,
+        }
+        self.assertTrue(
+            location_services_utils.is_location_in_city(None, coordinates))
+
 
 if __name__ == '__main__':
     unittest.main()

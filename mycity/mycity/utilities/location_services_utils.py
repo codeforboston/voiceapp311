@@ -3,7 +3,7 @@ import logging
 from mycity.intents import intent_constants
 import mycity.utilities.gis_utils as gis_utils
 import mycity.mycity_response_data_model as mycity_response_data_model
-from streetaddress import StreetAddressParser
+import usaddress
 
 """ Methods for working with location based data """
 logger = logging.getLogger(__name__)
@@ -116,12 +116,32 @@ def is_in_city(mycity_request, city):
                  mycity_request.get_logger_string())
 
     if mycity_request.geolocation_coordinates:
-        lat = mycity_request.geolocation_coordinates['latitudeInDegrees']
-        long = mycity_request.geolocation_coordinates['longitudeInDegrees']
-        location = gis_utils.reverse_geocode_addr([long, lat])
-        if location['address']['City'] != city or \
-                location['address']['Region'] != 'Massachusetts':
-            return False
+        return are_coordinates_in_city(
+            mycity_request.geolocation_coordinates,
+            [city])
+
+    return True
+
+
+def are_coordinates_in_city(coordinates, cities):
+    """
+    Checks if the provided coordinates are in any
+    of the cities provided
+    :param coordinates: Dictionary of coordinates
+    :param cities: Array of possible cities to check against
+    :return: True if coordinates are in one of the cities. False if not.
+    """
+    if 'latitudeInDegrees' in coordinates:
+        coordinates['y'] = coordinates["latitudeInDegrees"]
+        coordinates['x'] = coordinates["longitudeInDegrees"]
+
+    lat = coordinates['y']
+    long = coordinates['x']
+
+    location = gis_utils.reverse_geocode_addr([long, lat])
+    if location['address']['City'] in cities or \
+            location['address']['Region'] != 'Massachusetts':
+        return False
 
     return True
 
@@ -132,5 +152,29 @@ def is_address_in_city(address):
     :param address: the adress to check
     :return: boolean
     """
+
+    # If we don't have any detail about city or zipcode
+    # we default to Boston for the geocode search
+    parsed_address, _ = usaddress.tag(address)
+    if "PlaceName" not in parsed_address and "ZipCode" not in parsed_address:
+        address = " ".join([address, "Boston"])
+
     city = 'Boston Metro Area'
     return gis_utils.geocode_addr(address, city)
+
+
+def is_location_in_city(address, coordinates):
+    """
+    Determines if the provided address or coordinates
+    are located in Boston. If both are provided,
+    address takes priority
+    :param address: String of address to check. Can be None.
+    :param coordinates: Dictionary of coordinates to check. Can be None.
+    :return: True if location is in Boston. False if not.
+    """
+    if address:
+        return is_address_in_city(address)
+    if coordinates:
+        return are_coordinates_in_city(coordinates, gis_utils.NEIGHBORHOODS)
+
+    return True
