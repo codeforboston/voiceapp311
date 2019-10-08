@@ -1,22 +1,14 @@
 import requests
 import logging
 from mycity.intents import intent_constants
+from mycity.intents.speech_constants.location_speech_constants import \
+    GENERIC_GEOLOCATION_PERMISSON_SPEECH, GENERIC_DEVICE_PERMISSON_SPEECH
 import mycity.utilities.gis_utils as gis_utils
 import mycity.mycity_response_data_model as mycity_response_data_model
 import usaddress
 
 """ Methods for working with location based data """
 logger = logging.getLogger(__name__)
-
-GENERIC_GEOLOCATION_PERMISSON_SPEECH = """
-    Boston Info would like to use your location. 
-    To turn on location sharing, please go to your Alexa app and 
-    follow the instructions."""
-
-GENERIC_DEVICE_PERMISSON_SPEECH = """
-    Boston Info would like to use your device's address. 
-    To turn on location sharing, please go to your Alexa app and 
-    follow the instructions."""
 
 
 def get_address_from_user_device(mycity_request):

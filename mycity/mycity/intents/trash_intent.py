@@ -1,6 +1,8 @@
 """
 Functions for Alexa responses related to trash day
 """
+from mycity.intents.speech_constants.location_speech_constants import \
+    NOT_IN_BOSTON_SPEECH
 from mycity.utilities.location_services_utils import \
     request_device_address_permission_response, \
     get_address_from_user_device, \
@@ -24,10 +26,6 @@ logger = logging.getLogger(__name__)
 
 DAY_CODE_REGEX = r'\d+A? - '
 CARD_TITLE = "Trash Day"
-
-NOT_IN_BOSTON_SPEECH = 'This address is not in Boston. ' \
-                       'Please use this skill with a Boston address. '\
-                       'See you later!'
 
 
 def get_trash_day_info(mycity_request):
