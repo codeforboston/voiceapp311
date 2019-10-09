@@ -3,15 +3,18 @@ Food Truck Intent
 """
 import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.datetime_utils as date
-import mycity.utilities.address_utils as address_utils
 import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
 from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.intents.user_address_intent import request_user_address_response
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.utilities.location_services_utils as location_services_utils
+from mycity.intents import intent_constants
+from mycity.utilities.location_services_utils import \
+    request_device_address_permission_response, \
+    get_address_from_user_device, \
+    is_address_in_city
 from .custom_errors import \
-    InvalidAddressError, BadAPIResponse, MultipleAddressError
+    InvalidAddressError, BadAPIResponse
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +51,7 @@ def get_truck_locations(given_address):
     Get the location of the food trucks in Boston TODAY within 1 mile
     of a given_address
 
+    :param given_address: a pair of coordinates
     :return: a list of features with unique food truck locations
     """
     formatted_address = '{x_coordinate}, {y_coordinate}'.format(
@@ -73,21 +77,19 @@ def get_nearby_food_trucks(mycity_request):
     """
     mycity_response = MyCityResponseDataModel()
 
-    # See if the user provided a custom address
-    user_address = address_utils.get_address_coordinates_from_session(mycity_request)
-
-    # If not, try to get user position from geolocation
-    if not user_address:
-        user_address = address_utils.get_address_coordinates_from_geolocation(mycity_request)
-
-    if not user_address:
-        # Couldn't get address. Request the to use geolocation if possible, fall back to 
-        # asking for speech input if device doesn't support it.
-        if mycity_request.device_has_geolocation:
-            return location_services_utils.request_geolocation_permission_response()
-        else:
+    # Determine if we have required address information. Request if we do not.
+    if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
+        mycity_request, location_permissions = get_address_from_user_device(
+            mycity_request)
+        if not location_permissions:
+            return request_device_address_permission_response()
+        elif intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
             return request_user_address_response(mycity_request)
 
+    user_address = \
+        mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+
+    print(f'User address is: {user_address}')
     # Get list of available trucks
     truck_unique_locations = get_truck_locations(user_address)
 
