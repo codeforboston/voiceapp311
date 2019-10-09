@@ -9,10 +9,11 @@ from mycity.intents.user_address_intent import clear_address_from_mycity_object
 from mycity.intents.user_address_intent import request_user_address_response
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.intents import intent_constants
+import mycity.utilities.address_utils as address_utils
+import mycity.utilities.gis_utils as gis_utils
+import mycity.utilities.location_services_utils as location_services_utils
 from mycity.utilities.location_services_utils import \
-    request_device_address_permission_response, \
-    get_address_from_user_device, \
-    is_address_in_city
+    is_location_in_city
 from .custom_errors import \
     InvalidAddressError, BadAPIResponse
 
@@ -77,21 +78,35 @@ def get_nearby_food_trucks(mycity_request):
     """
     mycity_response = MyCityResponseDataModel()
 
-    # Determine if we have required address information. Request if we do not.
+    coordinates = None
+    user_address = None
     if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
-        mycity_request, location_permissions = get_address_from_user_device(
-            mycity_request)
-        if not location_permissions:
-            return request_device_address_permission_response()
-        elif intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
-            return request_user_address_response(mycity_request)
+        # If not provided, try to get the user address through geolocation and device address
 
-    user_address = \
-        mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+        coordinates = address_utils.get_address_coordinates_from_geolocation(mycity_request)
 
-    print(f'User address is: {user_address}')
+        if not coordinates:
+            if mycity_request.device_has_geolocation:
+                return location_services_utils.request_geolocation_permission_response()
+
+            # Try getting registered device address
+            mycity_request, location_permissions = location_services_utils.get_address_from_user_device(mycity_request)
+            if not location_permissions:
+                return location_services_utils.request_device_address_permission_response()
+
+    if not coordinates:
+        user_address = \
+            mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+        coordinates = gis_utils.geocode_address(user_address)
+
+    if not is_location_in_city(user_address, coordinates):
+        mycity_response.output_speech = speech_constants.NOT_IN_BOSTON_SPEECH
+        mycity_response.should_end_session = True
+        mycity_response.card_title = CARD_TITLE
+        return mycity_response
+
     # Get list of available trucks
-    truck_unique_locations = get_truck_locations(user_address)
+    truck_unique_locations = get_truck_locations(coordinates)
 
     # Create custom response based on number of trucks returned
     try:
