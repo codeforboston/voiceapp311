@@ -17,17 +17,31 @@ dev_gis = GIS()
 
 # A list of neighborhoods in Boston for address geocoding
 NEIGHBORHOODS = ['Allston',
+                 'Back Bay',
+                 'Bay Village',
+                 'Beacon Hill',
                  'Boston',
                  'Brighton',
                  'Charlestown',
+                 'Chinatown',
+                 'Dorchester',
                  'Dorchester Center',
                  'East Boston',
+                 'Fenway',
+                 'Harbor Islands',
                  'Hyde Park',
                  'Jamaica Plain',
+                 'Leather District',
+                 'Longwood',
                  'Mattapan',
+                 'Mission Hill',
+                 'North End',
                  'Roslindale',
                  'Roxbury',
                  'South Boston',
+                 'South Boston Waterfront',
+                 'South End',
+                 'West End',
                  'West Roxbury']
 
 
