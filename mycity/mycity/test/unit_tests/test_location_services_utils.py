@@ -62,6 +62,14 @@ class LocationServicesUtilsUnitTestCase(base.BaseTestCase):
         self.assertTrue(
             location_services_utils.is_location_in_city(None, coordinates))
 
+    def test_location_not_in_city_with_coordinates(self):
+        coordinates = {
+            "y": 42.367084,
+            "x": -71.105708,
+        }
+        self.assertFalse(
+            location_services_utils.is_location_in_city(None, coordinates))
+
 
 if __name__ == '__main__':
     unittest.main()
