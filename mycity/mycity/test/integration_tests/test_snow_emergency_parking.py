@@ -5,6 +5,7 @@ import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.snow_parking_intent as snow_parking
+from mycity.intents.speech_constants import location_speech_constants
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 
 import unittest
@@ -14,7 +15,7 @@ import unittest
 # TestCase class for snow_parking_intent #
 ##########################################
 
-class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn, 
+class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                             mix_ins.CardTitleTestMixIn,
                             mix_ins.CorrectSpeechOutputTestMixIn,
                             base_case.IntentBaseCase):
@@ -36,7 +37,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
 
         self.csv_file = open(test_constants.PARKING_LOTS_TEST_CSV,
                              encoding='utf-8-sig')
-        mock_filtered_record_return = list(filter(fake_filter, 
+        mock_filtered_record_return = list(filter(fake_filter,
                                                   csv.DictReader(
                                                       self.csv_file,
                                                       delimiter=','
@@ -74,8 +75,8 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                         return_value=mock_closest_destination
                     )
 
-        
-    
+
+
         self.mock_filtered_record.start()
         self.mock_address_candidates.start()
         self.mock_api_access_token.start()
@@ -133,6 +134,15 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
         self.request.device_has_geolocation = False
         response = snow_parking.get_snow_emergency_parking_intent(self.request)
         self.assertEqual(self.expected_card_title, response.card_title)
+
+    def test_parsed_address_not_in_boston(self):
+        self.mock_address_candidates.return_value = test_constants.GEOCODE_OUTER_ADDRESS_CANDIDATES
+        self.request._session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "1 Broadway, Cambridge"
+        response = snow_parking.get_snow_emergency_parking_intent(self.request)
+        self.assertEqual(response.output_speech, location_speech_constants.NOT_IN_BOSTON_SPEECH)
+        # return to expected value
+        self.mock_address_candidates.return_value = test_constants.GEOCODE_ADDRESS_CANDIDATES
+
 
 if __name__ == '__main__':
     unittest.main()
