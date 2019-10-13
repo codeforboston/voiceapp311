@@ -131,11 +131,11 @@ def are_coordinates_in_city(coordinates, cities):
     long = coordinates['x']
 
     location = gis_utils.reverse_geocode_addr([long, lat])
-    if location['address']['City'] in cities or \
-            location['address']['Region'] != 'Massachusetts':
-        return False
+    if location['address']['City'] in cities and \
+            location['address']['Region'] == 'Massachusetts':
+        return True
 
-    return True
+    return False
 
 
 def is_address_in_city(address):
