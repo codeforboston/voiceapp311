@@ -11,7 +11,8 @@ import mycity.utilities.location_services_utils as location_services_utils
 
 from mycity.intents import intent_constants
 from mycity.intents.custom_errors import InvalidAddressError, BadAPIResponse
-from mycity.intents.user_address_intent import clear_address_from_mycity_object
+from mycity.intents.user_address_intent import \
+    clear_address_from_mycity_object, request_user_address_response
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities.location_services_utils import is_location_in_city
 
@@ -100,6 +101,12 @@ def get_nearby_food_trucks(mycity_request):
                     request_device_address_permission_response()
 
     if not coordinates:
+        if intent_constants.CURRENT_ADDRESS_KEY \
+            not in mycity_request.session_attributes:
+            # We don't have coordinates or an address by now,
+            # and we have all required permissions, ask the user
+            return request_user_address_response(mycity_request)
+
         user_address = mycity_request.session_attributes[
             intent_constants.CURRENT_ADDRESS_KEY]
         coordinates = gis_utils.geocode_address(user_address)
