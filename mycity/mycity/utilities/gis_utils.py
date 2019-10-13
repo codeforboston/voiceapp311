@@ -17,17 +17,32 @@ dev_gis = GIS()
 
 # A list of neighborhoods in Boston for address geocoding
 NEIGHBORHOODS = ['Allston',
+                 'Back Bay',
+                 'Bay Village',
+                 'Beacon Hill',
                  'Boston',
                  'Brighton',
                  'Charlestown',
+                 'Chinatown',
+                 'Dorchester',
                  'Dorchester Center',
                  'East Boston',
+                 'Fenway',
+                 'Fenway-Kenmore',
+                 'Harbor Islands',
                  'Hyde Park',
                  'Jamaica Plain',
+                 'Leather District',
+                 'Longwood',
                  'Mattapan',
+                 'Mission Hill',
+                 'North End',
                  'Roslindale',
                  'Roxbury',
                  'South Boston',
+                 'South Boston Waterfront',
+                 'South End',
+                 'West End',
                  'West Roxbury']
 
 
@@ -35,7 +50,7 @@ def get_features_from_feature_server(url, query):
     """
     Given a url to a City of Boston Feature Server, return a list
     of Features (for example, parking lots that are not full)
-    
+
     :param url: url for Feature Server
     :param query: a JSON object (example: { 'where': '1=1', 'out_sr': '4326' })
     :return: list of all features returned from the query
@@ -55,7 +70,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     """
     Generate and return a list of destination addresses (as strings)
     given a list of features
-    
+
     :param feature_address_index: to retrieve address string in feature
     :param features: list of features retrieved from FeatureServer
     :return: list of destination addresses
@@ -65,7 +80,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
         ', features received (printing first five): ' + str(features[:5]) +
         ', count(features): ' + str(len(features))
     )
-    
+
     dest_addresses = []
 
     # build array of each feature location
