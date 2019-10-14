@@ -1,17 +1,21 @@
 """
 Food Truck Intent
 """
-import mycity.utilities.gis_utils as gis_utils
-import mycity.utilities.datetime_utils as date
-import mycity.utilities.address_utils as address_utils
-import mycity.intents.speech_constants.food_truck_intent as speech_constants
 import logging
-from mycity.intents.user_address_intent import clear_address_from_mycity_object
-from mycity.intents.user_address_intent import request_user_address_response
-from mycity.mycity_response_data_model import MyCityResponseDataModel
+import mycity.intents.speech_constants.food_truck_intent as ft_speech_constants
+import mycity.intents.speech_constants.location_speech_constants as speech_const
+import mycity.utilities.address_utils as address_utils
+import mycity.utilities.datetime_utils as date
+import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.location_services_utils as location_services_utils
-from .custom_errors import \
-    InvalidAddressError, BadAPIResponse, MultipleAddressError
+
+from mycity.intents import intent_constants
+from mycity.intents.custom_errors import InvalidAddressError, BadAPIResponse
+from mycity.intents.user_address_intent import \
+    clear_address_from_mycity_object, request_user_address_response
+from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.utilities.location_services_utils import is_location_in_city
+
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +52,7 @@ def get_truck_locations(given_address):
     Get the location of the food trucks in Boston TODAY within 1 mile
     of a given_address
 
+    :param given_address: a pair of coordinates
     :return: a list of features with unique food truck locations
     """
     formatted_address = '{x_coordinate}, {y_coordinate}'.format(
@@ -73,28 +78,53 @@ def get_nearby_food_trucks(mycity_request):
     """
     mycity_response = MyCityResponseDataModel()
 
-    # See if the user provided a custom address
-    user_address = address_utils.get_address_coordinates_from_session(mycity_request)
+    coordinates = None
+    user_address = None
+    if intent_constants.CURRENT_ADDRESS_KEY not in \
+            mycity_request.session_attributes:
+        # If not provided, try to get the user address through
+        # geolocation and device address
 
-    # If not, try to get user position from geolocation
-    if not user_address:
-        user_address = address_utils.get_address_coordinates_from_geolocation(mycity_request)
+        coordinates = address_utils.\
+            get_address_coordinates_from_geolocation(mycity_request)
 
-    if not user_address:
-        # Couldn't get address. Request the to use geolocation if possible, fall back to 
-        # asking for speech input if device doesn't support it.
-        if mycity_request.device_has_geolocation:
-            return location_services_utils.request_geolocation_permission_response()
-        else:
+        if not coordinates:
+            if mycity_request.device_has_geolocation:
+                return location_services_utils.\
+                    request_geolocation_permission_response()
+
+            # Try getting registered device address
+            mycity_request, location_permissions = location_services_utils.\
+                get_address_from_user_device(mycity_request)
+            if not location_permissions:
+                return location_services_utils.\
+                    request_device_address_permission_response()
+
+    if not coordinates:
+        if intent_constants.CURRENT_ADDRESS_KEY \
+            not in mycity_request.session_attributes:
+            # We don't have coordinates or an address by now,
+            # and we have all required permissions, ask the user
             return request_user_address_response(mycity_request)
 
+        user_address = mycity_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY]
+        coordinates = gis_utils.geocode_address(user_address)
+
+    if not is_location_in_city(user_address, coordinates):
+        mycity_response.output_speech = speech_const.NOT_IN_BOSTON_SPEECH
+        mycity_response.should_end_session = True
+        mycity_response.card_title = CARD_TITLE
+        return mycity_response
+
     # Get list of available trucks
-    truck_unique_locations = get_truck_locations(user_address)
+    truck_unique_locations = get_truck_locations(coordinates)
 
     # Create custom response based on number of trucks returned
     try:
         if len(truck_unique_locations) == 0:
-            mycity_response.output_speech = "I didn't find any food trucks near you!"
+            mycity_response.output_speech = "I didn't find any food " \
+                                            "trucks near you!"
 
         if len(truck_unique_locations) == 1:
             response = f"I found {len(truck_unique_locations)} food " \
@@ -117,7 +147,7 @@ def get_nearby_food_trucks(mycity_request):
 
     except InvalidAddressError:
         mycity_response.output_speech = \
-            speech_constants.ADDRESS_NOT_FOUND.format("that address")
+            ft_speech_constants.ADDRESS_NOT_FOUND.format("that address")
         mycity_response.dialog_directive = "ElicitSlotFoodTruck"
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = \
