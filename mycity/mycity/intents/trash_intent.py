@@ -56,7 +56,7 @@ def get_trash_day_info(mycity_request):
 
     # If we have more specific info then just the street
     # address, make sure we are in Boston
-    if "PlaceName" in parsed_address and not is_address_in_city(current_address):
+    if not is_address_in_city(current_address):
         mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
         mycity_response.should_end_session = True
         mycity_response.card_title = CARD_TITLE
