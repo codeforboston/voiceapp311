@@ -1,4 +1,7 @@
-"""Constants used across intents"""
+"""
+Constants used across intents
+(Order alphabetically per intent name)
+"""
 import mycity.utilities.arcgis_utils as arcgis_utils
 
 # The key used for the current address in session attributes
@@ -73,7 +76,6 @@ PHONE_PREPARED_STRING = "Call {} for information."
 FEE_PREPARED_STRING = " The fee is {}. "
 NO_PHONE = ""
 NO_FEE = " There is no fee. "
-
 ERROR_SPEECH = "I need a valid address to find the closest parking"
 ERROR_INVALID_ADDRESS = "I can't seem to find this address. " \
                         "Please make sure to provide both the street " \
