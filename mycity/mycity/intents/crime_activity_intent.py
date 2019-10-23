@@ -2,18 +2,16 @@
 
 import logging
 import mycity.intents.intent_constants as intent_constants
-from mycity.intents.user_address_intent \
-    import request_user_address_response
+from mycity.intents.user_address_intent import request_user_address_response
 from mycity.utilities.location_services_utils import is_location_in_city
-from mycity.intents.speech_constants.location_speech_constants import \
-    NOT_IN_BOSTON_SPEECH
+from mycity.intents.intent_constants import NOT_IN_BOSTON_SPEECH
 from dateutil.parser import parse
-from mycity.utilities.location_services_utils \
-    import request_geolocation_permission_response, \
+from mycity.utilities.location_services_utils import \
+    request_geolocation_permission_response, \
     request_device_address_permission_response, \
     get_address_from_user_device
-from mycity.utilities.address_utils \
-    import get_address_coordinates_from_geolocation
+from mycity.utilities.address_utils import \
+    get_address_coordinates_from_geolocation
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities.crime_incidents_api_utils import \
     get_crime_incident_response
