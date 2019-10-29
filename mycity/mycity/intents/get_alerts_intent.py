@@ -168,7 +168,6 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     """
     logger.debug('service_alerts: ' + str(service_alerts))
 
-
     # for any defined service, if its alert is that it's running normally, 
     # remove it from the dictionary
     for service in Services:

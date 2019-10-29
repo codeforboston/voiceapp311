@@ -1,7 +1,6 @@
 import mycity.intents.intent_constants as intent_constants
 import mycity.test.unit_tests.base as base
 import mycity.intents.get_alerts_intent as get_alerts_intent
-import mycity.intents.speech_constants.get_alerts_intent as constants
 import typing
 
 
@@ -57,7 +56,7 @@ class GetAlertsIntentTestCase(base.BaseTestCase):
         self.assertEqual(expected, get_alerts_intent.alerts_to_speech_output(alerts))
 
     def test_that_alerts_to_speech_output_returns_default_response_if_no_alerts_in_dictionary(self):
-        expected = constants.NO_ALERTS
+        expected = intent_constants.NO_ALERTS
         alerts = dict()
         self.assertEqual(expected, get_alerts_intent.alerts_to_speech_output(alerts))
 
@@ -70,14 +69,14 @@ class GetAlertsIntentTestCase(base.BaseTestCase):
 
     def test_inclement_weather_alert_returns_normal_response_for_no_alert(self):
         response = get_alerts_intent.get_inclement_weather_alert(self.request, self.stub_get_alerts)
-        self.assertEqual(constants.NO_INCLEMENT_WEATHER_ALERTS, response.output_speech)
+        self.assertEqual(intent_constants.NO_INCLEMENT_WEATHER_ALERTS, response.output_speech)
 
     def test_inclement_weather_alert_returns_normal_response_for_keyword_in_wrong_alert_section(self):
         self.get_alerts_stub_return_dictionary = {
             get_alerts_intent.Services.PARKING_METERS: "Snow doesn't bother us!"
         }
         response = get_alerts_intent.get_inclement_weather_alert(self.request, self.stub_get_alerts)
-        self.assertEqual(constants.NO_INCLEMENT_WEATHER_ALERTS, response.output_speech)
+        self.assertEqual(intent_constants.NO_INCLEMENT_WEATHER_ALERTS, response.output_speech)
 
     def test_inclement_weather_alert_returns_alerts_when_snow_in_alert_banner(self):
         snow_emergency_alert = "It's a snow emergency!"
@@ -93,4 +92,4 @@ class GetAlertsIntentTestCase(base.BaseTestCase):
             get_alerts_intent.Services.ALERT_HEADER.value: snow_emergency_alert
         }
         response = get_alerts_intent.get_inclement_weather_alert(self.request, self.stub_get_alerts)
-        self.assertEqual(constants.NO_INCLEMENT_WEATHER_ALERTS, response.output_speech)
+        self.assertEqual(intent_constants.NO_INCLEMENT_WEATHER_ALERTS, response.output_speech)

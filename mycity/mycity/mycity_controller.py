@@ -4,16 +4,18 @@ Controller for mycity voice app.
 This class handles all voice requests.
 """
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-from .intents.user_address_intent import \
-    set_address_in_session, \
-    get_address_from_session, \
+from .intents.user_address_intent import (
+    set_address_in_session,
+    get_address_from_session,
     set_zipcode_in_session
+)
 from mycity.intents.latest_311_intent import get_311_requests
 from .intents.trash_intent import get_trash_day_info
 from .intents.fallback_intent import fallback_intent
-from .intents.get_alerts_intent import \
-    get_alerts_intent, \
+from .intents.get_alerts_intent import (
+    get_alerts_intent,
     get_inclement_weather_alert
+)
 from .intents.snow_parking_intent import get_snow_emergency_parking_intent
 from .intents.feedback_intent import submit_feedback
 from .intents.crime_activity_intent import get_crime_incidents_intent

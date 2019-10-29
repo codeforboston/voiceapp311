@@ -1,18 +1,21 @@
 """
 Functions for Alexa responses related to trash day
 """
-from mycity.utilities.location_services_utils import \
-    request_device_address_permission_response, \
-    get_address_from_user_device, \
+from mycity.utilities.location_services_utils import (
+    request_device_address_permission_response,
+    get_address_from_user_device,
     is_address_in_city
+)
 from mycity.intents import intent_constants
-from mycity.intents.custom_errors import \
-    InvalidAddressError, \
-    BadAPIResponse, \
+from mycity.intents.custom_errors import (
+    InvalidAddressError,
+    BadAPIResponse,
     MultipleAddressError
-from mycity.intents.user_address_intent import \
-    clear_address_from_mycity_object, \
+)
+from mycity.intents.user_address_intent import (
+    clear_address_from_mycity_object,
     request_user_address_response
+)
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import mycity.utilities.address_utils as address_utils
 import usaddress

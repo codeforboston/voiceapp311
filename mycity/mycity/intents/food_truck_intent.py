@@ -9,8 +9,10 @@ import mycity.utilities.location_services_utils as location_services_utils
 
 from mycity.intents import intent_constants
 from mycity.intents.custom_errors import InvalidAddressError, BadAPIResponse
-from mycity.intents.user_address_intent import \
-    clear_address_from_mycity_object, request_user_address_response
+from mycity.intents.user_address_intent import (
+    clear_address_from_mycity_object,
+    request_user_address_response
+)
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities.location_services_utils import is_location_in_city
 

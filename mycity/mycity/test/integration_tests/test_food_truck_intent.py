@@ -5,13 +5,12 @@ import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.intents.food_truck_intent as food_truck_intent
 import mycity.intents.intent_constants as intent_constants
-
-
 import unittest
 
 ###################################
 # TestCase class for trash_intent #
 ###################################
+
 
 class FoodTruckTestCase(mix_ins.RepromptTextTestMixIn,
                         mix_ins.CardTitleTestMixIn,

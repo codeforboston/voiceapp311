@@ -9,7 +9,8 @@ import mycity.utilities.location_services_utils as location_services_utils
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import logging
 
-PARKING_INFO_URL = "http://bostonopendata-boston.opendata.arcgis.com/datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
+PARKING_INFO_URL = "http://bostonopendata-boston.opendata.arcgis.com/" \
+                   "datasets/53ebc23fcc654111b642f70e61c63852_0.csv"
 SNOW_PARKING_CARD_TITLE = "Snow Parking"
 ADDRESS_KEY = "Address"
 

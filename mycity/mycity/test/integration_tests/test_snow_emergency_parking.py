@@ -5,7 +5,6 @@ import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.test_constants as test_constants
 import mycity.intents.intent_constants as intent_constants
 import mycity.intents.snow_parking_intent as snow_parking
-from mycity.intents.speech_constants import location_speech_constants
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 
 import unittest
@@ -21,9 +20,9 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                             base_case.IntentBaseCase):
 
     intent_to_test = "SnowParkingIntent"
-    expected_title = snow_parking.SNOW_PARKING_CARD_TITLE
+    expected_title = intent_constants.SNOW_PARKING_CARD_TITLE
     returns_reprompt_text = False
-    expected_card_title = snow_parking.SNOW_PARKING_CARD_TITLE
+    expected_card_title = intent_constants.SNOW_PARKING_CARD_TITLE
 
     def setUp(self):
         """
@@ -139,7 +138,7 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
         self.mock_address_candidates.return_value = test_constants.GEOCODE_OUTER_ADDRESS_CANDIDATES
         self.request._session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "1 Broadway, Cambridge"
         response = snow_parking.get_snow_emergency_parking_intent(self.request)
-        self.assertEqual(response.output_speech, location_speech_constants.NOT_IN_BOSTON_SPEECH)
+        self.assertEqual(response.output_speech, intent_constants.NOT_IN_BOSTON_SPEECH)
         # return to expected value
         self.mock_address_candidates.return_value = test_constants.GEOCODE_ADDRESS_CANDIDATES
 

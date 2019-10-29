@@ -1,8 +1,6 @@
 import requests
 import logging
 from mycity.intents import intent_constants
-from mycity.intents.speech_constants.location_speech_constants import \
-    GENERIC_GEOLOCATION_PERMISSON_SPEECH, GENERIC_DEVICE_PERMISSON_SPEECH
 import mycity.utilities.gis_utils as gis_utils
 import mycity.mycity_response_data_model as mycity_response_data_model
 import usaddress
@@ -52,7 +50,7 @@ def request_geolocation_permission_response():
         to request geolocation access
     """
     response = mycity_response_data_model.MyCityResponseDataModel()
-    response.output_speech = GENERIC_GEOLOCATION_PERMISSON_SPEECH
+    response.output_speech = intent_constants.GENERIC_GEOLOCATION_PERMISSON_SPEECH
     response.card_type = "AskForPermissionsConsent"
     response.card_permissions = ["alexa::devices:all:geolocation:read"]
     response.should_end_session = True
@@ -68,7 +66,7 @@ def request_device_address_permission_response():
         to request geolocation access
     """
     response = mycity_response_data_model.MyCityResponseDataModel()
-    response.output_speech = GENERIC_DEVICE_PERMISSON_SPEECH
+    response.output_speech = intent_constants.GENERIC_DEVICE_PERMISSON_SPEECH
     response.card_type = "AskForPermissionsConsent"
     response.card_permissions = ["read::alexa:device:all:address"]
     response.should_end_session = True
