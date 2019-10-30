@@ -67,7 +67,29 @@ class TrashIntentTestCase(base.BaseTestCase):
         get_trash_day_info(request)
         mock_get_address.assert_not_called()
 
+    @mock.patch('mycity.intents.trash_intent.get_address_from_user_device')
+    @mock.patch('mycity.intents.trash_intent.get_trash_and_recycling_days')
+    def test_does_not_require_boston_address_if_desired_address_provided(self, mock_get_days, mock_get_address):
+        device_address_request = MyCityRequestDataModel()
+        device_address_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY] \
+            = "10 Main Street New York NY"
+        mock_get_address.return_value = device_address_request, True
+
+        mock_get_days.return_value = ["Monday"]
+        request = MyCityRequestDataModel()
+        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "10 Main Street Boston MA"
+        result = get_trash_day_info(request)
+        self.assertTrue("Monday" in result.output_speech)
+
+    @mock.patch('mycity.intents.trash_intent.get_trash_and_recycling_days')
+    def test_provided_address_must_be_in_city(self, mock_get_days):
+        mock_get_days.return_value = ["Monday"]
+        request = MyCityRequestDataModel()
+        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "10 Main Street New York, NY"
+        result = get_trash_day_info(request)
+        self.assertFalse("Monday" in result.output_speech)
+
 
 if __name__ == '__main__':
     unittest.main()
-

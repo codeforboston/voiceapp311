@@ -1,9 +1,11 @@
 import unittest.mock as mock
+from mycity.mycity_request_data_model import MyCityRequestDataModel
 import mycity.test.test_constants as test_constants
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.intents.food_truck_intent as food_truck_intent
 import mycity.intents.intent_constants as intent_constants
+
 
 import unittest
 
@@ -40,7 +42,12 @@ class FoodTruckTestCase(mix_ins.RepromptTextTestMixIn,
         self.get_address_api_patch.stop()
         self.get_truck_locations_patch.stop()
 
-    def test_delegates_if_address_not_provided_no_geolocation_support(self):
+    @mock.patch('mycity.intents.food_truck_intent.location_services_utils.get_address_from_user_device')
+    def test_delegates_if_address_not_provided_no_geolocation_support(self, mock_get_address):
+        self.request.device_has_geolocation = False
+        device_address_request = MyCityRequestDataModel()
+        mock_get_address.return_value = device_address_request, True
+
         self.request._session_attributes.pop(intent_constants.CURRENT_ADDRESS_KEY, None)
         response = self.controller.on_intent(self.request)
         self.assertEqual(response.dialog_directive['type'], "Dialog.Delegate")

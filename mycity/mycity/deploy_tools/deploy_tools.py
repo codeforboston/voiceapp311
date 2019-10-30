@@ -99,6 +99,29 @@ def print_package_names(install_output):
         print('*   ' + name, end='\n')
 
 
+def install_linux_wheels():
+    """
+    Forces installation of wheels contined in the
+    linux wheels folder
+    """
+    wheels_folder = os.path.join(os.getcwd(), "linux_wheels")
+    for file_name in os.listdir(wheels_folder):
+        if file_name.endswith(".whl"):
+            wheel = os.path.join(wheels_folder, file_name)
+            install_args = [
+                "pip",
+                "install",
+                wheel,
+                "-t",
+                TEMP_DIR_PATH,
+                "--upgrade"
+            ]
+            print('* Installing linux wheel {}...'.format(file_name))
+            result = run(install_args, stdout=PIPE, stderr=PIPE)
+            print_package_names(result.stdout)
+            print('* DONE')
+
+
 def package_lambda_function():
     """
     Creates a temporary directory where the lambda file and all of its
@@ -130,6 +153,7 @@ def package_lambda_function():
         os.path.join(os.getcwd(), 'requirements.txt'),
         os.path.join(os.getcwd(), 'requirements_no_deps.txt')
     )
+    install_linux_wheels()
 
     # build zip file in project root
     zip_lambda_function_directory(PROJECT_ROOT)

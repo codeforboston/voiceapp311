@@ -862,7 +862,94 @@ CLOSEST_OPEN_SPACES_DRIVING_DATA = \
 # ArcGIS test data
 
 GEOCODE_ADDRESS_CANDIDATES = {
-        'spatialReference': {'wkid': 4399, 'latestWkid': 4326}, 'candidates': [{'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125', 'location': {'x': -71.05664413015762, 'y': 42.31649037829649}, 'score': 100, 'attributes': {'Match_addr': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125', 'Addr_type': 'PointAddress'}, 'extent': {'xmin': -71.05752100000001, 'ymin': 42.315497, 'xmax': -71.055521, 'ymax': 42.317496999999996}}]}
+    'spatialReference': {'wkid': 4326, 'latestWkid': 4326},
+    'candidates': [
+        {
+            'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
+            'location': {'x': -71.056655697184, 'y': 42.31648476242137},
+            'score': 100,
+            'attributes': {
+                'Match_addr': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
+                'Addr_type': 'PointAddress',
+            },
+            'extent': {
+                'xmin': -71.05752100000001,
+                'ymin': 42.315497,
+                'xmax': -71.055521,
+                'ymax': 42.317496999999996,
+            },
+        },
+        {
+            'address': 'Dorchester Ave, Dorchester, Massachusetts, 02122',
+            'location': {'x': -71.06038175879554, 'y': 42.299536105979044},
+            'score': 96.5,
+            'attributes': {
+                'Match_addr': 'Dorchester Ave, Dorchester, Massachusetts, 02122',
+                'Addr_type': 'StreetName',
+            },
+            'extent': {
+                'xmin': -71.06138175879555,
+                'ymin': 42.298536105979046,
+                'xmax': -71.05938175879554,
+                'ymax': 42.30053610597904,
+            },
+        },
+        {
+            'address': 'Dorchester Ave, Dorchester, Massachusetts, 02125',
+            'location': {'x': -71.05688256971442, 'y': 42.32602810343147},
+            'score': 96.5,
+            'attributes': {
+                'Match_addr': 'Dorchester Ave, Dorchester, Massachusetts, 02125',
+                'Addr_type': 'StreetName',
+            },
+            'extent': {
+                'xmin': -71.05788256971442,
+                'ymin': 42.32502810343147,
+                'xmax': -71.05588256971441,
+                'ymax': 42.327028103431466,
+            },
+        },
+    ],
+}
+
+
+GEOCODE_OUTER_ADDRESS_CANDIDATES = {
+    'spatialReference': {'wkid': 4326, 'latestWkid': 4326},
+    'candidates': [
+        {
+            'address': '1 Broadway, Cambridge, Massachusetts, 02142',
+            'location': {'x': -71.0833275, 'y': 42.362757000000016},
+            'score': 100,
+            'attributes': {
+                'Match_addr': '1 Broadway, Cambridge, Massachusetts, 02142',
+                'Addr_type': 'PointAddress',
+            },
+            'extent': {
+                'xmin': -71.0843275,
+                'ymin': 42.36175700000002,
+                'xmax': -71.08232749999999,
+                'ymax': 42.363757000000014,
+            },
+        },
+        {
+            'address': 'Broadway, Cambridge, Massachusetts, 02142',
+            'location': {'x': -71.08945766627649, 'y': 42.364793484564714},
+            'score': 98.6,
+            'attributes': {
+                'Match_addr': 'Broadway, Cambridge, Massachusetts, 02142',
+                'Addr_type': 'StreetName',
+            },
+            'extent': {
+                'xmin': -71.09045766627649,
+                'ymin': 42.36379348456472,
+                'xmax': -71.08845766627648,
+                'ymax': 42.36579348456471,
+            },
+        },
+    ],
+}
+
+
 
 
 TOP_ADDRESS_CANDIDATE = {
