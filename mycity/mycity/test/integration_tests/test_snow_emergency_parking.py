@@ -20,9 +20,9 @@ class SnowEmergencyTestCase(mix_ins.RepromptTextTestMixIn,
                             base_case.IntentBaseCase):
 
     intent_to_test = "SnowParkingIntent"
-    expected_title = intent_constants.SNOW_PARKING_CARD_TITLE
+    expected_title = snow_parking.SNOW_PARKING_CARD_TITLE
     returns_reprompt_text = False
-    expected_card_title = intent_constants.SNOW_PARKING_CARD_TITLE
+    expected_card_title = snow_parking.SNOW_PARKING_CARD_TITLE
 
     def setUp(self):
         """
