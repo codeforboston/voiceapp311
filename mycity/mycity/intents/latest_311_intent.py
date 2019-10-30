@@ -50,7 +50,8 @@ def number_of_reports(mycity_request):
             "value" in mycity_request.intent_variables[
                 REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
         return min(
-            int(mycity_request.intent_variables[REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
+            int(mycity_request.intent_variables[
+                    REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
             MAX_NUMBER_OF_REPORTS)
 
     return DEFAULT_NUMBER_OF_REPORTS

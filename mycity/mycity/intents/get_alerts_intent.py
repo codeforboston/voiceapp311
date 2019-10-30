@@ -65,30 +65,39 @@ SNOW_ALERT_QUERY = ["snow", "winter weather", "inclement weather"]
 def get_alerts_intent(
         mycity_request: MyCityRequestDataModel,
         get_alerts_function_for_test: typing.Callable[[], typing.Dict] = None,
-        prune_normal_responses_function_for_test: typing.Callable[[], typing.Dict] = None,
-        alerts_to_speech_output_function_for_test: typing.Callable[[], typing.AnyStr] = None
+        prune_normal_responses_function_for_test:
+        typing.Callable[[], typing.Dict] = None,
+        alerts_to_speech_output_function_for_test:
+        typing.Callable[[], typing.AnyStr] = None
 ) -> MyCityResponseDataModel:
     """
     Generate response object with information about citywide alerts
 
-    :param mycity_request:                            MyCityRequestDataModel object
-    :param get_alerts_function_for_test:              Injectable function for unit tests
-    :param prune_normal_responses_function_for_test:  Injectable function for unit tests
-    :param alerts_to_speech_output_function_for_test: Injectable function for unit tests
-    :return:                                          MyCityResponseDataModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :param get_alerts_function_for_test: Injectable function for unit tests
+    :param prune_normal_responses_function_for_test: Injectable function
+     for unit tests
+    :param alerts_to_speech_output_function_for_test: Injectable function 
+    for unit tests
+    :return: MyCityResponseDataModel object
     """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' +
+                 mycity_request.get_logger_string())
 
-    alerts = get_alerts() if get_alerts_function_for_test is None else get_alerts_function_for_test()
-    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
+    alerts = get_alerts() if get_alerts_function_for_test is None \
+        else get_alerts_function_for_test()
+    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" +
+                 str(alerts))
 
     pruned_alerts = prune_normal_responses(alerts) \
-        if prune_normal_responses_function_for_test is None else prune_normal_responses_function_for_test(alerts)
+        if prune_normal_responses_function_for_test is None \
+        else prune_normal_responses_function_for_test(alerts)
     logger.debug("[dictionary after pruning]:\n" + str(alerts))
 
     mycity_response = _create_response_object()
     mycity_response.output_speech = alerts_to_speech_output(pruned_alerts) \
-        if alerts_to_speech_output_function_for_test is None else alerts_to_speech_output_function_for_test(pruned_alerts)
+        if alerts_to_speech_output_function_for_test is None \
+        else alerts_to_speech_output_function_for_test(pruned_alerts)
     return mycity_response
 
 
@@ -99,19 +108,23 @@ def get_inclement_weather_alert(
     """
     Generates a response with information about any inclement weather alerts.
 
-    :param mycity_request:                            MyCityRequestDataModel object
-    :param get_alerts_function_for_test:              Injectable function for unit tests
-    :return:                                          MyCityResponseDataModel object
+    :param mycity_request: MyCityRequestDataModel object
+    :param get_alerts_function_for_test: Injectable function for unit tests
+    :return: MyCityResponseDataModel object
     """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' +
+                 mycity_request.get_logger_string())
 
-    alerts = get_alerts() if get_alerts_function_for_test is None else get_alerts_function_for_test()
-    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
+    alerts = get_alerts() if get_alerts_function_for_test is None \
+        else get_alerts_function_for_test()
+    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" +
+                 str(alerts))
 
     logger.debug("filtering for inclement weather alerts")
     output_speech = constants.NO_INCLEMENT_WEATHER_ALERTS
     if Services.ALERT_HEADER.value in alerts:
-        if any(query in alerts[Services.ALERT_HEADER.value].lower() for query in SNOW_ALERT_QUERY):
+        if any(query in alerts[Services.ALERT_HEADER.value].lower()
+               for query in SNOW_ALERT_QUERY):
             logger.debug("inclement weather alert found")
             output_speech = alerts[Services.ALERT_HEADER.value]
 
@@ -124,7 +137,8 @@ def get_inclement_weather_alert(
 
 def _create_response_object() -> MyCityResponseDataModel:
     """
-    Creates a MyCityResponseDataModel populated with fields common to all city alerts
+    Creates a MyCityResponseDataModel populated with fields common
+    to all city alerts
 
     :return: MyCityResponseDataModel
     """
@@ -151,7 +165,8 @@ def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
         all_alerts += alerts.pop(Services.ALERT_HEADER.value)
     for alert in alerts.values():
         all_alerts += alert + ' '
-    if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug
+    # this is a kludgy fix for the {'alert header': ''} bug
+    if all_alerts.strip() == "":
         return constants.NO_ALERTS
     else:
         return all_alerts.rstrip()
@@ -174,7 +189,8 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     # for any defined service, if its alert is that it's running normally, 
     # remove it from the dictionary
     for service in Services:
-        if service.value in service_alerts and str.find(service_alerts[service.value], "normal") != -1: # this is a leap of faith
+        if service.value in service_alerts and \
+                str.find(service_alerts[service.value], "normal") != -1:
             service_alerts.pop(service.value)                       # remove
     if service_alerts[Services.TOW_LOT.value] == TOW_LOT_NORMAL_MESSAGE:
         service_alerts.pop(Services.TOW_LOT.value)
@@ -197,8 +213,9 @@ def get_alerts():
     url.close()
 
     # parse, sanitize returned strings, place in dictionary
-    services = [s.text.strip() for s in soup.find_all(class_= SERVICE_NAMES)]
-    service_info = [s_info.text.strip().replace(u'\xA0', u' ') for s_info in soup.find_all(class_= SERVICE_INFO)]
+    services = [s.text.strip() for s in soup.find_all(class_=SERVICE_NAMES)]
+    service_info = [s_info.text.strip().replace(u'\xA0', u' ')
+                    for s_info in soup.find_all(class_= SERVICE_INFO)]
     alerts = {}
     for i in range(len(services)):
         alerts[services[i]] = service_info[i]
