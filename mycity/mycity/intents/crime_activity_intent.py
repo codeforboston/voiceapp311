@@ -2,10 +2,22 @@
 
 import logging
 import mycity.intents.intent_constants as intent_constants
+from mycity.intents.user_address_intent \
+    import request_user_address_response
+from mycity.utilities.location_services_utils import is_location_in_city
+from mycity.intents.speech_constants.location_speech_constants import \
+    NOT_IN_BOSTON_SPEECH
 from dateutil.parser import parse
+from mycity.utilities.location_services_utils \
+    import request_geolocation_permission_response, \
+    request_device_address_permission_response, \
+    get_address_from_user_device
+from mycity.utilities.address_utils \
+    import get_address_coordinates_from_geolocation
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities.crime_incidents_api_utils import \
     get_crime_incident_response
+import mycity.utilities.gis_utils as gis_utils
 
 # Constants
 CARD_TITLE_CRIME = "Crime Report"
@@ -34,16 +46,44 @@ def get_crime_incidents_intent(mycity_request):
     """
     logger.debug('[method: get_crime_incidents_intent]')
 
-    mycity_response = MyCityResponseDataModel()
-    if intent_constants.CURRENT_ADDRESS_KEY in \
+    coordinates = {}
+    current_address = None
+    if intent_constants.CURRENT_ADDRESS_KEY not in \
             mycity_request.session_attributes:
-        address = mycity_request. \
-            session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
-        response = get_crime_incident_response(address)
+        coordinates = get_address_coordinates_from_geolocation(mycity_request)
+
+        if not coordinates:
+            if mycity_request.device_has_geolocation:
+                return request_geolocation_permission_response()
+
+            # Try getting registered device address
+            mycity_request, location_permissions \
+                = get_address_from_user_device(mycity_request)
+            if not location_permissions:
+                return request_device_address_permission_response()
+
+    # Convert address to coordinates if we only have user address
+    if intent_constants.CURRENT_ADDRESS_KEY \
+            in mycity_request.session_attributes:
+        current_address = mycity_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY]
+        coordinates = gis_utils.geocode_address(current_address)
+
+    # If we don't have coordinates by now, and we have all required
+    #  permissions, ask the user for an address
+    if not coordinates:
+        return request_user_address_response(mycity_request)
+
+    mycity_response = MyCityResponseDataModel()
+
+    # If our address/coordinates are not in Boston, send a response letting
+    # the user know the intent only works in Boston.
+    if not is_location_in_city(current_address, coordinates):
+        mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
+    else:
+        response = get_crime_incident_response(coordinates)
         mycity_response.output_speech = \
             _build_text_from_response(response)
-    else:
-        logger.debug("Error: Called crime_incidents_intent with no address")
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
