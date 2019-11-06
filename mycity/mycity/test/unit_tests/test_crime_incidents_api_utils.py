@@ -4,6 +4,7 @@ import mycity.test.unit_tests.base as base
 from mycity.utilities.crime_incidents_api_utils import \
     get_crime_incident_response
 
+
 class CrimeIncidentsAPIUtilitiesTestCase(base.BaseTestCase):
 
     @mock.patch(

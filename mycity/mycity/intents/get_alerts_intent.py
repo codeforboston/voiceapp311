@@ -8,9 +8,7 @@ City services in alerts dict:
 
 Alerts for day are fetched from dictionary with city service as key
 
-
 Example:
-
 service_alerts['Street Cleaning'] = "Today is the third Tuesday of the month \\
 and street cleaning is running on a normal schedule."
 
@@ -21,7 +19,7 @@ from urllib import request
 from enum import Enum
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.intents.speech_constants.get_alerts_intent as constants
+import mycity.intents.intent_constants as intent_constants
 import logging
 import typing
 
@@ -109,7 +107,7 @@ def get_inclement_weather_alert(
     logger.debug("[dictionary with alerts scraped from boston.gov]:\n" + str(alerts))
 
     logger.debug("filtering for inclement weather alerts")
-    output_speech = constants.NO_INCLEMENT_WEATHER_ALERTS
+    output_speech = intent_constants.NO_INCLEMENT_WEATHER_ALERTS
     if Services.ALERT_HEADER.value in alerts:
         if any(query in alerts[Services.ALERT_HEADER.value].lower() for query in SNOW_ALERT_QUERY):
             logger.debug("inclement weather alert found")
@@ -152,7 +150,7 @@ def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
     for alert in alerts.values():
         all_alerts += alert + ' '
     if all_alerts.strip() == "":        # this is a kludgy fix for the {'alert header': ''} bug
-        return constants.NO_ALERTS
+        return intent_constants.NO_ALERTS
     else:
         return all_alerts.rstrip()
         
@@ -169,7 +167,6 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
         alert information
     """
     logger.debug('service_alerts: ' + str(service_alerts))
-
 
     # for any defined service, if its alert is that it's running normally, 
     # remove it from the dictionary

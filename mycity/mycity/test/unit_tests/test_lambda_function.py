@@ -5,6 +5,7 @@ import lambda_function as lambda_function
 import json
 import unittest
 
+
 class TestAlexaLambdaFunctionLocationServices(unittest.TestCase):
 
     def setUp(self):
