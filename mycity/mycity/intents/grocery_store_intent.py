@@ -1,17 +1,21 @@
 """
 Grocery Store Intent
 """
-import mycity.utilities.gis_utils as gis_utils
-import mycity.utilities.datetime_utils as date
 import logging
+import mycity.intents.speech_constants.food_truck_intent as ft_speech_constants
+import mycity.intents.speech_constants.location_speech_constants as speech_const
+import mycity.utilities.address_utils as address_utils
+import mycity.utilities.datetime_utils as date
+import mycity.utilities.gis_utils as gis_utils
+import mycity.utilities.location_services_utils as location_services_utils
+
+from mycity.intents import intent_constants
+from mycity.intents.custom_errors import InvalidAddressError, BadAPIResponse
+from mycity.intents.user_address_intent import \
+    clear_address_from_mycity_object, request_user_address_response
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-from mycity.intents.intent_constants import CURRENT_ADDRESS_KEY
-from . import intent_constants
-from streetaddress import StreetAddressParser
-from .custom_errors import \
-    InvalidAddressError, BadAPIResponse, MultipleAddressError
-import mycity.intents.speech_constants.food_truck_intent as speech_constants
-from mycity.intents.user_address_intent import clear_address_from_mycity_object
+from mycity.utilities.location_services_utils import is_location_in_city
+
 
 logger = logging.getLogger(__name__)
 
@@ -70,20 +74,47 @@ def get_nearby_grocery_stores(mycity_request):
     """
     mycity_response = MyCityResponseDataModel()
 
+    coordinates = None
     # Get current address location
-    if CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
-        current_address = \
-            mycity_request.session_attributes[CURRENT_ADDRESS_KEY]
+    if intent_constants.CURRENT_ADDRESS_KEY not in \
+            mycity_request.session_attributes:
+        # If not provided, try to get the user address through
+        # geolocation and device address
 
-        # Parsing street address using street-address package
-        address_parser = StreetAddressParser()
-        a = address_parser.parse(current_address)
-        address = str(a["house"]) + " " + str(a["street_name"]) + " " \
-                  + str(a["street_type"])
+        coordinates = address_utils.\
+            get_address_coordinates_from_geolocation(mycity_request)
+
+        if not coordinates:
+            if mycity_request.device_has_geolocation:
+                return location_services_utils.\
+                    request_geolocation_permission_response()
+
+            # Try getting registered device address
+            mycity_request, location_permissions = location_services_utils.\
+                get_address_from_user_device(mycity_request)
+            if not location_permissions:
+                return location_services_utils.\
+                    request_device_address_permission_response()
+
+    if not coordinates:
+        if intent_constants.CURRENT_ADDRESS_KEY \
+            not in mycity_request.session_attributes:
+            # We don't have coordinates or an address by now,
+            # and we have all required permissions, ask the user
+            return request_user_address_response(mycity_request)
+
+        user_address = mycity_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY]
+        coordinates = gis_utils.geocode_address(user_address)
+
+        if not is_location_in_city(user_address, coordinates):
+            mycity_response.output_speech = speech_const.NOT_IN_BOSTON_SPEECH
+            mycity_response.should_end_session = True
+            mycity_response.card_title = CARD_TITLE
+            return mycity_response
 
         # Get user's address and get grocery stores
-        usr_addr = gis_utils.geocode_address(address)
-        nearby_grocery_stores = get_grocery_grocery_stores(usr_addr)
+        nearby_grocery_stores = get_grocery_grocery_stores(coordinates)
 
         try:
             if len(nearby_grocery_stores):
@@ -97,24 +128,21 @@ def get_nearby_grocery_stores(mycity_request):
                 mycity_response.output_speech = response
 
         except InvalidAddressError:
-            address_string = address
             mycity_response.output_speech = \
-                speech_constants.ADDRESS_NOT_FOUND.format(address_string)
+                ft_speech_constants.ADDRESS_NOT_FOUND.format("that address")
             mycity_response.dialog_directive = "ElicitSlotGroceryStore"
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = \
                 mycity_request.session_attributes
             mycity_response.card_title = CARD_TITLE
+            mycity_request = clear_address_from_mycity_object(mycity_request)
             mycity_response = clear_address_from_mycity_object(mycity_response)
+            mycity_response.should_end_session = True
             return mycity_response
 
         except BadAPIResponse:
             mycity_response.output_speech = \
                 "Hmm something went wrong. Maybe try again?"
-
-        except MultipleAddressError:
-            mycity_response.output_speech = \
-                speech_constants.MULTIPLE_ADDRESS_ERROR.format(address)
 
     else:
         logger.error("Error: Called grocery_store_intent with no address")
