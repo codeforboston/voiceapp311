@@ -2,8 +2,6 @@
 Grocery Store Intent
 """
 import logging
-import mycity.intents.speech_constants.food_truck_intent as ft_speech_constants
-import mycity.intents.speech_constants.location_speech_constants as speech_const
 import mycity.utilities.address_utils as address_utils
 import mycity.utilities.datetime_utils as date
 import mycity.utilities.gis_utils as gis_utils
@@ -108,7 +106,7 @@ def get_nearby_grocery_stores(mycity_request):
         coordinates = gis_utils.geocode_address(user_address)
 
         if not is_location_in_city(user_address, coordinates):
-            mycity_response.output_speech = speech_const.NOT_IN_BOSTON_SPEECH
+            mycity_response.output_speech = intent_constants.NOT_IN_BOSTON_SPEECH
             mycity_response.should_end_session = True
             mycity_response.card_title = CARD_TITLE
             return mycity_response
@@ -129,7 +127,7 @@ def get_nearby_grocery_stores(mycity_request):
 
         except InvalidAddressError:
             mycity_response.output_speech = \
-                ft_speech_constants.ADDRESS_NOT_FOUND.format("that address")
+                intent_constants.ADDRESS_NOT_FOUND.format("that address")
             mycity_response.dialog_directive = "ElicitSlotGroceryStore"
             mycity_response.reprompt_text = None
             mycity_response.session_attributes = \

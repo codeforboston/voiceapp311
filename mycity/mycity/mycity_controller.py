@@ -7,6 +7,7 @@ from mycity.mycity_response_data_model import MyCityResponseDataModel
 from .intents.user_address_intent import (
     set_address_in_session,
     get_address_from_session,
+    request_user_address_response,
     set_zipcode_in_session
 )
 from mycity.intents.latest_311_intent import get_311_requests
