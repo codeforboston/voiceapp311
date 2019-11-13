@@ -3,7 +3,7 @@ Function(s) for dealing with fallback intents
 """
 
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-import mycity.intents.speech_constants.fallback_intent as speech_constants
+import mycity.intents.intent_constants as intent_constants
 import logging
 
 CARD_TITLE = "Boston Info"
@@ -22,8 +22,8 @@ def fallback_intent(mycity_request):
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = CARD_TITLE
-    mycity_response.reprompt_text = speech_constants.REPROMPT_TEXT
-    mycity_response.output_speech = speech_constants.OUTPUT_SPEECH
+    mycity_response.reprompt_text = intent_constants.REPROMPT_TEXT
+    mycity_response.output_speech = intent_constants.OUTPUT_SPEECH
     mycity_response.should_end_session = False
 
     return mycity_response
