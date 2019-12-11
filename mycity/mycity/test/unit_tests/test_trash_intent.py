@@ -2,7 +2,7 @@ import random
 import unittest
 import unittest.mock as mock
 
-from mycity.intents.trash_intent import find_unique_addresses, get_trash_day_info
+from mycity.intents.trash_intent import find_unique_address, get_trash_day_info
 import mycity.intents.intent_constants as intent_constants
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.test.unit_tests import base
@@ -37,7 +37,7 @@ class TrashIntentTestCase(base.BaseTestCase):
         for _ in range(3):
             # Ordering of the payload shouldn't matter
             random.shuffle(fake_response_partial)
-            found_addresses = find_unique_addresses(fake_response_partial)
+            found_addresses = find_unique_address(fake_response_partial)
             # We don't care about ordering really, so comparing sorted is easiest
             self.assertListEqual((expected_options), (found_addresses))
 
