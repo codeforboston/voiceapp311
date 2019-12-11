@@ -17,19 +17,7 @@ class TrashIntentTestCase(base.BaseTestCase):
         similar addresses
         """
         fake_response_partial = [
-            {"name": name}
-            for name in [
-                "123 Street Rd, Brookline 02445",
-                "123 Street Rd, Brookline 02445 Unit 1",
-                "123 Street Rd, Brookline 02445 Unit 2",
-                "456 Road St, South Boston 02127",
-                "456 Road St, South Boston 02127 #1",
-                "456 Road St, South Boston 02127 #2",
-                "789 Lane Ave, Allston 02134",
-                "1 - 789 Lane Ave, Allston 02134",
-                "2 - 789 Lane Ave, Allston 02134",
-                "I am all alone, no substrings or superstrings",
-            ]
+                "123 Street Rd, Brookline 02445"
         ]
         expected_options = [
             "123 Street Rd, Brookline 02445"
