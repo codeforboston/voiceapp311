@@ -17,7 +17,10 @@ class TrashIntentTestCase(base.BaseTestCase):
         similar addresses
         """
         fake_response_partial = [
+            {"name": name}
+            for name in [
                 "123 Street Rd, Brookline 02445"
+            ]
         ]
         expected_options = [
             "123 Street Rd, Brookline 02445"
