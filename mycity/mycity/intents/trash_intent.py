@@ -164,7 +164,12 @@ def find_unique_addresses(address_request_json):
     logger.debug('address_request_json: ' + str(address_request_json))
     # Pre-extract the addresses from the payload and uniquify them
     strings_to_compare = sorted(set(address["name"] for address in address_request_json), key=len, reverse=True)
-
+    # res = []
+    # for addr in address_request_json:
+    #     res.append(addr)
+    # print(address_request_json[0])
+    # return address_request_json[0]
+    # return address_request_json[0]
     return [
         compare_a
         for i, compare_a in enumerate(strings_to_compare)

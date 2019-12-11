@@ -32,17 +32,14 @@ class TrashIntentTestCase(base.BaseTestCase):
             ]
         ]
         expected_options = [
-            "123 Street Rd, Brookline 02445",
-            "456 Road St, South Boston 02127",
-            "789 Lane Ave, Allston 02134",
-            "I am all alone, no substrings or superstrings",
+            "123 Street Rd, Brookline 02445"
         ]
         for _ in range(3):
             # Ordering of the payload shouldn't matter
             random.shuffle(fake_response_partial)
             found_addresses = find_unique_addresses(fake_response_partial)
             # We don't care about ordering really, so comparing sorted is easiest
-            self.assertListEqual(sorted(expected_options), sorted(found_addresses))
+            self.assertListEqual((expected_options), (found_addresses))
 
     @mock.patch('mycity.intents.trash_intent.get_address_from_user_device')
     def test_requests_device_address_permission(self, mock_get_address):
@@ -57,7 +54,7 @@ class TrashIntentTestCase(base.BaseTestCase):
         request = MyCityRequestDataModel()
         response = get_trash_day_info(request)
         self.assertEqual("Address", response.card_title)
-    
+
     @mock.patch('mycity.intents.trash_intent.get_address_from_user_device')
     @mock.patch('mycity.intents.trash_intent.get_trash_and_recycling_days')
     def test_does_not_get_device_address_if_desired_address_provided(self, mock_get_days, mock_get_address):
