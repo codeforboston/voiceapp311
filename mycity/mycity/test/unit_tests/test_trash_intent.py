@@ -17,23 +17,20 @@ class TrashIntentTestCase(base.BaseTestCase):
         similar addresses
         """
         fake_response_partial = {'area_id': 311, 'parcel_id': 50750030, 'area_name': 'Boston', 'name': '30 Beach St, Boston 02111', 'place_id': 'EF0C71EA-76B9-11E9-A82C-1A7E437A767B', 'service_id': 310}, {'area_id': 311, 'parcel_id': 50710552, 'place_id': '55909586-849D-11E9-BA56-31A8A53F0116', 'service_id': 310, 'name': '30 Beach St, Dorchester 02122', 'area_name': 'Boston'}, {'place_id': '760AC626-80B3-11E9-9DDD-61FE786D1E41', 'service_id': 310, 'name': '1 - 30 Beach St, Dorchester 02122', 'area_name': 'Boston', 'area_id': 311, 'parcel_id': 50408592}, {'parcel_id': 50409108, 'area_id': 311, 'area_name': 'Boston', 'name': '30-1 - 30 Beach St, Dorchester 02122', 'service_id': 310, 'place_id': '7B3F0B5C-80B3-11E9-9FC3-61FE786D1E41'}, {'parcel_id': 50409106, 'area_id': 311, 'name': '30-3 - 30 Beach St, Dorchester 02122', 'area_name': 'Boston', 'service_id': 310, 'place_id': '7B3B3E00-80B3-11E9-9FC3-61FE786D1E41'}, {'service_id': 310, 'place_id': '7B3D3CB4-80B3-11E9-9FC3-61FE786D1E41', 'name': '30-2 - 30 Beach St, Dorchester 02122', 'area_name': 'Boston', 'parcel_id': 50409107, 'area_id': 311}
-
         expected_options = [
             "30 Beach St, Boston 02111"
-        ]
-
+        ] # ["30 Beach St, Boston 02111"]
         found_addresses = find_unique_address(fake_response_partial)
-        # print(found_addresses)
-        # print(expected_options)
         self.assertListEqual(expected_options, found_addresses)
 
-        fake_response_partial = {'area_id': 311, 'area_name': 'Boston', 'service_id': 310, 'parcel_id': 50773210, 'place_id': 'C326E9FE-849F-11E9-9A9D-509DA9D9E44A', 'name': '10 Main St, Charlestown 02129'}, {'area_id': 311, 'place_id': '42A400A2-849D-11E9-BA56-31A8A53F0116', 'name': '10 W Main St, Dorchester 02126', 'parcel_id': 50708112, 'service_id': 310, 'area_name': 'Boston'}, {'area_id': 311, 'place_id': 'CF6E847C-80B4-11E9-8F6A-6DFE786D1E41', 'name': '407 - 10 W Main St, Dorchester 02124', 'parcel_id': 50398721, 'service_id': 310, 'area_name': 'Boston'}
+        fake_response_partial2 = {'area_id': 311, 'area_name': 'Boston', 'service_id': 310, 'parcel_id': 50773210, 'place_id': 'C326E9FE-849F-11E9-9A9D-509DA9D9E44A', 'name': '10 Main St, Charlestown 02129'}, {'area_id': 311, 'place_id': '42A400A2-849D-11E9-BA56-31A8A53F0116', 'name': '10 W Main St, Dorchester 02126', 'parcel_id': 50708112, 'service_id': 310, 'area_name': 'Boston'}, {'area_id': 311, 'place_id': 'CF6E847C-80B4-11E9-8F6A-6DFE786D1E41', 'name': '407 - 10 W Main St, Dorchester 02124', 'parcel_id': 50398721, 'service_id': 310, 'area_name': 'Boston'}
         expected_options = [
             "10 Main St, Charlestown 02129"
-        ]
-        self.assertListEqual(expected_options, found_addresses)
-        # "10 Main St, Charlestown 02129"
-        # 30 Beach St, Boston 02111
+        ]# ["10 Main St, Charlestown 02129"]
+        found_addresses2 = find_unique_address(fake_response_partial2)
+        self.assertListEqual(expected_options, found_addresses2)
+
+
 
     @mock.patch('mycity.intents.trash_intent.get_address_from_user_device')
     def test_requests_device_address_permission(self, mock_get_address):
