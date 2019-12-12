@@ -155,7 +155,7 @@ def get_trash_and_recycling_days(address, neighborhood=None):
 
 def find_unique_address(address_request_json):
     """
-    Finds unique addresses in a provided address request json returned
+    Finds the first address in a provided address request json returned
     from the ReCollect service
     :param address_request_json: json object returned from ReCollect address
         request service
@@ -163,15 +163,9 @@ def find_unique_address(address_request_json):
     """
     logger.debug('address_request_json: ' + str(address_request_json))
     # Pre-extract the addresses from the payload and uniquify them
-    strings_to_compare = sorted(set(address["name"] for address in address_request_json), key=len, reverse=True)
+    # strings_to_compare = sorted(set(address["name"] for address in address_request_json), key=len, reverse=True)
+    return address_request_json[0]["name"]
 
-    res = [
-        compare_a
-        for i, compare_a in enumerate(strings_to_compare)
-        if not any(compare_b in compare_a for compare_b in strings_to_compare[i + 1:])
-    ]
-    print (res[0])
-    return [res[0]]
 
 
 def validate_found_address(found_address, user_provided_address):
