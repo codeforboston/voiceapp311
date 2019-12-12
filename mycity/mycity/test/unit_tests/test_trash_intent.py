@@ -11,10 +11,8 @@ from mycity.test.unit_tests import base
 class TrashIntentTestCase(base.BaseTestCase):
     def test_multiple_address_options(self):
         """
-        If the recollect API returns multiple possibilities for a given address query,
-        we need to ask the user which one they meant. As we find more cases for address
-        similarity, we should add them as tests here so we avoid asking the user about
-        similar addresses
+        If a user gives address query that is in multiple neighborhood,
+        we return only first address since recollect API returns the first address.
         """
         fake_response_partial = {'area_id': 311, 'parcel_id': 50750030, 'area_name': 'Boston', 'name': '30 Beach St, Boston 02111', 'place_id': 'EF0C71EA-76B9-11E9-A82C-1A7E437A767B', 'service_id': 310}, {'area_id': 311, 'parcel_id': 50710552, 'place_id': '55909586-849D-11E9-BA56-31A8A53F0116', 'service_id': 310, 'name': '30 Beach St, Dorchester 02122', 'area_name': 'Boston'}, {'place_id': '760AC626-80B3-11E9-9DDD-61FE786D1E41', 'service_id': 310, 'name': '1 - 30 Beach St, Dorchester 02122', 'area_name': 'Boston', 'area_id': 311, 'parcel_id': 50408592}, {'parcel_id': 50409108, 'area_id': 311, 'area_name': 'Boston', 'name': '30-1 - 30 Beach St, Dorchester 02122', 'service_id': 310, 'place_id': '7B3F0B5C-80B3-11E9-9FC3-61FE786D1E41'}, {'parcel_id': 50409106, 'area_id': 311, 'name': '30-3 - 30 Beach St, Dorchester 02122', 'area_name': 'Boston', 'service_id': 310, 'place_id': '7B3B3E00-80B3-11E9-9FC3-61FE786D1E41'}, {'service_id': 310, 'place_id': '7B3D3CB4-80B3-11E9-9FC3-61FE786D1E41', 'name': '30-2 - 30 Beach St, Dorchester 02122', 'area_name': 'Boston', 'parcel_id': 50409107, 'area_id': 311}
         expected_options = [
