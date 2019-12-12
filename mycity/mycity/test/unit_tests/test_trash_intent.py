@@ -29,7 +29,8 @@ class TrashIntentTestCase(base.BaseTestCase):
 
 
         found_addresses = find_unique_address(fake_response_partial)
-
+        print(found_addresses)
+        print(expected_options)
         self.assertListEqual(expected_options, found_addresses)
 
         # "10 Main St, Charlestown 02129"

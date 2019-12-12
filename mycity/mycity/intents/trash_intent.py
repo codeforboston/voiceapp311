@@ -169,7 +169,7 @@ def find_unique_address(address_request_json):
         compare_a
         for i, compare_a in enumerate(strings_to_compare)
         if not any(compare_b in compare_a for compare_b in strings_to_compare[i + 1:])
-    ][0]
+    ]
     print (res[0])
     return [res[0]]
 
