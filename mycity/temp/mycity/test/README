@@ -1,0 +1,65 @@
+Running all tests for project:
+
+    from PROJECT_ROOT:
+    	 (PROJECT_ROOT)$ sh run_tests.sh
+
+
+
+test_dir_structure:
+	|
+	|
+	|
+	----unit_tests: unit-y tests (there are some integration-like tests here)
+	|
+	|
+	|
+	----integration_tests: tests of intents with network resources mocked
+	|
+	|
+	|
+	|
+	----test_constants.py: contains some file_paths and mocked_return_values
+	|    for patched functions in integration_tests modules
+	|
+	|
+	|
+	----test_data: mostly unused for now, most of the relevant data has been 
+	    incorporated into test_constants.py
+
+
+Creating an integration_test for some_intent.py:
+
+
+1. import mycity.test.integration_tests.intent_test_mixins 
+     - contains common test functions like testing if response.output_speech
+     has an error message, the card title is correctly configured, etc.
+
+2. import mycity.test.integration_tests.intent_base_case
+    - does the setUp and tearDown common to all intents 
+    - if you need to do some function patching or some other setup, overwrite
+    setUp and tearDown in child class, but don't forget to call super().setUp()
+    and super().tearDown(), respectively
+
+3. if you need a return value for a mocked function, write and store it in
+mycity.test.test_constants and reference it as mycity.test.test_constants.SOME_VALUE.
+
+
+class SomeIntentTestCase(mix_ins.RepromptTextTestMixIn,
+	                 mix_ins.TestForOutputSpeechErrorMixIn,
+			 base_case.IntentBaseCase):
+
+    intent_to_test = "SomeIntent"
+    returns_reprompt_text = False
+
+    def setUp(self): 
+        super().setUp() 
+	 ...patch whatever functions you need to
+        (don't forget to start the patch/es)...
+
+    def tearDown(self):
+        super().tearDown()
+	...stop all your patches...
+
+    def test_that_is_unique_to_this_intent(self): 
+        ...do whatever you need to! Mixed-in tests will rely on your setUp 
+	and tearDown for any needed patching tho
