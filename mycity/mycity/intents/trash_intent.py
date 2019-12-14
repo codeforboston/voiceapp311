@@ -162,8 +162,8 @@ def find_unique_address(address_request_json):
     :return: list of one unique address
     """
     logger.debug('address_request_json: ' + str(address_request_json))
-    # Pre-extract the addresses from the payload and uniquify them
-    # strings_to_compare = sorted(set(address["name"] for address in address_request_json), key=len, reverse=True)
+    # We always return the first address because the Brookline location services web app does so,
+    # presumably the ReCollect API does the correct sorting.
     return [address_request_json[0]["name"]]
 
 
