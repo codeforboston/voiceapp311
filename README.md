@@ -23,9 +23,9 @@ Example Request:
 
 
 #### Find any current Alerts
-This is used to get any alerts for the day put out by the Boston government. The alerts can be about any of the the following services:
+This is used to get any alerts for the day put out by the Boston government. The alerts can be about any of the following services:
   * street cleaning
-  * trash and recyclying
+  * trash and recycling
   * city building hours
   * parking meters
   * tow alerts
@@ -43,7 +43,7 @@ Example Request:
 > "Alexa, ask Boston Info to tell me the 4 most recent three one ones"
 
 
-### Find any nearby Nearby Food Trucks
+### Find any nearby Food Trucks
 This intent gets near-by food trucks for the given or stored Address. It returns the first five food trucks it finds within one mile of the given address as well as the time period that the food truck is expected to be at the location.
 
 Example Requests:
