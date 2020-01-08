@@ -25,7 +25,7 @@ Example Request:
 #### Find any current Alerts
 This is used to get any alerts for the day put out by the Boston government. The alerts can be about any of the the following services:
   * street cleaning
-  * trash and recyclying
+  * trash and recycling
   * city building hours
   * parking meters
   * tow alerts
