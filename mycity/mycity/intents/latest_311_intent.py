@@ -7,7 +7,7 @@ DEFAULT_NUMBER_OF_REPORTS = 3
 MAX_NUMBER_OF_REPORTS = 10
 
 BOSTON_311_URL = "https://data.boston.gov/api/3/action/datastore_search"
-BOSTON_RESOURCE_ID = "2968e2c0-d479-49ba-a884-4ef523ada3c0"
+BOSTON_RESOURCE_ID = "6ff6a6fd-3141-4440-a880-6f60a37fe789"
 
 
 def get_311_requests(mycity_request):
