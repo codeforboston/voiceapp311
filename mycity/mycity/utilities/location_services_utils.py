@@ -41,7 +41,7 @@ def get_address_from_user_device(mycity_request):
             current_address = " ".join([address, city, state])
             mycity_request.session_attributes[
                 intent_constants.CURRENT_ADDRESS_KEY] = current_address
-    except:
+    except Exception:
         # If we fail to parse a response, just return like we don't have
         # sufficient permissions
         return mycity_request, False
