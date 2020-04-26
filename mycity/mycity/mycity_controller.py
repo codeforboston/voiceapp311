@@ -154,6 +154,8 @@ def on_intent(mycity_request):
         return get_inclement_weather_alert(mycity_request)
     elif mycity_request.intent_name == "FarmersMarketIntent":
         return get_farmers_markets_today(mycity_request)
+    elif mycity_request.intent_name == "CoronavirusUpdateIntent":
+        return get_coronovirus_update(mycity_request)
     else:
         raise ValueError("Invalid intent")
 

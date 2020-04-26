@@ -2,6 +2,11 @@
     "interactionModel": {
         "languageModel": {
             "invocationName": "boston info",
+            "modelConfiguration": {
+                "fallbackIntentSensitivity": {
+                    "level": "LOW"
+                }
+            },
             "intents": [
                 {
                     "name": "TrashDayIntent",
@@ -1242,6 +1247,40 @@
                         "farmers markets today",
                         "are there any farmers markets today",
                         "farmers markets"
+                    ]
+                },
+                {
+                    "name": "CoronavirusUpdateIntent",
+                    "slots": [],
+                    "samples": [
+                        "give me the latest coronavirus information",
+                        "give me the latest coronavirus update",
+                        "give me the latest covid information",
+                        "give me the latest covid nineteen information",
+                        "give me the latest covid nineteen update",
+                        "give me the latest covid update",
+                        "give me the latest pandemic information",
+                        "give me the latest pandemic update",
+                        "what is the latest coronavirus information",
+                        "what is the latest coronavirus update",
+                        "what is the latest covid information",
+                        "what is the latest covid nineteen information",
+                        "what is the latest covid nineteen update",
+                        "what is the latest covid update",
+                        "what is the latest pandemic information",
+                        "what is the latest pandemic update",
+                        "coronavirus information",
+                        "coronavirus update",
+                        "covid information",
+                        "covid nineteen information",
+                        "covid nineteen update",
+                        "covid update",
+                        "pandemic information",
+                        "pandemic update",
+                        "whats the latest on coronavirus",
+                        "whats the latest on covid",
+                        "whats the latest on covid nineteen",
+                        "whats the latest on pandemic"
                     ]
                 }
             ],
