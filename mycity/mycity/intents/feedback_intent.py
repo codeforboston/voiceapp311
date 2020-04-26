@@ -11,7 +11,9 @@ import os
 
 SLACK_WEBHOOKS_URL = os.environ.get('SLACK_WEBHOOKS_URL', "Environment_missing_SLACK_WEBHOOKS_URL")
 CARD_TITLE = "Feedback"
-REPROMPT_TEXT = "In a few sentences or less, please describe the issue or feedback."
+REPROMPT_TEXT = "In a few sentences or less, please describe " \
+                "the issue or feedback."
+
 
 def submit_feedback(mycity_request):
     """
@@ -55,9 +57,11 @@ def submit_feedback(mycity_request):
             if status == 200:
                 mycity_response.output_speech = speech_constants.BIG_THANKS
             else:
-                mycity_response.output_speech = speech_constants.PROBLEM_SAVING_FEEDBACK
+                mycity_response.output_speech = \
+                    speech_constants.PROBLEM_SAVING_FEEDBACK
         except Exception:
-            mycity_response.output_speech = speech_constants.PROBLEM_SAVING_FEEDBACK
+            mycity_response.output_speech = \
+                speech_constants.PROBLEM_SAVING_FEEDBACK
 
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
@@ -108,7 +112,8 @@ def build_slack_traceback(error, trace):
     Configures the message we will post to slack
 
     :param error: `Exception` instance
-    :param trace: execute `traceback.format_exc()` in the `except` block to get the correct value of this
+    :param trace: execute `traceback.format_exc()` in the `except`
+                  block to get the correct value of this
     :return: A string formatted for sending to Slack
     """
     print(

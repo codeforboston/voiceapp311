@@ -7,12 +7,10 @@ import json
 class MyCityRequestDataModel:
     """
     Represents a request from a voice platform.
-    
     Standard way requests are structured so they may be acted upon by
     the skill implementation.
 
     @todo: Consistent comment format that contains platform-specific terminology
-        
     Note:
         The property methods below get and set attribute values.
     """
@@ -184,7 +182,7 @@ class MyCityRequestDataModel:
     @device_has_geolocation.setter
     def device_has_geolocation(self, value: bool):
         self._has_geolocation = value
-    
+
     @property
     def geolocation_permission(self):
         """
