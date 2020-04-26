@@ -106,13 +106,13 @@ def get_trash_day_info(mycity_request):
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
         mycity_response.card_title = CARD_TITLE
-        mycity_response.should_end_session = True
+        mycity_response.should_end_session = False
         return clear_address_from_mycity_object(mycity_response)
 
     except BadAPIResponse:
         mycity_response.output_speech = speech_constants.BAD_API_RESPONSE
         mycity_response.should_end_session = True
-        
+
     except MultipleAddressError as error:
         addresses = [re.sub(r' \d{5}', '', address) for address in
                      error.addresses]
@@ -218,7 +218,7 @@ def validate_found_address(found_address, user_provided_address):
     # Allow fuzzy match on street type to allow "ave" to match "avenue"
     if "StreetNamePostType" in found_address and \
         "StreetNamePostType" in user_provided_address:
-        
+
         if found_address["StreetNamePostType"].lower() not in \
             user_provided_address["StreetNamePostType"].lower() and \
             user_provided_address["StreetNamePostType"].lower() not in \
