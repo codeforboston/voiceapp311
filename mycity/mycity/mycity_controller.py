@@ -5,20 +5,21 @@ This class handles all voice requests.
 """
 
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-from .intents.user_address_intent import set_address_in_session, \
+from mycity.intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response, \
     set_zipcode_in_session
 from mycity.intents.latest_311_intent import get_311_requests
-from .intents.trash_intent import get_trash_day_info
-from .intents.fallback_intent import fallback_intent
-from .intents.get_alerts_intent import get_alerts_intent, \
+from mycity.intents.trash_intent import get_trash_day_info
+from mycity.intents.fallback_intent import fallback_intent
+from mycity.intents.get_alerts_intent import get_alerts_intent, \
     get_inclement_weather_alert
-from .intents.snow_parking_intent import get_snow_emergency_parking_intent
-from .intents.feedback_intent import submit_feedback
-from .intents.crime_activity_intent import get_crime_incidents_intent
-from .intents.farmers_market_intent import get_farmers_markets_today
-from .intents.food_truck_intent import get_nearby_food_trucks
-from .intents import intent_constants
+from mycity.intents.snow_parking_intent import get_snow_emergency_parking_intent
+from mycity.intents.feedback_intent import submit_feedback
+from mycity.intents.coronavirus_update_intent import get_coronovirus_update
+from mycity.intents.crime_activity_intent import get_crime_incidents_intent
+from mycity.intents.farmers_market_intent import get_farmers_markets_today
+from mycity.intents.food_truck_intent import get_nearby_food_trucks
+from mycity.intents import intent_constants
 import logging
 
 logger = logging.getLogger(__name__)
