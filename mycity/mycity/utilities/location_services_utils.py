@@ -32,14 +32,19 @@ def get_address_from_user_device(mycity_request):
     response_object = requests.get(base_url, headers=head_info)
 
     logger.debug("response object:{}".format(response_object))
-    res = response_object.json()
-    if response_object.status_code == 200 and res['addressLine1'] is not None:
-        address = res['addressLine1']
-        state = res['stateOrRegion']
-        city = res['city']
-        current_address = " ".join([address, city, state])
-        mycity_request.session_attributes[
-            intent_constants.CURRENT_ADDRESS_KEY] = current_address
+    try:
+        res = response_object.json()
+        if response_object.status_code == 200 and res['addressLine1'] is not None:
+            address = res['addressLine1']
+            state = res['stateOrRegion']
+            city = res['city']
+            current_address = " ".join([address, city, state])
+            mycity_request.session_attributes[
+                intent_constants.CURRENT_ADDRESS_KEY] = current_address
+    except Exception:
+        # If we fail to parse a response, just return like we don't have
+        # sufficient permissions
+        return mycity_request, False
     return mycity_request, response_object.status_code == 200
 
 
