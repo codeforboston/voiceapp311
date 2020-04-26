@@ -16,22 +16,22 @@ Example Request:
 
 
 #### Find the nearest Emergency Snow Parking
-This is used to find snow emergency parking. Given an address it will find the nearest emergency snow parking lot by distance. It will tell you the name of and address of the parking lot, as well as estimating how long it will take you to drive there. If the information is available this intent can also tell you how many spaces are in the lot, if the lot charges a fee, and what phone number to call for more information about the parking lot.
+This is used to find snow emergency parking. Given an address, it will find the nearest emergency snow parking lot by distance. It will tell you the name and address of the parking lot, as well as estimating how long it will take you to drive there. If the information is available this intent can also tell you how many spaces are in the lot, if the lot charges a fee, and what phone number to call for more information about the parking lot.
 
 Example Request:
 > "Alexa, Ask Boston Info where I can park during a snow emergency.
 
 
 #### Find any current Alerts
-This is used to get any alerts for the day put out by the Boston government. The alerts can be about any of the the following services:
+This is used to get any alerts for the day put out by the Boston government. The alerts can be about any of the following services:
   * street cleaning
-  * trash and recyclying
+  * trash and recycling
   * city building hours
   * parking meters
   * tow alerts
 
 Example Request:
-> "Alexa, ask Boston Info if there are there any alerts."
+> "Alexa, ask Boston Info if there are any alerts."
 
 
 #### Find out the latest Three One One
@@ -43,8 +43,8 @@ Example Request:
 > "Alexa, ask Boston Info to tell me the 4 most recent three one ones"
 
 
-### Find any nearby Nearby Food Trucks
-This intent gets near-by food trucks for the given or stored Address. It returns the first five food trucks it finds within one mile of the given address as well as the time period that the food truck is expected to be at the location.
+### Find any nearby Food Trucks
+This intent gets near-by food trucks for the given or stored Address. It returns the first five food trucks it finds within one mile of the given address as well as the period that the food truck is expected to be at the location.
 
 Example Requests:
 > "Alexa, ask Boston Info where are the nearest food trucks?"
@@ -80,5 +80,5 @@ about municipal services in Boston.
 
 If you'd like to contribute or learn more about what we're working on, please
 visit our [wiki page](https://github.com/codeforboston/voiceapp311/wiki). There,
-you will find basic information about Alexa development and instructions on
+you will find basic information about Alexa's development and instructions on
 setting up a local version of Boston Info that you can experiment with.
