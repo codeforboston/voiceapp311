@@ -105,5 +105,3 @@ BostonData/lambda_function/urllib3*
 *.pyc
 
 lambda_function.zip
-ipython/
-

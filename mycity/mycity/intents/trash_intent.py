@@ -41,11 +41,14 @@ def get_trash_day_info(mycity_request):
     mycity_response = MyCityResponseDataModel()
 
     # Determine if we have required address information. Request if we do not.
-    if intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
-        mycity_request, location_permissions = get_address_from_user_device(mycity_request)
+    if intent_constants.CURRENT_ADDRESS_KEY not in \
+            mycity_request.session_attributes:
+        mycity_request, location_permissions = \
+            get_address_from_user_device(mycity_request)
         if not location_permissions:
             return request_device_address_permission_response()
-        elif intent_constants.CURRENT_ADDRESS_KEY not in mycity_request.session_attributes:
+        elif intent_constants.CURRENT_ADDRESS_KEY not in \
+                mycity_request.session_attributes:
             return request_user_address_response(mycity_request)
 
     current_address = \
@@ -91,12 +94,14 @@ def get_trash_day_info(mycity_request):
         trash_days = get_trash_and_recycling_days(address, neighborhood)
         trash_days_speech = build_speech_from_list_of_days(trash_days)
 
-        mycity_response.output_speech = speech_constants.PICK_UP_DAY.format(trash_days_speech)
+        mycity_response.output_speech = speech_constants.PICK_UP_DAY.\
+            format(trash_days_speech)
         mycity_response.should_end_session = True
 
     except InvalidAddressError:
         address_string = address
-        mycity_response.output_speech = speech_constants.ADDRESS_NOT_FOUND.format(address_string)
+        mycity_response.output_speech = speech_constants.ADDRESS_NOT_FOUND.\
+            format(address_string)
         mycity_response.dialog_directive = "ElicitSlotTrash"
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
@@ -109,9 +114,11 @@ def get_trash_day_info(mycity_request):
         mycity_response.should_end_session = True
 
     except MultipleAddressError as error:
-        addresses = [re.sub(r' \d{5}', '', address) for address in error.addresses]
+        addresses = [re.sub(r' \d{5}', '', address) for address in
+                     error.addresses]
         address_list = ', '.join(addresses)
-        mycity_response.output_speech = speech_constants.MULTIPLE_ADDRESS_ERROR.format(address_list)
+        mycity_response.output_speech = speech_constants.\
+            MULTIPLE_ADDRESS_ERROR.format(address_list)
         mycity_response.dialog_directive = "ElicitSlotNeighborhood"
         mycity_response.should_end_session = False
 
@@ -163,12 +170,15 @@ def find_unique_addresses(address_request_json):
     """
     logger.debug('address_request_json: ' + str(address_request_json))
     # Pre-extract the addresses from the payload and uniquify them
-    strings_to_compare = sorted(set(address["name"] for address in address_request_json), key=len, reverse=True)
+    strings_to_compare = sorted(set(address["name"] for address in
+                                    address_request_json),
+                                key=len, reverse=True)
 
     return [
         compare_a
         for i, compare_a in enumerate(strings_to_compare)
-        if not any(compare_b in compare_a for compare_b in strings_to_compare[i + 1:])
+        if not any(compare_b in compare_a for compare_b in
+                   strings_to_compare[i + 1:])
     ]
 
 
@@ -191,14 +201,16 @@ def validate_found_address(found_address, user_provided_address):
         return False
 
     # Re-collect replaces South with S and North with N
-    found_address["StreetName"] = re.sub(r'^S\.? ', "South ", found_address["StreetName"])
-    found_address["StreetName"] = re.sub(r'^N\.? ', "North ", found_address["StreetName"])
+    found_address["StreetName"] = re.sub(r'^S\.? ', "South ",
+                                         found_address["StreetName"])
+    found_address["StreetName"] = re.sub(r'^N\.? ', "North ",
+                                         found_address["StreetName"])
 
     if found_address["StreetName"].lower() != \
             user_provided_address["StreetName"].lower():
         return False
 
-    # Allow for mismatched "Road" street_type between user input and ReCollect API
+    # Allow for mismatched Road street_type between user input and ReCollect API
     if "rd" in found_address["StreetNamePostType"].lower() and \
         "road" in user_provided_address["StreetNamePostType"].lower():
         return True
@@ -238,7 +250,8 @@ def get_address_api_info(address, neighborhood):
     base_url = "https://recollect.net/api/areas/" \
                "Boston/services/310/address-suggest"
 
-    full_address = address if neighborhood is None else ' '.join([address, neighborhood])
+    full_address = address if neighborhood is None else ' '.join([address,
+                                                                  neighborhood])
     url_params = {'q': full_address, 'locale': 'en-US'}
     request_result = requests.get(base_url, url_params)
 

@@ -17,10 +17,12 @@ def set_address_in_session(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: None
     """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.
+                 get_logger_string())
 
     if 'Address' in mycity_request.intent_variables:
-        mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = \
+        mycity_request.session_attributes[
+            intent_constants.CURRENT_ADDRESS_KEY] = \
             mycity_request.intent_variables['Address']['value']
 
         if intent_constants.ZIP_CODE_KEY in mycity_request.session_attributes:
@@ -51,7 +53,8 @@ def get_address_from_session(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' +
+                 mycity_request.get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
@@ -59,14 +62,17 @@ def get_address_from_session(mycity_request):
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = False
 
-    if intent_constants.CURRENT_ADDRESS_KEY in mycity_request.session_attributes:
+    if intent_constants.CURRENT_ADDRESS_KEY in \
+            mycity_request.session_attributes:
         current_address = mycity_request.session_attributes[
             intent_constants.CURRENT_ADDRESS_KEY]
-        mycity_response.output_speech = "Your address is " + current_address + "."
+        mycity_response.output_speech = "Your address is " + \
+                                        current_address + "."
     else:
         mycity_response.output_speech = "I'm not sure what your address is. " \
-                                        "You can tell me your address by saying, " \
-                                        "\"my address is\" followed by your address."
+                                        "You can tell me your address by " \
+                                        "saying, \"my address is\" followed " \
+                                        "by your address."
 
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. They will be returned to the top level of the skill and must
@@ -82,7 +88,8 @@ def request_user_address_response(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' + mycity_request.
+                 get_logger_string())
 
     mycity_response = MyCityResponseDataModel()
 
