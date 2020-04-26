@@ -17,7 +17,8 @@ def fallback_intent(mycity_request):
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object
     """
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' +
+                 mycity_request.get_logger_string())
     
     mycity_response = MyCityResponseDataModel()
     mycity_response.session_attributes = mycity_request.session_attributes
