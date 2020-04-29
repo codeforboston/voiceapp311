@@ -9,7 +9,7 @@ import requests
 import json
 import os
 
-SLACK_WEBHOOKS_URL = os.environ['SLACK_WEBHOOKS_URL']
+SLACK_WEBHOOKS_URL = os.environ.get('SLACK_WEBHOOKS_URL', "Environment_missing_SLACK_WEBHOOKS_URL")
 CARD_TITLE = "Feedback"
 REPROMPT_TEXT = "In a few sentences or less, please describe " \
                 "the issue or feedback."
