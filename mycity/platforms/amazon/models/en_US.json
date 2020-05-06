@@ -2,6 +2,11 @@
     "interactionModel": {
         "languageModel": {
             "invocationName": "boston info",
+            "modelConfiguration": {
+                "fallbackIntentSensitivity": {
+                    "level": "LOW"
+                }
+            },
             "intents": [
                 {
                     "name": "TrashDayIntent",
@@ -1243,6 +1248,10 @@
                         "are there any farmers markets today",
                         "farmers markets"
                     ]
+                },
+                {
+                    "name": "AMAZON.RepeatIntent",
+                    "samples": []
                 }
             ],
             "types": []
