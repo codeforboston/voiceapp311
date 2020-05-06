@@ -37,7 +37,7 @@ HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
         "three one one reports, and the latest crime reports! "\
         "If you have feedback for the skill, say, 'I have a suggestion.'"
 
-
+global last_response
 def execute_request(mycity_request):
     """
     Route the incoming request based on type (LaunchRequest, IntentRequest,
@@ -52,28 +52,32 @@ def execute_request(mycity_request):
 
     # TODO: This section should be generalized for all platforms if possible
     """
-    Uncomment this if statement and populate with your skill's application ID 
-    to prevent someone else from configuring a skill that sends requests to 
+    Uncomment this if statement and populate with your skill's application ID
+    to prevent someone else from configuring a skill that sends requests to
     this function.
     """
     # if (mcd.application_id !=
     #         "amzn1.echo-sdk-ams.app.[unique-value-here]"):
     #     raise ValueError("Invalid Application ID")
-
+    global last_response
     if mycity_request.is_new_session:
         mycity_request = on_session_started(mycity_request)
+        last_response = None
 
     if mycity_request.request_type == "LaunchRequest":
-        return on_launch(mycity_request)
+        last_response = on_launch(mycity_request)
+        return last_response
     elif mycity_request.request_type == "IntentRequest":
-        return on_intent(mycity_request)
+        last_response = on_intent(mycity_request)
+        return last_response
     elif mycity_request.request_type == "SessionEndedRequest":
+        last_response = None
         return on_session_ended(mycity_request)
 
 
 def on_session_started(mycity_request):
     """
-    Called when the session starts. Creates a log entry with session info 
+    Called when the session starts. Creates a log entry with session info
     and inserts device address into session attributes if available.
 
     :param mycity_request: MyCityRequestDataModel object
@@ -105,13 +109,13 @@ def on_intent(mycity_request):
     this function is called to execute the logic associated with the
     provided intent and build a response. Checks for required
     session_attributes when applicable.
-    
+
     :param mycity_request: MyCityRequestDataModel object with
         request_type IntentRequest
     :return: MyCityRequestDataModel object corresponding to the intent_name
     :raises: ValueError
     """
-
+    global last_response
     logger.debug('MyCityRequestDataModel received:' +
                  mycity_request.get_logger_string())
 
@@ -154,6 +158,11 @@ def on_intent(mycity_request):
         return get_inclement_weather_alert(mycity_request)
     elif mycity_request.intent_name == "FarmersMarketIntent":
         return get_farmers_markets_today(mycity_request)
+    elif mycity_request.intent_name == "AMAZON.RepeatIntent":
+        if not last_response is None:
+            return last_response
+        else:
+            return fallback_intent(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
@@ -169,7 +178,7 @@ def on_session_ended(mycity_request):
         of the response datamodel
     """
     logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
-    
+
     return MyCityResponseDataModel()
     # add cleanup logic here
 
@@ -222,7 +231,7 @@ def handle_session_end_request(mycity_request):
     """
     Ends a user's session (with the Boston Info skill). Called when request
     intent is AMAZON.StopIntent or AMAZON.CancelIntent.
-    
+
     :param mycity_request: MyCityRequestDataModel object
     :return: MyCityResponseDataModel object that will end a user's session
     """
