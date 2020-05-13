@@ -58,19 +58,60 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
 
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value=some_alerts.copy())
-    def test_response_with_alerts(self, mock_get_alerts):
+    def test_response_with_selected_alerts(self, mock_get_alerts):
         # first response
         response = self.controller.on_intent(self.request)
         alerts = response.session_attributes['alerts']
         self.assertFalse(response.should_end_session)
         self.assertIn('Godzilla inbound!', alerts.values())
         self.assertIn('5', response.output_speech)
-        # TODO: Add second response for invalid decision
+        # second response for valid decision
+        self.request.session_attributes = response.session_attributes
+        self.request.intent_variables['Decision'] = {'value': 'alert header'}
+        response = self.controller.on_intent(self.request)
+        self.assertTrue(response.should_end_session)
+        self.assertIn('Godzilla inbound!', response.output_speech)
 
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value=some_alerts.copy())
-    def test_respond_premature_decision(self, mock_get_alerts):
+    def test_response_with_all_alerts(self, mock_get_alerts):
+        # first response
+        response = self.controller.on_intent(self.request)
+        alerts = response.session_attributes['alerts']
+        self.assertFalse(response.should_end_session)
+        self.assertIn('Godzilla inbound!', alerts.values())
+        self.assertIn('5', response.output_speech)
+        # second 'all' response
+        self.request.session_attributes = response.session_attributes
+        self.request.intent_variables['Decision'] = {'value': 'all'}
+        response = self.controller.on_intent(self.request)
+        self.assertTrue(response.should_end_session)
+        for alert in alerts.values():
+            self.assertIn(alert, response.output_speech)
+
+    @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
+                return_value=some_alerts.copy())
+    def test_response_premature_decision(self, mock_get_alerts):
         self.request.intent_variables['Decision'] = {'value': 'all'}
         response = self.controller.on_intent(self.request)
         self.assertFalse(response.should_end_session)
         self.assertNotIn('alerts', response.session_attributes)
+
+    @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
+                return_value=some_alerts.copy())
+    def test_response_invalid_decision(self, mock_get_alerts):
+        # first response
+        response = self.controller.on_intent(self.request)
+        alerts = response.session_attributes['alerts']
+        self.assertFalse(response.should_end_session)
+        self.assertIn('Godzilla inbound!', alerts.values())
+        self.assertIn('5', response.output_speech)
+        # second invalid decision response
+        self.request.session_attributes = response.session_attributes
+        self.request.intent_variables['Decision'] = {'value': 'school closings'}
+        response = self.controller.on_intent(self.request)
+        alerts = response.session_attributes['alerts']
+        self.assertFalse(response.should_end_session)
+        self.assertIn("I didn't understand", response.output_speech)
+        self.assertIn('Godzilla inbound!', alerts.values())
+        self.assertIn('5', response.output_speech)

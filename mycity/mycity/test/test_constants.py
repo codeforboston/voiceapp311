@@ -831,7 +831,8 @@ GET_ALERTS_MOCK_ONE_ALERT = {
 }
 
 GET_ALERTS_MOCK_SOME_ALERTS = {
-    'Tow lot': 'Tow lots destroyed!', 'Parking meters': 'Parking meters are all broken.',
+    'Tow lot': 'Tow lots destroyed!',
+    'Parking meters': 'Parking meters are all broken.',
     'City building hours': 'Stay away from city buildings.',
     'Trash and recycling': 'Pickup is on a normal schedule.',
     'Street Cleaning': 'Street cleaning is canceled',

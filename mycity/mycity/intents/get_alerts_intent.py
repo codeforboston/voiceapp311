@@ -91,7 +91,7 @@ def get_alerts_intent(
         if 'Decision' in intent_variables \
         and 'value' in intent_variables['Decision'] \
         else None
-    session_alerts = session_alerts['alerts'] \
+    session_alerts = session_attributes['alerts'] \
         if 'alerts' in session_attributes else None
 
     logger.debug('decision: ' + str(decision) +
@@ -129,14 +129,19 @@ def get_alerts_intent(
         mycity_response.should_end_session = False
         mycity_response.output_speech = constants.LAUNCH_REPROMPT_SPEECH
     elif decision == 'all':
-        # TODO: return response of all alerts [end]
-        pass
+        mycity_response.output_speech = \
+            alerts_to_speech_output(session_alerts) \
+            if alerts_to_speech_output_function_for_test is None \
+            else alerts_to_speech_output_function_for_test(session_alerts)
     elif decision in session_alerts:
-        # TODO: return response for selected alert [end]
-        pass
+        alert = { decision: session_alerts[decision] }
+        mycity_response.output_speech = alerts_to_speech_output(alert) \
+            if alerts_to_speech_output_function_for_test is None \
+            else alerts_to_speech_output_function_for_test(alert)
     else:
-        # TODO: return response to remind to decide [continue]
-        pass
+        mycity_response.should_end_session = False
+        mycity_response.output_speech = constants.INVALID_DECISION_SCRIPT
+        mycity_response.output_speech += list_alerts_output(session_alerts)
 
     return mycity_response
 
