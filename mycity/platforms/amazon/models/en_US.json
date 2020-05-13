@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "boston info",
+            "invocationName": "boston debug",
             "modelConfiguration": {
                 "fallbackIntentSensitivity": {
                     "level": "LOW"
@@ -1027,8 +1027,14 @@
                 },
                 {
                     "name": "GetAlertsIntent",
-                    "slots": [],
+                    "slots": [
+                        {
+                            "name": "Decision",
+                            "type": "BostonServices"
+                        }
+                    ],
                     "samples": [
+                        "{Decision}",
                         "what the current status",
                         "give me the city status",
                         "give me all alerts",
@@ -1284,7 +1290,113 @@
                     ]
                 }
             ],
-            "types": []
+            "types": [
+                {
+                    "name": "BostonServices",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "all"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "city construction",
+                                "synonyms": [
+                                    "constructions",
+                                    "city constructions",
+                                    "construction"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "restaurants and bars",
+                                "synonyms": [
+                                    "bar",
+                                    "bars",
+                                    "restaurant",
+                                    "restaurants"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "meal sites for youth",
+                                "synonyms": [
+                                    "male site for youth",
+                                    "youth meal site",
+                                    "meal site",
+                                    "youth meal sites",
+                                    "meal sites"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "tow lot",
+                                "synonyms": [
+                                    "lot",
+                                    "tow"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "parking meters",
+                                "synonyms": [
+                                    "parking",
+                                    "meters"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "street cleaning"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "trash and recycling",
+                                "synonyms": [
+                                    "recycling",
+                                    "trash"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "status of city departments",
+                                "synonyms": [
+                                    "city status",
+                                    "city departments status",
+                                    "city departments"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "city building hours",
+                                "synonyms": [
+                                    "building hours",
+                                    "city hours",
+                                    "city building"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "schools closed",
+                                "synonyms": [
+                                    "school closings",
+                                    "school closing",
+                                    "school closed"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         },
         "dialog": {
             "intents": [
