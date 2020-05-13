@@ -39,18 +39,16 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.mock_get_alerts.stop()
         self.mock_get_alerts = None
 
-    # these tests required patches to pass tests...not sure why    
+    # these tests required patches to pass tests...not sure why
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value=no_alerts.copy())
     def test_response_with_no_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
         expected_response = get_alerts_speech_constants.NO_ALERTS
         self.assertEqual(response.output_speech, expected_response)
-        
+
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value=some_alerts.copy())
     def test_response_with_alerts(self, mock_get_alerts):
         response = self.controller.on_intent(self.request)
         self.assertIn('Godzilla inbound!', response.output_speech)
-
-
