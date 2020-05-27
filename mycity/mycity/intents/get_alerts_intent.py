@@ -87,12 +87,9 @@ def get_alerts_intent(
     # get the intent_variables and sessions_attribute object from the request
     intent_variables = mycity_request.intent_variables
     session_attributes = mycity_request.session_attributes
-    decision = intent_variables['Decision']['value'] \
-        if 'Decision' in intent_variables \
-        and 'value' in intent_variables['Decision'] \
-        else None
-    session_alerts = session_attributes['alerts'] \
-        if 'alerts' in session_attributes else None
+    decision = intent_variables['Decision'].get('value') \
+        if 'Decision' in intent_variables else None
+    session_alerts = session_attributes.get('alerts')
 
     logger.debug('decision: ' + str(decision) +
                  ', session_alerts: ' + str(session_alerts))
@@ -257,7 +254,7 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
         if service.value in service_alerts and \
                 str.find(service_alerts[service.value], "normal") != -1:
             service_alerts.pop(service.value)                       # remove
-    if service_alerts[Services.TOW_LOT.value] == TOW_LOT_NORMAL_MESSAGE:
+    if service_alerts.get(Services.TOW_LOT.value) == TOW_LOT_NORMAL_MESSAGE:
         service_alerts.pop(Services.TOW_LOT.value)
     return service_alerts
 
