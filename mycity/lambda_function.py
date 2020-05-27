@@ -140,6 +140,7 @@ def mycity_response_to_platform(mycity_response):
     logger.debug('MyCityResponseDataModel object received: ' +
                  mycity_response.get_logger_string())
 
+    output_type = 'ssml' if mycity_response.output_speech_type == 'SSML' else 'text'
     if mycity_response.dialog_directive:
         if mycity_response.dialog_directive['type'] == "Dialog.Delegate":
             response = {
@@ -155,8 +156,8 @@ def mycity_response_to_platform(mycity_response):
         else:
             response = {
                 'outputSpeech': {
-                    'type': 'PlainText',
-                    'text': mycity_response.output_speech
+                    'type': mycity_response.output_speech_type,
+                    output_type: mycity_response.output_speech
                 },
                 'card': {
                     'type': str(mycity_response.card_type),
@@ -177,8 +178,8 @@ def mycity_response_to_platform(mycity_response):
     else:
         response = {
             'outputSpeech': {
-                'type': 'PlainText',
-                'text': mycity_response.output_speech
+                    'type': mycity_response.output_speech_type,
+                    output_type: mycity_response.output_speech
             },
             'card': {
                 'type': str(mycity_response.card_type),
