@@ -4,6 +4,7 @@ python:
   - "3.6"
 
 install:
+  - pip install -U pip setuptools
   - pip install -r mycity/mycity/deploy_tools/requirements.txt
   - pip install --no-deps -r mycity/mycity/deploy_tools/requirements_no_deps.txt
 
@@ -19,4 +20,4 @@ branches:
     - /.*/ # test all branches
 
 after_success:
-  - codecov
+  - cd $TRAVIS_BUILD_DIR && codecov
