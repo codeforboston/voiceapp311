@@ -1,11 +1,9 @@
 """ Tests utilities for location services  """
 
-from mycity.mycity_request_data_model import MyCityRequestDataModel
-import mycity.intents.intent_constants as intent_constants
 import mycity.test.unit_tests.base as base
 import mycity.utilities.location_services_utils as location_services_utils
-
 import unittest
+
 
 class LocationServicesUtilsUnitTestCase(base.BaseTestCase):
 

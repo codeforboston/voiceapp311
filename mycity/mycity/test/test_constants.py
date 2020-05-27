@@ -409,11 +409,7 @@ GET_TRASH_DAY_MOCK = {
     }
 }
 
-
-
-
 # Snow Emergency Parking Intent
-
 
 CLOSEST_PARKING_DRIVING_DATA = [
     {
@@ -459,10 +455,6 @@ CLOSEST_PARKING_DRIVING_DATA = [
         'Address': '1 Avenue De Lafayette Boston, MA'
     }
 ]
-
-
-
-
 
 
 CLOSEST_PARKING_MOCK_RETURN = {
@@ -972,9 +964,6 @@ GEOCODE_OUTER_ADDRESS_CANDIDATES = {
         },
     ],
 }
-
-
-
 
 TOP_ADDRESS_CANDIDATE = {
         'address': '1000 Dorchester Ave, Dorchester, Massachusetts, 02125',
