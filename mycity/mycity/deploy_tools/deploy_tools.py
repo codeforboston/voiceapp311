@@ -281,12 +281,14 @@ def update_interaction_model(provided_skill_id):
     try:
         update_command_array = [
             shutil.which("ask"),  # path to user's ASK CLI installation,
-            "api",
-            "update-model",
+            "smapi",
+            "set-interaction-model",
             "-s",
             skill_id,
-            "-f",
-            INTERACTION_MODEL_PATH,
+            "-g",
+            "development",
+            "--interaction-model",
+            "file:" + INTERACTION_MODEL_PATH,
             "-l",
             "en-US"
         ]
@@ -305,7 +307,7 @@ def update_interaction_model(provided_skill_id):
     # We can use ASK-CLI to report on the build's progress.
     build_status_command_array = [
         shutil.which("ask"),  # path to user's ASK CLI installation,
-        "api",
+        "smapi",
         "get-skill-status",
         "-s",
         skill_id
