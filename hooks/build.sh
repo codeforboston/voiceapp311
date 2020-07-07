@@ -71,8 +71,8 @@ install_dependencies() {
   [[ $DO_DEBUG == true ]] && display_debug "Installing python dependencies based on the requirements.txt." 
   [[ $DO_DEBUG == false ]] && QQ=true # decide if quiet flag will be appended
 
-  venv/bin/python -m pip --disable-pip-version-check install -r requirements.txt -t ./ ${QQ:+-qq}
-  venv/bin/python -m pip --disable-pip-version-check install --no-deps  -r requirements_no_deps.txt -t ./ ${QQ:+-qq}
+  venv/bin/python -m pip --disable-pip-version-check install -r mycity/deploy_tools/requirements.txt -t ./ ${QQ:+-qq}
+  venv/bin/python -m pip --disable-pip-version-check install --no-deps  -r mycity/deploy_tools/requirements_no_deps.txt -t ./ ${QQ:+-qq}
   venv/bin/python -m pip --disable-pip-version-check install --upgrade "../mycity/mycity/deploy_tools/linux_wheels/python_crfsuite-0.9.6-cp37-cp37m-manylinux1_x86_64.whl" -t ./ ${QQ:+-qq}
   return $?
 }
