@@ -1,0 +1,61 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "Information from the City of Boston",
+          "examplePhrases": [
+            "Alexa ask Boston Info are there any alerts?",
+            "Alexa ask Boston Info what has been reported to the city",
+            "Alexa ask Boston Info when does the trash go out"
+          ],
+          "keywords": [
+            "Boston",
+            "311",
+            "city",
+            "municipal",
+            "Massachusetts"
+          ],
+          "name": "Boston Info",
+          "description": "Boston Info provides easy access to information and services from the City of Boston."
+        }
+      },
+      "automaticDistribution": {
+        "isActive": false
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Testing user address permissions can be done by asking location based questions, such as when is trash day.",
+      "category": "EDUCATION_AND_REFERENCE",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "input_your_lambda_arn_here"
+        },
+        "interfaces": []
+      }
+    },
+    "manifestVersion": "1.0",
+    "permissions": [
+      {
+        "name": "alexa::devices:all:address:full:read"
+      },
+      {
+        "name": "alexa::devices:all:geolocation:read"
+      }
+    ],
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "locales": {
+        "en-US": {
+          "privacyPolicyUrl": "https://www.boston.gov/departments/innovation-and-technology/privacy-and-security-statement"
+        }
+      },
+      "containsAds": false,
+      "isExportCompliant": true,
+      "isChildDirected": false,
+      "usesPersonalInfo": true
+    }
+  }
+}

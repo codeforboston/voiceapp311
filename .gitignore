@@ -106,3 +106,4 @@ BostonData/lambda_function/urllib3*
 
 lambda_function.zip
 .ask/
+skill-package/skill.json
