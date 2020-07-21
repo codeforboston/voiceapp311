@@ -30,9 +30,6 @@
     },
     "apis": {
       "custom": {
-        "endpoint": {
-          "uri": "input_your_lambda_arn_here"
-        },
         "interfaces": []
       }
     },
