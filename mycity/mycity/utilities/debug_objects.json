@@ -1,0 +1,99 @@
+{
+	"version": "1.0",
+	"session": {
+		"new": "true",
+		"sessionId": "amzn1.echo-api.session.a2573375-0a14-4f40-b4da-d776a34541a8",
+		"application": {
+			"applicationId": "amzn1.ask.skill.c3ce7e56-3d28-474b-8cb1-cb4d990e3b8d"
+		},
+		"user": {
+			"userId": "amzn1.ask.account.AFYWWK76R7V4E3A27RN4HVVYXSTXLRR4JFOOQUORSIGBJECJ63EMUOF7FLW7ZRNAYRHVG766LZQEU6EZSTU3MGR332PVBOI34X6PJTCTK7ZA4HBFEERUYNLKMPUUMYNIRBT6FW3QSSOEKCJNUXWIOTS4GCWHWSM7PZTRMNU2YVM45RD7WZDLWWOPGS2MH4VSRZJK7EYAFSPXR6Y"
+		}
+	},
+	"context": {
+		"System": {
+			"application": {
+				"applicationId": "amzn1.ask.skill.c3ce7e56-3d28-474b-8cb1-cb4d990e3b8d"
+			},
+			"user": {
+				"userId": "amzn1.ask.account.AFYWWK76R7V4E3A27RN4HVVYXSTXLRR4JFOOQUORSIGBJECJ63EMUOF7FLW7ZRNAYRHVG766LZQEU6EZSTU3MGR332PVBOI34X6PJTCTK7ZA4HBFEERUYNLKMPUUMYNIRBT6FW3QSSOEKCJNUXWIOTS4GCWHWSM7PZTRMNU2YVM45RD7WZDLWWOPGS2MH4VSRZJK7EYAFSPXR6Y"
+			},
+			"device": {
+				"deviceId": "amzn1.ask.device.AH5QY4TWFYHNR65QEWNZKWCLW576JOSHF7P5NSNIZTERTI7LRXJNH4YXAS4U2W25ZM2PNTB2UWTDI7JK73CCNZMVRFMFLYLSARCRTEXMWOZT2TPTVSA53M44BSJLO5TM4IC4IUGYEJAYGLPW55JVUKZEXHSQ",
+				"supportedInterfaces": {}
+			},
+			"apiEndpoint": "https://api.amazonalexa.com",
+			"apiAccessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJhdWQiOiJodHRwczovL2FwaS5hbWF6b25hbGV4YS5jb20iLCJpc3MiOiJBbGV4YVNraWxsS2l0Iiwic3ViIjoiYW16bjEuYXNrLnNraWxsLmMzY2U3ZTU2LTNkMjgtNDc0Yi04Y2IxLWNiNGQ5OTBlM2I4ZCIsImV4cCI6MTU4MTgwMjQwNywiaWF0IjoxNTgxODAyMTA3LCJuYmYiOjE1ODE4MDIxMDcsInByaXZhdGVDbGFpbXMiOnsiY29udGV4dCI6IkFBQUFBQUFBQUFDRld2Zyt6cWEzR1dBWGVsTTZScjdqSkFFQUFBQUFBQURKanN6b2xtNDFlN0o5M3RGSzl2eXgvYWxXMTZCS0dsdElQd3BpdmNmU0J1TDBmU0tJdG1qWWJPUmhwdDJCVUVXM1hJNldTMnVzclhNUWNtRFVFenhCVHM4U2lyd3d1WTB2eGlSZkZnUXdlWVVqUEZSWlNCWU1TclA2S2Y5cEtnbXJDc1pDWXF6Zy90dXg4azhuVDcvT016VGlsbFNmWmpIVDNWc3BpVGpPMjZJREVFZGcyeHpCWUJLVEpqK1BSY0REdk1hVjJhZFYwcWdBUGZyZXhzcnkwemJPQ0hmeDdtcWFLTElDc1VoR1hGTlVHdkpwSzhEblFmKzh4NExKN0lkRTE5Z21aeFZFcVE1S0doeG4zKzB0MGp1TGVWVVBpVkc1K0Q1RmE0Y2FQeFcwcmVyblBmRlV6dlUxdVdydEkrOWVOZElIS1J6cUc2YjRvV2NSL3l4dFJOWjMzNDJQR1U2RE1xeDBkSGxmN3FlNGJ2VTVTSS9XV1gyRkdGVGFuak44UkZUOSIsImNvbnNlbnRUb2tlbiI6bnVsbCwiZGV2aWNlSWQiOiJhbXpuMS5hc2suZGV2aWNlLkFINVFZNFRXRllITlI2NVFFV05aS1dDTFc1NzZKT1NIRjdQNU5TTklaVEVSVEk3TFJYSk5INFlYQVM0VTJXMjVaTTJQTlRCMlVXVERJN0pLNzNDQ05aTVZSRk1GTFlMU0FSQ1JURVhNV09aVDJUUFRWU0E1M000NEJTSkxPNVRNNElDNElVR1lFSkFZR0xQVzU1SlZVS1pFWEhTUSIsInVzZXJJZCI6ImFtem4xLmFzay5hY2NvdW50LkFGWVdXSzc2UjdWNEUzQTI3Uk40SFZWWVhTVFhMUlI0SkZPT1FVT1JTSUdCSkVDSjYzRU1VT0Y3RkxXN1pSTkFZUkhWRzc2NkxaUUVVNkVaU1RVM01HUjMzMlBWQk9JMzRYNlBKVENUSzdaQTRIQkZFRVJVWU5MS01QVVVNWU5JUkJUNkZXM1FTU09FS0NKTlVYV0lPVFM0R0NXSFdTTTdQWlRSTU5VMllWTTQ1UkQ3V1pETFdXT1BHUzJNSDRWU1JaSks3RVlBRlNQWFI2WSJ9fQ.djNfWR30gZBci_WCQ4bGh63kNOlK9yWGDReD508AJtHE9EzPtmWz6edcTg_uijZHpDT99Cqq3t_YrfaI9HvxRNM1tMqD6IpsKtUN-WUZB9SMKB6D1LpPWYYoTqTen8_IU-vJaDOvPtp7hf2VINyKAMNWnKKXKckg0CLeRzphoSMUQ4qFzJUOIlPP2Z5tIGL-Sl64BSl3IwZ_OOrWVtSNWeH-MSRZiRj8lf7bLCKQOQHfcArX01nRBg12qwpvgRZBJU7WI-dkiNSYC9og3Vc8miq_-tC6BYWENmPytMi5-4NT2VRfmfISKqQTYRgnC2WlPyQJkr_3AbCSpWZ3OsD7bg"
+		},
+		"Viewport": {
+			"experiences": [
+				{
+					"arcMinuteWidth": 246,
+					"arcMinuteHeight": 144,
+					"canRotate": "false",
+					"canResize": "false"
+				}
+			],
+			"shape": "RECTANGLE",
+			"pixelWidth": 1024,
+			"pixelHeight": 600,
+			"dpi": 160,
+			"currentPixelWidth": 1024,
+			"currentPixelHeight": 600,
+			"touch": [
+				"SINGLE"
+			],
+			"video": {
+				"codecs": [
+					"H_264_42",
+					"H_264_41"
+				]
+			}
+		},
+		"Viewports": [
+			{
+				"type": "APL",
+				"id": "main",
+				"shape": "RECTANGLE",
+				"dpi": 160,
+				"presentationType": "STANDARD",
+				"canRotate": "false",
+				"configuration": {
+					"current": {
+						"video": {
+							"codecs": [
+								"H_264_42",
+								"H_264_41"
+							]
+						},
+						"size": {
+							"type": "DISCRETE",
+							"pixelWidth": 1024,
+							"pixelHeight": 600
+						}
+					}
+				}
+			}
+		]
+	},
+	"request": {
+		"type": "IntentRequest",
+		"requestId": "amzn1.echo-api.request.84b4e4a6-2f7b-44a6-8958-29dada74bdbf",
+		"timestamp": "2020-02-15T21:28:27Z",
+		"locale": "en-US",
+		"intent": {
+			"name": "CoronavirusUpdateIntent",
+			"confirmationStatus": "NONE",
+			"slots": {
+				"Address": {
+					"name": "Address",
+					"value": "333 Washington street",
+					"confirmationStatus": "NONE",
+					"source": "USER"
+				}
+			}
+		},
+		"dialogState": "IN_PROGRESS"
+	}
+}
+
