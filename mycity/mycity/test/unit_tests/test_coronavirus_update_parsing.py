@@ -16,7 +16,7 @@ import unittest.mock as mock
 
 def _get_test_data_parser(file_name):
     test_file_path = os.path.join(os.getcwd(),
-                                  "mycity/mycity/test/test_data", file_name)
+                                  "mycity/test/test_data", file_name)
     with open(test_file_path) as f:
         parser = BeautifulSoup(f.read(), 'html.parser')
         return parser
