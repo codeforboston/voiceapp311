@@ -24,19 +24,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help" \
-                "at any time, and I'll let you know what information I can " \
-                "provide. How can I help you?"
+LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask me for " \
+    "things like city service alerts, your trash pickup schedule, " \
+    "or the latest COVID-19 update."
 
-LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, " \
-                         "such as \"are there any city alerts\"?"
+LAUNCH_REPROMPT_SPEECH = "You can also ask about the locations of " \
+    "food trucks and farmer's markets, or info about snow emergencies. "\
+    "If you have feedback for the skill say 'I have a suggestion'."
 
 HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
-        "about Boston services and alerts. You can ask about your trash " \
-        "pickup schedule, city alerts, the locations of food trucks " \
-        "and farmers markets, info about snow emergencies, the latest "\
-        "three one one reports, and the latest crime reports! "\
-        "If you have feedback for the skill, say, 'I have a suggestion.'"
+    "about Boston services and alerts. You can ask about city service alerts, " \
+    "your trash pick up schedule, COVID-19 updates, the locations of food " \
+    "trucks and farmers markets, or info about snow emergencies. "\
+    "If you have feedback for the skill, say, 'I have a suggestion.'"
 
 
 def execute_request(mycity_request):

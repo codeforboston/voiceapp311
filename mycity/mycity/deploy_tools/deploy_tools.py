@@ -19,7 +19,7 @@ PROJECT_ROOT = os.path.join(os.getcwd(), os.path.pardir, os.path.pardir)
 TEMP_DIR_PATH = os.path.join(PROJECT_ROOT, 'temp')
 LAMBDA_REL_PATH = 'lambda_function.py'
 LAMBDA_FUNCTION_PATH = os.path.join(PROJECT_ROOT, LAMBDA_REL_PATH)
-INTERACTION_MODEL_REL_PATH = 'platforms/amazon/models/en_US.json'
+INTERACTION_MODEL_REL_PATH = '../skill-package/interactionModels/custom/en-US.json'
 INTERACTION_MODEL_PATH = os.path.join(PROJECT_ROOT, INTERACTION_MODEL_REL_PATH)
 MYCITY_PATH = os.path.join(PROJECT_ROOT, 'mycity')
 ZIP_FILE_NAME = "lambda_function.zip"
@@ -281,12 +281,14 @@ def update_interaction_model(provided_skill_id):
     try:
         update_command_array = [
             shutil.which("ask"),  # path to user's ASK CLI installation,
-            "api",
-            "update-model",
+            "smapi",
+            "set-interaction-model",
             "-s",
             skill_id,
-            "-f",
-            INTERACTION_MODEL_PATH,
+            "-g",
+            "development",
+            "--interaction-model",
+            "file:" + INTERACTION_MODEL_PATH,
             "-l",
             "en-US"
         ]
@@ -305,7 +307,7 @@ def update_interaction_model(provided_skill_id):
     # We can use ASK-CLI to report on the build's progress.
     build_status_command_array = [
         shutil.which("ask"),  # path to user's ASK CLI installation,
-        "api",
+        "smapi",
         "get-skill-status",
         "-s",
         skill_id
