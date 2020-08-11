@@ -16,7 +16,7 @@ import unittest.mock as mock
 
 def _get_test_data_parser(file_name):
     test_file_path = os.path.join(os.getcwd(),
-                                  "mycity/test/test_data", file_name)
+                                  "mycity/mycity/test/test_data", file_name)
     with open(test_file_path) as f:
         parser = BeautifulSoup(f.read(), 'html.parser')
         return parser
@@ -26,6 +26,7 @@ class CoronavirusUpdateParserTest(base.BaseTestCase):
 
     @mock.patch('mycity.intents.coronavirus_update_intent._get_html_parser')
     def test_boston_homepage_parse(self, mock_get_html_parser):
+        print(os.getcwd())
         parser = _get_test_data_parser('Boston.gov.html')
         mock_get_html_parser.return_value = parser
         output_speech = coronavirus_update_intent._get_homepage_text()
