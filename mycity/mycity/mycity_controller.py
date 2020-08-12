@@ -212,6 +212,7 @@ def get_welcome_response(mycity_request):
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Welcome"
     mycity_response.output_speech = LAUNCH_SPEECH
+    mycity_response.output_speech_type = "PlainText"
 
     # If the user either does not reply to the welcome message or says
     # something that is not understood, they will be prompted again with

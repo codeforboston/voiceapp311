@@ -1,0 +1,99 @@
+{
+	"version": "1.0",
+	"session": {
+		"new": "true",
+		"sessionId": "",
+		"application": {
+			"applicationId": ""
+		},
+		"user": {
+			"userId": ""
+		}
+	},
+	"context": {
+		"System": {
+			"application": {
+				"applicationId": ""
+			},
+			"user": {
+				"userId": ""
+			},
+			"device": {
+				"deviceId": "",
+				"supportedInterfaces": {}
+			},
+			"apiEndpoint": "https://api.amazonalexa.com",
+			"apiAccessToken": ""
+		},
+		"Viewport": {
+			"experiences": [
+				{
+					"arcMinuteWidth": 246,
+					"arcMinuteHeight": 144,
+					"canRotate": "false",
+					"canResize": "false"
+				}
+			],
+			"shape": "RECTANGLE",
+			"pixelWidth": 1024,
+			"pixelHeight": 600,
+			"dpi": 160,
+			"currentPixelWidth": 1024,
+			"currentPixelHeight": 600,
+			"touch": [
+				"SINGLE"
+			],
+			"video": {
+				"codecs": [
+					"H_264_42",
+					"H_264_41"
+				]
+			}
+		},
+		"Viewports": [
+			{
+				"type": "APL",
+				"id": "main",
+				"shape": "RECTANGLE",
+				"dpi": 160,
+				"presentationType": "STANDARD",
+				"canRotate": "false",
+				"configuration": {
+					"current": {
+						"video": {
+							"codecs": [
+								"H_264_42",
+								"H_264_41"
+							]
+						},
+						"size": {
+							"type": "DISCRETE",
+							"pixelWidth": 1024,
+							"pixelHeight": 600
+						}
+					}
+				}
+			}
+		]
+	},
+	"request": {
+		"type": "IntentRequest",
+		"requestId": "",
+		"timestamp": "",
+		"locale": "en-US",
+		"intent": {
+			"name": "CoronavirusUpdateIntent",
+			"confirmationStatus": "NONE",
+			"slots": {
+				"Address": {
+					"name": "Address",
+					"value": "333 Washington street",
+					"confirmationStatus": "NONE",
+					"source": "USER"
+				}
+			}
+		},
+		"dialogState": "IN_PROGRESS"
+	}
+}
+
