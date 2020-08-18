@@ -16,3 +16,6 @@ class MultipleAddressError(Exception):
     def __init__(self, addresses):
         self.addresses = addresses
 
+class ParseError(Exception):
+    """Error when parsing info from a webpage fails"""
+    pass

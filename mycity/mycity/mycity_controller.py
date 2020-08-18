@@ -5,38 +5,39 @@ This class handles all voice requests.
 """
 
 from mycity.mycity_response_data_model import MyCityResponseDataModel
-from .intents.user_address_intent import set_address_in_session, \
+from mycity.intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response, \
-    set_zipcode_in_session, get_address_from_user_device
+    set_zipcode_in_session
 from mycity.intents.latest_311_intent import get_311_requests
-from .intents.trash_intent import get_trash_day_info
-from .intents.fallback_intent import fallback_intent
-from .intents.get_alerts_intent import get_alerts_intent
-from .intents.get_alerts_intent import get_alerts_intent, get_inclement_weather_alert
-from .intents.snow_parking_intent import get_snow_emergency_parking_intent
-from .intents.voting_intent import get_polling_location
-from .intents.feedback_intent import submit_feedback
-from .intents.crime_activity_intent import get_crime_incidents_intent
-from .intents.farmers_market_intent import get_farmers_markets_today
-from .intents.food_truck_intent import get_nearby_food_trucks
-from .intents import intent_constants
+from mycity.intents.trash_intent import get_trash_day_info
+from mycity.intents.fallback_intent import fallback_intent
+from mycity.intents.get_alerts_intent import get_alerts_intent, \
+    get_inclement_weather_alert
+from mycity.intents.snow_parking_intent import get_snow_emergency_parking_intent
+from mycity.intents.feedback_intent import submit_feedback
+from mycity.intents.voting_intent import get_polling_location
+from mycity.intents.coronavirus_update_intent import get_coronovirus_update
+from mycity.intents.crime_activity_intent import get_crime_incidents_intent
+from mycity.intents.farmers_market_intent import get_farmers_markets_today
+from mycity.intents.food_truck_intent import get_nearby_food_trucks
+from mycity.intents import intent_constants
 import logging
 
 logger = logging.getLogger(__name__)
 
-LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask for help at any time, and I'll "\
-    "let you know what information I can provide. "\
-    "How can I help you?"
+LAUNCH_SPEECH = "Welcome to the Boston Info skill. You can ask me for " \
+    "things like city service alerts, your trash pickup schedule, " \
+    "or the latest COVID-19 update."
 
-LAUNCH_REPROMPT_SPEECH = "You can ask me about Boston city services, "\
-    "such as \"are there any city alerts\"?"
+LAUNCH_REPROMPT_SPEECH = "You can also ask about the locations of " \
+    "food trucks and farmer's markets, or info about snow emergencies. "\
+    "If you have feedback for the skill say 'I have a suggestion'."
 
 HELP_SPEECH = "You are using Boston Info, a skill that provides information " \
-        "about Boston services and alerts. You can ask about your trash " \
-        "pickup schedule, city alerts, the locations of food trucks " \
-        "and farmers markets, info about snow emergencies, the latest "\
-        "three one one reports, and the latest crime reports! "\
-        "If you have feedback for the skill, say, 'I have a suggestion.'"
+    "about Boston services and alerts. You can ask about city service alerts, " \
+    "your trash pick up schedule, COVID-19 updates, the locations of food " \
+    "trucks and farmers markets, or info about snow emergencies. "\
+    "If you have feedback for the skill, say, 'I have a suggestion.'"
 
 
 def execute_request(mycity_request):
@@ -81,7 +82,7 @@ def on_session_started(mycity_request):
     :return: None
     """
     logger.debug('Request object: ' + mycity_request.get_logger_string())
-    return get_address_from_user_device(mycity_request)
+    return mycity_request
 
 
 def on_launch(mycity_request):
@@ -113,7 +114,8 @@ def on_intent(mycity_request):
     :raises: ValueError
     """
 
-    logger.debug('MyCityRequestDataModel received:' + mycity_request.get_logger_string())
+    logger.debug('MyCityRequestDataModel received:' +
+                 mycity_request.get_logger_string())
 
     if "Address" in mycity_request.intent_variables \
             and "value" in mycity_request.intent_variables["Address"]:
@@ -129,25 +131,13 @@ def on_intent(mycity_request):
     if mycity_request.intent_name == "GetAddressIntent":
         return get_address_from_session(mycity_request)
     elif mycity_request.intent_name == "TrashDayIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_trash_day_info(mycity_request)
+        return get_trash_day_info(mycity_request)
     elif mycity_request.intent_name == "SnowParkingIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_snow_emergency_parking_intent(mycity_request)
+        return get_snow_emergency_parking_intent(mycity_request)
     elif mycity_request.intent_name == "CrimeIncidentsIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_crime_incidents_intent(mycity_request)
+        return get_crime_incidents_intent(mycity_request)
     elif mycity_request.intent_name == "FoodTruckIntent":
-        return request_user_address_response(mycity_request) \
-            if intent_constants.CURRENT_ADDRESS_KEY \
-            not in mycity_request.session_attributes \
-            else get_nearby_food_trucks(mycity_request)
+        return get_nearby_food_trucks(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
     elif mycity_request.intent_name == "VotingIntent":
@@ -158,7 +148,8 @@ def on_intent(mycity_request):
     elif mycity_request.intent_name == "AMAZON.HelpIntent":
         return get_help_response(mycity_request)
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
-            mycity_request.intent_name == "AMAZON.CancelIntent":
+            mycity_request.intent_name == "AMAZON.CancelIntent" or \
+            mycity_request.intent_name == "AMAZON.NavigateHomeIntent":
         return handle_session_end_request(mycity_request)
     elif mycity_request.intent_name == "FeedbackIntent":
         return submit_feedback(mycity_request)
@@ -170,6 +161,8 @@ def on_intent(mycity_request):
         return get_inclement_weather_alert(mycity_request)
     elif mycity_request.intent_name == "FarmersMarketIntent":
         return get_farmers_markets_today(mycity_request)
+    elif mycity_request.intent_name == "CoronavirusUpdateIntent":
+        return get_coronovirus_update(mycity_request)
     else:
         raise ValueError("Invalid intent")
 
@@ -225,6 +218,7 @@ def get_welcome_response(mycity_request):
     mycity_response.session_attributes = mycity_request.session_attributes
     mycity_response.card_title = "Welcome"
     mycity_response.output_speech = LAUNCH_SPEECH
+    mycity_response.output_speech_type = "PlainText"
 
     # If the user either does not reply to the welcome message or says
     # something that is not understood, they will be prompted again with

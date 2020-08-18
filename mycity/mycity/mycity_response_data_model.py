@@ -2,6 +2,7 @@
 Data Model for structuring responses from the skill implementation
 """
 import logging
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,10 @@ class MyCityResponseDataModel:
     def __init__(self):
         self._session_attributes = {}
         self._card_title = None
+        self._card_type = "Simple"
+        self._card_permissions = None
         self._output_speech = None
+        self._output_speech_type = "PlainText"
         self._reprompt_text = None
         self._should_end_session = None
         self._intent_variables = {}
@@ -34,17 +38,23 @@ class MyCityResponseDataModel:
         <MyCityResponseDataModel
             session_attributes={},
             card_title={},
+            card_type={},
+            card_permissions={},
             output_speech={},
+            output_speech_type={},
             reprompt_text={},
             should_end_session={},
-            intent_variables={}
-            dialog_directive={}
-            slot_to_elicit={}
+            intent_variables={},
+            dialog_directive={},
+            slot_to_elicit={},
         >
         """.format(
             self._session_attributes,
             self._card_title,
+            self._card_type,
+            self._card_permissions,
             self._output_speech,
+            self._output_speech_type,
             self._reprompt_text,
             self._should_end_session,
             self._intent_variables,
@@ -87,6 +97,15 @@ class MyCityResponseDataModel:
     @output_speech.setter
     def output_speech(self, value):
         self._output_speech = value
+
+    @property
+    def output_speech_type(self):
+        """The type of output speech IE text or SSML"""
+        return self._output_speech_type
+
+    @output_speech_type.setter
+    def output_speech_type(self, value):
+        self._output_speech_type = value
 
     @property
     def reprompt_text(self):
@@ -170,3 +189,19 @@ class MyCityResponseDataModel:
                 'type': 'Dialog.ElicitSlot',
                 'slotToElicit': 'Neighborhood'
             }            
+
+    @property
+    def card_type(self):
+        return self._card_type
+
+    @card_type.setter
+    def card_type(self, value: str):
+        self._card_type = value
+
+    @property
+    def card_permissions(self):
+        return self._card_permissions
+
+    @card_permissions.setter
+    def card_permissions(self, value: List[str]):
+        self._card_permissions = value

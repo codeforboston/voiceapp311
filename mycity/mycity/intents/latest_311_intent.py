@@ -7,7 +7,7 @@ DEFAULT_NUMBER_OF_REPORTS = 3
 MAX_NUMBER_OF_REPORTS = 10
 
 BOSTON_311_URL = "https://data.boston.gov/api/3/action/datastore_search"
-BOSTON_RESOURCE_ID = "2968e2c0-d479-49ba-a884-4ef523ada3c0"
+BOSTON_RESOURCE_ID = "6ff6a6fd-3141-4440-a880-6f60a37fe789"
 
 
 def get_311_requests(mycity_request):
@@ -35,6 +35,7 @@ def get_311_requests(mycity_request):
     except BadAPIResponse:
         mycity_response.output_speech = BAD_API_RESPONSE
 
+    mycity_response.should_end_session = True
     return mycity_response
 
 
@@ -49,8 +50,16 @@ def number_of_reports(mycity_request):
             "value" in mycity_request.intent_variables[
                 REQUEST_311_NUMBER_REPORTS_SLOT_NAME]:
         return min(
-            int(mycity_request.intent_variables[REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
+            int(mycity_request.intent_variables[
+                    REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
             MAX_NUMBER_OF_REPORTS)
+        try:
+            return min(
+                int(mycity_request.intent_variables[
+                    REQUEST_311_NUMBER_REPORTS_SLOT_NAME]["value"]),
+                MAX_NUMBER_OF_REPORTS)
+        except ValueError:
+            return DEFAULT_NUMBER_OF_REPORTS
 
     return DEFAULT_NUMBER_OF_REPORTS
 

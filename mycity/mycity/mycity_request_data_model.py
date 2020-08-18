@@ -7,12 +7,10 @@ import json
 class MyCityRequestDataModel:
     """
     Represents a request from a voice platform.
-    
     Standard way requests are structured so they may be acted upon by
     the skill implementation.
 
     @todo: Consistent comment format that contains platform-specific terminology
-        
     Note:
         The property methods below get and set attribute values.
     """
@@ -28,6 +26,9 @@ class MyCityRequestDataModel:
         self._intent_variables = {}
         self._device_id = None
         self._api_access_token = None
+        self._has_geolocation = None
+        self._geolocation_permission = None
+        self._geolocation_coordinates = None
 
     def __str__(self):
         return """\
@@ -41,7 +42,10 @@ class MyCityRequestDataModel:
             intent_name={},
             intent_variables={},
             device_id={},
-            api_access_token={}
+            api_access_token={},
+            has_geolocation={},
+            geolocation_permission={},
+            geolocation_coordinates={}
         >
         """.format(
             self._request_type,
@@ -53,7 +57,10 @@ class MyCityRequestDataModel:
             self._intent_name,
             self._intent_variables,
             self._device_id,
-            self._api_access_token
+            self._api_access_token,
+            self._has_geolocation,
+            self._geolocation_permission,
+            self._geolocation_coordinates
         )
 
     def get_logger_string(self):
@@ -142,11 +149,10 @@ class MyCityRequestDataModel:
     def intent_variables(self, value):
         self._intent_variables = value
 
-
     @property
     def device_id(self):
         """
-        An id to identify which device Alexa is utlizing for the service
+        An id to identify which device Alexa is utilizing for the service
         """
         return self._device_id
 
@@ -157,10 +163,51 @@ class MyCityRequestDataModel:
     @property
     def api_access_token(self):
         """
-        the token which is neccessary to acquire access to a user's personal information
+        the token which is necessary to acquire access to a user's personal
+        information
         """
         return self._api_access_token
 
     @api_access_token.setter
     def api_access_token(self, value):
         self._api_access_token = value
+
+    @property
+    def device_has_geolocation(self):
+        """
+        Returns if the user's device supports geolocation services
+        """
+        return self._has_geolocation
+
+    @device_has_geolocation.setter
+    def device_has_geolocation(self, value: bool):
+        self._has_geolocation = value
+
+    @property
+    def geolocation_permission(self):
+        """
+        Returns if our app has been granted geolocation permission
+        """
+        if not self._has_geolocation:
+            return False
+        return self._geolocation_permission
+
+    @geolocation_permission.setter
+    def geolocation_permission(self, value: bool):
+        self._geolocation_permission = value
+
+    @property
+    def geolocation_coordinates(self):
+        """
+        Returns dictionary of geolocation coordinates.
+        """
+        return self._geolocation_coordinates
+
+    @geolocation_coordinates.setter
+    def geolocation_coordinates(self, value: dict):
+        if "longitudeInDegrees" not in value or "latitudeInDegrees" \
+                not in value:
+            raise Exception("Missing expected dictionary key set "
+                            "on geolocation_coordinates")
+
+        self._geolocation_coordinates = value

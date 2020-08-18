@@ -5,21 +5,53 @@ NOTE: Intents that query FeatureServers may fail because AWS will
 kill any computation that takes longer than 3 secs.
 
 """
-from arcgis.gis import *
+from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
+from arcgis.geocoding import reverse_geocode
 from arcgis import geometry
 import logging
 
 logger = logging.getLogger(__name__)
 dev_gis = GIS()
 
+# A list of neighborhoods in Boston for address geocoding
+NEIGHBORHOODS = ['Allston',
+                 'Back Bay',
+                 'Bay Village',
+                 'Beacon Hill',
+                 'Boston',
+                 'Brighton',
+                 'Charlestown',
+                 'Chinatown',
+                 'Dorchester',
+                 'Dorchester Center',
+                 'East Boston',
+                 'Fenway',
+                 'Fenway-Kenmore',
+                 'Harbor Islands',
+                 'Hyde Park',
+                 'Jamaica Plain',
+                 'Leather District',
+                 'Longwood',
+                 'Mattapan',
+                 'Mission Hill',
+                 'North End',
+                 'Roslindale',
+                 'Roxbury',
+                 'Roxbury Crossing',
+                 'South Boston',
+                 'South Boston Waterfront',
+                 'South End',
+                 'West End',
+                 'West Roxbury']
+
 
 def get_features_from_feature_server(url, query):
     """
     Given a url to a City of Boston Feature Server, return a list
     of Features (for example, parking lots that are not full)
-    
+
     :param url: url for Feature Server
     :param query: a JSON object (example: { 'where': '1=1', 'out_sr': '4326' })
     :return: list of all features returned from the query
@@ -39,7 +71,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     """
     Generate and return a list of destination addresses (as strings)
     given a list of features
-    
+
     :param feature_address_index: to retrieve address string in feature
     :param features: list of features retrieved from FeatureServer
     :return: list of destination addresses
@@ -49,7 +81,7 @@ def _get_dest_addresses_from_features(feature_address_index, features):
         ', features received (printing first five): ' + str(features[:5]) +
         ', count(features): ' + str(len(features))
     )
-    
+
     dest_addresses = []
 
     # build array of each feature location
@@ -71,6 +103,42 @@ def geocode_address(m_address):
     return m_location['location']
 
 
+def geocode_addr(addr, city):
+    """
+    Given a string and a city, determine if the address is in Boston, MA
+    :param addr: string corresponding to the address
+    :param city: the city of interest
+    :return: boolean
+    """
+    m_location = geocode(addr)
+
+    for location in m_location:
+        if location['score'] < 100:
+            continue
+        if location['attributes']['MetroArea'] \
+            and location['attributes']['MetroArea'] != city:
+                continue
+        if location['attributes']['City'] \
+            and location['attributes']['City'] not in NEIGHBORHOODS:
+                continue
+
+        return True
+
+    # No address found in the provided city
+    return False
+
+
+def reverse_geocode_addr(coord_list):
+    """
+    Given a list of [Long, Lat] values, reverse geocode to identify which
+    city and state those values are. Used to ensure that a certain provided
+    address is in Boston, MA
+    :param coord_list: a list of [Long, Lat]
+    :return: a descriptive location
+    """
+    return reverse_geocode(coord_list)
+
+
 def calculate_distance(feature1, feature2):
     """
     :param feature1: the first feature
@@ -79,8 +147,8 @@ def calculate_distance(feature1, feature2):
     """
     geometry1 = feature1  # feature1 is the address, which is already a geometry
     geometry2 = feature2['geometry']
-    spation_ref = {"wkid": 4326}
-    return geometry.distance(spation_ref,
+    spatial_ref = {"wkid": 4326}
+    return geometry.distance(spatial_ref,
                              geometry1,
                              geometry2,
                              distance_unit='',
