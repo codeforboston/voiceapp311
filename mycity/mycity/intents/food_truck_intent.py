@@ -2,8 +2,6 @@
 Food Truck Intent
 """
 import logging
-import mycity.intents.speech_constants.food_truck_intent as ft_speech_constants
-import mycity.intents.speech_constants.location_speech_constants as speech_const
 import mycity.utilities.address_utils as address_utils
 import mycity.utilities.datetime_utils as date
 import mycity.utilities.gis_utils as gis_utils
@@ -11,8 +9,10 @@ import mycity.utilities.location_services_utils as location_services_utils
 
 from mycity.intents import intent_constants
 from mycity.intents.custom_errors import InvalidAddressError, BadAPIResponse
-from mycity.intents.user_address_intent import \
-    clear_address_from_mycity_object, request_user_address_response
+from mycity.intents.user_address_intent import (
+    clear_address_from_mycity_object,
+    request_user_address_response
+)
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.utilities.location_services_utils import is_location_in_city
 
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 MILE = 1600
 BASE_URL = 'https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/' \
-               'services/food_truck_schedule/FeatureServer/0/'
+           'services/food_truck_schedule/FeatureServer/0/'
 DAY = date.get_day()
 FOOD_TRUCK_LIMIT = 5  # limits the number of food trucks
 CARD_TITLE = "Food Trucks"
@@ -112,7 +112,7 @@ def get_nearby_food_trucks(mycity_request):
         coordinates = gis_utils.geocode_address(user_address)
 
     if not is_location_in_city(user_address, coordinates):
-        mycity_response.output_speech = speech_const.NOT_IN_BOSTON_SPEECH
+        mycity_response.output_speech = intent_constants.NOT_IN_BOSTON_SPEECH
         mycity_response.should_end_session = True
         mycity_response.card_title = CARD_TITLE
         return mycity_response
@@ -147,7 +147,7 @@ def get_nearby_food_trucks(mycity_request):
 
     except InvalidAddressError:
         mycity_response.output_speech = \
-            ft_speech_constants.ADDRESS_NOT_FOUND.format("that address")
+            intent_constants.ADDRESS_NOT_FOUND.format("that address")
         mycity_response.dialog_directive = "ElicitSlotFoodTruck"
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = \

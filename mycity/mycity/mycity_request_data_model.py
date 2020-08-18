@@ -1,7 +1,6 @@
 """
 Data Model for structuring requests to the skill implementation
 """
-import json
 
 
 class MyCityRequestDataModel:

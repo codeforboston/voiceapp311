@@ -1,13 +1,10 @@
-import unittest.mock as mock
 from mycity.mycity_request_data_model import MyCityRequestDataModel
+import unittest.mock as mock
 import mycity.test.test_constants as test_constants
 import mycity.test.integration_tests.intent_base_case as base_case
 import mycity.test.integration_tests.intent_test_mixins as mix_ins
 import mycity.intents.crime_activity_intent as crime_intent
 import mycity.intents.intent_constants as intent_constants
-from mycity.intents.speech_constants.location_speech_constants \
-    import NOT_IN_BOSTON_SPEECH
-
 import unittest
 
 ############################################
@@ -18,6 +15,7 @@ MOCK_RESPONSE = test_constants.GET_CRIME_INCIDENTS_API_MOCK
 RESULT = crime_intent.RESULT_FIELD
 RECORDS = crime_intent.RECORDS_FIELD
 STREET = crime_intent.STREET_FIELD
+
 
 class CrimeIncidentsTestCase(mix_ins.RepromptTextTestMixIn,
                              mix_ins.CardTitleTestMixIn,
@@ -88,7 +86,7 @@ class CrimeIncidentsTestCase(mix_ins.RepromptTextTestMixIn,
         response = crime_intent.get_crime_incidents_intent(self.request)
         self.assertEqual(self.expected_title, response.card_title)
         self.assertTrue(response.output_speech)
-        self.assertNotEqual(response.output_speech, NOT_IN_BOSTON_SPEECH)
+        self.assertNotEqual(response.output_speech, intent_constants.NOT_IN_BOSTON_SPEECH)
 
     @mock.patch('mycity.intents.crime_activity_intent.get_address_from_user_device')
     def test_device_address_finds_closest_parking(self, mock_get_address):
@@ -104,7 +102,7 @@ class CrimeIncidentsTestCase(mix_ins.RepromptTextTestMixIn,
         response = crime_intent.get_crime_incidents_intent(self.request)
         self.assertEqual(self.expected_title, response.card_title)
         self.assertTrue(response.output_speech)
-        self.assertNotEqual(response.output_speech, NOT_IN_BOSTON_SPEECH)
+        self.assertNotEqual(response.output_speech, intent_constants.NOT_IN_BOSTON_SPEECH)
 
     @mock.patch('mycity.intents.crime_activity_intent.get_address_from_user_device')
     def test_device_address_not_in_boston(self, mock_get_address):
@@ -119,7 +117,7 @@ class CrimeIncidentsTestCase(mix_ins.RepromptTextTestMixIn,
         self.request.device_has_geolocation = False
         response = crime_intent.get_crime_incidents_intent(self.request)
         self.assertEqual(self.expected_title, response.card_title)
-        self.assertEqual(response.output_speech, NOT_IN_BOSTON_SPEECH)
+        self.assertEqual(response.output_speech, intent_constants.NOT_IN_BOSTON_SPEECH)
 
     def test_geolocation_not_in_boston(self):
         self.request._session_attributes.pop(
@@ -134,7 +132,7 @@ class CrimeIncidentsTestCase(mix_ins.RepromptTextTestMixIn,
         response = crime_intent.get_crime_incidents_intent(self.request)
         self.assertEqual(self.expected_title, response.card_title)
         self.assertTrue(response.output_speech)
-        self.assertEqual(response.output_speech, NOT_IN_BOSTON_SPEECH)
+        self.assertEqual(response.output_speech, intent_constants.NOT_IN_BOSTON_SPEECH)
 
 if __name__ == '__main__':
     unittest.main()

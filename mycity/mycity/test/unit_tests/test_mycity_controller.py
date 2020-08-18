@@ -4,7 +4,6 @@ unit test for MyCityController
 """
 
 import unittest.mock as mock
-import mycity.test.test_constants as test_constants
 import mycity.mycity_controller as my_con
 import mycity.intents.intent_constants as intent_constants
 import mycity.test.unit_tests.base as base
@@ -67,7 +66,6 @@ class MyCityControllerUnitTestCase(base.BaseTestCase):
         self.request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "46 Everdean St"
         self.controller.on_intent(self.request)
         mock_intent.assert_called_with(self.request)
-
 
     def test_unknown_intent(self):
         self.request.intent_name = "MadeUpIntent"

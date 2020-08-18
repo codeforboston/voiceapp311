@@ -1,23 +1,24 @@
 """
 Functions for Alexa responses related to trash day
 """
-from mycity.intents.speech_constants.location_speech_constants import \
-    NOT_IN_BOSTON_SPEECH
-from mycity.utilities.location_services_utils import \
-    request_device_address_permission_response, \
-    get_address_from_user_device, \
+from mycity.utilities.location_services_utils import (
+    request_device_address_permission_response,
+    get_address_from_user_device,
     is_address_in_city
+)
 from mycity.intents import intent_constants
-from mycity.intents.custom_errors import \
-    InvalidAddressError, BadAPIResponse, MultipleAddressError
-from mycity.intents.user_address_intent import \
-    clear_address_from_mycity_object, request_user_address_response
-import mycity.intents.speech_constants.trash_intent as speech_constants
+from mycity.intents.custom_errors import (
+    InvalidAddressError,
+    BadAPIResponse,
+    MultipleAddressError
+)
+from mycity.intents.user_address_intent import (
+    clear_address_from_mycity_object,
+    request_user_address_response
+)
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 import mycity.utilities.address_utils as address_utils
 import usaddress
-
-
 import re
 import requests
 import logging
@@ -60,13 +61,13 @@ def get_trash_day_info(mycity_request):
     # If we have more specific info then just the street
     # address, make sure we are in Boston
     if not is_address_in_city(current_address):
-        mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
+        mycity_response.output_speech = intent_constants.NOT_IN_BOSTON_SPEECH
         mycity_response.should_end_session = True
         mycity_response.card_title = CARD_TITLE
         return mycity_response
 
     if not address_utils.is_address_valid(parsed_address):
-        mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
+        mycity_response.output_speech = intent_constants.ADDRESS_NOT_UNDERSTOOD
         mycity_response.dialog_directive = "ElicitSlotTrash"
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
@@ -94,14 +95,12 @@ def get_trash_day_info(mycity_request):
         trash_days = get_trash_and_recycling_days(address, neighborhood)
         trash_days_speech = build_speech_from_list_of_days(trash_days)
 
-        mycity_response.output_speech = speech_constants.PICK_UP_DAY.\
-            format(trash_days_speech)
+        mycity_response.output_speech = intent_constants.PICK_UP_DAY.format(trash_days_speech)
         mycity_response.should_end_session = True
 
     except InvalidAddressError:
         address_string = address
-        mycity_response.output_speech = speech_constants.ADDRESS_NOT_FOUND.\
-            format(address_string)
+        mycity_response.output_speech = intent_constants.ADDRESS_NOT_FOUND.format(address_string)
         mycity_response.dialog_directive = "ElicitSlotTrash"
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
@@ -110,15 +109,14 @@ def get_trash_day_info(mycity_request):
         return clear_address_from_mycity_object(mycity_response)
 
     except BadAPIResponse:
-        mycity_response.output_speech = speech_constants.BAD_API_RESPONSE
+        mycity_response.output_speech = intent_constants.BAD_API_RESPONSE
         mycity_response.should_end_session = True
 
     except MultipleAddressError as error:
         addresses = [re.sub(r' \d{5}', '', address) for address in
                      error.addresses]
         address_list = ', '.join(addresses)
-        mycity_response.output_speech = speech_constants.\
-            MULTIPLE_ADDRESS_ERROR.format(address_list)
+        mycity_response.output_speech = intent_constants.MULTIPLE_ADDRESS_ERROR.format(address_list)
         mycity_response.dialog_directive = "ElicitSlotNeighborhood"
         mycity_response.should_end_session = False
 

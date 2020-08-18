@@ -3,7 +3,6 @@ Controller for mycity voice app.
 
 This class handles all voice requests.
 """
-
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response, \
