@@ -3,7 +3,6 @@ Functions for voting information including polling location information
 """
 
 from . import intent_constants
-import mycity.intents.speech_constants.voting_intent as speech_constants
 from mycity.intents.user_address_intent \
     import request_user_address_response
 from mycity.utilities.location_services_utils import \
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 CARD_TITLE = 'Voting Intent'
 LOCATION_NAME = "Location Name"
 LOCATION_ADDRESS = "Location Address"
-
+LOCATION_SPEECH = "Your polling location is {}, {}"
 
 def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
         MyCityResponseDataModel:
