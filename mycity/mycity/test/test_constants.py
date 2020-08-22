@@ -43,17 +43,17 @@ MOCK_POLL_RESP = {"features": [{"attributes":
 }
 
 POLL_DATA = {
-    'Location Name': 'BACK OF THE HILL APARTMENTS ', 
-    'Location Address': '100 SOUTH HUNTINGTON AVENUE.'
+    "Location Name": "BACK OF THE HILL APARTMENTS ", 
+    "Location Address": "100 SOUTH HUNTINGTON AVENUE."
 }
 # Ward precinct object
 WARD_PRECINCT = {
-    'ward': '10', 'precinct': '08'
+    "ward": "10", "precinct": "08"
 }
 
 # Test coordinates for arcgis 
 COORDS = {
-    'x': -71.108162, 'y': 42.327168
+    "x": -71.108162, "y": 42.327168
 }
 
 
