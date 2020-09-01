@@ -26,7 +26,7 @@ def get_polling_location(ward_precinct):
     }
     response = requests.get(url, params=params)
     if response.status_code != 200:
-        return "None"
+        raise ParseError
     else:
         res_data = response.json()
         location_name = res_data['features'][0]['attributes']['Location2']
@@ -65,7 +65,7 @@ def get_ward_precinct_info(coordinates):
     response = requests.get(url, params=params)
 
     if response.status_code != 200:
-        return "None"
+        raise ParseError
     else:
         res_data = response.json()
         precinct_data = res_data['features'][0]['attributes']['WARD_PRECINCT']

@@ -3,6 +3,7 @@ Functions for voting information including polling location information
 """
 
 from . import intent_constants
+from mycity.intents.custom_errors import ParseError
 from mycity.intents.user_address_intent \
     import request_user_address_response
 from mycity.utilities.location_services_utils import \
@@ -28,7 +29,7 @@ NOT_IN_BOSTON_SPEECH = 'This address is not in Boston. ' \
                        'Please use this skill with a Boston address. '\
                        'See you later!'
 ADDRESS_NOT_UNDERSTOOD = "I didn't understand that address, please try again with just the street number and name."
-
+NO_WARD_OR_PRECINCT = "There doesn't seem to be information for that address in Boston"
 
 def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
         MyCityResponseDataModel:
@@ -81,14 +82,17 @@ def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
 
 
     top_candidate = gis_utils.geocode_address(current_address)
-
-    ward_precinct = vote_utils.get_ward_precinct_info(top_candidate)
-    poll_location = vote_utils.get_polling_location(ward_precinct)
-    output_speech = LOCATION_SPEECH. \
-        format(poll_location[LOCATION_NAME], poll_location[LOCATION_ADDRESS])
-    
-    mycity_response.output_speech = output_speech
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = True
-    
+
+    try:
+        ward_precinct = vote_utils.get_ward_precinct_info(top_candidate)
+        poll_location = vote_utils.get_polling_location(ward_precinct)
+        output_speech = LOCATION_SPEECH. \
+            format(poll_location[LOCATION_NAME], poll_location[LOCATION_ADDRESS])
+        mycity_response.output_speech = output_speech
+    except ParseError:
+        mycity_response.output_speech = NO_WARD_OR_PRECINCT
+        
     return mycity_response
+        
