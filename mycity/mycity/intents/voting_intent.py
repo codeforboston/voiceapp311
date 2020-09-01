@@ -53,7 +53,7 @@ def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
 
     ward_precinct = vote_utils.get_ward_precinct_info(top_candidate)
     poll_location = vote_utils.get_polling_location(ward_precinct)
-    output_speech = speech_constants.LOCATION_SPEECH. \
+    output_speech = LOCATION_SPEECH. \
         format(poll_location[LOCATION_NAME], poll_location[LOCATION_ADDRESS])
     
     mycity_response.output_speech = output_speech
