@@ -9,17 +9,26 @@ from mycity.utilities.location_services_utils import \
     request_device_address_permission_response, \
     get_address_from_user_device, \
     is_address_in_city
+from mycity.intents.user_address_intent import \
+    clear_address_from_mycity_object
+from mycity.utilities.address_utils import is_address_valid
 from mycity.mycity_response_data_model import MyCityResponseDataModel
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.voting_utils as vote_utils
 import logging
+import usaddress
 
 logger = logging.getLogger(__name__)
 CARD_TITLE = 'Voting Intent'
 LOCATION_NAME = "Location Name"
 LOCATION_ADDRESS = "Location Address"
 LOCATION_SPEECH = "Your polling location is {}, {}"
+NOT_IN_BOSTON_SPEECH = 'This address is not in Boston. ' \
+                       'Please use this skill with a Boston address. '\
+                       'See you later!'
+ADDRESS_NOT_UNDERSTOOD = "I didn't understand that address, please try again with just the street number and name."
+
 
 def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
         MyCityResponseDataModel:
@@ -49,6 +58,28 @@ def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
     
     current_address = \
         mycity_request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY]
+
+    # If we have more specific info then just the street
+    # address, make sure we are in Boston
+    if not is_address_in_city(current_address):
+        mycity_response.output_speech = NOT_IN_BOSTON_SPEECH
+        mycity_response.should_end_session = True
+        mycity_response.card_title = CARD_TITLE
+        return mycity_response
+
+    # grab relevant information from session address
+    parsed_address, _ = usaddress.tag(current_address)
+
+    if not is_address_valid(parsed_address):
+        mycity_response.output_speech = ADDRESS_NOT_UNDERSTOOD
+        mycity_response.dialog_directive = "ElicitSlotVotingIntent"
+        mycity_response.reprompt_text = None
+        mycity_response.session_attributes = mycity_request.session_attributes
+        mycity_response.card_title = CARD_TITLE
+        mycity_response.should_end_session = True
+        return clear_address_from_mycity_object(mycity_response)
+
+
     top_candidate = gis_utils.geocode_address(current_address)
 
     ward_precinct = vote_utils.get_ward_precinct_info(top_candidate)
