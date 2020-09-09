@@ -1,5 +1,6 @@
 import requests
 import re
+from mycity.intents.custom_errors import ParseError
 
 
 def get_polling_location(ward_precinct):
