@@ -32,6 +32,32 @@ ALEXA_DEVICE_ADDRESS = {
     "postalCode": "02138"
 }
 
+# Mock object for Ward & Precinct arcgis api
+MOCK_WARD_PRECINCT_RESP= {
+    "features":[{"attributes":{"WARD_PRECINCT":"1008"}}]
+}
+
+MOCK_POLL_RESP = {"features": [{"attributes": 
+    {"Location2": "BACK OF THE HILL APARTMENTS -","Location3": "100 SOUTH HUNTINGTON AVENUE."}
+    }]
+}
+
+POLL_DATA = {
+    "Location Name": "BACK OF THE HILL APARTMENTS ", 
+    "Location Address": "100 SOUTH HUNTINGTON AVENUE."
+}
+# Ward precinct object
+WARD_PRECINCT = {
+    "ward": "10", "precinct": "08"
+}
+
+# Test coordinates for arcgis 
+COORDS = {
+    "x": -71.108162, "y": 42.327168
+}
+
+
+
 # Failing Alexa device address
 ALEXA_DEVICE_ADDRESS_FAILURE = {
     "addressLine1": "null",

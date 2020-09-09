@@ -30,7 +30,6 @@
     },
     "apis": {
       "custom": {
-        "interfaces": []
       }
     },
     "manifestVersion": "1.0",

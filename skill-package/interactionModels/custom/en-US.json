@@ -992,6 +992,32 @@
           ]
         },
         {
+          "name": "VotingIntent",
+          "slots": [
+            {
+              "name": "Address",
+              "type": "AMAZON.PostalAddress",
+              "samples": [
+                "My address is {Address}",
+                "It\u0027s {Address}",
+                "{Address}"
+              ]
+            }
+          ],
+          "samples": [
+            "where can I vote",
+            "where do I vote for {Address}",
+            "Where is my voting location",
+            "what is my polling location",
+            "what is my polling building",
+            "where is the voting location",
+            "where is the voting building",
+            "where is the polling location",
+            "where is the polling building",
+
+          ]
+        },
+        {
           "name": "CrimeIncidentsIntent",
           "slots": [
             {

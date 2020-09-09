@@ -5,6 +5,7 @@ This class handles all voice requests.
 """
 
 from mycity.mycity_response_data_model import MyCityResponseDataModel
+from mycity.intents.voting_intent import get_voting_location
 from mycity.intents.user_address_intent import set_address_in_session, \
     get_address_from_session, request_user_address_response, \
     set_zipcode_in_session
@@ -139,6 +140,8 @@ def on_intent(mycity_request):
         return get_nearby_food_trucks(mycity_request)
     elif mycity_request.intent_name == "GetAlertsIntent":
         return get_alerts_intent(mycity_request)
+    elif mycity_request.intent_name == "VotingIntent":
+        return  get_voting_location(mycity_request)
     elif mycity_request.intent_name == "AMAZON.HelpIntent":
         return get_help_response(mycity_request)
     elif mycity_request.intent_name == "AMAZON.StopIntent" or \
