@@ -9,6 +9,7 @@ from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
 from arcgis.geocoding import reverse_geocode
+from mycity.intents.custom_errors import MultipleAddressError
 from arcgis import geometry
 import logging
 
@@ -93,14 +94,18 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     return dest_addresses
 
 
-def geocode_address(m_address):
+def geocode_address(m_address, neighborhood = "Boston"):
     """
     :param m_address: address of interest in street form
     :return: address in coordinate (X and Y) form
     """
-    m_address = m_address + ", City: Boston, State: MA"
-    m_location = geocode(address=m_address)[0]
-    return m_location['location']
+    m_address = "{address}, City:{neighborhood}, State:Ma"\
+        .format(address=m_address, neighborhood=neighborhood)
+
+    m_location = geocode(address=m_address)
+    if len(m_location) > 1:
+        raise MultipleAddressError(m_location)
+    return m_location['location'][0]
 
 
 def geocode_addr(addr, city):
