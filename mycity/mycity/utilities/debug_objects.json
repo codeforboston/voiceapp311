@@ -82,14 +82,18 @@
 		"timestamp": "",
 		"locale": "en-US",
 		"intent": {
-			"name": "CoronavirusUpdateIntent",
+			"name": "VotingIntent",
 			"confirmationStatus": "NONE",
 			"slots": {
 				"Address": {
 					"name": "Address",
-					"value": "333 Washington street",
+					"value": "50 tremont street",
 					"confirmationStatus": "NONE",
-					"source": "USER"
+					"source": "USER",
+					"slotValue": {
+						"type": "Simple",
+						"value": "50 tremont street"
+					}
 				}
 			}
 		},
