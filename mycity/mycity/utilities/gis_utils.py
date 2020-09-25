@@ -9,6 +9,7 @@ from arcgis.gis import GIS
 from arcgis.features import FeatureLayer
 from arcgis.geocoding import geocode
 from arcgis.geocoding import reverse_geocode
+from mycity.intents.custom_errors import MultipleAddressError, BadAPIResponse
 from arcgis import geometry
 import logging
 
@@ -93,14 +94,36 @@ def _get_dest_addresses_from_features(feature_address_index, features):
     return dest_addresses
 
 
-def geocode_address(m_address):
+def geocode_address(m_address, zipcode = None):
     """
     :param m_address: address of interest in street form
     :return: address in coordinate (X and Y) form
     """
-    m_address = m_address + ", City: Boston, State: MA"
-    m_location = geocode(address=m_address)[0]
-    return m_location['location']
+    WITH_ZIP = "{address}, State:Ma, Zone:{zipcode}"
+    WITHOUT_ZIP = "{address}, City:Boston, State:Ma"
+    m_address = WITH_ZIP.format(address=m_address, zipcode=zipcode) \
+         if zipcode is not None else WITHOUT_ZIP.format(address=m_address)
+    m_location = geocode(address=m_address)
+    confident = confidenceCheck(m_location)
+    if confident:
+        return m_location[0]['location']
+    if len(m_location) > 1 and not confident and zipcode is None:
+        zipcodes = set([address['address'].split(',')[3] for address in m_location])
+        raise MultipleAddressError(zipcodes)
+    elif len(m_location) > 1 and not confident and zipcode is not None:
+        raise BadAPIResponse
+    return m_location[0]['location']
+
+
+def confidenceCheck(addresses):
+    overNinetyFiveCount = 0
+    for address in addresses:
+        if address['score'] > 95:
+            overNinetyFiveCount += 1
+    if overNinetyFiveCount > 1 or overNinetyFiveCount == 0:
+        return False
+    else:
+        return True
 
 
 def geocode_addr(addr, city):

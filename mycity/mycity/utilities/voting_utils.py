@@ -15,9 +15,8 @@ def get_polling_location(ward_precinct):
 
     ward = ward_precinct["ward"].lstrip()
     precinct = ward_precinct["precinct"].lstrip()
-
-    url = "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/" \
-          "rest/services/polling_locations_2017/FeatureServer/0/query"
+    url = "http://gis.cityofboston.gov/arcgis/rest/services/" \
+        "CityServices/OpenData/MapServer/5/query"
 
     params = {
         "f": "json",

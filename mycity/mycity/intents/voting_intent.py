@@ -3,7 +3,7 @@ Functions for voting information including polling location information
 """
 
 from . import intent_constants
-from mycity.intents.custom_errors import ParseError
+from mycity.intents.custom_errors import MultipleAddressError, BadAPIResponse, ParseError
 from mycity.intents.user_address_intent \
     import request_user_address_response
 from mycity.utilities.location_services_utils import \
@@ -19,17 +19,20 @@ import mycity.utilities.gis_utils as gis_utils
 import mycity.utilities.voting_utils as vote_utils
 import logging
 import usaddress
+import re
 
 logger = logging.getLogger(__name__)
 CARD_TITLE = 'Voting Intent'
 LOCATION_NAME = "Location Name"
 LOCATION_ADDRESS = "Location Address"
 LOCATION_SPEECH = "Your polling location is {}, {}"
+BAD_API_RESPONSE = "We are currently experiencing problems with that address, please visit Boston.gov for your voting information"
 NOT_IN_BOSTON_SPEECH = 'This address is not in Boston. ' \
                        'Please use this skill with a Boston address. '\
                        'See you later!'
 ADDRESS_NOT_UNDERSTOOD = "I didn't understand that address, please try again with just the street number and name."
 NO_WARD_OR_PRECINCT = "There doesn't seem to be information for that address in Boston"
+MULTIPLE_ADDRESS_ERROR = "I found multiple places with that address for different zipcodes. What is your zipcode?"
 
 def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
         MyCityResponseDataModel:
@@ -80,12 +83,17 @@ def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
         mycity_response.should_end_session = True
         return clear_address_from_mycity_object(mycity_response)
 
+    zipcode = None
+    if "Zipcode" in mycity_request.intent_variables and \
+        "value" in mycity_request.intent_variables["Zipcode"]:
+        zipcode = \
+                mycity_request.intent_variables["Zipcode"]["value"].zfill(5)
 
-    top_candidate = gis_utils.geocode_address(current_address)
     mycity_response.reprompt_text = None
     mycity_response.should_end_session = True
 
     try:
+        top_candidate = gis_utils.geocode_address(current_address, zipcode)
         ward_precinct = vote_utils.get_ward_precinct_info(top_candidate)
         poll_location = vote_utils.get_polling_location(ward_precinct)
         output_speech = LOCATION_SPEECH. \
@@ -93,6 +101,13 @@ def get_voting_location(mycity_request: MyCityRequestDataModel) -> \
         mycity_response.output_speech = output_speech
     except ParseError:
         mycity_response.output_speech = NO_WARD_OR_PRECINCT
+    except BadAPIResponse:
+        mycity_response.output_speech = BAD_API_RESPONSE
+    except MultipleAddressError as error:
+        address_list = ', '.join(error.addresses)
+        mycity_response.output_speech = MULTIPLE_ADDRESS_ERROR
+        mycity_response.dialog_directive = "ElicitSlotZipCode"
+        mycity_response.should_end_session = False
         
     return mycity_response
         

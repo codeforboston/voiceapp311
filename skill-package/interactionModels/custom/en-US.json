@@ -1002,6 +1002,10 @@
                 "It\u0027s {Address}",
                 "{Address}"
               ]
+            },
+            {
+              "name": "Zipcode",
+              "type": "AMAZON.NUMBER"
             }
           ],
           "samples": [
