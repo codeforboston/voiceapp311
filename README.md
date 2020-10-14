@@ -5,7 +5,21 @@
 ## How to Use This Skill
 You can use our skill with the Amazon Alexa stand-alone home device or with the Alexa app on your phone.  You can start interacting with our skill by asking Alexa to "Open Boston Info" or starting any of your requests with "Alexa, ask Boston Info ..."
 
+Many of the skill's responses require an address to provide accurate information. To make the skill more convenient, we will ask for permissions to use your device's location. If you prefer not to provide these permissions, you can always provide an address with your question (ex: "Alexa, ask Boston Info when is garbage day at 206 Washington Street").
+
 ## Current Skill Abilities:
+#### Find out your Voting/Polling Location
+The Boston Info app can be used to find your election voting location.
+
+Example Request:
+> "Alexa, ask Boston Info where do I vote for {Address}"
+
+#### Get the latest information on the Coronavirus/COVID-19
+The City of Boston website is [providing updates](https://www.boston.gov/news/coronavirus-disease-covid-19-boston) for the Coronavirus and its impact on the city. The Boston Info app will get this latest information for you.
+
+Example Request:
+> "Alexa, ask Boston Info for the latest information about the Coronavirus"
+
 #### Find out your Trash Day
 This is used to find trash and recycling pickup and collection days. You can ask for recycling or trash/garbage days specifically. It will tell you what day of the week trash is picked up from the given address.
 
@@ -13,6 +27,12 @@ Example Request:
 > "Alexa, ask Boston Info what my garbage day is."
 >
 > "Alexa, have Boston Info find the recyclables collection days at {Address}"
+
+#### Find out if there is a snow emergency in effect
+You can ask Boston Info if there is currently a snow emergency in the City of Boston.
+
+Example Request:
+> "Alexa, ask Boston Info if there is a snow emergency"
 
 
 #### Find the nearest Emergency Snow Parking
@@ -50,6 +70,12 @@ Example Requests:
 > "Alexa, ask Boston Info where are the nearest food trucks?"
 >
 > "Alexa, ask Boston Info what's for lunch?"
+
+### Find any open farmers markets
+The Boston Info app can let you know if there are any farmers markets open today.
+
+Example Requests:
+> "Alexa, ask Boston Info what farmers markets are open?"
 
 
 ### Find any nearby Crime incidents
