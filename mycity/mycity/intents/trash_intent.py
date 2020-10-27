@@ -57,6 +57,19 @@ def get_trash_day_info(mycity_request):
     # grab relevant information from session address
     parsed_address, _ = usaddress.tag(current_address)
 
+    if not address_utils.is_address_valid(parsed_address):
+        repeatCount = mycity_request.session_attributes['repeatCount']
+        mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD \
+            if repeatCount <= 0 else speech_constants.ADDRESS_NOT_FOUND.format(current_address)
+        mycity_response.dialog_directive = "ElicitSlotTrash"
+        mycity_response.reprompt_text = None
+        mycity_response.session_attributes = mycity_request.session_attributes
+        mycity_response.card_title = CARD_TITLE
+        mycity_response.should_end_session = False if repeatCount <= 0 else True
+        repeatCount += 1
+        mycity_response.session_attributes['repeatCount'] = repeatCount
+        return clear_address_from_mycity_object(mycity_response)
+
     # If we have more specific info then just the street
     # address, make sure we are in Boston
     if not is_address_in_city(current_address):
@@ -64,15 +77,6 @@ def get_trash_day_info(mycity_request):
         mycity_response.should_end_session = True
         mycity_response.card_title = CARD_TITLE
         return mycity_response
-
-    if not address_utils.is_address_valid(parsed_address):
-        mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD
-        mycity_response.dialog_directive = "ElicitSlotTrash"
-        mycity_response.reprompt_text = None
-        mycity_response.session_attributes = mycity_request.session_attributes
-        mycity_response.card_title = CARD_TITLE
-        mycity_response.should_end_session = True
-        return clear_address_from_mycity_object(mycity_response)
 
     # currently assumes that trash day is the same for all units at
     # the same street address

@@ -30,6 +30,9 @@
     },
     "apis": {
       "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:us-east-1:506714540142:function:ask-bostoninfo-default-default-1596586712877"
+        }
       }
     },
     "manifestVersion": "1.0",
