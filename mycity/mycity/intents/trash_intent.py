@@ -58,7 +58,7 @@ def get_trash_day_info(mycity_request):
     parsed_address, _ = usaddress.tag(current_address)
 
     if not address_utils.is_address_valid(parsed_address):
-        repeatCount = mycity_request.session_attributes['repeatCount']
+        repeatCount = mycity_request.session_attributes[intent_constants.REPEAT_COUNT]
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD \
             if repeatCount <= 0 else speech_constants.ADDRESS_NOT_FOUND.format(current_address)
         if repeatCount <= 0:
@@ -68,7 +68,7 @@ def get_trash_day_info(mycity_request):
         mycity_response.card_title = CARD_TITLE
         mycity_response.should_end_session = False if repeatCount <= 0 else True
         repeatCount += 1
-        mycity_response.session_attributes['repeatCount'] = repeatCount
+        mycity_response.session_attributes[intent_constants.REPEAT_COUNT] = repeatCount
         return clear_address_from_mycity_object(mycity_response)
 
     # If we have more specific info then just the street
