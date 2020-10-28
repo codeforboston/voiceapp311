@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+
+			{
+				"name": "Debug Alexa Skill (Python)",
+				"type": "python",
+				"request": "launch",
+				"program": "${command:ask.debugAdapterPath}",
+				"pythonPath": "${command:python.interpreterPath}",
+				"args": [
+					"--accessToken",
+					"${command:ask.accessToken}",
+					"--skillId",
+					"${command:ask.skillIdFromWorkspace}",
+					"--skillHandler",
+					"lambda_handler",
+					"--skillFilePath",
+					"${workspaceFolder}/mycity/lambda_function.py"
+				],
+				"console": "internalConsole",
+				"cwd": "${workspaceFolder}/mycity/",
+				"env": {
+					"ARCGIS_CLIENT_ID": "Get from Code for Boston member",
+					"ARCGIS_CLIENT_SECRET":"Get from Code for Boston member",
+					"SLACK_WEBHOOKS_URL": "Get from Code for Boston member",
+					"PYTHONPATH": "${workspaceFolder}/mycity",
+					"WHOAMI": "Code for Boston developer"
+				}  
+			}
+		]
+	},
+	"extensions": {
+		"recommendations": ["ask-toolkit.alexa-skills-kit-toolkit", "ms-python.python"]
+	}
+}

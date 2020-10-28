@@ -18,6 +18,24 @@
           "awsRegion": "us-east-1"
         }
       }
+    },
+    "__ENVIRONMENT_ASK_PROFILE__": {
+      "skillMetadata": {
+        "src": "./skill-package"
+      },
+      "code": {
+        "default": {
+          "src": "./mycity"
+        }
+      },
+      "skillInfrastructure": {
+        "type": "@ask-cli/lambda-deployer",
+        "userConfig": {
+          "runtime": "python3.7",
+          "handler": "lambda_function.lambda_handler",
+          "awsRegion": "us-east-1"
+        }
+      }
     }
   }
 }
