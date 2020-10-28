@@ -61,7 +61,8 @@ def get_trash_day_info(mycity_request):
         repeatCount = mycity_request.session_attributes['repeatCount']
         mycity_response.output_speech = speech_constants.ADDRESS_NOT_UNDERSTOOD \
             if repeatCount <= 0 else speech_constants.ADDRESS_NOT_FOUND.format(current_address)
-        mycity_response.dialog_directive = "ElicitSlotTrash"
+        if repeatCount <= 0:
+            mycity_response.dialog_directive = "ElicitSlotTrash" 
         mycity_response.reprompt_text = None
         mycity_response.session_attributes = mycity_request.session_attributes
         mycity_response.card_title = CARD_TITLE

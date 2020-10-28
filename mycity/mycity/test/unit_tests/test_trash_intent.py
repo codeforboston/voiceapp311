@@ -6,6 +6,7 @@ from mycity.intents.trash_intent import find_unique_addresses, get_trash_day_inf
 import mycity.intents.intent_constants as intent_constants
 from mycity.mycity_request_data_model import MyCityRequestDataModel
 from mycity.test.unit_tests import base
+import mycity.intents.speech_constants.trash_intent as speech_constants
 
 
 class TrashIntentTestCase(base.BaseTestCase):
@@ -89,6 +90,14 @@ class TrashIntentTestCase(base.BaseTestCase):
         request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "10 Main Street New York, NY"
         result = get_trash_day_info(request)
         self.assertFalse("Monday" in result.output_speech)
+
+    def test_provided_address_misunderstood(self):
+        expected_text = speech_constants.ADDRESS_NOT_UNDERSTOOD
+        request = MyCityRequestDataModel()
+        request.session_attributes[intent_constants.CURRENT_ADDRESS_KEY] = "wayne street"
+        result = get_trash_day_info(request)
+        self.assertTrue(expected_text in result.output_speech)
+
 
 
 if __name__ == '__main__':
