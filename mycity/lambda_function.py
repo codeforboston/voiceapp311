@@ -105,8 +105,6 @@ def platform_to_mycity_request(event):
 
     if 'attributes' in event['session']:
         mycity_request.session_attributes = event['session']['attributes']
-    else:
-        mycity_request.session_attributes = {}
     
     if 'intent' in event['request']:
         mycity_request.intent_name = event['request']['intent']['name']

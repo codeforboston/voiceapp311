@@ -20,7 +20,9 @@ class MyCityRequestDataModel:
         self._request_id = None
         self._is_new_session = None
         self._session_id = None
-        self._session_attributes = {}
+        self._session_attributes = {
+            "repeatCount": 0
+        }
         self._application_id = None
         self._intent_name = None
         self._intent_variables = {}
