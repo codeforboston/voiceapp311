@@ -1054,12 +1054,13 @@
           "name": "GetAlertsIntent",
           "slots": [
             {
-              "name": "Decision",
+              "name": "ServiceName",
               "type": "BostonServices"
             }
           ],
           "samples": [
-            "{Decision}",
+            "are there any alerts for {ServiceName}",
+            "give me the alerts for {ServiceName}",
             "what the current status",
             "give me the city status",
             "give me all alerts",
@@ -1591,5 +1592,5 @@
       }
     ]
   },
-  "version": "60"
+  "version": "82"
 }

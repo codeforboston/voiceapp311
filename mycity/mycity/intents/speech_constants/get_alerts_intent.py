@@ -11,4 +11,4 @@ LAUNCH_REPROMPT_SPEECH = "You can also ask about the locations of " \
     "If you have feedback for the skill say 'I have a suggestion'."
 ALERT_LISTING_SCRIPT = "There are {} current alerts affecting the following " \
     "services: {}. Which one would you like to hear about? Or pick 'all'."
-INVALID_DECISION_SCRIPT = "Sorry, I didn't understand that. "
+INVALID_SERVICE_NAME_SCRIPT = "Sorry, I didn't understand that. "

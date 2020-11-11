@@ -87,21 +87,21 @@ def get_alerts_intent(
     # get the intent_variables and sessions_attribute object from the request
     intent_variables = mycity_request.intent_variables
     session_attributes = mycity_request.session_attributes
-    decision = intent_variables['Decision'].get('value') \
-        if 'Decision' in intent_variables else None
+    service_name = intent_variables['ServiceName'].get('value') \
+        if 'ServiceName' in intent_variables else None
     session_alerts = session_attributes.get('alerts')
 
-    logger.debug('decision: ' + str(decision) +
+    logger.debug('ServiceName: ' + str(service_name) +
                  ', session_alerts: ' + str(session_alerts))
 
     # Build the response.
-    #   - if decision was made before asking alert, remind to ask for alert
-    #   - if there is no decision - probably asking for alerts, list alerts
-    #   - if there is decision w/ alerts, get the appropriate alert
+    #   - if service_name was made before asking alert, remind to ask for alert
+    #   - if there is no service_name - probably asking for alerts, list alerts
+    #   - if there is service_name w/ alerts, get the appropriate alert
     mycity_response = _create_response_object()
     mycity_response.session_attributes = session_attributes.copy()
 
-    if decision is None:
+    if service_name is None:
         alerts = get_alerts() if get_alerts_function_for_test is None \
             else get_alerts_function_for_test()
         logger.debug("[dictionary with alerts scraped from boston.gov]:\n" +
@@ -125,19 +125,19 @@ def get_alerts_intent(
     elif session_alerts is None:
         mycity_response.should_end_session = False
         mycity_response.output_speech = constants.LAUNCH_REPROMPT_SPEECH
-    elif decision == 'all':
+    elif service_name == 'all':
         mycity_response.output_speech = \
             alerts_to_speech_output(session_alerts) \
             if alerts_to_speech_output_function_for_test is None \
             else alerts_to_speech_output_function_for_test(session_alerts)
-    elif decision in session_alerts:
-        alert = { decision: session_alerts[decision] }
+    elif service_name in session_alerts:
+        alert = { service_name: session_alerts[service_name] }
         mycity_response.output_speech = alerts_to_speech_output(alert) \
             if alerts_to_speech_output_function_for_test is None \
             else alerts_to_speech_output_function_for_test(alert)
     else:
         mycity_response.should_end_session = False
-        mycity_response.output_speech = constants.INVALID_DECISION_SCRIPT
+        mycity_response.output_speech = constants.INVALID_SERVICE_NAME_SCRIPT
         mycity_response.output_speech += list_alerts_output(session_alerts)
 
     return mycity_response
