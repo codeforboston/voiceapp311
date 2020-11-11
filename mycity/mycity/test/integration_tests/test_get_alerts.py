@@ -55,6 +55,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         response = self.controller.on_intent(self.request)
         self.assertTrue(response.should_end_session)
         self.assertIn('Godzilla inbound!', response.output_speech)
+        self.assertIsNone(response.dialog_directive)
 
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value=some_alerts.copy())
@@ -65,6 +66,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.assertFalse(response.should_end_session)
         self.assertIn('Godzilla inbound!', alerts.values())
         self.assertIn('5', response.output_speech)
+        self.assertIsNotNone(response.dialog_directive)
         # second response for valid decision
         self.request.session_attributes = response.session_attributes
         self.request.intent_variables['ServiceName'] = {'value': 'alert header'}
@@ -81,6 +83,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.assertFalse(response.should_end_session)
         self.assertIn('Godzilla inbound!', alerts.values())
         self.assertIn('5', response.output_speech)
+        self.assertIsNotNone(response.dialog_directive)
         # second 'all' response
         self.request.session_attributes = response.session_attributes
         self.request.intent_variables['ServiceName'] = {'value': 'all'}
@@ -106,6 +109,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.assertFalse(response.should_end_session)
         self.assertIn('Godzilla inbound!', alerts.values())
         self.assertIn('5', response.output_speech)
+        self.assertIsNotNone(response.dialog_directive)
         # second invalid decision response
         self.request.session_attributes = response.session_attributes
         self.request.intent_variables['ServiceName'] = {'value': 'school closings'}
