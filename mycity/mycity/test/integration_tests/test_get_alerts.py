@@ -67,7 +67,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.assertIn('5', response.output_speech)
         # second response for valid decision
         self.request.session_attributes = response.session_attributes
-        self.request.intent_variables['Decision'] = {'value': 'alert header'}
+        self.request.intent_variables['ServiceName'] = {'value': 'alert header'}
         response = self.controller.on_intent(self.request)
         self.assertTrue(response.should_end_session)
         self.assertIn('Godzilla inbound!', response.output_speech)
@@ -83,7 +83,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.assertIn('5', response.output_speech)
         # second 'all' response
         self.request.session_attributes = response.session_attributes
-        self.request.intent_variables['Decision'] = {'value': 'all'}
+        self.request.intent_variables['ServiceName'] = {'value': 'all'}
         response = self.controller.on_intent(self.request)
         self.assertTrue(response.should_end_session)
         for alert in alerts.values():
@@ -92,7 +92,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value=some_alerts.copy())
     def test_response_premature_decision(self, mock_get_alerts):
-        self.request.intent_variables['Decision'] = {'value': 'all'}
+        self.request.intent_variables['ServiceName'] = {'value': 'all'}
         response = self.controller.on_intent(self.request)
         self.assertFalse(response.should_end_session)
         self.assertNotIn('alerts', response.session_attributes)
@@ -108,7 +108,7 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
         self.assertIn('5', response.output_speech)
         # second invalid decision response
         self.request.session_attributes = response.session_attributes
-        self.request.intent_variables['Decision'] = {'value': 'school closings'}
+        self.request.intent_variables['ServiceName'] = {'value': 'school closings'}
         response = self.controller.on_intent(self.request)
         alerts = response.session_attributes['alerts']
         self.assertFalse(response.should_end_session)
