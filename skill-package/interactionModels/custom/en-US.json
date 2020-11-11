@@ -1059,7 +1059,7 @@
             }
           ],
           "samples": [
-            "{Decision}",
+            "city service alerts",
             "what the current status",
             "give me the city status",
             "give me all alerts",
