@@ -166,6 +166,7 @@ class MyCityResponseDataModel:
             "ElicitSlotTrash",  # Ask for address for trash
             "ElicitSlotZipCode",  # Ask for users zip code
             "ElicitSlotNeighborhood", # Ask for user's neighborhood 
+            "ElicitSlotServiceName", # Ask for desired city service
         ]
 
         if value not in valid_directives:
@@ -188,7 +189,12 @@ class MyCityResponseDataModel:
             self._dialog_directive = {
                 'type': 'Dialog.ElicitSlot',
                 'slotToElicit': 'Neighborhood'
-            }            
+            }   
+        elif value == "ElicitSlotServiceName":
+            self._dialog_directive = {
+                'type': 'Dialog.ElicitSlot',
+                'slotToElicit': 'ServiceName'
+            }         
 
     @property
     def card_type(self):

@@ -100,6 +100,7 @@ def get_alerts_intent(
     #   - if there is service_name w/ alerts, get the appropriate alert
     mycity_response = _create_response_object()
     mycity_response.session_attributes = session_attributes.copy()
+    mycity_response.should_end_session = True
 
     if service_name is None:
         alerts = get_alerts() if get_alerts_function_for_test is None \
@@ -115,6 +116,7 @@ def get_alerts_intent(
 
         if len(pruned_alerts) > 1:
             mycity_response.session_attributes['alerts'] = pruned_alerts
+            mycity_response.dialog_directive = "ElicitSlotServiceName"
             mycity_response.should_end_session = False
             mycity_response.output_speech = list_alerts_output(pruned_alerts)
         else:
@@ -139,6 +141,7 @@ def get_alerts_intent(
         mycity_response.should_end_session = False
         mycity_response.output_speech = constants.INVALID_SERVICE_NAME_SCRIPT
         mycity_response.output_speech += list_alerts_output(session_alerts)
+        mycity_response.dialog_directive = "ElicitSlotServiceName"
 
     return mycity_response
 
