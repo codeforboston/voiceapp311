@@ -94,14 +94,6 @@ class GetAlertsTestCase(mix_ins.RepromptTextTestMixIn,
 
     @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
                 return_value=some_alerts.copy())
-    def test_response_premature_decision(self, mock_get_alerts):
-        self.request.intent_variables['ServiceName'] = {'value': 'all'}
-        response = self.controller.on_intent(self.request)
-        self.assertFalse(response.should_end_session)
-        self.assertNotIn('alerts', response.session_attributes)
-
-    @mock.patch('mycity.intents.get_alerts_intent.get_alerts',
-                return_value=some_alerts.copy())
     def test_response_invalid_decision(self, mock_get_alerts):
         # first response
         response = self.controller.on_intent(self.request)

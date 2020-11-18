@@ -89,61 +89,78 @@ def get_alerts_intent(
     session_attributes = mycity_request.session_attributes
     service_name = intent_variables['ServiceName'].get('value') \
         if 'ServiceName' in intent_variables else None
-    session_alerts = session_attributes.get('alerts')
+    session_alerts = session_attributes.get('alerts', get_pruned_alerts(
+        get_alerts_function_for_test, prune_normal_responses_function_for_test))
+
 
     logger.debug('ServiceName: ' + str(service_name) +
                  ', session_alerts: ' + str(session_alerts))
 
     # Build the response.
-    #   - if service_name was made before asking alert, remind to ask for alert
-    #   - if there is no service_name - probably asking for alerts, list alerts
-    #   - if there is service_name w/ alerts, get the appropriate alert
     mycity_response = _create_response_object()
     mycity_response.session_attributes = session_attributes.copy()
     mycity_response.should_end_session = True
 
-    if service_name is None:
-        alerts = get_alerts() if get_alerts_function_for_test is None \
-            else get_alerts_function_for_test()
-        logger.debug("[dictionary with alerts scraped from boston.gov]:\n" +
-                     str(alerts))
-
-        pruned_alerts = prune_normal_responses(alerts) \
-            if prune_normal_responses_function_for_test is None \
-            else prune_normal_responses_function_for_test(alerts)
-        logger.debug("[dictionary after pruning]:\n" + str(pruned_alerts))
-        pruned_alerts = { k.lower(): v for k, v in pruned_alerts.items() }
-
-        if len(pruned_alerts) > 1:
-            mycity_response.session_attributes['alerts'] = pruned_alerts
-            mycity_response.dialog_directive = "ElicitSlotServiceName"
-            mycity_response.should_end_session = False
-            mycity_response.output_speech = list_alerts_output(pruned_alerts)
-        else:
-            mycity_response.output_speech = \
-                alerts_to_speech_output(pruned_alerts) \
-                if alerts_to_speech_output_function_for_test is None \
-                else alerts_to_speech_output_function_for_test(pruned_alerts)
-    elif session_alerts is None:
+    if session_alerts is None:
+        logger.debug(
+            "Could not get alerts from session attributes or Boston webpage")
         mycity_response.should_end_session = False
         mycity_response.output_speech = constants.LAUNCH_REPROMPT_SPEECH
+        return mycity_response
+
+    if service_name is None:
+        # If the user hasn't give us a service name, check if we should
+        # list alerts if there are only a few, or ask the user to select one
+        if len(session_alerts) > 1:
+            mycity_response.session_attributes['alerts'] = session_alerts
+            mycity_response.dialog_directive = "ElicitSlotServiceName"
+            mycity_response.should_end_session = False
+            mycity_response.output_speech = list_alerts_output(session_alerts)
+        else:
+            mycity_response.output_speech = \
+                alerts_to_speech_output(session_alerts) \
+                if alerts_to_speech_output_function_for_test is None \
+                else alerts_to_speech_output_function_for_test(session_alerts)
     elif service_name == 'all':
+        # Respond with all alert text
         mycity_response.output_speech = \
             alerts_to_speech_output(session_alerts) \
             if alerts_to_speech_output_function_for_test is None \
             else alerts_to_speech_output_function_for_test(session_alerts)
     elif service_name in session_alerts:
-        alert = { service_name: session_alerts[service_name] }
+        # Grab the requested service alert
+        alert = {service_name: session_alerts[service_name]}
         mycity_response.output_speech = alerts_to_speech_output(alert) \
             if alerts_to_speech_output_function_for_test is None \
             else alerts_to_speech_output_function_for_test(alert)
     else:
+        # Service not found. Re-ask for the desired service.
         mycity_response.should_end_session = False
         mycity_response.output_speech = constants.INVALID_SERVICE_NAME_SCRIPT
         mycity_response.output_speech += list_alerts_output(session_alerts)
         mycity_response.dialog_directive = "ElicitSlotServiceName"
 
     return mycity_response
+
+
+def get_pruned_alerts(get_alerts_function_for_test, prune_normal_responses_function_for_test):
+    """
+    Returns dictionary {service: alert text} alerts from the Boston webpage that are not in "normal" condition.
+
+    :param get_alerts_function_for_test: Injectable function for unit tests
+    :param prune_normal_responses_function_for_test: Injectable function for unit tests
+    """
+    alerts = get_alerts() if get_alerts_function_for_test is None \
+        else get_alerts_function_for_test()
+    logger.debug("[dictionary with alerts scraped from boston.gov]:\n" +
+                 str(alerts))
+
+    pruned_alerts = prune_normal_responses(alerts) \
+        if prune_normal_responses_function_for_test is None \
+        else prune_normal_responses_function_for_test(alerts)
+    logger.debug("[dictionary after pruning]:\n" + str(pruned_alerts))
+    pruned_alerts = {k.lower(): v for k, v in pruned_alerts.items()}
+    return pruned_alerts
 
 
 def get_inclement_weather_alert(
