@@ -87,14 +87,16 @@ def get_alerts_intent(
     # get the intent_variables and sessions_attribute object from the request
     intent_variables = mycity_request.intent_variables
     session_attributes = mycity_request.session_attributes
+    
     service_name = intent_variables['ServiceName'].get('value') \
         if 'ServiceName' in intent_variables else None
-    session_alerts = session_attributes.get('alerts', get_pruned_alerts(
-        get_alerts_function_for_test, prune_normal_responses_function_for_test))
+    if service_name:
+        service_name = service_name.lower()
 
-
-    logger.debug('ServiceName: ' + str(service_name) +
-                 ', session_alerts: ' + str(session_alerts))
+    session_alerts = session_attributes.get('alerts', None)
+    if not session_alerts:
+        session_alerts = get_pruned_alerts(
+            get_alerts_function_for_test, prune_normal_responses_function_for_test)
 
     # Build the response.
     mycity_response = _create_response_object()
@@ -135,6 +137,7 @@ def get_alerts_intent(
             else alerts_to_speech_output_function_for_test(alert)
     else:
         # Service not found. Re-ask for the desired service.
+        mycity_response.session_attributes['alerts'] = session_alerts
         mycity_response.should_end_session = False
         mycity_response.output_speech = constants.INVALID_SERVICE_NAME_SCRIPT
         mycity_response.output_speech += list_alerts_output(session_alerts)
@@ -158,8 +161,11 @@ def get_pruned_alerts(get_alerts_function_for_test, prune_normal_responses_funct
     pruned_alerts = prune_normal_responses(alerts) \
         if prune_normal_responses_function_for_test is None \
         else prune_normal_responses_function_for_test(alerts)
+    # Standardize by making each key lower and make sure there are no dashes, such
+    # as in covid-19
+    pruned_alerts = {k.lower().replace('-', ' '): v for k, v in pruned_alerts.items()}
+
     logger.debug("[dictionary after pruning]:\n" + str(pruned_alerts))
-    pruned_alerts = {k.lower(): v for k, v in pruned_alerts.items()}
     return pruned_alerts
 
 

@@ -1321,7 +1321,38 @@
           "values": [
             {
               "name": {
-                "value": "all"
+                "value": "state reopening guidance",
+                "synonyms": [
+                  "state reopening",
+                  "reopening guidance"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "reopening in boston",
+                "synonyms": [
+                  "reopening"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "covid nineteen testing sites",
+                "synonyms": [
+                  "covid testing",
+                  "coronavirus testing sites",
+                  "covid testing sites"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "all",
+                "synonyms": [
+                  "all services",
+                  "all alerts"
+                ]
               }
             },
             {
@@ -1592,5 +1623,5 @@
       }
     ]
   },
-  "version": "82"
+  "version": "86"
 }
