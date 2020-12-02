@@ -247,7 +247,9 @@ def get_address_api_info(address, neighborhood):
         'service_id': value,
         'place_id': value,
         'area_id': value,
-        'name': value
+        'name': value,
+        'start_date': value,
+        'end_date': value
     }
 
     """
@@ -273,6 +275,8 @@ def get_address_api_info(address, neighborhood):
     if len(unique_addresses) > 1:
         raise MultipleAddressError(unique_addresses)
 
+    api_params = result_json[0]
+    api_params['start_date'] = 
     return result_json[0]
 
 
@@ -288,7 +292,7 @@ def get_trash_day_data(api_parameters):
     if "name" in api_parameters:
         api_parameters["formatted_address"] = api_parameters.pop("name")
 
-    base_url = "https://recollect.net/api/places"
+    base_url = "https://api.recollect.net/api/places/{}/services/{}/events"
     request_result = requests.get(base_url, api_parameters)
 
     if request_result.status_code != requests.codes.ok:
