@@ -21,7 +21,9 @@ class MyCityResponseDataModel:
     """
 
     def __init__(self):
-        self._session_attributes = {}
+        self._session_attributes = {
+            "repeatCount": 0
+        }
         self._card_title = None
         self._card_type = "Simple"
         self._card_permissions = None
