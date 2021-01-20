@@ -28,4 +28,5 @@ jobs:
         if [ -f mycity/mycity/deploy_tools/requirements_no_deps.txt ]; then pip install --no-deps -r mycity/mycity/deploy_tools/requirements_no_deps.txt; fi
     - name: Test with unittest
       run: |
-        unittest -v -s mycity -p test_*.py
+        cd mycity
+        python -m unittest discover -v
