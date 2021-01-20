@@ -262,7 +262,7 @@ def get_address_api_info(address, neighborhood):
     url_params = {'q': full_address, 'locale': 'en-US'}
     request_result = requests.get(base_url, url_params)
 
-    if request_result.status_code != requests.codes.ok:
+    if request_result.status_code != 200:
         logger.debug('Error getting ReCollect API info. Got response: {}'
                      .format(request_result.status_code))
         return {}
@@ -276,7 +276,6 @@ def get_address_api_info(address, neighborhood):
         raise MultipleAddressError(unique_addresses)
 
     api_params = result_json[0]
-    api_params['start_date'] = 
     return result_json[0]
 
 
@@ -295,7 +294,7 @@ def get_trash_day_data(api_parameters):
     base_url = "https://api.recollect.net/api/places/{}/services/{}/events"
     request_result = requests.get(base_url, api_parameters)
 
-    if request_result.status_code != requests.codes.ok:
+    if request_result.status_code != 200:
         logger.debug("Error getting trash info from ReCollect API info. " \
                      "Got response: {}".format(request_result.status_code))
         return {}
