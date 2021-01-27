@@ -1054,11 +1054,13 @@
           "name": "GetAlertsIntent",
           "slots": [
             {
-              "name": "Decision",
+              "name": "ServiceName",
               "type": "BostonServices"
             }
           ],
           "samples": [
+            "are there any alerts for {ServiceName}",
+            "give me the alerts for {ServiceName}",
             "city service alerts",
             "what the current status",
             "give me the city status",
@@ -1320,7 +1322,38 @@
           "values": [
             {
               "name": {
-                "value": "all"
+                "value": "state reopening guidance",
+                "synonyms": [
+                  "state reopening",
+                  "reopening guidance"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "reopening in boston",
+                "synonyms": [
+                  "reopening"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "covid nineteen testing sites",
+                "synonyms": [
+                  "covid testing",
+                  "coronavirus testing sites",
+                  "covid testing sites"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "all",
+                "synonyms": [
+                  "all services",
+                  "all alerts"
+                ]
               }
             },
             {
@@ -1348,7 +1381,7 @@
               "name": {
                 "value": "meal sites for youth",
                 "synonyms": [
-                  "male site for youth",
+                  "meal site for youth",
                   "youth meal site",
                   "meal site",
                   "youth meal sites",
@@ -1591,5 +1624,5 @@
       }
     ]
   },
-  "version": "60"
+  "version": "86"
 }

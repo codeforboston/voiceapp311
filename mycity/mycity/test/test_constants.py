@@ -847,8 +847,18 @@ GET_ALERTS_MOCK_NO_ALERTS = {
     'Trash and recycling': 'Pickup is on a normal schedule.'
 }
 
+GET_ALERTS_MOCK_ONE_ALERT = {
+    'Alert header': 'Godzilla inbound!',
+    'City building hours': 'All municipal buildings are open based on their normal hours.',
+    'Parking meters': 'Parking meters are running on their normal schedules today.',
+    'Street Cleaning': 'Today is the first Thursday of the month and street cleaning is running on a normal schedule.',
+    'Tow lot': 'The tow lot is open from 7 a.m. - 11 p.m. Automated kiosks are available 24 hours a day, seven days a week for vehicle releases.',
+    'Trash and recycling': 'Pickup is on a normal schedule.'
+}
+
 GET_ALERTS_MOCK_SOME_ALERTS = {
-    'Tow lot': 'Tow lots destroyed!', 'Parking meters': 'Parking meters are all broken.',
+    'Tow lot': 'Tow lots destroyed!',
+    'Parking meters': 'Parking meters are all broken.',
     'City building hours': 'Stay away from city buildings.',
     'Trash and recycling': 'Pickup is on a normal schedule.',
     'Street Cleaning': 'Street cleaning is canceled',

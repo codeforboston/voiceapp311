@@ -32,7 +32,7 @@ class Services(Enum):
     """
     Organizes and contains information about all possible alert types
     that are supported in a readable format.
-    
+
     """
     STREET_CLEANING = 'Street Cleaning'
     TRASH = 'Trash and recycling'
@@ -44,7 +44,7 @@ class Services(Enum):
     ALERT_HEADER = 'Alert header'
 
 
-# constants for scraping boston.gov                                                                   
+# constants for scraping boston.gov
 BOSTON_GOV = "https://www.boston.gov"
 SERVICE_NAMES = "cds-t t--upper t--sans m-b300"
 SERVICE_INFO = "cds-d t--subinfo"
@@ -77,13 +77,82 @@ def get_alerts_intent(
     :param get_alerts_function_for_test: Injectable function for unit tests
     :param prune_normal_responses_function_for_test: Injectable function
      for unit tests
-    :param alerts_to_speech_output_function_for_test: Injectable function 
+    :param alerts_to_speech_output_function_for_test: Injectable function
     for unit tests
     :return: MyCityResponseDataModel object
     """
     logger.debug('MyCityRequestDataModel received:' +
                  mycity_request.get_logger_string())
 
+    # get the intent_variables and sessions_attribute object from the request
+    intent_variables = mycity_request.intent_variables
+    session_attributes = mycity_request.session_attributes
+    
+    service_name = intent_variables['ServiceName'].get('value') \
+        if 'ServiceName' in intent_variables else None
+    if service_name:
+        service_name = service_name.lower()
+
+    session_alerts = session_attributes.get('alerts', None)
+    if not session_alerts:
+        session_alerts = get_pruned_alerts(
+            get_alerts_function_for_test, prune_normal_responses_function_for_test)
+
+    # Build the response.
+    mycity_response = _create_response_object()
+    mycity_response.session_attributes = session_attributes.copy()
+    mycity_response.should_end_session = True
+
+    if session_alerts is None:
+        logger.debug(
+            "Could not get alerts from session attributes or Boston webpage")
+        mycity_response.should_end_session = False
+        mycity_response.output_speech = constants.LAUNCH_REPROMPT_SPEECH
+        return mycity_response
+
+    if service_name is None:
+        # If the user hasn't give us a service name, check if we should
+        # list alerts if there are only a few, or ask the user to select one
+        if len(session_alerts) > 1:
+            mycity_response.session_attributes['alerts'] = session_alerts
+            mycity_response.dialog_directive = "ElicitSlotServiceName"
+            mycity_response.should_end_session = False
+            mycity_response.output_speech = list_alerts_output(session_alerts)
+        else:
+            mycity_response.output_speech = \
+                alerts_to_speech_output(session_alerts) \
+                if alerts_to_speech_output_function_for_test is None \
+                else alerts_to_speech_output_function_for_test(session_alerts)
+    elif service_name == 'all':
+        # Respond with all alert text
+        mycity_response.output_speech = \
+            alerts_to_speech_output(session_alerts) \
+            if alerts_to_speech_output_function_for_test is None \
+            else alerts_to_speech_output_function_for_test(session_alerts)
+    elif service_name in session_alerts:
+        # Grab the requested service alert
+        alert = {service_name: session_alerts[service_name]}
+        mycity_response.output_speech = alerts_to_speech_output(alert) \
+            if alerts_to_speech_output_function_for_test is None \
+            else alerts_to_speech_output_function_for_test(alert)
+    else:
+        # Service not found. Re-ask for the desired service.
+        mycity_response.session_attributes['alerts'] = session_alerts
+        mycity_response.should_end_session = False
+        mycity_response.output_speech = constants.INVALID_SERVICE_NAME_SCRIPT
+        mycity_response.output_speech += list_alerts_output(session_alerts)
+        mycity_response.dialog_directive = "ElicitSlotServiceName"
+
+    return mycity_response
+
+
+def get_pruned_alerts(get_alerts_function_for_test, prune_normal_responses_function_for_test):
+    """
+    Returns dictionary {service: alert text} alerts from the Boston webpage that are not in "normal" condition.
+
+    :param get_alerts_function_for_test: Injectable function for unit tests
+    :param prune_normal_responses_function_for_test: Injectable function for unit tests
+    """
     alerts = get_alerts() if get_alerts_function_for_test is None \
         else get_alerts_function_for_test()
     logger.debug("[dictionary with alerts scraped from boston.gov]:\n" +
@@ -92,13 +161,12 @@ def get_alerts_intent(
     pruned_alerts = prune_normal_responses(alerts) \
         if prune_normal_responses_function_for_test is None \
         else prune_normal_responses_function_for_test(alerts)
-    logger.debug("[dictionary after pruning]:\n" + str(alerts))
+    # Standardize by making each key lower and make sure there are no dashes, such
+    # as in covid-19
+    pruned_alerts = {k.lower().replace('-', ' '): v for k, v in pruned_alerts.items()}
 
-    mycity_response = _create_response_object()
-    mycity_response.output_speech = alerts_to_speech_output(pruned_alerts) \
-        if alerts_to_speech_output_function_for_test is None \
-        else alerts_to_speech_output_function_for_test(pruned_alerts)
-    return mycity_response
+    logger.debug("[dictionary after pruning]:\n" + str(pruned_alerts))
+    return pruned_alerts
 
 
 def get_inclement_weather_alert(
@@ -149,12 +217,32 @@ def _create_response_object() -> MyCityResponseDataModel:
     return mycity_response
 
 
+def list_alerts_output(alerts: typing.Dict) -> typing.AnyStr:
+    """
+    Output list of alerts to pick for when there's multiple alerts.
+
+    :param alerts: pruned alert dictionary
+    :return: a string containing all alerts to decide on.
+    """
+    logger.debug('alerts: ' + str(alerts))
+    alert_count = len(alerts)
+    alert_list = ""
+    for i, alert in enumerate(alerts.keys()):
+        if i + 1 == alert_count:
+            alert_list += 'and '
+        alert_list += alert.capitalize()
+        if i + 1 < alert_count:
+            alert_list += ', '
+    alert_list = alert_list.strip()
+    return constants.ALERT_LISTING_SCRIPT.format(alert_count, alert_list)
+
+
 def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
     """
     Checks whether the alert dictionary contains any entries. Returns a string
     that contains all alerts or a message that city services are operating
     normally.
-    
+
     :param alerts: pruned alert dictionary
     :return: a string containing all alerts, or if no alerts are
         found, a message indicating there are no alerts at this time
@@ -170,14 +258,14 @@ def alerts_to_speech_output(alerts: typing.Dict) -> typing.AnyStr:
         return constants.NO_ALERTS
     else:
         return all_alerts.rstrip()
-        
+
 
 def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     """
     Remove any text scraped from Boston.gov that aren't actually alerts.
-    For example, parking meters, city building hours, and trash and 
+    For example, parking meters, city building hours, and trash and
     recycling are described "as on a normal schedule"
-    
+
     :param service_alerts: raw alerts dictionary, potentially with unrelated
         non-alert data
     :return: pruned alert dictionary containing only the current
@@ -186,13 +274,13 @@ def prune_normal_responses(service_alerts: typing.Dict) -> typing.Dict:
     logger.debug('service_alerts: ' + str(service_alerts))
 
 
-    # for any defined service, if its alert is that it's running normally, 
+    # for any defined service, if its alert is that it's running normally,
     # remove it from the dictionary
     for service in Services:
         if service.value in service_alerts and \
                 str.find(service_alerts[service.value], "normal") != -1:
             service_alerts.pop(service.value)                       # remove
-    if service_alerts[Services.TOW_LOT.value] == TOW_LOT_NORMAL_MESSAGE:
+    if service_alerts.get(Services.TOW_LOT.value) == TOW_LOT_NORMAL_MESSAGE:
         service_alerts.pop(Services.TOW_LOT.value)
     return service_alerts
 
@@ -201,7 +289,7 @@ def get_alerts():
     """
     Checks Boston.gov for alerts, and if present scrapes them and returns
     them as a dictionary
-    
+
     :return: a dictionary that maps alert names to detailed alert message
     """
     logger.debug('')
@@ -230,4 +318,3 @@ def get_alerts():
     if header != '':
         alerts[Services.ALERT_HEADER.value] = header.rstrip()
     return alerts
-
