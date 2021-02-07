@@ -247,7 +247,9 @@ def get_address_api_info(address, neighborhood):
         'service_id': value,
         'place_id': value,
         'area_id': value,
-        'name': value
+        'name': value,
+        'start_date': value,
+        'end_date': value
     }
 
     """
@@ -260,7 +262,7 @@ def get_address_api_info(address, neighborhood):
     url_params = {'q': full_address, 'locale': 'en-US'}
     request_result = requests.get(base_url, url_params)
 
-    if request_result.status_code != requests.codes.ok:
+    if request_result.status_code != 200:
         logger.debug('Error getting ReCollect API info. Got response: {}'
                      .format(request_result.status_code))
         return {}
@@ -284,14 +286,17 @@ def get_trash_day_data(api_parameters):
     :return: JSON object containing all trash data
     """
     logger.debug('api_parameters: ' + str(api_parameters))
+    api_parameters["after"] = '2020-01-02'
+    api_parameters["before"] = '2020-12-02'
     # Rename the default API parameter "name" to "formatted_address"
     if "name" in api_parameters:
         api_parameters["formatted_address"] = api_parameters.pop("name")
 
-    base_url = "https://recollect.net/api/places"
+    base_url = "https://api.recollect.net/api/places/{}/services/{}/events" \
+        .format(api_parameters['place_id'], api_parameters['service_id'])
     request_result = requests.get(base_url, api_parameters)
 
-    if request_result.status_code != requests.codes.ok:
+    if request_result.status_code != 200:
         logger.debug("Error getting trash info from ReCollect API info. " \
                      "Got response: {}".format(request_result.status_code))
         return {}
