@@ -73,7 +73,8 @@ install_dependencies() {
 
   venv/bin/python -m pip --disable-pip-version-check install -r mycity/deploy_tools/requirements.txt -t ./ ${QQ:+-qq}
   venv/bin/python -m pip --disable-pip-version-check install --no-deps  -r mycity/deploy_tools/requirements_no_deps.txt -t ./ ${QQ:+-qq}
-  venv/bin/python -m pip --disable-pip-version-check install --upgrade "../mycity/mycity/deploy_tools/linux_wheels/python_crfsuite-0.9.6-cp37-cp37m-manylinux1_x86_64.whl" -t ./ ${QQ:+-qq}
+  venv/bin/python -m pip --disable-pip-version-check install --upgrade "../mycity/mycity/deploy_tools/linux_wheels/python_crfsuite-0.9.7-cp38-cp38-manylinux1_x86_64.whl" -t ./ ${QQ:+-qq}
+  venv/bin/python -m pip --disable-pip-version-check install --upgrade "../mycity/mycity/deploy_tools/linux_wheels/ujson-4.0.2-cp38-cp38-manylinux1_x86_64.whl" -t ./ ${QQ:+-qq}
   return $?
 }
 
